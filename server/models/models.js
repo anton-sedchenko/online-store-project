@@ -20,10 +20,10 @@ const Figure = sequelize.define('figure', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     name: {type: DataTypes.STRING, unique: true, allowNull: false},
     price: {type: DataTypes.INTEGER, allowNull: false},
-    img: {type: DataTypes.INTEGER, allowNull: false},
+    img: {type: DataTypes.STRING, allowNull: false},
 });
 
-const Type = sequelize.define('figure', {
+const Type = sequelize.define('type', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     name: {type: DataTypes.STRING, unique: true, allowNull: false},
 });
@@ -46,7 +46,7 @@ Figure.belongsTo(Type);
 Figure.hasMany(CartFigure);
 CartFigure.belongsTo(Figure);
 
-Figure.hasMany(FigureInfo);
+Figure.hasMany(FigureInfo, {as: 'info'});
 FigureInfo.belongsTo(Figure);
 
 module.exports = {
