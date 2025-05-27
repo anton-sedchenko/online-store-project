@@ -61,6 +61,20 @@ class FigureController {
         )
         return res.json(figure);
     }
+
+    async delete(req, res, next) {
+        try {
+            const {id} = req.params;
+            const figure = await Figure.findByPk(id); // Знаходимо в БД об'єкт фігурки
+            if (!figure) {
+                return next(ApiError.badRequest(`Фігурка з id=${id} не знайдена`));
+            }
+            await Figure.destroy({where: {id}});
+            return res.json({message: `Фігурка id=${id} успішно видалена`});
+        } catch (e) {
+            next(ApiError.internal(e.message));
+        }
+    }
 }
 
 module.exports = new FigureController();

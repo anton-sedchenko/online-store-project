@@ -29,16 +29,27 @@ class UserController {
         return res.json({token});
     }
 
-    async login(req, res) {
-
+    async login(req, res, next) {
+        const {email, password} = req.body;
+        const user = await User.findOne({where: {email}});
+        // Перевіряємо чи є користувач у базі
+        if (!user) {
+            return next(ApiError.internal('Користувач не знайдений'));
+        }
+        // Порівнюємо паролі користувача з паролем в базі
+        let comparePassword = bcrypt.compareSync(password, user.password);
+        if (!comparePassword) {
+            return next(ApiError.internal('Вказано невірний пароль'));
+        }
+        // Генеруємо токен та повертаємо на клієнт
+        const token = generateJwt(user.id, user.email, user.role);
+        return res.json({token});
     }
 
     async checkAuth(req, res, next) {
-        const {id} = req.query;
-        if (!id) {
-            return next(ApiError.badRequest('Не заданий ID'));
-        }
-        res.json(id);
+        // Генеруємо новий токен і повертаємо на клієнт
+        const token = generateJwt(req.user.id, req.user.email, req.user.role);
+        return res.json({token});
     }
 }
 
