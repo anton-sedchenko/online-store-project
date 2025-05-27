@@ -66,6 +66,71 @@ class CartController {
             next(ApiError.internal(e.message));
         }
     }
+
+    // Гостьовий кошик
+    async initGuestCart(req, res, next) {
+        try {
+            const cart = await Cart.create();
+            return res.json({cartId: cart.id});
+        } catch(e) {
+            next(ApiError.internal(e.message));
+        }
+    }
+
+    async addToCartGuest(req, res, next) {
+        try {
+            const {cartId, figureId, quantity = 1} = req.body;
+            // перевіряємо чи валідний cartId
+            const cart = await Cart.findByPk(cartId);
+            if (!cart) return next(ApiError.badRequest('Невірний Id кошика'));
+
+            // Перевіряємо чи є вже така позиція в кошику
+            const existing = await CartFigure.findOne({where: {cartId, figureId}});
+            if (existing) {
+                existing.quantity += quantity;
+                await existing.save();
+                return res.json(existing);
+            }
+
+            const cartItem = await CartFigure.create({cartId, figureId, quantity});
+            return res.status(201).json(cartItem);
+        } catch (e) {
+            next(ApiError.internal(e.message));
+        }
+    }
+
+    async getGuestCart(req, res, next) {
+        try {
+            const {cartId} = req.query;
+            const items = await CartFigure.findAll({
+                where: {cartId},
+                include: [{model: Figure}]
+            });
+            return res.json(items);
+        } catch (e) {
+            next(ApiError.internal(e.message));
+        }
+    }
+
+    async removeFromCartGuest(req, res, next) {
+        try {
+            const {cartId, figureId} = req.body;
+            await CartFigure.destroy({where: {cartId, figureId}});
+            return res.json({message: 'Товар видалено з кошика'});
+        } catch (e) {
+            next(ApiError.internal(e.message));
+        }
+    }
+
+    async clearGuestCart(req, res, next) {
+        try {
+            const {cartId} = req.body;
+            await CartFigure.destroy({where: {cartId}});
+            return res.json({message: 'Кошик очищено'});
+        } catch (e) {
+            next(ApiError.internal(e.message));
+        }
+    }
 }
 
 module.exports = new CartController();

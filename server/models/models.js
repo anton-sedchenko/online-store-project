@@ -34,11 +34,30 @@ const FigureInfo = sequelize.define('figure_info', {
     description: {type: DataTypes.STRING, allowNull: false},
 });
 
+const Order = sequelize.define('order', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    // Пізніше додати поля адреси, тощо
+});
+
+const OrderFigure = sequelize.define('order_figure', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    quantity: {type: DataTypes.INTEGER, allowNull: false, defaultValue: 1}
+});
+
 User.hasOne(Cart);
 Cart.belongsTo(User);
 
 Cart.hasMany(CartFigure);
 CartFigure.belongsTo(Cart);
+
+User.hasMany(Order);
+Order.belongsTo(User);
+
+Order.hasMany(OrderFigure);
+OrderFigure.belongsTo(Order);
+
+Figure.hasMany(OrderFigure);
+OrderFigure.belongsTo(Figure);
 
 Type.hasMany(Figure);
 Figure.belongsTo(Type);
@@ -55,5 +74,7 @@ module.exports = {
     CartFigure,
     Figure,
     Type,
-    FigureInfo
+    FigureInfo,
+    Order,
+    OrderFigure
 }
