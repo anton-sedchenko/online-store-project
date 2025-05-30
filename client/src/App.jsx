@@ -1,11 +1,15 @@
+import React from "react";
+import ReactDOM from "react-dom";
+import {BrowserRouter} from "react-router-dom";
+import AppRouter from "./components/AppRouter.jsx";
+
 function App() {
 
   return (
-    <>
-        <p>Test string.</p>
-        <button class="btn btn-primary">button</button>
-    </>
-  )
+    <BrowserRouter>
+        <AppRouter />
+    </BrowserRouter>
+  );
 }
 
 export default App

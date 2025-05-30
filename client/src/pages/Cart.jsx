@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Auth = () => {
+const Cart = () => {
     return (
         <div>
-            Auth
+            Cart page
         </div>
     );
 };
 
-export default Auth;
+export default Cart;

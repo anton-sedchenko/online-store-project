@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Auth = () => {
+const FigurePage = () => {
     return (
         <div>
-            Auth
+            FigurePage
         </div>
     );
 };
 
-export default Auth;
+export default FigurePage;
