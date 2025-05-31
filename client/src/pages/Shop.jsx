@@ -1,10 +1,23 @@
 import React from 'react';
+import {Col, Container, Row} from "react-bootstrap";
+import SideBar from "../components/SideBar.jsx";
+import TypeBar from "../components/TypeBar.jsx";
 
 const Shop = () => {
     return (
-        <div>
-            SHOP
-        </div>
+        <Container fluid>
+            <Row>
+                <Col md={2}>
+                    <SideBar/>
+                </Col>
+                <Col md={10}>
+                    <div className="gallery__title">
+                        <h2>Наші вироби ручної роботи, виготовлені з любов'ю <i className="fa-solid fa-heart"></i></h2>
+                    </div>
+                    <TypeBar/>
+                </Col>
+            </Row>
+        </Container>
     );
 };
 
