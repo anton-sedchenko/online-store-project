@@ -8,10 +8,13 @@ export default class FigureStore {
             {id: 3, name: 'Тваринки'},
         ];
         this._figures = [
-            {id: 1, name: 'Набір метеликів', price: 100, img: 'C://Users/Anton/Desktop/candles site/2.jpg'},
-            {id: 2, name: 'Набір машинок', price: 100, img: 'C://Users/Anton/Desktop/candles site/machines.jpg'},
-            {id: 3, name: 'Набір ведмедиків', price: 100, img: 'C://Users/Anton/Desktop/candles site/3.jpg'},
-            {id: 4, name: 'Зайчик', price: 100, img: 'C://Users/Anton/Desktop/candles site/rabbit.jpg'}
+            {id: 1, name: 'Набір метеликів', price: 100, img: '../2.jpg'},
+            {id: 2, name: 'Набір машинок', price: 100, img: '../machines.jpg'},
+            {id: 3, name: 'Набір ведмедиків', price: 100, img: '../3.jpg'},
+            {id: 4, name: 'Зайчик', price: 100, img: '../rabbit.jpg'},
+            {id: 5, name: 'Набір машинок', price: 100, img: '../machines.jpg'},
+            {id: 6, name: 'Набір ведмедиків', price: 100, img: '../3.jpg'},
+            {id: 7, name: 'Зайчик', price: 100, img: '../rabbit.jpg'},
         ];
         this._selectedType = {};
         makeAutoObservable(this);

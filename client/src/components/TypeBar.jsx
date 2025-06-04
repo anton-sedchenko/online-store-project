@@ -7,7 +7,7 @@ const TypeBar = observer(() => {
     const {figure} = useContext(Context);
 
     return (
-        <Row className="d-flex flex-wrap">
+        <Row className="d-flex flex-wrap mb-3">
             {figure.types.map(type =>
                 <Card
                     key={type.id}

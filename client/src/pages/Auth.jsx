@@ -11,7 +11,7 @@ const Auth = () => {
     return (
         <div style={{height: window.innerHeight - 150, width: "100%"}}>
             <div className="auth__form__container">
-                <h2>{isLogin ? "Авторизація" : "Регістрація"}</h2>
+                <h2>{isLogin ? "Авторизація" : "Реєстрація"}</h2>
                 <form action="" method="get" className="auth__form">
                     <div className="auth__form-email">
                         <input type="email" name="email" id="email" placeholder="Введіть ваш email..." required/>

@@ -1,10 +1,49 @@
 import React from 'react';
+import {Button, Card, Col, Container, Image, Row} from "react-bootstrap";
 
 const FigurePage = () => {
+    const figure = {
+        id: 2,
+        name: 'Набір машинок',
+        price: 100,
+        img: '../machines.jpg'
+    };
+    const description = [
+        {id: 1, title: 'Набір машинок', description: "some description, some description, some description, some description"},
+        {id: 2, title: 'Набір метеликів', description: "some description, some description, some description, some description"},
+        {id: 3, title: 'Тваринки', description: "some description, some description, some description, some description"},
+        {id: 4, title: 'Святкові', description: "some description, some description, some description, some description"}
+    ];
+
     return (
-        <div>
-            FigurePage
-        </div>
+        <Container>
+            <Row>
+                <Col md={4}>
+                    <Image width={300} height={300} src={figure.img} />
+                </Col>
+                <Col md={4}>
+                    <Row>
+                        <h2>{figure.name}</h2>
+                        <h3>Опис:</h3>
+                        <p>
+                            {description.map((info) =>
+                                <Row key={info.id}>
+                                    {info.title}: {info.description}
+                                </Row>
+                            )}
+                        </p>
+                    </Row>
+                </Col>
+                <Col md={4}>
+                    <Card
+                        className="d-flex flex-column align-items-center justify-content-around"
+                        style={{width: 300, height: 300, fontSize: 32, border: "5px solid lightgray"}}>
+                        <h3>{figure.price} грн.</h3>
+                        <Button variant={"outline-dark"}>Додати в кошик</Button>
+                    </Card>
+                </Col>
+            </Row>
+        </Container>
     );
 };
 
