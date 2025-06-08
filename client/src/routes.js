@@ -1,9 +1,18 @@
 import Admin from "./pages/Admin";
 import Cart from "./pages/Cart.jsx";
-import {ADMIN_ROUTE, CART_ROUTE, FIGURE_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE} from "./utils/consts.js";
+import {
+    ADMIN_ROUTE,
+    CART_ROUTE,
+    FIGURE_ROUTE,
+    LOGIN_ROUTE,
+    PROFILE_ROUTE,
+    REGISTRATION_ROUTE,
+    SHOP_ROUTE
+} from "./utils/consts.js";
 import Shop from "./pages/Shop.jsx";
 import Auth from "./pages/Auth.jsx";
 import FigurePage from "./pages/FigurePage.jsx";
+import Profile from "./pages/Profile.jsx";
 
 export const authRoutes = [
     {
@@ -11,9 +20,9 @@ export const authRoutes = [
         Component: Admin
     },
     {
-        path: CART_ROUTE,
-        Component: Cart
-    }
+        path: PROFILE_ROUTE,
+        Component: Profile
+    },
 ]
 
 export const publicRoutes = [

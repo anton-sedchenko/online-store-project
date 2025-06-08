@@ -5,16 +5,13 @@ import {observer} from "mobx-react-lite";
 import {ADMIN_ROUTE, CART_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE} from "../utils/consts.js";
 
 const Header = observer(() => {
-    const {user, isAuth, setIsAuth} = useContext(Context);
+    const {user} = useContext(Context);
     const navigate = useNavigate();
 
-    // Будемо видаляти токен із localStorage
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-
-    // Оновлюємо стан авторизації
+    const logOut = () => {
+        user.setUser({})
         user.setIsAuth(false);
-        navigate('/');
+        localStorage.removeItem('token');
     }
 
     return (
@@ -37,28 +34,20 @@ const Header = observer(() => {
                             className="btn btn-light"
                             onClick={() => navigate(ADMIN_ROUTE)}
                         >
-                            Адмін панель</button>
+                            Адмін панель
+                        </button>
                         <button
-                            onClick={handleLogout}
                             className="btn btn-light header__link"
-                            onClick={() => navigate(LOGIN_ROUTE)}
+                            onClick={() => logOut()}
                         >
                             Вийти
                         </button>
                     </>
                 ) : (
                     <>
-                        <Link to={LOGIN_ROUTE} className="header__link">
-                            <button
-                                className="btn btn-light"
-                                onClick={() => user.setIsAuth(true)}
-                            >
-                                Увійти
-                            </button>
-                        </Link>
                         <Link to={REGISTRATION_ROUTE} className="header__link">
                             <button className="btn btn-light">
-                                Зареєструватись
+                                Увійти/Зареєструватись
                             </button>
                         </Link>
                     </>
