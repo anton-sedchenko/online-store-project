@@ -12,7 +12,8 @@ const $authHost = axios.create({
 
 // При кожному запиті в заголовки конфіга додаєм токен з локал стореджа
 const authInterceptor = config => {
-    config.headers.authorization = `Bearer ${localStorage.getItem("token")}`;
+    const token = localStorage.getItem("token");
+    if (token) config.headers.authorization = `Bearer ${token}`;
     return config;
 }
 

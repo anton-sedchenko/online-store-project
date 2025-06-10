@@ -1,32 +1,29 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Card, Col, Container, Image, Row} from "react-bootstrap";
+import {useParams} from "react-router-dom";
+import {fetchOneFigure} from "../http/figureAPI.js";
 
 const FigurePage = () => {
-    const figure = {
-        id: 2,
-        name: 'Набір машинок',
-        price: 100,
-        img: '../machines.jpg'
-    };
-    const description = [
-        {id: 1, title: 'Набір машинок', description: "some description, some description, some description, some description"},
-        {id: 2, title: 'Набір метеликів', description: "some description, some description, some description, some description"},
-        {id: 3, title: 'Тваринки', description: "some description, some description, some description, some description"},
-        {id: 4, title: 'Святкові', description: "some description, some description, some description, some description"}
-    ];
+    const [figure, setFigure] = useState({info: []});
+    // Отримуєм параметри айді із строки запиту
+    const {id} = useParams();
+    // При завантаженні сторінки товару один раз підгружаємо цей товар
+    useEffect(() => {
+        fetchOneFigure(id).then(data => setFigure(data));
+    }, []);
 
     return (
         <Container>
             <Row>
                 <Col md={4}>
-                    <Image width={300} height={300} src={figure.img} />
+                    <Image width={300} height={300} src={`${import.meta.env.VITE_APP_API_URL}${figure.img}`} />
                 </Col>
                 <Col md={4}>
                     <Row>
                         <h2>{figure.name}</h2>
                         <h3>Опис:</h3>
                         <p>
-                            {description.map((info) =>
+                            {figure.info.map((info) =>
                                 <Row key={info.id}>
                                     {info.title}: {info.description}
                                 </Row>

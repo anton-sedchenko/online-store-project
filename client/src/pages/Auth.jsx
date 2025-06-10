@@ -24,6 +24,7 @@ const Auth = observer(() => {
             } else {
                 data = await registration(email, password);
             }
+
             // Зберігаємо токен
             localStorage.setItem('token', data.token);
             // Оновлюємо стан юзера в userStore (MobX)
