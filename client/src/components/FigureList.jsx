@@ -8,7 +8,7 @@ const FigureList = observer(() => {
     const {figure} = useContext(Context);
 
     return (
-        <Row className="d-flex">
+        <Row className="d-flex gallery">
             {figure.figures.map(figure =>
                 <FigureItem key={figure.id} figure={figure}/>
             )}

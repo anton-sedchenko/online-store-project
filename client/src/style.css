@@ -154,10 +154,7 @@ header h1 {
 }
 
 .gallery {
-    flex: 1 1 auto;
-    background-color: #F8F8FA;
-    border-radius: 3%;
-    margin-right: 100px;
+    margin-bottom: 50px;
 }
 
 .gallery__title h2 {
@@ -185,4 +182,10 @@ header h1 {
 /* --- Modals Dropdown --- */
 .modal__dropdown, .modal__input {
     margin-bottom: 20px;
+}
+
+/* --- Pagination --- */
+.pagination {
+    display: flex;
+    justify-content: center;
 }

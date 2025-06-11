@@ -1,9 +1,34 @@
-import React, {useContext, useState} from 'react';
-import {Button, Col, Dropdown, Form, FormControl, Modal, Row} from "react-bootstrap";
+import React, {useContext, useEffect, useState} from 'react';
+import {Button, Dropdown, Form, Modal} from "react-bootstrap";
 import {Context} from "../../main.jsx";
+import {createFigure, fetchTypes} from "../../http/figureAPI.js";
+import {observer} from "mobx-react-lite";
 
-const CreateFigure = ({show, onHide}) => {
+const CreateFigure = observer(({show, onHide}) => {
     const {figure} = useContext(Context);
+    const [name, setName] = useState('');
+    const [price, setPrice] = useState(0);
+    const [descr, setDescr] = useState('');
+    const [file, setFile] = useState(null);
+
+    // Підгружаємо перелік типів
+    useEffect(() => {
+        fetchTypes().then(data => figure.setTypes(data));
+    }, []);
+
+    const selectFile = e => {
+        setFile(e.target.files[0]);
+    }
+
+    const addFigure = () => {
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("price", `${price}`);
+        formData.append("description", descr);
+        formData.append("img", file);
+        formData.append("typeId", figure.selectedType.id);
+        createFigure(formData).then(data => onHide());
+    }
 
     return (
         <Modal show={show} onHide={onHide}>
@@ -13,29 +38,43 @@ const CreateFigure = ({show, onHide}) => {
             <Modal.Body>
                 <Form>
                     <Dropdown className="modal__dropdown">
-                        <Dropdown.Toggle>Обрати тип</Dropdown.Toggle>
+                        <Dropdown.Toggle>{figure.selectedType.name || "Обрати тип"}</Dropdown.Toggle>
                         <Dropdown.Menu>
                             {figure.types.map((type) =>
-                                <Dropdown.Item key={type.id}>{type.name}</Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => figure.setSelectedType(type)}
+                                    key={type.id}
+                                >
+                                    {type.name}
+                                </Dropdown.Item>
                             )}
                         </Dropdown.Menu>
                     </Dropdown>
                     <Form.Control
                         placeholder="Введіть назву фігурки"
                         className="modal__input"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
                     />
                     <Form.Control
                         placeholder="Введіть ціну фігурки"
                         type="number"
                         className="modal__input"
+                        value={price}
+                        onChange={e => setPrice(Number(e.target.value))}
                     />
-                    <Form.Control as="textarea" rows={4}
-                          placeholder="Додайте опис фігурки"
-                          className="modal__input"
+                    <Form.Control
+                        as="textarea"
+                        rows={4}
+                        placeholder="Додайте опис фігурки"
+                        className="modal__input"
+                        value={descr}
+                        onChange={e => setDescr(e.target.value)}
                     />
                     <Form.Control
                         type="file"
                         className="modal__input"
+                        onChange={selectFile}
                     />
                 </Form>
             </Modal.Body>
@@ -43,12 +82,15 @@ const CreateFigure = ({show, onHide}) => {
                 <Button variant="outline-danger" onClick={onHide}>
                     Закрити
                 </Button>
-                <Button variant="outline-success" onClick={onHide}>
+                <Button
+                    variant="outline-success"
+                    onClick={addFigure}
+                >
                     Додати
                 </Button>
             </Modal.Footer>
         </Modal>
     );
-};
+});
 
 export default CreateFigure;

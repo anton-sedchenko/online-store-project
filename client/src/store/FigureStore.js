@@ -5,6 +5,10 @@ export default class FigureStore {
         this._types = [];
         this._figures = [];
         this._selectedType = {};
+        this._totalCount = 0;
+        this._currentPage = 1;
+        this._figuresCountOnCurrentRequest = 0;
+        this._figuresLimitOnOnePage = 3;
         makeAutoObservable(this);
     }
 
@@ -20,6 +24,22 @@ export default class FigureStore {
         this._selectedType = type;
     }
 
+    setCurrentPage(page) {
+        this._currentPage = page;
+    }
+
+    setFiguresCountOnCurrentRequest(count) {
+        this._figuresCountOnCurrentRequest = count;
+    }
+
+    setTotalCount(count) {
+        this._totalCount = count;
+    }
+
+    setFiguresLimitOnOnePage(limit) {
+        this._figuresLimitOnOnePage = limit;
+    }
+
     get types() {
         return this._types;
     }
@@ -30,5 +50,21 @@ export default class FigureStore {
 
     get selectedType() {
         return this._selectedType;
+    }
+
+    get currentPage() {
+        return this._currentPage;
+    }
+
+    get totalCount() {
+        return this._totalCount;
+    }
+
+    get figuresCountOnCurrentRequest() {
+        return this._figuresCountOnCurrentRequest;
+    }
+
+    get figuresLimitOnOnePage() {
+        return this._figuresLimitOnOnePage;
     }
 }
