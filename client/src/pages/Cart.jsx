@@ -1,10 +1,11 @@
 import React from 'react';
+import CartTable from "../components/CartTable.jsx";
 
 const Cart = () => {
     return (
-        <div>
-            Cart page
-        </div>
+        <>
+            <CartTable/>
+        </>
     );
 };
 

@@ -18,21 +18,16 @@ const Auth = observer(() => {
 
     const click = async () => {
         try {
-            let data;
-            if (isLogin) {
-                data = await login(email, password);
-            } else {
-                data = await registration(email, password);
-            }
+            const userData = isLogin
+                ? await login(email, password)
+                : await registration(email, password);
 
-            // Зберігаємо токен
-            localStorage.setItem('token', data.token);
             // Оновлюємо стан юзера в userStore (MobX)
-            user.setUser(data);
+            user.setUser(userData);
             user.setIsAuth(true);
             navigate(SHOP_ROUTE);
         } catch (e) {
-            alert(e.response.data.message);
+            alert(e.response?.data?.message);
         }
     };
 

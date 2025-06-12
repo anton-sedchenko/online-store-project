@@ -9,26 +9,18 @@ class FigureController {
             if (!req.files || !req.files.img) {
                 return res.status(400).json({ message: 'Файл не завантажений' });
             }
-            let {name, price, typeId, info} = req.body;
+            let {name, price, typeId, description} = req.body;
             const {img} = req.files;
             let fileName = uuid.v4() + ".jpg";
             img.mv(path.resolve(__dirname, '..', 'static', fileName));
-            const figure = await Figure.create({name, price, typeId, img: fileName});
-
-            if (info) {
-                info = JSON.parse(info);
-                info.forEach(i => FigureInfo.create({
-                    title: i.title,
-                    description: i.description,
-                    figureId: figure.id
-                }));
-            }
+            const figure = await Figure.create(
+                {name, price, typeId, description, img: fileName}
+            );
 
             return res.json(figure);
         } catch (e) {
             next(ApiError.badRequest(e.message));
         }
-
     }
 
     async getAll(req, res, next) {
@@ -53,16 +45,11 @@ class FigureController {
 
     async getOne(req, res) {
         const {id} = req.params;
-        const figure = await Figure.findOne(
-            {
-                where: {id},
-                include: [{model: FigureInfo, as: 'info'}]
-            },
-        )
+        const figure = await Figure.findByPk(id);
         return res.json(figure);
     }
 
-    async delete(req, res, next) {
+    async deleteFigure(req, res, next) {
         try {
             const {id} = req.params;
             const figure = await Figure.findByPk(id); // Знаходимо в БД об'єкт фігурки

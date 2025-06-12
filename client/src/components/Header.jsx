@@ -30,12 +30,15 @@ const Header = observer(() => {
                                 Мій профіль
                             </button>
                         </Link>
-                        <button
-                            className="btn btn-light"
-                            onClick={() => navigate(ADMIN_ROUTE)}
-                        >
-                            Адмін панель
-                        </button>
+
+                        {user.isAuth && user.user.role === "ADMIN" && (
+                            <button
+                                className="btn btn-light"
+                                onClick={() => navigate(ADMIN_ROUTE)}
+                            >
+                                Адмін панель
+                            </button>
+                        )}
                         <button
                             className="btn btn-light header__link"
                             onClick={() => logOut()}
@@ -47,7 +50,7 @@ const Header = observer(() => {
                     <>
                         <Link to={REGISTRATION_ROUTE} className="header__link">
                             <button className="btn btn-light">
-                                Увійти/Зареєструватись
+                                Увійти
                             </button>
                         </Link>
                     </>

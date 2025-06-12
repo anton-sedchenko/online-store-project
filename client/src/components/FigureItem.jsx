@@ -8,12 +8,19 @@ const FigureItem = ({figure}) => {
 
     return (
         <Col md={3} onClick={() => navigate(`${FIGURE_ROUTE}/${figure.id}`)}>
-            <Card style={{width: 150, cursor: "pointer", marginBottom: "20px"}} border={"light"}>
-                <Image width={150} height={150} src={`${import.meta.env.VITE_APP_API_URL}${figure.img}`}/>
+            <Card
+                style={{width: 150, cursor: "pointer", marginBottom: "20px"}}
+                border={"light"}
+            >
+                <Image
+                    width={150}
+                    height={150}
+                    src={`${import.meta.env.VITE_APP_API_URL}${figure.img}`}
+                />
                 <div>
-                    <div>Набір машинок</div>
+                    <div><h6>{figure.name}</h6></div>
                 </div>
-                <div>Ціна: 100 грн.</div>
+                <div>Ціна: {figure.price} грн.</div>
             </Card>
         </Col>
     );

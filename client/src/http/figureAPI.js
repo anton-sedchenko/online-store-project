@@ -27,6 +27,11 @@ export const fetchFigures = async (typeId, page, limit = 3) => {
 }
 
 export const fetchOneFigure = async (id) => {
-    const {data} = await $host.get("/api/figure/" + id);
+    const {data} = await $host.get(`/api/figure/${id}`);
+    return data;
+}
+
+export const deleteFigure = async (id) => {
+    const {data} = await $authHost.delete(`/api/figure/${id}`);
     return data;
 }

@@ -25,7 +25,8 @@ const TypeBar = observer(() => {
             )}
             <Card
                 key="reset"
-                className="m-2 p-2 border-danger text-danger d-flex flex-row align-items-center flex-shrink-0"
+                className="m-2 p-2 figure__typeBar__item border-danger
+                            text-danger d-flex flex-row align-items-center flex-shrink-0"
                 style={{ width: 160, cursor: 'pointer' }}
                 onClick={() => {
                     figure.setSelectedType({});

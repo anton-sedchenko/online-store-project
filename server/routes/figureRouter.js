@@ -11,7 +11,7 @@ router.delete(
     '/:id',
     authMiddleware,
     checkRole('ADMIN'),
-    figureController.delete
+    figureController.deleteFigure
 );
 
 module.exports = router;

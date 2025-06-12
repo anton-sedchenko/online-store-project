@@ -1,4 +1,6 @@
 import React from 'react';
+import {FIGURE_ROUTE} from "../utils/consts.js";
+import {Link} from "react-router-dom";
 
 const SideBar = () => {
     return (
@@ -7,7 +9,7 @@ const SideBar = () => {
                 <div className="sidebar__tools-container">
                     <ul className="sidebar__tools-list">
                         <li className="sidebar__tools-list-item">
-                            <a href="#">Галерея</a>
+                            <Link to="/">Головна</Link>
                         </li>
                         <li className="sidebar__tools-list-item">
                             <a href="#">Мій профіль</a>
@@ -16,7 +18,7 @@ const SideBar = () => {
                             <a href="#">Мій кошик</a>
                         </li>
                         <li className="sidebar__tools-list-item">
-                            <a href="#">Підтримка</a>
+                            <a href="#">Контакти</a>
                         </li>
                     </ul>
                 </div>

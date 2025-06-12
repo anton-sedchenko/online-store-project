@@ -88,17 +88,15 @@ header h1 {
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    margin-bottom: 50px;
 }
 
-.sidebar__tools-list li:first-child {
-    font-weight: bold;
+.sidebar__tools-list {
     text-shadow: 1px 1px 2px bisque;
-    border-left: 4px solid purple;
 }
 
 .sidebar__tools-list-item {
     height: 35px;
+    margin-bottom: 15px;
     font-size: 18px;
     padding: 0 0 0 40px;
     display: flex;
@@ -107,7 +105,6 @@ header h1 {
 }
 
 .sidebar__tools-list-item:hover {
-    text-shadow: 1px 1px 2px bisque;
     border-left: 6px solid purple;
 }
 
@@ -147,11 +144,12 @@ header h1 {
     color: green;
 }
 
-/* -- Gallery -- */
-
+/* --- TypeBar --- */
 .figure__typeBar__item:hover {
     background-color: #E6E6E6;
 }
+
+/* -- Gallery -- */
 
 .gallery {
     margin-bottom: 50px;
@@ -188,4 +186,20 @@ header h1 {
 .pagination {
     display: flex;
     justify-content: center;
+}
+
+/* --- Cart Page --- */
+.cart__table__container h2 {
+    margin-bottom: 20px;
+}
+
+.cart__table__container table {
+    width: 800px;
+}
+
+.cart__table__container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
