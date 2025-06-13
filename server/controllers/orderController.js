@@ -1,29 +1,48 @@
-const { Order, OrderFigure, CartFigure, Figure, User } = require('../models/models');
+const axios = require('axios');
+const {
+    Order,
+    OrderFigure,
+    CartFigure,
+    Figure,
+    User
+} = require('../models/models');
 const ApiError = require('../error/ApiError');
+
+const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 class OrderController {
     async createOrder(req, res, next) {
         try {
-            const userId = req.user ? req.user.id : null;
-            // Якщо це гість — беремо кошик з тіла запиту
-            let items = userId
-                ? await CartFigure.findAll({where: {cartId: userId}})
-                : req.body.items;
+            const userId = req.user?.id || null;
+            const {
+                fullName,
+                tel,
+                email,
+                comments,
+                order       /* масив позицій (id, quantity...) */
+            } = req.body;
 
-            if (!items || items.length === 0) {
+            if (!order?.length) {
                 return next(ApiError.badRequest('Немає товарів для оформлення замовлення'));
             }
 
-            // Створюємо сам Order
-            const order = await Order.create({userId});
+            // Створюємо саме замовлення з усіма полями в таблиці
+            const newOrder = await Order.create({
+                userId,  // або null якщо юзер не авторизований
+                fullName,
+                tel,
+                email,
+                comments
+            });
 
-            // Для кожного item копіюємо в OrderFigure
-            for (const item of items) {
-                // у разі авторизованого юзера беремо поля figureId і quantity з CartFigure
-                // якщо ні, то items берем з тіла ріквеста
-                const figureId = userId ? item.figureId : item.figureId;
-                const quantity = userId ? item.quantity : item.quantity;
-                await OrderFigure.create({ orderId: order.id, figureId, quantity });
+            // Додаємо позиції
+            for (const item of order) {
+                await OrderFigure.create({
+                    orderId: newOrder.id,
+                    figureId: item.id,
+                    quantity: item.quantity
+                });
             }
 
             // Якщо користувач залогінений очищаємо кошик
@@ -31,7 +50,43 @@ class OrderController {
                 await CartFigure.destroy({where: {cartId: userId}});
             }
 
-            return res.status(201).json({message: 'Замовлення оформлено', orderId: order.id});
+            const orderItems = await OrderFigure.findAll({
+                where: { orderId: newOrder.id },
+                include: [{ model: Figure, attributes: ['name', 'price'] }]
+            });
+
+            let text = `🆕 *Нове замовлення #${newOrder.id}*\n`;
+            text += `👤 Імʼя: ${fullName}\n`;
+            text += `📞 Телефон: ${tel}\n`;
+            text += `✉️ Email: ${email}\n`;
+            if (comments) text += `💬 Коментар: ${comments}\n`;
+            text += `\n🛒 *Товари:*\n`;
+            orderItems.forEach((oi, idx) => {
+                const name  = oi.figure.name;
+                const qty   = oi.quantity;
+                const price = oi.figure.price;
+                text += `${idx + 1}. ${name} — ${qty}×${price}₴ = ${qty * price}₴\n`;
+            });
+
+            try {
+                console.log("відправляю телеграм…", text);
+                await axios.post(
+                    `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,
+                    {
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: text,
+                        parse_mode: 'Markdown'
+                    }
+                );
+            } catch (tgErr) {
+                console.error('Telegram send error:', tgErr.message);
+            }
+
+            return res.status(201).json({
+                message: 'Замовлення оформлено',
+                orderId: newOrder.id,
+                fullName, tel, email, comments
+            });
         } catch (e) {
             next(ApiError.internal(e.message));
         }

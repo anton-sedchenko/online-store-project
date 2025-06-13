@@ -3,6 +3,7 @@ import {Button, Card, Col, Container, Form, Image, Row} from "react-bootstrap";
 import {useNavigate, useParams} from "react-router-dom";
 import {deleteFigure, fetchOneFigure} from "../http/figureAPI.js";
 import {Context} from "../main.jsx";
+import {CART_ROUTE} from "../utils/consts.js";
 
 const FigurePage = () => {
     const navigate = useNavigate();
@@ -17,6 +18,14 @@ const FigurePage = () => {
     useEffect(() => {
         fetchOneFigure(id).then(data => setFigure(data));
     }, []);
+
+    const handleAddToCart = () => {
+        cart.addItem(
+            { id: figure.id, name: figure.name, price: figure.price, img: figure.img },
+            qty
+        );
+        navigate(CART_ROUTE);
+    }
 
     const handleDelete = async () => {
         try {
@@ -61,18 +70,14 @@ const FigurePage = () => {
                         <h4>Сума: {sum} грн.</h4>
                         <Button
                             variant={"outline-dark"}
-                            onClick={() => cart.addItem(
-                                {id: figure.id, name: figure.name, price: figure.price, img: figure.img},
-                                qty
-                            )}
+                            onClick={handleAddToCart}
                         >
                             Додати в кошик
                         </Button>
-                        {console.log(user)}
                         {user.isAuth && user.user.role === 'ADMIN' && (
                             <Button
                                 variant="outline-danger"
-                                onClick={() => handleDelete()}
+                                onClick={handleDelete}
                             >
                                 Видалити фігурку
                             </Button>

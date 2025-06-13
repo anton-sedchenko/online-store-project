@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {Context} from "../main.jsx";
 import {Link, useNavigate} from "react-router-dom";
 import {observer} from "mobx-react-lite";
-import {ADMIN_ROUTE, CART_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE} from "../utils/consts.js";
+import {ADMIN_ROUTE, CART_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE} from "../utils/consts.js";
 
 const Header = observer(() => {
     const {user} = useContext(Context);
@@ -12,6 +12,7 @@ const Header = observer(() => {
         user.setUser({})
         user.setIsAuth(false);
         localStorage.removeItem('token');
+        navigate(SHOP_ROUTE);
     }
 
     return (

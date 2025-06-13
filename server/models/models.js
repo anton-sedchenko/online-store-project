@@ -31,7 +31,10 @@ const Type = sequelize.define('type', {
 
 const Order = sequelize.define('order', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    // Пізніше додати поля адреси, тощо
+    fullName: {type: DataTypes.STRING, allowNull: false},
+    tel: {type: DataTypes.STRING, allowNull: false},
+    email: {type: DataTypes.STRING, allowNull: false},
+    comments: {type: DataTypes.TEXT, allowNull: true},
 });
 
 const OrderFigure = sequelize.define('order_figure', {

@@ -7,12 +7,14 @@ import {
     LOGIN_ROUTE,
     PROFILE_ROUTE,
     REGISTRATION_ROUTE,
-    SHOP_ROUTE
+    SHOP_ROUTE,
+    ORDER_ROUTE,
 } from "./utils/consts.js";
 import Shop from "./pages/Shop.jsx";
 import Auth from "./pages/Auth.jsx";
 import FigurePage from "./pages/FigurePage.jsx";
 import Profile from "./pages/Profile.jsx";
+import Order from "./pages/Order.jsx";
 
 export const authRoutes = [
     {
@@ -45,5 +47,9 @@ export const publicRoutes = [
     {
         path: CART_ROUTE,
         Component: Cart
-    }
+    },
+    {
+        path: ORDER_ROUTE,
+        Component: Order
+    },
 ]

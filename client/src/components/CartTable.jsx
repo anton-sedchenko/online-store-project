@@ -3,13 +3,15 @@ import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
-import {FIGURE_ROUTE} from "../utils/consts.js";
+import {FIGURE_ROUTE, ORDER_ROUTE} from "../utils/consts.js";
 import {Button, Image} from "react-bootstrap";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import SideBar from "./SideBar.jsx";
 
 const CartTable = observer(() => {
     const {cart} = useContext(Context);
+    const navigate = useNavigate();
+    const handleOrder = () => navigate(ORDER_ROUTE);
 
     return (
         <>
@@ -30,7 +32,7 @@ const CartTable = observer(() => {
                     <tbody>
                     {cart.items.map((item, idx) => {
                         return (
-                            <tr>
+                            <tr key={item.id}>
                                 <td>{idx + 1}</td>
                                 <td>
                                     <Link to={`${FIGURE_ROUTE}/${item.id}`} className="d-flex align-items-center">
@@ -66,7 +68,7 @@ const CartTable = observer(() => {
                         )
                     })}
                     {cart.items.length > 0 && (
-                        <tr>
+                        <tr key="total">
                             <td colSpan={4} style={{textAlign: "right", fontWeight: "bold"}}>
                                 Разом до оплати:
                             </td>
@@ -77,6 +79,15 @@ const CartTable = observer(() => {
                     )}
                     </tbody>
                 </Table>
+                {cart.items.length > 0 && (
+                        <Button variant="light"
+                                style={{border: "1px solid purple"}}
+                                onClick={handleOrder}
+                        >
+                            Оформити замовлення
+                        </Button>
+                    )
+                }
             </div>
         </>
     );
