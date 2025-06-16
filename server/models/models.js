@@ -14,6 +14,11 @@ const Cart = sequelize.define('cart', {
 
 const CartFigure = sequelize.define('cart_figure', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1
+    }
 });
 
 const Figure = sequelize.define('figure', {

@@ -1,9 +1,7 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Modal} from "react-bootstrap";
 
 const OrderConfirm = ({show, onHide}) => {
-    const [value, setValue] = useState("");
-
     return (
         <Modal
             centered

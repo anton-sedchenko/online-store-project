@@ -38,6 +38,7 @@ const Order = () => {
         setShowThankYou(true);
         setTimeout(() => {
             setShowThankYou(false);
+            cart.clearCart();
             navigate(SHOP_ROUTE);
         }, 4000);
     }

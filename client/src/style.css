@@ -17,7 +17,6 @@ html:focus-within {
 }
 
 body {
-    min-height: 100vh;
     text-rendering: optimizeSpeed;
     line-height: 1.5;
 }
@@ -45,9 +44,9 @@ input, button, textarea, select {
 }
 
 .wrapper {
-    height: 100vh;
+    min-height: 100vh;
     overflow: hidden;
-    padding: 20px;
+    padding-top: 20px;
     display: flex;
     flex-direction: column;
 }
@@ -81,6 +80,10 @@ header h1 {
     flex: 1 1 auto;
 }
 
+.cart__icon__count__badge {
+    color: purple;
+}
+
 /* -- Sidebar -- */
 
 .sidebar {
@@ -106,6 +109,10 @@ header h1 {
 
 .sidebar__tools-list-item:hover {
     border-left: 6px solid purple;
+}
+
+.sidebar__cart-link {
+    margin-left: 10px;
 }
 
 /* -- Auth -- */
@@ -186,6 +193,7 @@ header h1 {
 .pagination {
     display: flex;
     justify-content: center;
+    transform: translateX(-150px);
 }
 
 /* --- Cart Page --- */
@@ -247,4 +255,53 @@ header h1 {
     width: 80%;
     align-self: start;
     justify-content: space-between;
+}
+
+/* --- Footer --- */
+
+footer {
+    margin-top: 50px;
+    min-height: 100px;
+    width: 100%;
+    padding: 40px 0 30px;
+    color: #E6E6E6;
+    background-color: black;
+    align-items: end;
+}
+
+.footer__links-container {
+    margin-bottom: 40px;
+}
+
+.footer__column-links a {
+    color: #E6E6E6;
+    display: block;
+    min-width: 140px;
+}
+
+.footer__column-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer__copyrights-container {
+    display: flex;
+    justify-content: center;
+}
+
+.footer__column-copyrights {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+}
+
+.footer__column-contacts {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer__column-contacts p {
+    min-width: 220px;
 }

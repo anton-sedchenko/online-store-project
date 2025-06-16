@@ -6,15 +6,14 @@ import FigureStore from "./store/FigureStore.js";
 import CartStore from "./store/CartStore.js";
 
 export const Context = createContext(null);
+const user   = new UserStore();
+const figure = new FigureStore();
+const cart   = new CartStore(user);
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-      <Context.Provider value={{
-          user: new UserStore(),
-          figure: new FigureStore(),
-          cart: new CartStore(),
-      }}>
+      <Context.Provider value={{user, figure, cart}}>
           <App />
-      </Context.Provider>,
+      </Context.Provider>
   </StrictMode>,
 );

@@ -10,7 +10,8 @@ router.delete('/guest/remove', cartController.removeFromCartGuest);
 router.delete('/guest/clear', cartController.clearGuestCart);
 router.post('/', authMiddleware, cartController.addToCart);
 router.get('/', authMiddleware, cartController.getCart);
-router.delete('/', authMiddleware, cartController.removeFromCart);
 router.delete('/clear', authMiddleware, cartController.clearCart);
+router.delete('/:cartFigureId', authMiddleware, cartController.removeFromCart);
+router.put('/:figureId', authMiddleware, cartController.updateItem);
 
 module.exports = router;

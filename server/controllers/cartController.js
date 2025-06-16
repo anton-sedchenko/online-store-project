@@ -48,8 +48,8 @@ class CartController {
     async removeFromCart(req, res, next) {
         try {
             const userId = req.user.id;
-            const {figureId} = req.body;
-            await CartFigure.destroy({where: {cartId: userId, figureId}});
+            const {cartFigureId} = req.params;
+            await CartFigure.destroy({where: {cartId: userId, id: cartFigureId}});
             return res.json({message: 'Товар видалено з кошика'});
         } catch (e) {
             next(ApiError.internal(e.message));
@@ -63,6 +63,23 @@ class CartController {
             await CartFigure.destroy({where: {cartId: userId}});
             return res.json({message: 'Кошик очищений'});
         } catch (e) {
+            next(ApiError.internal(e.message));
+        }
+    }
+
+    async updateItem(req, res, next) {
+        try {
+            const userId = req.user.id;
+            const {figureId} = req.params;
+            const {quantity} = req.body;
+            const item = await CartFigure.findOne({
+                where: {cartId: userId, figureId}
+            });
+            if (!item) return next(ApiError.badRequest("Позиція не знайдена"));
+            item.quantity = quantity;
+            await item.save();
+            return res.json(item);
+        } catch(e) {
             next(ApiError.internal(e.message));
         }
     }

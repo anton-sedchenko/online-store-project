@@ -15,7 +15,7 @@ export const createFigure = async (figure) => {
     return data;
 }
 
-export const fetchFigures = async (typeId, page, limit = 3) => {
+export const fetchFigures = async (typeId, page, limit = 4) => {
     const {data} = await $host.get("/api/figure", {
         params: {
             typeId: typeId || undefined,

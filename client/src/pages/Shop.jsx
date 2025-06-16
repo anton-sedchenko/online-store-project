@@ -25,7 +25,7 @@ const Shop = observer(() => {
                 figure.figuresLimitOnOnePage
             ).then(data => {
                 figure.setFigures(data.rows);
-                figure.setFiguresCountOnCurrentRequest(data.rows.length); // кількість триманих у поточному запиті
+                figure.setFiguresCountOnCurrentRequest(data.rows.length); // кількість отриманих у поточному запиті
                 figure.setTotalCount(data.count);                         // загальна кількість за фільтром
             });
     }, [

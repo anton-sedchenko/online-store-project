@@ -7,7 +7,7 @@ import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
 
 const Auth = observer(() => {
-    const {user} = useContext(Context);
+    const {user, cart} = useContext(Context);
     // useLocation - хук в реакт-роутер-дом, дозволяє отримати маршрут в строкі запиту
     // в залежності від запиту рендеримо авторизацію або регістрацію
     const location = useLocation();
@@ -25,9 +25,11 @@ const Auth = observer(() => {
             // Оновлюємо стан юзера в userStore (MobX)
             user.setUser(userData);
             user.setIsAuth(true);
+            // Взяти з сервера той кошик, що на нього вказує userId
+            await cart.switchToAuth();
             navigate(SHOP_ROUTE);
         } catch (e) {
-            alert(e.response?.data?.message);
+            alert(e.response?.data?.message || e.message);
         }
     };
 

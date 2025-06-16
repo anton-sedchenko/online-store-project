@@ -30,43 +30,44 @@ const CartTable = observer(() => {
                     </tr>
                     </thead>
                     <tbody>
-                    {cart.items.map((item, idx) => {
-                        return (
-                            <tr key={item.id}>
-                                <td>{idx + 1}</td>
-                                <td>
-                                    <Link to={`${FIGURE_ROUTE}/${item.id}`} className="d-flex align-items-center">
-                                        <Image
-                                            src={`${import.meta.env.VITE_APP_API_URL}${item.img}`}
-                                            width={50}
-                                            height={50}
-                                            className="me-2"
-                                        />
-                                        {item.name}
-                                    </Link>
-                                </td>
-                                <td>{item.price} грн.</td>
-                                <td style={{width: 100}}>
-                                    <Form.Control
-                                        type="number"
-                                        min={0}
-                                        value={item.quantity}
-                                        onChange={(e) =>
-                                            cart.setQuantity(item.id, Number(e.target.value))
-                                        }
+                    {cart.items.map((item, idx) => (
+                        <tr key={cart._isGuest ? item.id : item.cartFigureId}>
+                            <td>{idx + 1}</td>
+                            <td>
+                                <Link
+                                    to={`${FIGURE_ROUTE}/${item.id}`}
+                                    className="d-flex align-items-center"
+                                >
+                                    <Image
+                                        src={`${import.meta.env.VITE_APP_API_URL}${item.img}`}
+                                        width={50}
+                                        height={50}
+                                        className="me-2"
                                     />
-                                </td>
-                                <td>{item.price * item.quantity} грн.</td>
-                                <td>
-                                    <Button variant="outline-danger" size="sm"
-                                            onClick={() => cart.removeItem(item.id)}
-                                    >
-                                        ×
-                                    </Button>
-                                </td>
-                            </tr>
-                        )
-                    })}
+                                    {item.name}
+                                </Link>
+                            </td>
+                            <td>{item.price} грн.</td>
+                            <td style={{width: 100}}>
+                                <Form.Control
+                                    type="number"
+                                    min={0}
+                                    value={item.quantity}
+                                    onChange={(e) =>
+                                        cart.setQuantity(item.id, Number(e.target.value))
+                                    }
+                                />
+                            </td>
+                            <td>{item.price * item.quantity} грн.</td>
+                            <td>
+                                <Button variant="outline-danger" size="sm"
+                                        onClick={() => cart.removeItem(item.cartFigureId)}
+                                >
+                                    ×
+                                </Button>
+                            </td>
+                        </tr>
+                    ))}
                     {cart.items.length > 0 && (
                         <tr key="total">
                             <td colSpan={4} style={{textAlign: "right", fontWeight: "bold"}}>
@@ -88,6 +89,7 @@ const CartTable = observer(() => {
                         </Button>
                     )
                 }
+                {cart.items.length === 0 && (<p>Кошик порожній</p>)}
             </div>
         </>
     );
