@@ -1,5 +1,5 @@
 import {createContext, StrictMode} from "react"
-import { createRoot } from "react-dom/client"
+import {createRoot} from "react-dom/client"
 import App from "./App.jsx"
 import UserStore from "./store/UserStore.js";
 import FigureStore from "./store/FigureStore.js";

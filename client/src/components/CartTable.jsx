@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import {observer} from "mobx-react-lite";
@@ -10,7 +10,22 @@ import SideBar from "./SideBar.jsx";
 
 const CartTable = observer(() => {
     const {cart} = useContext(Context);
+    const [draftQty, setDraftQty] = useState({});
     const navigate = useNavigate();
+
+    // дістаємо локальний стейт cart.items
+    useEffect(() => {
+        const map = {};
+        cart.items.forEach(i => { map[i.id] = i.quantity; });
+        setDraftQty(map);
+    }, [cart.items]);
+
+    // Рахуємо суму одразу по змінам в draftQty
+    const total = cart.items.reduce((sum, item) => {
+        const q = draftQty[item.id] ?? item.quantity;
+        return sum + item.price * q;
+    }, 0);
+
     const handleOrder = () => navigate(ORDER_ROUTE);
 
     return (
@@ -52,13 +67,19 @@ const CartTable = observer(() => {
                                 <Form.Control
                                     type="number"
                                     min={0}
-                                    value={item.quantity}
-                                    onChange={(e) =>
-                                        cart.setQuantity(item.id, Number(e.target.value))
-                                    }
+                                    value={draftQty[item.id] ?? item.quantity}
+                                    onChange={e => {
+                                        const v = Number(e.target.value);
+                                        setDraftQty(prev => ({ ...prev, [item.id]: isNaN(v) ? 0 : v }));
+                                    }}
+                                    // коли уходимо з інпута, синхронізуємо зі стором та сервером
+                                    onBlur={() => {
+                                        const v = draftQty[item.id];
+                                        cart.setQuantity(item.id, v);
+                                    }}
                                 />
                             </td>
-                            <td>{item.price * item.quantity} грн.</td>
+                            <td>{item.price * (draftQty[item.id] ?? item.quantity)} грн.</td>
                             <td>
                                 <Button variant="outline-danger" size="sm"
                                         onClick={() => cart.removeItem(item.cartFigureId)}
@@ -74,7 +95,7 @@ const CartTable = observer(() => {
                                 Разом до оплати:
                             </td>
                             <td colSpan={2} style={{fontWeight: "bold"}}>
-                                {cart.total} грн.
+                                {total} грн.
                             </td>
                         </tr>
                     )}

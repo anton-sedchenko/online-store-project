@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.static(path.resolve(__dirname, 'static')));
 app.use(fileUpload({
     createParentPath: true,      // автoстворює папки
-    limits: { fileSize: 5e6 },   // обмеження розміру
+    limits: {fileSize: 5e6},   // обмеження розміру
 }));
 app.use('/api', router);
 

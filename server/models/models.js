@@ -27,6 +27,7 @@ const Figure = sequelize.define('figure', {
     price: {type: DataTypes.INTEGER, allowNull: false},
     description: {type: DataTypes.TEXT, allowNull: true},
     img: {type: DataTypes.STRING, allowNull: false},
+    code: {type: DataTypes.STRING, allowNull: false, unique: true},
 });
 
 const Type = sequelize.define('type', {

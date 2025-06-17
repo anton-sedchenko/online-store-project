@@ -10,6 +10,7 @@ const CreateFigure = observer(({show, onHide}) => {
     const [price, setPrice] = useState(0);
     const [descr, setDescr] = useState('');
     const [file, setFile] = useState(null);
+    const [code, setCode] = useState('');
 
     // Підгружаємо перелік типів
     useEffect(() => {
@@ -20,15 +21,20 @@ const CreateFigure = observer(({show, onHide}) => {
         setFile(e.target.files[0]);
     }
 
-    const addFigure = () => {
-        const formData = new FormData();
-        formData.append("name", name);
-        formData.append("price", `${price}`);
-        formData.append("description", descr);
-        formData.append("img", file);
-        formData.append("typeId", figure.selectedType.id);
-        createFigure(formData).then(data => onHide());
-    }
+    const addFigure = async () => {
+        try {
+            const formData = new FormData();
+            formData.append("name", name);
+            formData.append("price", `${price}`);
+            formData.append("description", descr);
+            formData.append("img", file);
+            formData.append("typeId", figure.selectedType.id);
+            formData.append("code", code);
+            await createFigure(formData).then(data => onHide());
+        } catch (e) {
+            alert(e.response?.data?.message || e.message);
+        }
+    };
 
     return (
         <Modal show={show} onHide={onHide}>
@@ -55,6 +61,11 @@ const CreateFigure = observer(({show, onHide}) => {
                         className="modal__input"
                         value={name}
                         onChange={e => setName(e.target.value)}
+                    />
+                    <Form.Control
+                        placeholder="Введіть код товару"
+                        value={code}
+                        onChange={e => setCode(e.target.value)}
                     />
                     <Form.Control
                         placeholder="Введіть ціну фігурки"

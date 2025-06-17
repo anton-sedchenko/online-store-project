@@ -10,6 +10,7 @@ const Header = observer(() => {
     const navigate = useNavigate();
 
     const logOut = () => {
+        localStorage.removeItem("token");
         user.setUser({})
         user.setIsAuth(false);
         // Перемикаємось на кошик гостя

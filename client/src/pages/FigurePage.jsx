@@ -48,6 +48,7 @@ const FigurePage = () => {
                 </Col>
                 <Col md={4}>
                     <Row>
+                        <p>Код товару: {figure.code}</p>
                         <h3>{figure.name}</h3>
                         <div style={{display: "flex"}}>
                             <p>Кількість:</p>

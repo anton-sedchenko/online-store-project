@@ -3,35 +3,27 @@ import SideBar from "../components/SideBar.jsx";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {SHOP_ROUTE} from "../utils/consts.js";
 import {useNavigate} from "react-router-dom";
-import {createOrder, createOrderGuest} from "../http/orderAPI.js";
+import {createOrder} from "../http/orderAPI.js";
 import {Context} from "../main.jsx";
 import OrderConfirm from "../components/modals/OrderConfirm.jsx";
 
 const Order = () => {
     const navigate = useNavigate();
-    const {cart, user} = useContext(Context);
+    const {user, cart} = useContext(Context);
     const [showThankYou, setShowThankYou] = useState(false);
 
     const handleOrderConfirm = async (e) => {
         e.preventDefault();
 
-        const payload = {
-            fullName: e.target.fullName.value,
-            tel: e.target.tel.value,
-            email: e.target.email.value,
-            comments: e.target.comments.value,
-            order: cart.items,
-        };
-
         try {
-            if (user.isAuth) {
-                // якщо залогінений — токен в $authHost
-                await createOrder(payload);
-            } else {
-                // якщо гість — без токена
-                await createOrderGuest(payload);
-            }
-        } catch (err) {
+            await createOrder({
+                fullName: e.target.fullName.value,
+                tel: e.target.tel.value,
+                email: e.target.email.value,
+                comments: e.target.comments.value,
+                order: cart.items,
+            }, user.isAuth);
+        } catch {
             return alert("Не вдалося оформити замовлення");
         }
         

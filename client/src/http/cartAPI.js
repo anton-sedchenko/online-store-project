@@ -6,12 +6,12 @@ export const fetchCart = async () => {
 };
 
 export const addToCartAPI = async (figureId, qty) => {
-    const {data} = await $authHost.post("/api/cart", { figureId, quantity: qty });
+    const {data} = await $authHost.post("/api/cart", {figureId, quantity: qty});
     return data;
 };
 
-export const updateCartItemAPI = async (figureId, qty) => {
-    const {data} = await $authHost.put(`/api/cart/${figureId}`, {
+export const updateCartItemAPI = async (cartFigureId, qty) => {
+    const {data} = await $authHost.put(`/api/cart/${cartFigureId}`, {
         quantity: qty
     });
     return data;

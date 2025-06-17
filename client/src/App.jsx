@@ -6,7 +6,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./style.css";
 import {observer} from "mobx-react-lite";
 import {Context} from "./main.jsx";
-import {check} from "./http/userAPI.js";
 import {Spinner} from "react-bootstrap";
 
 const App = observer(() => {
@@ -24,16 +23,10 @@ const App = observer(() => {
             return;
         }
 
-        check()
-            .then(data => {
-                user.setUser(user);
-                user.setIsAuth(true);
-        })
-        .catch(err => {
-            console.warn("Не вдалось підтвердити сесію: ", err.response?.status);
-        })
-        .finally(() => setLoading(false))
-    }, []);
+        user.checkAuth()
+            .catch(() => {})
+            .finally(() => setLoading(false));
+    }, [user]);
 
     if (loading) {
         return <Spinner animation={"grow"}/>

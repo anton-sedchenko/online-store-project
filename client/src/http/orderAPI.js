@@ -1,31 +1,26 @@
 import {$host, $authHost} from "./index.js";
 
-// для залогінених юзерів
-export const createOrder = async (orderData) => {
-    const {data} = await $authHost.post("/api/order", orderData);
-    return data;
-};
-
-// для гостей
-export const createOrderGuest = async (orderData) => {
-    const {data} = await $host.post("/api/order/guest-cart", orderData);
-    return data;
-};
+// Створити замовлення
+export const createOrder = async (orderData, isAuth) => {
+    const client = isAuth ? $authHost : $host;
+    const {data} = await client.post("/api/order", orderData)
+    return data
+}
 
 // історія своїх замовлень
 export const fetchMyOrders = async () => {
-    const {data} = await $host.get("/api/order");
+    const {data} = await $authHost.get("/api/order");
     return data;
 };
 
 // всі замовлення для адміна
 export const fetchAllOrders = async () => {
-    const {data} = await $host.get("/api/order/all");
+    const {data} = await $authHost.get("/api/order/all");
     return data;
 };
 
 // деталізований перегляд одного замовлення
 export const fetchOneOrder = async (orderId) => {
-    const {data} = await $host.get(`/api/order/${orderId}`);
+    const {data} = await $authHost.get(`/api/order/${orderId}`);
     return data;
 };

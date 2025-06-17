@@ -5,6 +5,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 router.post('/registration', userController.registration);
 router.post('/login', userController.login);
-router.get('/auth', authMiddleware, userController.checkAuth); // Перевірка користувача на авторизацію
+// Перевірка користувача на авторизацію
+router.get('/auth', authMiddleware, userController.checkAuth);
 
 module.exports = router;

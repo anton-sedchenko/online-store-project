@@ -14,6 +14,7 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 class OrderController {
     async createOrder(req, res, next) {
         try {
+            // якщо токен був, то в optionalAuth він попав req.user.id
             const userId = req.user?.id || null;
             const {
                 fullName,
@@ -38,21 +39,23 @@ class OrderController {
 
             // Додаємо позиції
             for (const item of order) {
+                // у гостя в item.id лежить id фігурки додаєм його,
+                // щоб замовлення не зламались через порожнє поле
+                const figureId = item.figureId ?? item.id;
                 await OrderFigure.create({
                     orderId: newOrder.id,
-                    figureId: item.id,
+                    figureId,
                     quantity: item.quantity
                 });
             }
-
             // Якщо користувач залогінений очищаємо кошик
             if (userId) {
                 await CartFigure.destroy({where: {cartId: userId}});
             }
 
             const orderItems = await OrderFigure.findAll({
-                where: { orderId: newOrder.id },
-                include: [{ model: Figure, attributes: ['name', 'price'] }]
+                where: {orderId: newOrder.id},
+                include: [{model: Figure, attributes: ["name", "price", "code"]}]
             });
 
             let text = `🆕 *Нове замовлення #${newOrder.id}*\n`;
@@ -65,11 +68,11 @@ class OrderController {
                 const name  = oi.figure.name;
                 const qty   = oi.quantity;
                 const price = oi.figure.price;
-                text += `${idx + 1}. ${name} — ${qty}×${price}₴ = ${qty * price}₴\n`;
+                const code = oi.figure.code;
+                text += `${idx + 1}. Артикул: ${code} ${name} — ${qty}×${price}₴ = ${qty * price}₴\n`;
             });
 
             try {
-                console.log("відправляю телеграм…", text);
                 await axios.post(
                     `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,
                     {
@@ -88,6 +91,7 @@ class OrderController {
                 fullName, tel, email, comments
             });
         } catch (e) {
+            console.error('💥 createOrder crashed:', e);
             next(ApiError.internal(e.message));
         }
     }

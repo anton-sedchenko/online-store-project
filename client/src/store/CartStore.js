@@ -29,6 +29,7 @@ export default class CartStore {
     // Викликаємо після логауту
     switchToGuest() {
         this._isGuest = true;
+        this._items = [];
         this.loadGuestCart();
     }
 
@@ -66,6 +67,7 @@ export default class CartStore {
             const items = raw.map(ci => ({
                 cartFigureId: ci.id,
                 figureId: ci.figureId,
+                id: ci.figure.id,
                 name: ci.figure.name,
                 price: ci.figure.price,
                 img: ci.figure.img,
@@ -97,15 +99,29 @@ export default class CartStore {
         }
     }
 
-    async setQuantity(id, qty) {
+    async setQuantity(cartFigureId, qty) {
         if (this._isGuest) {
-            const item = this._items.find(i => i.id === id);
-            if (!item) return;
-            item.quantity = qty < 0 ? 0 : qty;
-            this.saveGuestCart();
+            // гостьова логіка зміни кількості товару
+            const item = this._items.find(i => i.id === cartFigureId)
+            if (!item) return
+            if (qty <= 0) {
+                // якщо ввели 0 чи менше — видаляємо позицію
+                this._items = this._items.filter(i => i.id !== cartFigureId)
+            } else {
+                item.quantity = qty
+            }
+            this.saveGuestCart()
         } else {
-            await updateCartItemAPI(id, qty);
-            await this.loadCart();
+            // для авторизованого
+            if (qty <= 0) {
+                // якщо вводять 0 — видаляємо на сервері
+                await removeCartItemAPI(cartFigureId)
+            } else {
+                // інакше оновлюємо кількість
+                await updateCartItemAPI(cartFigureId, qty)
+            }
+            // завантажуємо актуальний кошик
+            await this.loadCart()
         }
     }
 

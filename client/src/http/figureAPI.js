@@ -12,6 +12,7 @@ export const fetchTypes = async () => {
 
 export const createFigure = async (figure) => {
     const {data} = await $authHost.post("/api/figure", figure);
+    console.log(data);
     return data;
 }
 

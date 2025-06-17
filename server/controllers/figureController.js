@@ -9,12 +9,15 @@ class FigureController {
             if (!req.files || !req.files.img) {
                 return res.status(400).json({ message: 'Файл не завантажений' });
             }
-            let {name, price, typeId, description} = req.body;
+            let {name, price, typeId, description, code} = req.body;
+            if (!code) {
+                return next(ApiError.badRequest("Необхідно вказати код фігурки"));
+            }
             const {img} = req.files;
             let fileName = uuid.v4() + ".jpg";
             img.mv(path.resolve(__dirname, '..', 'static', fileName));
             const figure = await Figure.create(
-                {name, price, typeId, description, img: fileName}
+                {name, price, typeId, description, img: fileName, code}
             );
 
             return res.json(figure);

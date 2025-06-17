@@ -51,9 +51,10 @@ class UserController {
     }
 
     async checkAuth(req, res, next) {
-        // Генеруємо новий токен і повертаємо на клієнт
-        const token = generateJwt(req.user.id, req.user.email, req.user.role);
-        return res.json({token});
+        try {
+            const user = await User.findByPk(req.user.id, { attributes: ['id','email','role'] });
+            return res.json(user);
+        } catch(e) { next(ApiError.internal(e.message)); }
     }
 }
 

@@ -17,9 +17,8 @@ const FigureItem = ({figure}) => {
                     height={150}
                     src={`${import.meta.env.VITE_APP_API_URL}${figure.img}`}
                 />
-                <div>
-                    <div><h6>{figure.name}</h6></div>
-                </div>
+                <div><p>Артикул: {figure.code}</p></div>
+                <div><h6>{figure.name}</h6></div>
                 <div>Ціна: {figure.price} грн.</div>
             </Card>
         </Col>
