@@ -51,6 +51,11 @@ input, button, textarea, select {
     flex-direction: column;
 }
 
+.content {
+    display: flex;
+    flex: 1 1 auto;
+}
+
 .header {
     height: 100px;
     padding: 0 40px;
@@ -71,17 +76,31 @@ header h1 {
     font-size: 20px;
 }
 
-.header__cart {
-    width: 50px;
+.header__login__btn {
+    margin-right: 10px;
+    padding: 0 15px;
+    height: 45px;
 }
 
-.content {
+.header__cart-btn {
+    padding: 0 0 0 10px;
+}
+
+.header__cart__icon-container {
     display: flex;
-    flex: 1 1 auto;
+    align-items: center;
+    height: 45px;
 }
 
-.cart__icon__count__badge {
+/* --- Goods Counter --- */
+
+.goods__counter__container {
+    align-self: start;
+}
+
+.goods__counter {
     color: purple;
+    align-self: start;
 }
 
 /* -- Sidebar -- */
@@ -109,10 +128,6 @@ header h1 {
 
 .sidebar__tools-list-item:hover {
     border-left: 6px solid purple;
-}
-
-.sidebar__cart-link {
-    margin-left: 10px;
 }
 
 /* -- Auth -- */
@@ -255,6 +270,67 @@ header h1 {
     width: 80%;
     align-self: start;
     justify-content: space-between;
+}
+
+/* --- Contacts page --- */
+
+.contacts__container {
+    display: flex;
+    justify-content: center;
+}
+
+.contacts__content {
+    min-width: 300px;
+    max-width: 600px;
+}
+
+.contacts__icon {
+    color: purple;
+    margin-right: 10px;
+}
+
+.contacts__info__block {
+    margin-bottom: 30px;
+}
+
+.contacts__info__block h2, h4 {
+    margin-bottom: 20px;
+}
+
+.contacts__tel__block p {
+    margin-bottom: 5px;
+}
+
+.contacts__tel__block p:last-child {
+    margin-bottom: 0;
+}
+
+.contacts__graphic__block p {
+    margin-bottom: 10px;
+}
+
+.contacts__graphic__block p:last-child {
+    margin-bottom: 0;
+}
+
+.contacts__address__block p {
+    margin-bottom: 15px;
+}
+
+.contacts__support__block {
+    font-size: 16px;
+}
+
+.contacts__support__block h4 {
+    margin-bottom: 15px;
+}
+
+.contacts__support__block p {
+    margin-bottom: 10px;
+}
+
+.contacts__support__block p:last-child {
+    margin-bottom: 0;
 }
 
 /* --- Footer --- */

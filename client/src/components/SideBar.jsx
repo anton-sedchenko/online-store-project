@@ -1,7 +1,8 @@
 import React from 'react';
 import {FIGURE_ROUTE} from "../utils/consts.js";
 import {Link} from "react-router-dom";
-import CartIcon from "./CartIcon.jsx";
+import CartIcon from "./UI/CartIcon.jsx";
+import GoodsCounter from "./UI/GoodsCounter.jsx";
 
 const SideBar = () => {
     return (
@@ -10,17 +11,17 @@ const SideBar = () => {
                 <div className="sidebar__tools-container">
                     <ul className="sidebar__tools-list">
                         <li className="sidebar__tools-list-item">
-                            <Link to="/">Головна</Link>
+                            <Link to="/">Галерея</Link>
                         </li>
                         <li className="sidebar__tools-list-item">
                             <a href="#">Мій профіль</a>
                         </li>
                         <li className="sidebar__tools-list-item">
-                            <CartIcon/>
-                            <a href="#" className="sidebar__cart-link">Мій кошик</a>
+                            <Link to="/cart">Мій кошик</Link>
+                            <GoodsCounter/>
                         </li>
                         <li className="sidebar__tools-list-item">
-                            <a href="#">Контакти</a>
+                            <Link to="/contacts">Контакти</Link>
                         </li>
                     </ul>
                 </div>

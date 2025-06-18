@@ -1,5 +1,5 @@
 import React from 'react';
-import {Col, Container, Row} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 import {Link} from "react-router-dom";
 
 const Footer = () => {
@@ -16,7 +16,7 @@ const Footer = () => {
                     <p>Ми у соціальних мережах</p>
                     <p>FB icon, Insta icon, Tik-Tok icon</p>
                     <p>+38 (068) 036-15-97</p>
-                    <p>magic.workshop@gmail.com</p>
+                    <p>charivnij.workshop@gmail.com</p>
                 </Col>
             </Row>
             <Row className="footer__copyrights-container">

@@ -6,3 +6,4 @@ export const CART_ROUTE = "/cart";
 export const FIGURE_ROUTE = "/figure";
 export const PROFILE_ROUTE = "/profile";
 export const ORDER_ROUTE = "/order";
+export const CONTACTS_ROUTE = "/contacts";

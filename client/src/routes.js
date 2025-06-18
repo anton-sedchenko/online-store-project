@@ -9,12 +9,14 @@ import {
     REGISTRATION_ROUTE,
     SHOP_ROUTE,
     ORDER_ROUTE,
+    CONTACTS_ROUTE,
 } from "./utils/consts.js";
 import Shop from "./pages/Shop.jsx";
 import Auth from "./pages/Auth.jsx";
 import FigurePage from "./pages/FigurePage.jsx";
 import Profile from "./pages/Profile.jsx";
 import Order from "./pages/Order.jsx";
+import Contacts from "./pages/Contacts.jsx";
 
 export const authRoutes = [
     {
@@ -51,5 +53,9 @@ export const publicRoutes = [
     {
         path: ORDER_ROUTE,
         Component: Order
+    },
+    {
+        path: CONTACTS_ROUTE,
+        Component: Contacts
     },
 ]
