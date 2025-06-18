@@ -7,10 +7,18 @@ const Footer = () => {
         <footer className="footer__container">
             <Row className="footer__links-container">
                 <Col md={6} className="footer__column-links">
-                    <Link to="/">Блог</Link>
-                    <Link to="/">Каталог</Link>
-                    <Link to="/">Контакти</Link>
-                    <Link to="/">Публічний договір</Link>
+                    <Link to="/" onClick={() => window.scrollTo(0, 0)}>
+                        Блог
+                    </Link>
+                    <Link to="/shop" onClick={() => window.scrollTo(0, 0)}>
+                        Каталог
+                    </Link>
+                    <Link to="/contacts" onClick={() => window.scrollTo(0, 0)}>
+                        Контакти
+                    </Link>
+                    <Link to="/" onClick={() => window.scrollTo(0, 0)}>
+                        Публічний договір
+                    </Link>
                 </Col>
                 <Col md={6} className="footer__column-contacts">
                     <p>Ми у соціальних мережах</p>

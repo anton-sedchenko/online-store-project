@@ -6,7 +6,6 @@ import {Context} from "../main.jsx";
 import {FIGURE_ROUTE, ORDER_ROUTE} from "../utils/consts.js";
 import {Button, Image} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
-import SideBar from "./SideBar.jsx";
 
 const CartTable = observer(() => {
     const {cart} = useContext(Context);
@@ -29,9 +28,7 @@ const CartTable = observer(() => {
     const handleOrder = () => navigate(ORDER_ROUTE);
 
     return (
-        <>
-            <SideBar/>
-            <div className="cart__table__container">
+        <div className="cart__table__container">
                 <h2>Ваше замовлення:</h2>
                 <Table striped bordered hover>
                     <thead>
@@ -46,7 +43,7 @@ const CartTable = observer(() => {
                     </thead>
                     <tbody>
                     {cart.items.map((item, idx) => (
-                        <tr key={cart._isGuest ? item.id : item.cartFigureId}>
+                        <tr key={item.id}>
                             <td>{idx + 1}</td>
                             <td>
                                 <Link
@@ -81,8 +78,13 @@ const CartTable = observer(() => {
                             </td>
                             <td>{item.price * (draftQty[item.id] ?? item.quantity)} грн.</td>
                             <td>
-                                <Button variant="outline-danger" size="sm"
-                                        onClick={() => cart.removeItem(item.cartFigureId)}
+                                <Button
+                                    variant="outline-danger"
+                                    size="sm"
+                                    onClick={() =>
+                                        // для гостя передаємо product.id, а для юзера cartFigureId
+                                        cart.removeItem(cart._isGuest ? item.id : item.cartFigureId)
+                                    }
                                 >
                                     ×
                                 </Button>
@@ -112,7 +114,6 @@ const CartTable = observer(() => {
                 }
                 {cart.items.length === 0 && (<p>Кошик порожній</p>)}
             </div>
-        </>
     );
 });
 

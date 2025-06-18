@@ -21,7 +21,10 @@ const Pages = observer(() => {
                 <Pagination.Item
                     key={page}
                     active={figure.currentPage === page}
-                    onClick={() => figure.setCurrentPage(page)}
+                    onClick={() => {
+                        figure.setCurrentPage(page);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
                 >
                     {page}
                 </Pagination.Item>

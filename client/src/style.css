@@ -16,8 +16,9 @@ html:focus-within {
     scroll-behavior: smooth;
 }
 
-body {
+html, body {
     text-rendering: optimizeSpeed;
+    font-family: "Poppins", sans-serif;
     line-height: 1.5;
 }
 
@@ -37,10 +38,6 @@ img, picture {
 
 input, button, textarea, select {
     font: inherit;
-}
-
-.body {
-    font-family: "Arial";
 }
 
 .wrapper {
@@ -112,10 +109,6 @@ header h1 {
     flex-direction: column;
 }
 
-.sidebar__tools-list {
-    text-shadow: 1px 1px 2px bisque;
-}
-
 .sidebar__tools-list-item {
     height: 35px;
     margin-bottom: 15px;
@@ -123,11 +116,12 @@ header h1 {
     padding: 0 0 0 40px;
     display: flex;
     align-items: center;
-    transition-duration: 300ms;
+    border-left: 0 solid purple;
+    transition: border-left-width 300ms ease, border-left-color 300ms ease;
 }
 
 .sidebar__tools-list-item:hover {
-    border-left: 6px solid purple;
+    border-left-width: 6px;
 }
 
 /* -- Auth -- */
@@ -186,6 +180,25 @@ header h1 {
     color: purple;
 }
 
+.gallery__card__product__code {
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.gallery__card__product__name {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.gallery__card__product__price {
+    font-size: 18px;
+}
+
+.gallery__card__product__price span {
+    color: purple;
+    font-size: 22px;
+}
+
 /* --- Admin Page --- */
 
 .admin__page__action-btn {
@@ -216,20 +229,21 @@ header h1 {
     margin-bottom: 30px;
 }
 
-.cart__table__container h2 {
-    margin-bottom: 20px;
-}
-
-.cart__table__container table {
-    width: 800px;
-    margin-bottom: 40px;
-}
-
 .cart__table__container {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.cart__table__container h2 {
+    margin-bottom: 20px;
+}
+
+.cart__table__container table {
+    min-width: 300px;
+    max-width: 900px;
+    margin-bottom: 40px;
 }
 
 /* --- ORDER Page --- */
@@ -379,5 +393,5 @@ footer {
 }
 
 .footer__column-contacts p {
-    min-width: 220px;
+    min-width: 245px;
 }

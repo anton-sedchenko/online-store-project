@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {Context} from "../main.jsx";
 import {Link, useNavigate} from "react-router-dom";
 import {observer} from "mobx-react-lite";
-import {ADMIN_ROUTE, CART_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE} from "../utils/consts.js";
+import {ADMIN_ROUTE, CART_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE} from "../utils/consts.js";
 import CartIcon from "./UI/CartIcon.jsx";
 import LoginIcon from "./UI/LoginIcon.jsx";
 

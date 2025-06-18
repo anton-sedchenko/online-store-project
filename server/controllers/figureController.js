@@ -1,6 +1,6 @@
 const uuid = require('uuid');
 const path = require('path');
-const {Figure, FigureInfo} = require('../models/models');
+const {Figure} = require('../models/models');
 const ApiError = require('../error/ApiError');
 
 class FigureController {

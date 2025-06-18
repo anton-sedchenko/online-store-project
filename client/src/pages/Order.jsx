@@ -1,5 +1,4 @@
 import React, {useContext, useState} from 'react';
-import SideBar from "../components/SideBar.jsx";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {SHOP_ROUTE} from "../utils/consts.js";
 import {useNavigate} from "react-router-dom";
@@ -37,7 +36,6 @@ const Order = () => {
 
     return (
         <>
-            <SideBar/>
             <Container>
                 <Row>
                     <Col md={6}>

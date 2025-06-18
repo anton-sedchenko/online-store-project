@@ -9,7 +9,7 @@ import {Context} from "./main.jsx";
 import {Spinner} from "react-bootstrap";
 
 const App = observer(() => {
-    const {user} = useContext(Context);
+    const {user, cart} = useContext(Context);
     const [loading, setLoading] = useState(true);
 
     // При першому запуску додатку відправити один запит, коли отримали відповідь - вимкнути крутилку.
@@ -23,10 +23,17 @@ const App = observer(() => {
             return;
         }
 
+        // Оновлюємо user і завантажуємо його кошик
         user.checkAuth()
+            .then(() => {
+                if (user.isAuth) {
+                    // замість гостьового кошика вмикаємо авторизованого юзера з сервера
+                    return cart.switchToAuth();
+                }
+            })
             .catch(() => {})
             .finally(() => setLoading(false));
-    }, [user]);
+    }, []);
 
     if (loading) {
         return <Spinner animation={"grow"}/>

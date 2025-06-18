@@ -8,7 +8,7 @@ export default class FigureStore {
         this._totalCount = 0;
         this._currentPage = 1;
         this._figuresCountOnCurrentRequest = 0;
-        this._figuresLimitOnOnePage = 10;
+        this._figuresLimitOnOnePage = 8;
         makeAutoObservable(this);
     }
 

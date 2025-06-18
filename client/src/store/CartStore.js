@@ -29,7 +29,6 @@ export default class CartStore {
     // Викликаємо після логауту
     switchToGuest() {
         this._isGuest = true;
-        this._items = [];
         this.loadGuestCart();
     }
 
@@ -127,7 +126,7 @@ export default class CartStore {
 
     async removeItem(cartFigureId) {
         if (this._isGuest) {
-            this._items = this._items.filter(i => i.cartFigureId !== cartFigureId);
+            this._items = this._items.filter(i => i.id !== cartFigureId);
             this.saveGuestCart();
         } else {
             await removeCartItemAPI(cartFigureId);
@@ -159,9 +158,6 @@ export default class CartStore {
     }
 
     // Загальна кількість товарів у кошику
-    // get totalCount() {
-    //     return this._items.reduce((sum, item) => sum + item.quantity, 0);
-    // }
     get totalCount() {
         return this._items
             .filter(item => item && typeof item.quantity === 'number')
