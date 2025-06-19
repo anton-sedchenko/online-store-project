@@ -45,25 +45,30 @@ A small shop of custom plaster figurines with features for:
    git clone https://github.com/your-username/online-store.git
    cd online-store
 
-2. Back-end
-cd server
-npm install
-cp .env.example .env
-# Edit .env with your DB and Telegram credentials, e.g.:
-#   DATABASE_URL=postgres://user:pass@host:port/dbname
-#   SECRET_KEY=your_jwt_secret
-#   TELEGRAM_BOT_TOKEN=your_bot_token
-#   TELEGRAM_CHAT_ID=your_chat_id
-npm run dev
+2. **Back-end**
 
-3. Front-end
-cd ../client
-npm install
-cp .env.example .env
-# Edit .env with your API URL, e.g.:
-#   VITE_APP_API_URL=http://localhost:5000/static/
-npm run dev
+  cd server
+  npm install
+  cp .env.example .env
 
-4. Open in browser
-Front-end: http://localhost:5173
-Back-end API: http://localhost:5000/api
+**Edit .env with your DB and Telegram credentials, e.g.:**
+  DATABASE_URL=postgres://user:pass@host:port/dbname
+  SECRET_KEY=your_jwt_secret
+  TELEGRAM_BOT_TOKEN=your_bot_token
+  TELEGRAM_CHAT_ID=your_chat_id
+  npm run dev
+
+4. **Front-end**
+
+  cd ../client
+  npm install
+  cp .env.example .env
+
+**Edit .env with your API URL, e.g.:**
+  VITE_APP_API_URL=http://localhost:5000/static/
+  npm run dev
+
+6. **Open in browser**
+
+  Front-end: http://localhost:5173
+  Back-end API: http://localhost:5000/api
