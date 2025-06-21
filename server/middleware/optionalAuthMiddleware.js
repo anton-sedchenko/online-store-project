@@ -13,7 +13,7 @@ module.exports = function optionalAuth(req, res, next) {
     }
     try {
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        // кладаємо дані юзера в req.user
+        // кладемо дані юзера в req.user
         req.user = {id: decoded.id, email: decoded.email, role: decoded.role};
         return next();
     } catch (err) {

@@ -154,44 +154,6 @@ class OrderController {
             next(ApiError.internal(e.message));
         }
     }
-
-    // POST /api/order/guest-cart
-    async createOrderFromGuestCart(req, res, next) {
-        try {
-            const {cartId} = req.body;
-            if (!cartId) {
-                return next(ApiError.badRequest('Не передано Id кошика'));
-            }
-
-            // Забираємо всі товари з гостьового кошика
-            const items = await CartFigure.findAll({where: {cartId}});
-            if (!items.length) {
-                return next(ApiError.badRequest('Кошик порожній або невірний Id кошика'));
-            }
-
-            // Створюємо саме замовлення
-            const order = await Order.create({userId: null});
-
-            // Копіюємо кожну позицію
-            for (const it of items) {
-                await OrderFigure.create({
-                    orderId: order.id,
-                    figureId: it.figureId,
-                    quantity: it.quantity
-                });
-            }
-
-            // Очищаємо кошик
-            await CartFigure.destroy({where: {cartId}});
-
-            return res.status(201).json({
-                message: 'Замовлення (гість) оформлено',
-                orderId: order.id
-            });
-        } catch (e) {
-            next(ApiError.internal(e.message));
-        }
-    }
 }
 
 module.exports = new OrderController();

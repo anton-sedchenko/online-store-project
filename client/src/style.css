@@ -53,6 +53,8 @@ input, button, textarea, select {
     flex: 1 1 auto;
 }
 
+/* --- Header --- */
+
 .header {
     height: 100px;
     padding: 0 40px;
@@ -73,6 +75,22 @@ header h1 {
     font-size: 20px;
 }
 
+.header__nav {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+.header__nav__tel {
+    display: flex;
+    justify-content: end;
+}
+
+/*.header__nav__menu {*/
+/*    display: flex;*/
+/*    justify-content: end;*/
+/*}*/
+
 .header__login__btn {
     margin-right: 10px;
     padding: 0 15px;
@@ -80,7 +98,7 @@ header h1 {
 }
 
 .header__cart-btn {
-    padding: 0 0 0 10px;
+    padding: 0 10px 0;
 }
 
 .header__cart__icon-container {
@@ -161,8 +179,25 @@ header h1 {
 }
 
 /* --- TypeBar --- */
+
+.figure__typeBar__item {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 170px;
+    text-align: center;
+    cursor: pointer;
+    border-width: 2px;
+}
+
 .figure__typeBar__item:hover {
     background-color: #E6E6E6;
+}
+
+.figure__typeBar__item button {
+    padding: 0 5px;
+    margin-left: 10px;
+    max-width: 30px;
 }
 
 /* -- Gallery -- */

@@ -1,4 +1,5 @@
 import {makeAutoObservable} from "mobx";
+import {fetchTypes as _fetchTypesAPI} from "../http/typeAPI.js";
 
 export default class FigureStore {
     constructor() {
@@ -42,6 +43,11 @@ export default class FigureStore {
 
     get types() {
         return this._types;
+    }
+
+    async fetchTypes() {
+        const data = await _fetchTypesAPI();
+        this.setTypes(data);
     }
 
     get figures() {

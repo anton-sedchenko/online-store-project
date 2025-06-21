@@ -1,11 +1,19 @@
 import React, {useContext} from 'react';
 import {observer} from "mobx-react-lite";
-import {Card, Row} from "react-bootstrap";
+import {Button, Card, Row} from "react-bootstrap";
 import {Context} from "../main.jsx";
-import { FaBan } from "react-icons/fa";
+import {FaBan} from "react-icons/fa";
+import {deleteType} from "../http/typeAPI.js";
 
 const TypeBar = observer(() => {
-    const {figure} = useContext(Context);
+    const {user, figure} = useContext(Context);
+
+    const onDelete = async (id) => {
+        if (window.confirm('Ви впевнені, що хочете видалити цей тип?')) {
+            await deleteType(id);
+            await figure.fetchTypes(); // оновлюємо список
+        }
+    };
 
     return (
         <Row className="d-flex flex-wrap mb-3">
@@ -13,14 +21,27 @@ const TypeBar = observer(() => {
                 <Card
                     key={type.id}
                     className="figure__typeBar__item p-2 m-2"
-                    style={{width: "150px", textAlign: "center", cursor: "pointer", borderWidth: "2px"}}
                     onClick={() => {
                         figure.setSelectedType(type);
                         figure.setCurrentPage(1);
                     }}
                     border={type.id === figure.selectedType.id ? "success" : "secondary"}
                 >
-                    {type.name}
+                    <div>
+                        <p>{type.name}</p>
+                    </div>
+                    {user.isAuth && user.user.role === "ADMIN" &&
+                        <Button
+                            variant="outline-danger"
+                            size="sm"
+                            onClick={(e) => {
+                                onDelete(type.id);
+                                e.stopPropagation();
+                            }}
+                        >
+                            X
+                        </Button>
+                    }
                 </Card>
             )}
             <Card

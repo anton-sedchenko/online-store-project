@@ -5,7 +5,8 @@ import TypeBar from "../components/TypeBar.jsx";
 import FigureList from "../components/FigureList.jsx";
 import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
-import {fetchFigures, fetchTypes} from "../http/figureAPI.js";
+import {fetchFigures} from "../http/figureAPI.js";
+import {fetchTypes} from "../http/typeAPI.js";
 import Pages from "../components/Pages.jsx";
 
 const Shop = observer(() => {
@@ -13,8 +14,9 @@ const Shop = observer(() => {
 
     // Підгружаємо товари один раз при відкритті сторінки магазину
     useEffect(() => {
-        fetchTypes().then(data => figure.setTypes(data));
-    }, []);
+        figure.fetchTypes();
+    }, [figure]);
+
 
     // Завантажуємо фігурки кожного разу, коли змінюється
     // або обраний тип, або номер поточної сторінки

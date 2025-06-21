@@ -1,7 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Dropdown, Form, Modal} from "react-bootstrap";
 import {Context} from "../../main.jsx";
-import {createFigure, fetchTypes} from "../../http/figureAPI.js";
+import {createFigure} from "../../http/figureAPI.js";
+import {fetchTypes} from "../../http/typeAPI.js";
 import {observer} from "mobx-react-lite";
 
 const CreateFigure = observer(({show, onHide}) => {

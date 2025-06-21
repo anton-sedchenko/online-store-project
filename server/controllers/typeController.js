@@ -2,10 +2,20 @@ const {Type} = require('../models/models');
 const ApiError = require('../error/ApiError');
 
 class TypeController {
-    async create(req, res) {
-        const {name} = req.body;
-        const type = await Type.create({name});
-        return res.json(type);
+    async create(req, res,next) {
+        try {
+            const {name} = req.body;
+            if (!name || !name.trim()) {
+                return next(ApiError.badRequest("Name is required"));
+            }
+            const type = await Type.create({name});
+            return res.json(type);
+        } catch (e) {
+            if (e.name === 'SequelizeUniqueConstraintError') {
+                return next(ApiError.badRequest("Type already exists"));
+            }
+            next(ApiError.internal(e.message));
+        }
     }
 
     async getAll(req, res) {
