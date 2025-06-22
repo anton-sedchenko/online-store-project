@@ -7,6 +7,12 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.post('/', checkRole('ADMIN'), figureController.create);
 router.get('/', figureController.getAll);
 router.get('/:id', figureController.getOne);
+router.put(
+    '/:id',
+    authMiddleware,
+    checkRole('ADMIN'),
+    figureController.update
+);
 router.delete(
     '/:id',
     authMiddleware,

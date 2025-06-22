@@ -1,32 +1,127 @@
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button, Container} from "react-bootstrap";
 import CreateType from "../components/modals/CreateType.jsx";
 import CreateFigure from "../components/modals/CreateFigure.jsx";
+import {observer} from "mobx-react-lite";
+import {Context} from "../main.jsx";
+import Table from "react-bootstrap/Table";
+import EditFigure from "../components/modals/EditFigure.jsx";
+import AdminPages from "../components/AdminPages.jsx";
+import {deleteProduct} from "../http/figureAPI.js";
 
-const Admin = () => {
+// виводимо список фігур, кнопка Edit задає фігуру для редагування,
+// коли її об’єкт непорожній — вмикаємо модалку редагування з поточним товаром
+const Admin = observer(() => {
+    const {adminStore} = useContext(Context);
+    // поточний об’єкт фігури, яку редагуємо, null якщо жодної
+    const [editing, setEditing] = useState(null);
     const [typeVisible, setTypeVisible] = useState(false);
     const [figureVisible, setFigureVisible] = useState(false);
 
+    useEffect(() => {
+        adminStore.loadProducts();
+    }, []);
+
+    const handleDelete = async (id) => {
+        if (window.confirm("Ви впевнені, що хочете видалити цей товар?")) {
+            try {
+                await deleteProduct(id);
+                await adminStore.loadProducts(); // оновлюємо список після видалення
+            } catch (e) {
+                console.error("Не вдалося видалити товар:", e);
+                alert("Помилка при видаленні товару");
+            }
+        }
+    };
+
     return (
         <Container className="d-flex flex-column">
-            <Button
-                variant={"outline-dark"}
-                className="admin__page__action-btn"
-                onClick={() => setTypeVisible(true)}
-            >
-                Додати тип
-            </Button>
-            <Button
-                variant={"outline-dark"}
-                className="admin__page__action-btn"
-                onClick={() => setFigureVisible(true)}
-            >
-                Додати фігурку
-            </Button>
-            <CreateFigure show={figureVisible} onHide={() => setFigureVisible(false)}/>
-            <CreateType show={typeVisible} onHide={() => setTypeVisible(false)}/>
+            <div className="admin__page__action__btn__container">
+                <Button
+                    variant={"outline-dark"}
+                    className="admin__page__action__btn"
+                    onClick={() => setTypeVisible(true)}
+                >
+                    Додати тип
+                </Button>
+                <Button
+                    variant={"outline-dark"}
+                    className="admin__page__action__btn"
+                    onClick={() => setFigureVisible(true)}
+                >
+                    Додати товар
+                </Button>
+                <CreateFigure
+                    show={figureVisible}
+                    onHide={() => {
+                        setFigureVisible(false);
+                        adminStore.loadProducts();
+                    }}
+                />
+                <CreateType
+                    show={typeVisible}
+                    onHide={() => setTypeVisible(false)}
+                />
+            </div>
+            <Table striped bordered hover>
+                <thead>
+                    <tr>
+                        <td>Назва товару</td>
+                        <td>Ціна</td>
+                        <td>Код товару</td>
+                        <td>Дія</td>
+                    </tr>
+                </thead>
+                <tbody>
+                {adminStore.products.map(prod => (
+                    <tr key={prod.id}>
+                        <td>{prod.name}</td>
+                        <td>{prod.price}</td>
+                        <td>{prod.code}</td>
+                        <td className="admin__page__edit__btns__container">
+                            <Button
+                                className="admin__page__edit__btn"
+                                size="sm"
+                                onClick={() => setEditing(prod)}
+                            >
+                                Edit
+                            </Button>
+                            <Button
+                                size="sm"
+                                variant="outline-danger"
+                                onClick={() => handleDelete(prod.id)}
+                            >
+                                Delete
+                            </Button>
+                        </td>
+                    </tr>
+                ))}
+                </tbody>
+            </Table>
+
+            {/* Пагінація */}
+
+            <AdminPages
+                totalCount={adminStore.productsTotal}
+                limit={adminStore.productsLimit}
+                currentPage={adminStore.productsPage}
+                onPageChange={p => adminStore.setProductsPage(p)}
+            />
+
+            {/* Модалка редагування товару */}
+
+            {editing &&
+                <EditFigure
+                    show={!!editing}
+                    onHide={() => {
+                        setEditing(null);
+                        adminStore.loadProducts();
+                    }}
+                    figureToEdit={editing}
+                />
+            }
         </Container>
     );
-};
+});
 
 export default Admin;

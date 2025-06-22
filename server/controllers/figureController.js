@@ -26,6 +26,35 @@ class FigureController {
         }
     }
 
+    async update(req, res, next) {
+        try {
+            const {id} = req.params;
+            let {name, price, typeId, description, code} = req.body;
+            const figure = await Figure.findByPk(id);
+            if (!figure) return next(ApiError.badRequest(`Фігура ${id} не знайдена`));
+
+            // якщо прийшов файл - оновлюємо картинку
+            if (req.files?.img) {
+                const {img} = req.files;
+                const fileName = uuid.v4() + path.extname(img.name);
+                await img.mv(path.resolve(__dirname, '..', 'static', fileName));
+                figure.img = fileName;
+            }
+
+            // оновлюємо інші поля
+            if (name) figure.name = name;
+            if (price) figure.price = price;
+            if (typeId) figure.typeId = typeId;
+            if (description !== undefined) figure.description = description;
+            if (code) figure.code = code;
+
+            await figure.save();
+            return res.json(figure);
+        } catch (e) {
+            next(ApiError.internal(e.message));
+        }
+    }
+
     async getAll(req, res, next) {
         try {
             let {typeId, limit, page} = req.query;

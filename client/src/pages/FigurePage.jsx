@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Card, Col, Container, Form, Image, Row} from "react-bootstrap";
 import {useNavigate, useParams} from "react-router-dom";
-import {deleteFigure, fetchOneFigure} from "../http/figureAPI.js";
+import {deleteProduct, fetchOneFigure} from "../http/figureAPI.js";
 import {Context} from "../main.jsx";
 import {CART_ROUTE} from "../utils/consts.js";
 
@@ -29,7 +29,7 @@ const FigurePage = () => {
 
     const handleDelete = async () => {
         try {
-            await deleteFigure(id);
+            await deleteProduct(id);
             navigate('/shop');
         } catch (e) {
             alert(e.response?.data?.message || 'Помилка при видаленні');

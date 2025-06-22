@@ -236,15 +236,28 @@ header h1 {
 
 /* --- Admin Page --- */
 
-.admin__page__action-btn {
-    align-self: center;
-    padding: 20px 0;
-    margin-bottom: 20px;
-    width: 400px
+.admin__page__action__btn__container {
+    margin-bottom: 30px;
 }
 
-.admin__page__action-btn:last-child {
-    margin-bottom: 0;
+.admin__page__action__btn {
+    align-self: center;
+    margin-right: 20px;
+    width: fit-content;
+    padding: 15px 15px;
+}
+
+.admin__page__action__btn:last-child {
+    margin-right: 0;
+}
+
+.admin__page__edit__btns__container {
+    display: flex;
+    justify-content: center;
+}
+
+.admin__page__edit__btn {
+    margin-right: 10px;
 }
 
 /* --- Modals Dropdown --- */
