@@ -1,8 +1,12 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Link} from "react-router-dom";
 import GoodsCounter from "./UI/GoodsCounter.jsx";
+import {Context} from "../main.jsx";
+import {observer} from "mobx-react-lite";
 
-const SideBar = () => {
+const SideBar = observer(() => {
+    const {user} = useContext(Context);
+
     return (
         <aside>
             <div className="sidebar">
@@ -11,9 +15,11 @@ const SideBar = () => {
                         <li className="sidebar__tools-list-item">
                             <Link to="/">Галерея</Link>
                         </li>
-                        <li className="sidebar__tools-list-item">
-                            <a href="#">Мій профіль</a>
-                        </li>
+                        {user.isAuth &&
+                            (<li className="sidebar__tools-list-item">
+                                <Link to="/profile">Мій профіль</Link>
+                            </li>)
+                        }
                         <li className="sidebar__tools-list-item">
                             <Link to="/cart">Мій кошик</Link>
                             <GoodsCounter/>
@@ -26,6 +32,6 @@ const SideBar = () => {
             </div>
         </aside>
     );
-};
+});
 
 export default SideBar;

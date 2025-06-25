@@ -7,6 +7,7 @@ import "./style.css";
 import {observer} from "mobx-react-lite";
 import {Context} from "./main.jsx";
 import {Spinner} from "react-bootstrap";
+import {fetchAuthUser} from "./http/userAPI.js";
 
 const App = observer(() => {
     const {user, cart} = useContext(Context);
@@ -24,13 +25,10 @@ const App = observer(() => {
         }
 
         // Оновлюємо user і завантажуємо його кошик
-        user.checkAuth()
-            .then(() => {
-                if (user.isAuth) {
-                    // замість гостьового кошика вмикаємо авторизованого юзера з сервера
-                    return cart.switchToAuth();
-                }
-            })
+        fetchAuthUser()
+            .then(me => user.setUser(me))
+            .then(() => user.setIsAuth(true))
+            .then(() => cart.switchToAuth())
             .catch(() => {})
             .finally(() => setLoading(false));
     }, []);

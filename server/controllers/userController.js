@@ -52,9 +52,49 @@ class UserController {
 
     async checkAuth(req, res, next) {
         try {
-            const user = await User.findByPk(req.user.id, { attributes: ['id','email','role'] });
+            const user = await User.findByPk(req.user.id, {
+                attributes: ['id','firstName','lastName','email','phone','role']
+            });
             return res.json(user);
-        } catch(e) { next(ApiError.internal(e.message)); }
+        } catch(e) {
+            next(ApiError.internal(e.message));
+        }
+    }
+
+    async updateProfile(req, res, next) {
+        try {
+            const userId = req.user.id;
+            const {firstName, lastName, email, phone} = req.body;
+            const user = await User.findByPk(userId);
+            if (!user) return next(ApiError.badRequest("Користувача не знайдено"));
+            // оновлюємо в БД
+            await user.update({firstName, lastName, email, phone});
+            // повертаємо свіжі дані
+            const updated = await User.findByPk(userId, {
+                attributes: ['id','firstName','lastName','email','phone','role']
+            });
+            return res.json(updated);
+        } catch(e) {
+            next(ApiError.internal(e.message));
+        }
+    }
+
+    async changePassword(req, res, next) {
+        try {
+            const userId = req.user.id;
+            const {oldPassword, newPassword} = req.body;
+            const user = await User.findByPk(userId);
+            // перевіряємо старий
+            if (!bcrypt.compareSync(oldPassword, user.password)) {
+                return next(ApiError.badRequest('Старий пароль невірний'));
+            }
+            // хешуємо новий
+            const hash = await bcrypt.hash(newPassword, 5);
+            await User.update({password: hash}, {where: {id: userId}});
+            return res.json({message: 'OK'});
+        } catch(e) {
+            next(ApiError.internal(e.message));
+        }
     }
 }
 

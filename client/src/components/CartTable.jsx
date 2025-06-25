@@ -29,7 +29,7 @@ const CartTable = observer(() => {
 
     return (
         <div className="cart__table__container">
-                <h2>Ваше замовлення:</h2>
+                <h2>Ваш кошик товарів:</h2>
                 <Table striped bordered hover>
                     <thead>
                     <tr>

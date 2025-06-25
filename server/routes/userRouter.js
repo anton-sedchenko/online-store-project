@@ -7,5 +7,7 @@ router.post('/registration', userController.registration);
 router.post('/login', userController.login);
 // Перевірка користувача на авторизацію
 router.get('/auth', authMiddleware, userController.checkAuth);
+router.put('/profile',  authMiddleware, userController.updateProfile);
+router.put('/password', authMiddleware, userController.changePassword);
 
 module.exports = router;

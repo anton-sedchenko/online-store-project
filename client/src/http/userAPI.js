@@ -24,5 +24,12 @@ export const fetchAuthUser = async () => {
     return data;
 };
 
-export class checkAuth {
-}
+export const updateProfile = async ({firstName, lastName, email, phone}) => {
+    const {data} = await $authHost.put('/api/user/profile', {firstName, lastName, email, phone});
+    return data;
+};
+
+export const changePassword = async ({oldPassword, newPassword}) => {
+    const {data} = await $authHost.put('/api/user/password', {oldPassword, newPassword});
+    return data;
+};
