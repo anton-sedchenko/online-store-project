@@ -41,38 +41,38 @@ const EditProduct = ({show, onHide, productToEdit}) => {
     return (
         <Modal show={show} onHide={onHide}>
             <Modal.Header closeButton>
-                <Modal.Title>Edit product</Modal.Title>
+                <Modal.Title>Редагування товару</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
                     <Form.Group className="mb-2">
-                        <Form.Label>Name</Form.Label>
+                        <Form.Label>Назва</Form.Label>
                         <Form.Control value={name} onChange={e => setName(e.target.value)} />
                     </Form.Group>
                     <Form.Group className="mb-2">
-                        <Form.Label>Price</Form.Label>
+                        <Form.Label>Ціна</Form.Label>
                         <Form.Control type="number" value={price} onChange={e => setPrice(e.target.value)} />
                     </Form.Group>
                     <Form.Group className="mb-2">
-                        <Form.Label>Code</Form.Label>
+                        <Form.Label>Код товару</Form.Label>
                         <Form.Control value={code} onChange={e => setCode(e.target.value)} />
                     </Form.Group>
                     <Form.Group className="mb-2">
-                        <Form.Label>Type</Form.Label>
+                        <Form.Label>Тип</Form.Label>
                         <Form.Select value={typeId} onChange={e => setTypeId(e.target.value)}>
                             <option value="">Select type</option>
                             {types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                         </Form.Select>
                     </Form.Group>
                     <Form.Group className="mb-2">
-                        <Form.Label>Description</Form.Label>
+                        <Form.Label>Опис товару</Form.Label>
                         <Form.Control
                             as="textarea" rows={3}
                             value={description}
                             onChange={e => setDescription(e.target.value)} />
                     </Form.Group>
                     <Form.Group className="mb-2">
-                        <Form.Label>Image</Form.Label>
+                        <Form.Label>Зображення</Form.Label>
                         <Form.Control
                             type="file"
                             accept="image/*"
@@ -81,8 +81,8 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={onHide}>Cancel</Button>
-                <Button variant="primary" onClick={handleSave}>Save</Button>
+                <Button variant="secondary" onClick={onHide}>Відмінити</Button>
+                <Button variant="primary" onClick={handleSave}>Зберегти</Button>
             </Modal.Footer>
         </Modal>
     );

@@ -84,14 +84,14 @@ const Admin = observer(() => {
                                 size="sm"
                                 onClick={() => setEditing(prod)}
                             >
-                                Edit
+                                Редагувати
                             </Button>
                             <Button
                                 size="sm"
                                 variant="outline-danger"
                                 onClick={() => handleDelete(prod.id)}
                             >
-                                Delete
+                                Видалити
                             </Button>
                         </td>
                     </tr>
