@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState} from "react";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import {SHOP_ROUTE} from "../utils/consts.js";
 import {useNavigate} from "react-router-dom";
@@ -8,7 +8,7 @@ import OrderConfirm from "../components/modals/OrderConfirm.jsx";
 
 const Order = () => {
     const navigate = useNavigate();
-    const {user, cart} = useContext(Context);
+    const {userStore, cartStore} = useContext(Context);
     const [showThankYou, setShowThankYou] = useState(false);
 
     const handleOrderConfirm = async (e) => {
@@ -20,8 +20,8 @@ const Order = () => {
                 tel: e.target.tel.value,
                 email: e.target.email.value,
                 comments: e.target.comments.value,
-                order: cart.items,
-            }, user.isAuth);
+                order: cartStore.items,
+            }, userStore.isAuth);
         } catch {
             return alert("Не вдалося оформити замовлення");
         }
@@ -29,7 +29,7 @@ const Order = () => {
         setShowThankYou(true);
         setTimeout(() => {
             setShowThankYou(false);
-            cart.clearCart();
+            cartStore.clearCart();
             navigate(SHOP_ROUTE);
         }, 4000);
     }

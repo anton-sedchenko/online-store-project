@@ -1,23 +1,23 @@
 const Router = require('express');
 const router = new Router();
-const figureController = require('../controllers/figureController');
+const productController = require('../controllers/productController');
 const checkRole = require("../middleware/checkRoleMiddleware");
 const authMiddleware = require('../middleware/authMiddleware');
 
-router.post('/', checkRole('ADMIN'), figureController.create);
-router.get('/', figureController.getAll);
-router.get('/:id', figureController.getOne);
+router.post('/', checkRole('ADMIN'), productController.create);
+router.get('/', productController.getAll);
+router.get('/:id', productController.getOne);
 router.put(
     '/:id',
     authMiddleware,
     checkRole('ADMIN'),
-    figureController.update
+    productController.update
 );
 router.delete(
     '/:id',
     authMiddleware,
     checkRole('ADMIN'),
-    figureController.deleteFigure
+    productController.deleteProduct
 );
 
 module.exports = router;

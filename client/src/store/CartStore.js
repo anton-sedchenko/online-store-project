@@ -64,12 +64,12 @@ export default class CartStore {
         try {
             const raw = await fetchCart();
             const items = raw.map(ci => ({
-                cartFigureId: ci.id,
-                figureId: ci.figureId,
-                id: ci.figure.id,
-                name: ci.figure.name,
-                price: ci.figure.price,
-                img: ci.figure.img,
+                cartProductId: ci.id,
+                productId: ci.productId,
+                id: ci.product.id,
+                name: ci.product.name,
+                price: ci.product.price,
+                img: ci.product.img,
                 quantity: ci.quantity
             }));
             // Кладемо нормалізований масив в store
@@ -98,14 +98,14 @@ export default class CartStore {
         }
     }
 
-    async setQuantity(cartFigureId, qty) {
+    async setQuantity(cartProductId, qty) {
         if (this._isGuest) {
             // гостьова логіка зміни кількості товару
-            const item = this._items.find(i => i.id === cartFigureId)
+            const item = this._items.find(i => i.id === cartProductId)
             if (!item) return
             if (qty <= 0) {
                 // якщо ввели 0 чи менше — видаляємо позицію
-                this._items = this._items.filter(i => i.id !== cartFigureId)
+                this._items = this._items.filter(i => i.id !== cartProductId)
             } else {
                 item.quantity = qty
             }
@@ -114,24 +114,24 @@ export default class CartStore {
             // для авторизованого
             if (qty <= 0) {
                 // якщо вводять 0 — видаляємо на сервері
-                await removeCartItemAPI(cartFigureId)
+                await removeCartItemAPI(cartProductId)
             } else {
                 // інакше оновлюємо кількість
-                await updateCartItemAPI(cartFigureId, qty)
+                await updateCartItemAPI(cartProductId, qty)
             }
             // завантажуємо актуальний кошик
             await this.loadCart()
         }
     }
 
-    async removeItem(cartFigureId) {
+    async removeItem(cartProductId) {
         if (this._isGuest) {
-            this._items = this._items.filter(i => i.id !== cartFigureId);
+            this._items = this._items.filter(i => i.id !== cartProductId);
             this.saveGuestCart();
         } else {
-            await removeCartItemAPI(cartFigureId);
+            await removeCartItemAPI(cartProductId);
             runInAction(() => {
-                this._items = this._items.filter(i => i.cartFigureId !== cartFigureId);
+                this._items = this._items.filter(i => i.cartProductId !== cartProductId);
             });
         }
     }

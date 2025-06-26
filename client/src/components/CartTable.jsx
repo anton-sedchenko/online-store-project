@@ -3,24 +3,24 @@ import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
-import {FIGURE_ROUTE, ORDER_ROUTE} from "../utils/consts.js";
+import {PRODUCT_ROUTE, ORDER_ROUTE} from "../utils/consts.js";
 import {Button, Image} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
 
 const CartTable = observer(() => {
-    const {cart} = useContext(Context);
+    const {cartStore} = useContext(Context);
     const [draftQty, setDraftQty] = useState({});
     const navigate = useNavigate();
 
-    // дістаємо локальний стейт cart.items
+    // дістаємо локальний стейт cartStore.items
     useEffect(() => {
         const map = {};
-        cart.items.forEach(i => { map[i.id] = i.quantity; });
+        cartStore.items.forEach(i => { map[i.id] = i.quantity; });
         setDraftQty(map);
-    }, [cart.items]);
+    }, [cartStore.items]);
 
     // Рахуємо суму одразу по змінам в draftQty
-    const total = cart.items.reduce((sum, item) => {
+    const total = cartStore.items.reduce((sum, item) => {
         const q = draftQty[item.id] ?? item.quantity;
         return sum + item.price * q;
     }, 0);
@@ -42,12 +42,12 @@ const CartTable = observer(() => {
                     </tr>
                     </thead>
                     <tbody>
-                    {cart.items.map((item, idx) => (
+                    {cartStore.items.map((item, idx) => (
                         <tr key={item.id}>
                             <td>{idx + 1}</td>
                             <td>
                                 <Link
-                                    to={`${FIGURE_ROUTE}/${item.id}`}
+                                    to={`${PRODUCT_ROUTE}/${item.id}`}
                                     className="d-flex align-items-center"
                                 >
                                     <Image
@@ -72,7 +72,7 @@ const CartTable = observer(() => {
                                     // коли уходимо з інпута, синхронізуємо зі стором та сервером
                                     onBlur={() => {
                                         const v = draftQty[item.id];
-                                        cart.setQuantity(item.id, v);
+                                        cartStore.setQuantity(item.id, v);
                                     }}
                                 />
                             </td>
@@ -82,8 +82,8 @@ const CartTable = observer(() => {
                                     variant="outline-danger"
                                     size="sm"
                                     onClick={() =>
-                                        // для гостя передаємо product.id, а для юзера cartFigureId
-                                        cart.removeItem(cart._isGuest ? item.id : item.cartFigureId)
+                                        // для гостя передаємо product.id, а для юзера cartProductId
+                                        cartStore.removeItem(cartStore._isGuest ? item.id : item.cartProductId)
                                     }
                                 >
                                     ×
@@ -91,7 +91,7 @@ const CartTable = observer(() => {
                             </td>
                         </tr>
                     ))}
-                    {cart.items.length > 0 && (
+                    {cartStore.items.length > 0 && (
                         <tr key="total">
                             <td colSpan={4} style={{textAlign: "right", fontWeight: "bold"}}>
                                 Разом до оплати:
@@ -103,7 +103,7 @@ const CartTable = observer(() => {
                     )}
                     </tbody>
                 </Table>
-                {cart.items.length > 0 && (
+                {cartStore.items.length > 0 && (
                         <Button variant="light"
                                 style={{border: "1px solid purple"}}
                                 onClick={handleOrder}
@@ -112,7 +112,7 @@ const CartTable = observer(() => {
                         </Button>
                     )
                 }
-                {cart.items.length === 0 && (<p>Кошик порожній</p>)}
+                {cartStore.items.length === 0 && (<p>Кошик порожній</p>)}
             </div>
     );
 });

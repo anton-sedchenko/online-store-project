@@ -4,7 +4,7 @@ import {createType} from "../../http/typeAPI.js";
 import {Context} from "../../main.jsx";
 
 const CreateType = ({show, onHide}) => {
-    const {figure} = useContext(Context);
+    const {productStore} = useContext(Context);
     const [value, setValue] = useState("");
 
     const addType = async () => {
@@ -15,7 +15,7 @@ const CreateType = ({show, onHide}) => {
         try {
             await createType({ name: value.trim() });
             // якщо успішно — оновлюємо стор і закриваємо модалку
-            await figure.fetchTypes();
+            await productStore.fetchTypes();
             setValue("");
             onHide();
         } catch (err) {

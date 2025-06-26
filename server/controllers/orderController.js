@@ -1,9 +1,9 @@
 const axios = require('axios');
 const {
     Order,
-    OrderFigure,
-    CartFigure,
-    Figure,
+    OrderProduct,
+    CartProduct,
+    Product,
     User
 } = require('../models/models');
 const ApiError = require('../error/ApiError');
@@ -41,21 +41,21 @@ class OrderController {
             for (const item of order) {
                 // у гостя в item.id лежить id фігурки додаєм його,
                 // щоб замовлення не зламались через порожнє поле
-                const figureId = item.figureId ?? item.id;
-                await OrderFigure.create({
+                const productId = item.productId ?? item.id;
+                await OrderProduct.create({
                     orderId: newOrder.id,
-                    figureId,
+                    productId,
                     quantity: item.quantity
                 });
             }
             // Якщо користувач залогінений очищаємо кошик
             if (userId) {
-                await CartFigure.destroy({where: {cartId: userId}});
+                await CartProduct.destroy({where: {cartId: userId}});
             }
 
-            const orderItems = await OrderFigure.findAll({
+            const orderItems = await OrderProduct.findAll({
                 where: {orderId: newOrder.id},
-                include: [{model: Figure, attributes: ["name", "price", "code"]}]
+                include: [{model: Product, attributes: ["name", "price", "code"]}]
             });
 
             let text = `🆕 *Нове замовлення #${newOrder.id}*\n`;
@@ -65,10 +65,10 @@ class OrderController {
             if (comments) text += `💬 Коментар: ${comments}\n`;
             text += `\n🛒 *Товари:*\n`;
             orderItems.forEach((oi, idx) => {
-                const name  = oi.figure.name;
+                const name  = oi.product.name;
                 const qty   = oi.quantity;
-                const price = oi.figure.price;
-                const code = oi.figure.code;
+                const price = oi.product.price;
+                const code = oi.product.code;
                 text += `${idx + 1}. Артикул: ${code} ${name} — ${qty}×${price}₴ = ${qty * price}₴\n`;
             });
 
@@ -103,8 +103,8 @@ class OrderController {
             const orders = await Order.findAll({
                 where: {userId},
                 include: [{
-                    model: OrderFigure,
-                    include: [{model: Figure}]
+                    model: OrderProduct,
+                    include: [{model: Product}]
                 }]
             });
             return res.json(orders);
@@ -118,14 +118,14 @@ class OrderController {
         try {
             const {id} = req.params;
             // шукаємо в таблиці orders рядок з id, який ми отримали.
-            // одночасно підтягуємо всі записи з order_figures, у яких orderId = id
-            // для кожного з них через вкладений include також тягнемо з figures дані про сам товар
+            // одночасно підтягуємо всі записи з order_products, у яких orderId = id
+            // для кожного з них через вкладений include також тягнемо з products дані про сам товар
             // щоб у відповіді малися назва, ціна, зображення
             const order = await Order.findOne({
                 where: {id},
                 include: [{
-                    model: OrderFigure,
-                    include: [{model: Figure}]
+                    model: OrderProduct,
+                    include: [{model: Product}]
                 }]
             });
             if (!order) return next(ApiError.badRequest('Замовлення не знайдено'));
@@ -143,8 +143,8 @@ class OrderController {
                 include: [
                     { model: User, attributes: ['id', 'email']}, // обмежуємо поля юзера від паролів
                     {
-                        model: OrderFigure,
-                        include: [{model: Figure}]
+                        model: OrderProduct,
+                        include: [{model: Product}]
                     }
                 ],
                 order: [['createdAt', 'DESC']] // сортування за датою

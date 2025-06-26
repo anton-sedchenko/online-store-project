@@ -4,10 +4,10 @@ import {Context} from "../main.jsx";
 import {Pagination} from "react-bootstrap";
 
 const Pages = observer(() => {
-    const {figure} = useContext(Context);
+    const {productStore} = useContext(Context);
     // Загальна кількість сторінок
     const pagesCount = Math.ceil(
-        figure.totalCount / figure.figuresLimitOnOnePage
+        productStore.totalCount / productStore.productsLimitOnOnePage
     );
     const pages = [];
 
@@ -20,9 +20,9 @@ const Pages = observer(() => {
             {pages.map(page => (
                 <Pagination.Item
                     key={page}
-                    active={figure.currentPage === page}
+                    active={productStore.currentPage === page}
                     onClick={() => {
-                        figure.setCurrentPage(page);
+                        productStore.setCurrentPage(page);
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                 >

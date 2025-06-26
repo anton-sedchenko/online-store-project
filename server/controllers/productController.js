@@ -1,9 +1,9 @@
 const uuid = require('uuid');
 const path = require('path');
-const {Figure} = require('../models/models');
+const {Product} = require('../models/models');
 const ApiError = require('../error/ApiError');
 
-class FigureController {
+class ProductController {
     async create(req, res, next) {
         try {
             if (!req.files || !req.files.img) {
@@ -11,16 +11,16 @@ class FigureController {
             }
             let {name, price, typeId, description, code} = req.body;
             if (!code) {
-                return next(ApiError.badRequest("Необхідно вказати код фігурки"));
+                return next(ApiError.badRequest("Необхідно вказати код товару"));
             }
             const {img} = req.files;
             let fileName = uuid.v4() + ".jpg";
             img.mv(path.resolve(__dirname, '..', 'static', fileName));
-            const figure = await Figure.create(
+            const newProduct = await Product.create(
                 {name, price, typeId, description, img: fileName, code}
             );
 
-            return res.json(figure);
+            return res.json(newProduct);
         } catch (e) {
             next(ApiError.badRequest(e.message));
         }
@@ -30,26 +30,26 @@ class FigureController {
         try {
             const {id} = req.params;
             let {name, price, typeId, description, code} = req.body;
-            const figure = await Figure.findByPk(id);
-            if (!figure) return next(ApiError.badRequest(`Фігура ${id} не знайдена`));
+            const product = await Product.findByPk(id);
+            if (!product) return next(ApiError.badRequest(`Товар ${id} не знайдений`));
 
             // якщо прийшов файл - оновлюємо картинку
             if (req.files?.img) {
                 const {img} = req.files;
                 const fileName = uuid.v4() + path.extname(img.name);
                 await img.mv(path.resolve(__dirname, '..', 'static', fileName));
-                figure.img = fileName;
+                product.img = fileName;
             }
 
             // оновлюємо інші поля
-            if (name) figure.name = name;
-            if (price) figure.price = price;
-            if (typeId) figure.typeId = typeId;
-            if (description !== undefined) figure.description = description;
-            if (code) figure.code = code;
+            if (name) product.name = name;
+            if (price) product.price = price;
+            if (typeId) product.typeId = typeId;
+            if (description !== undefined) product.description = description;
+            if (code) product.code = code;
 
-            await figure.save();
-            return res.json(figure);
+            await product.save();
+            return res.json(product);
         } catch (e) {
             next(ApiError.internal(e.message));
         }
@@ -61,39 +61,39 @@ class FigureController {
             page = page || 1;
             limit = limit || 9;
             let offset = page * limit - limit;
-            let figures;
+            let products;
 
             if (typeId) {
-                figures = await Figure.findAndCountAll({where: {typeId}, limit, offset});
+                products = await Product.findAndCountAll({where: {typeId}, limit, offset});
             } else {
-                figures = await Figure.findAndCountAll({limit, offset});
+                products = await Product.findAndCountAll({limit, offset});
             }
 
-            return res.json(figures);
+            return res.json(products);
         } catch (e) {
-            next(ApiError.internal('Помилка при отриманні фігур'));
+            next(ApiError.internal('Помилка при отриманні товарів'));
         }
     }
 
     async getOne(req, res) {
         const {id} = req.params;
-        const figure = await Figure.findByPk(id);
-        return res.json(figure);
+        const product = await Product.findByPk(id);
+        return res.json(product);
     }
 
-    async deleteFigure(req, res, next) {
+    async deleteProduct(req, res, next) {
         try {
             const {id} = req.params;
-            const figure = await Figure.findByPk(id); // Знаходимо в БД об'єкт фігурки
-            if (!figure) {
-                return next(ApiError.badRequest(`Фігурка з id=${id} не знайдена`));
+            const product = await Product.findByPk(id); // Знаходимо в БД об'єкт фігурки
+            if (!product) {
+                return next(ApiError.badRequest(`Товар з id=${id} не знайдений`));
             }
-            await Figure.destroy({where: {id}});
-            return res.json({message: `Фігурка id=${id} успішно видалена`});
+            await Product.destroy({where: {id}});
+            return res.json({message: `Товар id=${id} успішно видалений`});
         } catch (e) {
             next(ApiError.internal(e.message));
         }
     }
 }
 
-module.exports = new FigureController();
+module.exports = new ProductController();

@@ -2,38 +2,36 @@ import React, {useContext, useEffect} from 'react';
 import {Col, Container, Row} from "react-bootstrap";
 import SideBar from "../components/SideBar.jsx";
 import TypeBar from "../components/TypeBar.jsx";
-import FigureList from "../components/FigureList.jsx";
+import ProductList from "../components/ProductList.jsx";
 import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
-import {fetchFigures} from "../http/figureAPI.js";
-import {fetchTypes} from "../http/typeAPI.js";
+import {fetchProducts} from "../http/productAPI.js";
 import Pages from "../components/Pages.jsx";
 
 const Shop = observer(() => {
-    const {figure} = useContext(Context);
+    const {productStore} = useContext(Context);
 
     // Підгружаємо товари один раз при відкритті сторінки магазину
     useEffect(() => {
-        figure.fetchTypes();
-    }, [figure]);
-
+        productStore.fetchTypes();
+    }, [productStore]);
 
     // Завантажуємо фігурки кожного разу, коли змінюється
     // або обраний тип, або номер поточної сторінки
     useEffect(() => {
-            fetchFigures(
-                figure.selectedType.id || null,
-                figure.currentPage,
-                figure.figuresLimitOnOnePage
+            fetchProducts(
+                productStore.selectedType.id || null,
+                productStore.currentPage,
+                productStore.productsLimitOnOnePage
             ).then(data => {
-                figure.setFigures(data.rows);
-                figure.setFiguresCountOnCurrentRequest(data.rows.length); // кількість отриманих у поточному запиті
-                figure.setTotalCount(data.count);                         // загальна кількість за фільтром
+                productStore.setProducts(data.rows);
+                productStore.setProductsCountOnCurrentRequest(data.rows.length); // кількість отриманих у поточному запиті
+                productStore.setTotalCount(data.count);                         // загальна кількість за фільтром
             });
     }, [
-        figure,                 // стор, від якого слухаємо внутрішні поля
-        figure.selectedType,    // коли змінюється тип — перезапит
-        figure.currentPage      // коли змінюється сторінка — перезапит
+        productStore,                 // стор, від якого слухаємо внутрішні поля
+        productStore.selectedType,    // коли змінюється тип — перезапит
+        productStore.currentPage      // коли змінюється сторінка — перезапит
     ]);
 
     return (
@@ -45,7 +43,7 @@ const Shop = observer(() => {
                         <h2>Наші вироби ручної роботи, виготовлені з любов'ю <i className="fa-solid fa-heart"></i></h2>
                     </div>
                     <TypeBar/>
-                    <FigureList/>
+                    <ProductList/>
                     <Pages/>
                 </Col>
             </Row>

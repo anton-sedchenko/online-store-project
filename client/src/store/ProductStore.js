@@ -1,15 +1,15 @@
 import {makeAutoObservable} from "mobx";
 import {fetchTypes as _fetchTypesAPI} from "../http/typeAPI.js";
 
-export default class FigureStore {
+export default class ProductStore {
     constructor() {
         this._types = [];
-        this._figures = [];
+        this._products = [];
         this._selectedType = {};
         this._totalCount = 0;
         this._currentPage = 1;
-        this._figuresCountOnCurrentRequest = 0;
-        this._figuresLimitOnOnePage = 8;
+        this._productsCountOnCurrentRequest = 0;
+        this._productsLimitOnOnePage = 8;
         makeAutoObservable(this);
     }
 
@@ -17,8 +17,8 @@ export default class FigureStore {
         this._types = types;
     }
 
-    setFigures(figures) {
-        this._figures = figures;
+    setProducts(products) {
+        this._products = products;
     }
 
     setSelectedType(type) {
@@ -29,16 +29,16 @@ export default class FigureStore {
         this._currentPage = page;
     }
 
-    setFiguresCountOnCurrentRequest(count) {
-        this._figuresCountOnCurrentRequest = count;
+    setProductsCountOnCurrentRequest(count) {
+        this._productsCountOnCurrentRequest = count;
     }
 
     setTotalCount(count) {
         this._totalCount = count;
     }
 
-    setFiguresLimitOnOnePage(limit) {
-        this._figuresLimitOnOnePage = limit;
+    setProductsLimitOnOnePage(limit) {
+        this._productsLimitOnOnePage = limit;
     }
 
     get types() {
@@ -50,8 +50,8 @@ export default class FigureStore {
         this.setTypes(data);
     }
 
-    get figures() {
-        return this._figures;
+    get products() {
+        return this._products;
     }
 
     get selectedType() {
@@ -66,11 +66,11 @@ export default class FigureStore {
         return this._totalCount;
     }
 
-    get figuresCountOnCurrentRequest() {
-        return this._figuresCountOnCurrentRequest;
+    get productsCountOnCurrentRequest() {
+        return this._productsCountOnCurrentRequest;
     }
 
-    get figuresLimitOnOnePage() {
-        return this._figuresLimitOnOnePage;
+    get productsLimitOnOnePage() {
+        return this._productsLimitOnOnePage;
     }
 }

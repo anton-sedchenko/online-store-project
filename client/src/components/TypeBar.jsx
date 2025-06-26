@@ -6,31 +6,31 @@ import {FaBan} from "react-icons/fa";
 import {deleteType} from "../http/typeAPI.js";
 
 const TypeBar = observer(() => {
-    const {user, figure} = useContext(Context);
+    const {userStore, productStore} = useContext(Context);
 
     const onDelete = async (id) => {
         if (window.confirm('Ви впевнені, що хочете видалити цей тип?')) {
             await deleteType(id);
-            await figure.fetchTypes(); // оновлюємо список
+            await productStore.fetchTypes(); // оновлюємо список
         }
     };
 
     return (
         <Row className="d-flex flex-wrap mb-3">
-            {figure.types.map(type =>
+            {productStore.types.map(type =>
                 <Card
                     key={type.id}
-                    className="figure__typeBar__item p-2 m-2"
+                    className="product__typeBar__item p-2 m-2"
                     onClick={() => {
-                        figure.setSelectedType(type);
-                        figure.setCurrentPage(1);
+                        productStore.setSelectedType(type);
+                        productStore.setCurrentPage(1);
                     }}
-                    border={type.id === figure.selectedType.id ? "success" : "secondary"}
+                    border={type.id === productStore.selectedType.id ? "success" : "secondary"}
                 >
                     <div>
                         <p>{type.name}</p>
                     </div>
-                    {user.isAuth && user.user.role === "ADMIN" &&
+                    {userStore.isAuth && userStore.user.role === "ADMIN" &&
                         <Button
                             variant="outline-danger"
                             size="sm"
@@ -46,12 +46,12 @@ const TypeBar = observer(() => {
             )}
             <Card
                 key="reset"
-                className="m-2 p-2 figure__typeBar__item border-danger
+                className="m-2 p-2 product__typeBar__item border-danger
                             text-danger d-flex flex-row align-items-center flex-shrink-0"
                 style={{ width: 160, cursor: 'pointer' }}
                 onClick={() => {
-                    figure.setSelectedType({});
-                    figure.setCurrentPage(1);
+                    productStore.setSelectedType({});
+                    productStore.setCurrentPage(1);
                 }}
             >
                 <FaBan size={18} className="me-2" />

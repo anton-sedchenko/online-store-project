@@ -1,13 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Container} from "react-bootstrap";
 import CreateType from "../components/modals/CreateType.jsx";
-import CreateFigure from "../components/modals/CreateFigure.jsx";
+import CreateProduct from "../components/modals/CreateProduct.jsx";
 import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
 import Table from "react-bootstrap/Table";
-import EditFigure from "../components/modals/EditFigure.jsx";
+import EditProduct from "../components/modals/EditProduct.jsx";
 import AdminPages from "../components/AdminPages.jsx";
-import {deleteProduct} from "../http/figureAPI.js";
+import {deleteProduct} from "../http/productAPI.js";
 
 // виводимо список фігур, кнопка Edit задає фігуру для редагування,
 // коли її об’єкт непорожній — вмикаємо модалку редагування з поточним товаром
@@ -16,7 +16,7 @@ const Admin = observer(() => {
     // поточний об’єкт фігури, яку редагуємо, null якщо жодної
     const [editing, setEditing] = useState(null);
     const [typeVisible, setTypeVisible] = useState(false);
-    const [figureVisible, setFigureVisible] = useState(false);
+    const [productVisible, setProductVisible] = useState(false);
 
     useEffect(() => {
         adminStore.loadProducts();
@@ -47,14 +47,14 @@ const Admin = observer(() => {
                 <Button
                     variant={"outline-dark"}
                     className="admin__page__action__btn"
-                    onClick={() => setFigureVisible(true)}
+                    onClick={() => setProductVisible(true)}
                 >
                     Додати товар
                 </Button>
-                <CreateFigure
-                    show={figureVisible}
+                <CreateProduct
+                    show={productVisible}
                     onHide={() => {
-                        setFigureVisible(false);
+                        setProductVisible(false);
                         adminStore.loadProducts();
                     }}
                 />
@@ -111,13 +111,13 @@ const Admin = observer(() => {
             {/* Модалка редагування товару */}
 
             {editing &&
-                <EditFigure
+                <EditProduct
                     show={!!editing}
                     onHide={() => {
                         setEditing(null);
                         adminStore.loadProducts();
                     }}
-                    figureToEdit={editing}
+                    productToEdit={editing}
                 />
             }
         </Container>

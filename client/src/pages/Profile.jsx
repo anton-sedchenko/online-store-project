@@ -6,7 +6,7 @@ import {fetchMyOrders} from '../http/orderAPI.js';
 import {changePassword, updateProfile} from "../http/userAPI.js";
 
 const Profile = observer(() => {
-    const {user} = useContext(Context);
+    const {userStore} = useContext(Context);
 
     // стейт форми профілю
     const [form, setForm] = useState({
@@ -22,18 +22,18 @@ const Profile = observer(() => {
     const [tab, setTab] = useState('personal');
 
     useEffect(() => {
-        if (user.user && user.user.id) {
+        if (userStore.user && userStore.user.id) {
             setForm({
-                firstName: user.user.firstName || '',
-                lastName: user.user.lastName || '',
-                email: user.user.email || '',
-                phone: user.user.phone || ''
+                firstName: userStore.user.firstName || '',
+                lastName: userStore.user.lastName || '',
+                email: userStore.user.email || '',
+                phone: userStore.user.phone || ''
             });
         }
         fetchMyOrders()
             .then(data => setOrders(data))
             .catch(console.error);
-    }, [user.user]);
+    }, [userStore.user]);
 
     // збереження персональних даних
     const handlePersonalSave = async e => {
@@ -41,13 +41,13 @@ const Profile = observer(() => {
         try {
             const updated = await updateProfile(form);
             // оновлюємо MobX-стор
-            user.setUser(updated);
+            userStore.setUser(updated);
             // і форму, щоб відразу відобразити збережені значення
             setForm({
                 firstName: updated.firstName,
-                lastName:  updated.lastName,
-                email:     updated.email,
-                phone:     updated.phone
+                lastName: updated.lastName,
+                email: updated.email,
+                phone: updated.phone
             });
             alert('Дані профілю оновлено');
         } catch (err) {
@@ -175,15 +175,15 @@ const Profile = observer(() => {
                                             <td>{o.id}</td>
                                             <td>{new Date(o.createdAt).toLocaleDateString()}</td>
                                             <td>
-                                                {o.order_figures.map(of => (
+                                                {o.order_products.map(of => (
                                                     <div key={of.id}>
-                                                        {of.figure.name} × {of.quantity}
+                                                        {of.product.name} × {of.quantity}
                                                     </div>
                                                 ))}
                                             </td>
                                             <td>
-                                                {o.order_figures.reduce((sum, of) =>
-                                                    sum + of.figure.price * of.quantity, 0
+                                                {o.order_products.reduce((sum, of) =>
+                                                    sum + of.product.price * of.quantity, 0
                                                 )} грн.
                                             </td>
                                         </tr>

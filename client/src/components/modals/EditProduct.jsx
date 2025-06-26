@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {Modal, Button, Form} from 'react-bootstrap';
-import {updateFigure, fetchFigures} from '../../http/figureAPI.js';
+import {updateProduct, fetchProducts} from '../../http/productAPI.js';
 import {fetchTypes} from '../../http/typeAPI.js';
 
 // керує локальними станами, показом модалки й збиранням FormData
-const EditFigure = ({show, onHide, figureToEdit}) => {
+const EditProduct = ({show, onHide, productToEdit}) => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [code, setCode] = useState('');
@@ -14,15 +14,15 @@ const EditFigure = ({show, onHide, figureToEdit}) => {
     const [types, setTypes] = useState([]);
 
     useEffect(() => {
-        if (figureToEdit) {
-            setName(figureToEdit.name);
-            setPrice(figureToEdit.price);
-            setCode(figureToEdit.code);
-            setTypeId(figureToEdit.typeId);
-            setDescription(figureToEdit.description || '');
+        if (productToEdit) {
+            setName(productToEdit.name);
+            setPrice(productToEdit.price);
+            setCode(productToEdit.code);
+            setTypeId(productToEdit.typeId);
+            setDescription(productToEdit.description || '');
         }
         fetchTypes().then(setTypes);
-    }, [figureToEdit]);
+    }, [productToEdit]);
 
     const handleSave = async () => {
         const formData = new FormData();
@@ -33,15 +33,15 @@ const EditFigure = ({show, onHide, figureToEdit}) => {
         formData.append('description', description);
         if (imgFile) formData.append('img', imgFile);
 
-        await updateFigure(figureToEdit.id, formData);
+        await updateProduct(productToEdit.id, formData);
         onHide();
-        fetchFigures(null, 1, 8).then(() => {});
+        fetchProducts(null, 1, 8).then(() => {});
     };
 
     return (
         <Modal show={show} onHide={onHide}>
             <Modal.Header closeButton>
-                <Modal.Title>Edit Figure</Modal.Title>
+                <Modal.Title>Edit product</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
@@ -88,4 +88,4 @@ const EditFigure = ({show, onHide, figureToEdit}) => {
     );
 };
 
-export default EditFigure;
+export default EditProduct;

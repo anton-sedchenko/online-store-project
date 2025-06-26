@@ -7,15 +7,15 @@ import CartIcon from "./UI/CartIcon.jsx";
 import LoginIcon from "./UI/LoginIcon.jsx";
 
 const Header = observer(() => {
-    const {user, cart} = useContext(Context);
+    const {userStore, cartStore} = useContext(Context);
     const navigate = useNavigate();
 
     const logOut = () => {
         localStorage.removeItem("token");
-        user.setUser({})
-        user.setIsAuth(false);
+        userStore.setUser({})
+        userStore.setIsAuth(false);
         // Перемикаємось на кошик гостя
-        cart.switchToGuest();
+        cartStore.switchToGuest();
         navigate(SHOP_ROUTE);
     }
 
@@ -35,7 +35,7 @@ const Header = observer(() => {
                     </p>
                 </div>
                 <div className="header__nav__menu">
-                    {user.isAuth ? (
+                    {userStore.isAuth ? (
                         <>
                             <Link to="/profile" className="header__link">
                                 <button className="btn btn-light">
@@ -43,7 +43,7 @@ const Header = observer(() => {
                                 </button>
                             </Link>
 
-                            {user.isAuth && user.user.role === "ADMIN" && (
+                            {userStore.isAuth && userStore.user.role === "ADMIN" && (
                                 <button
                                     className="btn btn-light"
                                     onClick={() => navigate(ADMIN_ROUTE)}

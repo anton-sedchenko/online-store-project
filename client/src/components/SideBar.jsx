@@ -1,11 +1,11 @@
 import React, {useContext} from 'react';
 import {Link} from "react-router-dom";
-import GoodsCounter from "./UI/GoodsCounter.jsx";
+import ProductsCounter from "./UI/ProductsCounter.jsx";
 import {Context} from "../main.jsx";
 import {observer} from "mobx-react-lite";
 
 const SideBar = observer(() => {
-    const {user} = useContext(Context);
+    const {userStore} = useContext(Context);
 
     return (
         <aside>
@@ -15,14 +15,14 @@ const SideBar = observer(() => {
                         <li className="sidebar__tools-list-item">
                             <Link to="/">Галерея</Link>
                         </li>
-                        {user.isAuth &&
+                        {userStore.isAuth &&
                             (<li className="sidebar__tools-list-item">
                                 <Link to="/profile">Мій профіль</Link>
                             </li>)
                         }
                         <li className="sidebar__tools-list-item">
                             <Link to="/cart">Мій кошик</Link>
-                            <GoodsCounter/>
+                            <ProductsCounter/>
                         </li>
                         <li className="sidebar__tools-list-item">
                             <Link to="/contacts">Контакти</Link>

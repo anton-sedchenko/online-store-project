@@ -2,10 +2,10 @@ import React, {useContext} from 'react';
 import {Context} from "../../main.jsx";
 import {observer} from "mobx-react-lite";
 
-const GoodsCounter = observer(() => {
-    const {cart} = useContext(Context);
+const ProductsCounter = observer(() => {
+    const {cartStore} = useContext(Context);
     // кількість товарів з серверного кошика або гостьового із localStorage
-    const count = cart.totalCount;
+    const count = cartStore.totalCount;
 
     return (
         <div className="goods__counter__container">
@@ -20,4 +20,4 @@ const GoodsCounter = observer(() => {
     );
 });
 
-export default GoodsCounter;
+export default ProductsCounter;

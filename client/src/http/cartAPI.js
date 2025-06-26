@@ -5,20 +5,20 @@ export const fetchCart = async () => {
     return data;
 };
 
-export const addToCartAPI = async (figureId, qty) => {
-    const {data} = await $authHost.post("/api/cart", {figureId, quantity: qty});
+export const addToCartAPI = async (productId, qty) => {
+    const {data} = await $authHost.post("/api/cart", {productId, quantity: qty});
     return data;
 };
 
-export const updateCartItemAPI = async (cartFigureId, qty) => {
-    const {data} = await $authHost.put(`/api/cart/${cartFigureId}`, {
+export const updateCartItemAPI = async (cartProductId, qty) => {
+    const {data} = await $authHost.put(`/api/cart/${cartProductId}`, {
         quantity: qty
     });
     return data;
 };
 
-export const removeCartItemAPI = async (cartFigureId) => {
-    const {data} = await $authHost.delete(`/api/cart/${cartFigureId}`);
+export const removeCartItemAPI = async (cartProductId) => {
+    const {data} = await $authHost.delete(`/api/cart/${cartProductId}`);
     return data;
 };
 

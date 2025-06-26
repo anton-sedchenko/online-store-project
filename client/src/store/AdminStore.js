@@ -1,5 +1,5 @@
 import {makeAutoObservable, runInAction} from 'mobx';
-import {fetchFigures} from '../http/figureAPI';
+import {fetchProducts} from '../http/productAPI';
 // import {fetchUsers}   from '../http/userAPI';
 
 export default class AdminStore {
@@ -24,7 +24,7 @@ export default class AdminStore {
     }
 
     async loadProducts() {
-        const data = await fetchFigures(null, this.productsPage, this.productsLimit);
+        const data = await fetchProducts(null, this.productsPage, this.productsLimit);
         runInAction(() => {
             this.products = data.rows;
             this.productsTotal = data.count;

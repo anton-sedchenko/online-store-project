@@ -10,7 +10,7 @@ import {Spinner} from "react-bootstrap";
 import {fetchAuthUser} from "./http/userAPI.js";
 
 const App = observer(() => {
-    const {user, cart} = useContext(Context);
+    const {userStore, cartStore} = useContext(Context);
     const [loading, setLoading] = useState(true);
 
     // При першому запуску додатку відправити один запит, коли отримали відповідь - вимкнути крутилку.
@@ -26,9 +26,9 @@ const App = observer(() => {
 
         // Оновлюємо user і завантажуємо його кошик
         fetchAuthUser()
-            .then(me => user.setUser(me))
-            .then(() => user.setIsAuth(true))
-            .then(() => cart.switchToAuth())
+            .then(me => userStore.setUser(me))
+            .then(() => userStore.setIsAuth(true))
+            .then(() => cartStore.switchToAuth())
             .catch(() => {})
             .finally(() => setLoading(false));
     }, []);

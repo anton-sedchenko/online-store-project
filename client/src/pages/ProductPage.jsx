@@ -1,27 +1,26 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Card, Col, Container, Form, Image, Row} from "react-bootstrap";
 import {useNavigate, useParams} from "react-router-dom";
-import {deleteProduct, fetchOneFigure} from "../http/figureAPI.js";
+import {deleteProduct, fetchOneProduct} from "../http/productAPI.js";
 import {Context} from "../main.jsx";
 import {CART_ROUTE} from "../utils/consts.js";
 
-const FigurePage = () => {
+const ProductPage = () => {
     const navigate = useNavigate();
-    const [figure, setFigure] = useState({info: []});
-    const {cart} = useContext(Context);
-    const {user} = useContext(Context);
+    const [product, setProduct] = useState({info: []});
+    const {userStore, cartStore} = useContext(Context);
     const [qty, setQty] = useState(1);
-    let sum = figure.price * qty;
+    let sum = product.price * qty;
     // Отримуєм параметри айді із строки запиту
     const {id} = useParams();
     // При завантаженні сторінки товару один раз підгружаємо цей товар
     useEffect(() => {
-        fetchOneFigure(id).then(data => setFigure(data));
+        fetchOneProduct(id).then(data => setProduct(data));
     }, []);
 
     const handleAddToCart = () => {
-        cart.addItem(
-            { id: figure.id, name: figure.name, price: figure.price, img: figure.img },
+        cartStore.addItem(
+            { id: product.id, name: product.name, price: product.price, img: product.img },
             qty
         );
         navigate(CART_ROUTE);
@@ -43,13 +42,13 @@ const FigurePage = () => {
                     <Image
                         width={300}
                         height={300}
-                        src={`${import.meta.env.VITE_APP_API_URL}${figure.img}`}
+                        src={`${import.meta.env.VITE_APP_API_URL}${product.img}`}
                     />
                 </Col>
                 <Col md={4}>
                     <Row>
-                        <p>Код товару: {figure.code}</p>
-                        <h3>{figure.name}</h3>
+                        <p>Код товару: {product.code}</p>
+                        <h3>{product.name}</h3>
                         <div style={{display: "flex"}}>
                             <p>Кількість:</p>
                             <Form.Control
@@ -61,7 +60,7 @@ const FigurePage = () => {
                             />
                         </div>
                         <h4>Опис:</h4>
-                        <p>{figure.description}</p>
+                        <p>{product.description}</p>
                     </Row>
                 </Col>
                 <Col md={4}>
@@ -75,7 +74,7 @@ const FigurePage = () => {
                         >
                             Додати в кошик
                         </Button>
-                        {user.isAuth && user.user.role === 'ADMIN' && (
+                        {userStore.isAuth && userStore.user.role === 'ADMIN' && (
                             <Button
                                 variant="outline-danger"
                                 onClick={handleDelete}
@@ -90,4 +89,4 @@ const FigurePage = () => {
     );
 };
 
-export default FigurePage;
+export default ProductPage;

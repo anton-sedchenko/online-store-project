@@ -15,7 +15,7 @@ const Cart = sequelize.define('cart', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
 });
 
-const CartFigure = sequelize.define('cart_figure', {
+const CartProduct = sequelize.define('cart_product', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     quantity: {
         type: DataTypes.INTEGER,
@@ -24,7 +24,7 @@ const CartFigure = sequelize.define('cart_figure', {
     }
 });
 
-const Figure = sequelize.define('figure', {
+const Product = sequelize.define('product', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     name: {type: DataTypes.STRING, unique: true, allowNull: false},
     price: {type: DataTypes.INTEGER, allowNull: false},
@@ -46,7 +46,7 @@ const Order = sequelize.define('order', {
     comments: {type: DataTypes.TEXT, allowNull: true},
 });
 
-const OrderFigure = sequelize.define('order_figure', {
+const OrderProduct = sequelize.define('order_product', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     quantity: {type: DataTypes.INTEGER, allowNull: false, defaultValue: 1}
 });
@@ -54,30 +54,30 @@ const OrderFigure = sequelize.define('order_figure', {
 User.hasOne(Cart);
 Cart.belongsTo(User);
 
-Cart.hasMany(CartFigure);
-CartFigure.belongsTo(Cart);
+Cart.hasMany(CartProduct);
+CartProduct.belongsTo(Cart);
 
 User.hasMany(Order);
 Order.belongsTo(User);
 
-Order.hasMany(OrderFigure);
-OrderFigure.belongsTo(Order);
+Order.hasMany(OrderProduct);
+OrderProduct.belongsTo(Order);
 
-Figure.hasMany(OrderFigure);
-OrderFigure.belongsTo(Figure);
+Product.hasMany(OrderProduct);
+OrderProduct.belongsTo(Product);
 
-Type.hasMany(Figure);
-Figure.belongsTo(Type);
+Type.hasMany(Product);
+Product.belongsTo(Type);
 
-Figure.hasMany(CartFigure);
-CartFigure.belongsTo(Figure);
+Product.hasMany(CartProduct);
+CartProduct.belongsTo(Product);
 
 module.exports = {
     User,
     Cart,
-    CartFigure,
-    Figure,
+    CartProduct,
+    Product,
     Type,
     Order,
-    OrderFigure
+    OrderProduct
 }

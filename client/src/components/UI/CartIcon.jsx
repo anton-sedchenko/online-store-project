@@ -1,11 +1,11 @@
 import React from 'react';
-import GoodsCounter from "./GoodsCounter.jsx";
+import ProductsCounter from "./ProductsCounter.jsx";
 
 const CartIcon = () => {
     return (
         <div className="header__cart__icon-container">
             <i className="fa fa-shopping-cart" />
-            <GoodsCounter/>
+            <ProductsCounter/>
         </div>
     );
 };

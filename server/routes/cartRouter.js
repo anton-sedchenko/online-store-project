@@ -11,7 +11,7 @@ router.delete('/guest/clear', cartController.clearGuestCart);
 router.post('/', authMiddleware, cartController.addToCart);
 router.get('/', authMiddleware, cartController.getCart);
 router.delete('/clear', authMiddleware, cartController.clearCart);
-router.delete('/:cartFigureId', authMiddleware, cartController.removeFromCart);
-router.put('/:figureId', authMiddleware, cartController.updateItem);
+router.delete('/:cartProductId', authMiddleware, cartController.removeFromCart);
+router.put('/:productId', authMiddleware, cartController.updateItem);
 
 module.exports = router;
