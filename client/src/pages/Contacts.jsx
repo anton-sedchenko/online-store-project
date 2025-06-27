@@ -4,7 +4,7 @@ import {Col, Container, Row} from "react-bootstrap";
 
 const Contacts = () => {
     return (
-        <Container fluid>
+        <div className="component__container">
             <Row>
                 <Col md={2}>
                     <SideBar/>
@@ -69,7 +69,7 @@ const Contacts = () => {
                     </Container>
                 </Col>
             </Row>
-        </Container>
+        </div>
     );
 };
 

@@ -5,7 +5,7 @@ import {Col, Container, Row} from "react-bootstrap";
 
 const Cart = () => {
     return (
-        <Container fluid>
+        <div className="component__container">
             <Row>
                 <Col md={2}>
                     <SideBar/>
@@ -14,7 +14,7 @@ const Cart = () => {
                     <CartTable/>
                 </Col>
             </Row>
-        </Container>
+        </div>
     );
 };
 

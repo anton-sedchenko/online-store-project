@@ -35,7 +35,10 @@ const Auth = observer(() => {
     };
 
     return (
-        <div style={{height: window.innerHeight - 150, width: "100%"}}>
+        <div
+            className="component__container"
+            style={{height: window.innerHeight - 150, width: "100%"}}
+        >
             <div className="auth__form__container">
                 <h2>{isLogin ? "Авторизація" : "Реєстрація"}</h2>
                 <form className="auth__form">

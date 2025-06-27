@@ -16,24 +16,22 @@ const TypeBar = observer(() => {
     };
 
     return (
-        <Row className="d-flex flex-wrap mb-3">
+        <Row className="typebar__container">
             {productStore.types.map(type =>
-                <Card
+                <div
                     key={type.id}
-                    className="product__typeBar__item p-2 m-2"
                     onClick={() => {
                         productStore.setSelectedType(type);
                         productStore.setCurrentPage(1);
                     }}
-                    border={type.id === productStore.selectedType.id ? "success" : "secondary"}
+                    className={type.id === productStore.selectedType.id
+                        ? "typebar__item neu-card typebar__item-active"
+                        : "typebar__item neu-card"
+                    }
                 >
-                    <div>
-                        <p>{type.name}</p>
-                    </div>
+                    <p>{type.name}</p>
                     {userStore.isAuth && userStore.user.role === "ADMIN" &&
                         <Button
-                            variant="outline-danger"
-                            size="sm"
                             onClick={(e) => {
                                 onDelete(type.id);
                                 e.stopPropagation();
@@ -42,13 +40,11 @@ const TypeBar = observer(() => {
                             X
                         </Button>
                     }
-                </Card>
+                </div>
             )}
             <Card
                 key="reset"
-                className="m-2 p-2 product__typeBar__item border-danger
-                            text-danger d-flex flex-row align-items-center flex-shrink-0"
-                style={{ width: 160, cursor: 'pointer' }}
+                className="typebar__item neu-card typebar__item-cancel"
                 onClick={() => {
                     productStore.setSelectedType({});
                     productStore.setCurrentPage(1);

@@ -36,7 +36,7 @@ const ProductPage = () => {
     };
 
     return (
-        <Container>
+        <div className="component__container">
             <Row>
                 <Col md={4}>
                     <Image
@@ -85,7 +85,7 @@ const ProductPage = () => {
                     </Card>
                 </Col>
             </Row>
-        </Container>
+        </div>
     );
 };
 

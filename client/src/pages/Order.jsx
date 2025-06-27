@@ -36,7 +36,7 @@ const Order = () => {
 
     return (
         <>
-            <Container>
+            <div className="component__container">
                 <Row>
                     <Col md={6}>
                         <h3 className="order__page__title">Оформлення замовлення</h3>
@@ -129,7 +129,7 @@ const Order = () => {
                         </div>
                     </Col>
                 </Row>
-            </Container>
+            </div>
             <OrderConfirm
                 show={showThankYou}
                 onHide={() => setShowThankYou(false)}

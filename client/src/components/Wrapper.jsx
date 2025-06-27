@@ -6,7 +6,7 @@ const Wrapper = ({children}) => {
     return (
         <div className="wrapper">
             <Header />
-            <div className="content">{children}</div>
+            <div className="page__content">{children}</div>
             <Footer />
         </div>
     );

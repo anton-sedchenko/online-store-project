@@ -10,25 +10,23 @@ const SideBar = observer(() => {
     return (
         <aside>
             <div className="sidebar">
-                <div className="sidebar__tools-container">
-                    <ul>
-                        <li className="sidebar__tools-list-item">
-                            <Link to="/">Галерея</Link>
-                        </li>
-                        {userStore.isAuth &&
-                            (<li className="sidebar__tools-list-item">
-                                <Link to="/profile">Мій профіль</Link>
-                            </li>)
-                        }
-                        <li className="sidebar__tools-list-item">
-                            <Link to="/cart">Мій кошик</Link>
-                            <ProductsCounter/>
-                        </li>
-                        <li className="sidebar__tools-list-item">
-                            <Link to="/contacts">Контакти</Link>
-                        </li>
-                    </ul>
-                </div>
+                <ul>
+                    <li className="neu-btn sidebar__nav__item">
+                        <Link to="/">Галерея</Link>
+                    </li>
+                    {userStore.isAuth &&
+                        (<li className="neu-btn sidebar__nav__item">
+                            <Link to="/profile">Мій профіль</Link>
+                        </li>)
+                    }
+                    <li className="neu-btn sidebar__nav__item">
+                        <Link to="/cart">Мій кошик</Link>
+                        <ProductsCounter/>
+                    </li>
+                    <li className="neu-btn sidebar__nav__item">
+                        <Link to="/contacts">Контакти</Link>
+                    </li>
+                </ul>
             </div>
         </aside>
     );

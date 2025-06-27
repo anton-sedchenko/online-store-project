@@ -35,7 +35,7 @@ const Admin = observer(() => {
     };
 
     return (
-        <Container className="d-flex flex-column">
+        <div className="component__container">
             <div className="admin__page__action__btn__container">
                 <Button
                     variant={"outline-dark"}
@@ -120,7 +120,7 @@ const Admin = observer(() => {
                     productToEdit={editing}
                 />
             }
-        </Container>
+        </div>
     );
 });
 

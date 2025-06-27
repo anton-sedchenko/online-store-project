@@ -35,7 +35,7 @@ const Shop = observer(() => {
     ]);
 
     return (
-        <Container fluid>
+        <div className="component__container">
             <Row>
                 <Col md={2}><SideBar/></Col>
                 <Col md={10}>
@@ -47,7 +47,7 @@ const Shop = observer(() => {
                     <Pages/>
                 </Col>
             </Row>
-        </Container>
+        </div>
     );
 });
 

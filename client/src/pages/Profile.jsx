@@ -74,7 +74,7 @@ const Profile = observer(() => {
     };
 
     return (
-        <Container className="mt-4">
+        <div className="component__container">
             <Tab.Container activeKey={tab} onSelect={k => setTab(k)}>
                 <Row>
                     <Col sm={3}>
@@ -196,7 +196,7 @@ const Profile = observer(() => {
                     </Col>
                 </Row>
             </Tab.Container>
-        </Container>
+        </div>
     );
 });
 

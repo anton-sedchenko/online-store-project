@@ -7,14 +7,16 @@ const ProductItem = ({product}) => {
     const navigate = useNavigate();
 
     return (
-        <Col md={3} onClick={() => navigate(`${PRODUCT_ROUTE}/${product.id}`)}>
+        <Col
+            className="gallery__row"
+            md={3}
+            onClick={() => navigate(`${PRODUCT_ROUTE}/${product.id}`)}
+        >
             <Card
-                style={{width: 150, cursor: "pointer", marginBottom: "20px"}}
                 border={"light"}
+                className="gallery__card neu-card"
             >
                 <Image
-                    width={150}
-                    height={150}
                     src={`${import.meta.env.VITE_APP_API_URL}${product.img}`}
                 />
                 <p className="gallery__card__product__code">Артикул: {product.code}</p>
