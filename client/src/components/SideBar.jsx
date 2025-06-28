@@ -3,12 +3,21 @@ import {Link} from "react-router-dom";
 import ProductsCounter from "./UI/ProductsCounter.jsx";
 import {Context} from "../main.jsx";
 import {observer} from "mobx-react-lite";
+import FilterIcon from "./UI/FilterIcon.jsx";
 
 const SideBar = observer(() => {
     const {userStore} = useContext(Context);
 
     return (
-        <aside>
+        <aside className="sidebar__aside__wrapper">
+            <div className="sidebar__menu__container">
+                <button className="neu-btn header__btn sidebar__btn__container">
+                    <p>Меню</p>
+                </button>
+                <button className="neu-btn header__btn sidebar__btn__container">
+                    <FilterIcon />
+                </button>
+            </div>
             <div className="sidebar">
                 <ul>
                     <li className="neu-btn sidebar__nav__item">

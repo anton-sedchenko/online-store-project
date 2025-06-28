@@ -1,0 +1,43 @@
+.typebar__container {
+  margin-bottom: 25px;
+  padding: 0 15px;
+
+  @include respond-to(xs) {
+    display: none;
+  }
+}
+
+.typebar__item {
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  padding: 0;
+  max-width: 170px;
+  height: 50px;
+  cursor: pointer;
+  box-shadow:
+          rgba(0, 0, 0, 0.19) 0px 10px 20px,
+          rgba(0, 0, 0, 0.23) 0px 6px 6px;
+}
+
+.typebar__item:last-child {
+  margin: 0;
+}
+
+.typebar__item:focus {
+  box-shadow:
+          rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset,
+          rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+}
+
+.typebar__item-active {
+  border: 1px solid green;
+}
+
+.typebar__item-cancel {
+  border: 1px solid red;
+  display: flex;
+  flex-direction: row;
+}

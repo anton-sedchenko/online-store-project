@@ -1,0 +1,40 @@
+@import "variables";
+
+.buyer__contacts__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.buyer__contacts__form p {
+  color: grey;
+  align-self: start;
+  margin-bottom: 5px;
+}
+
+.input__label__required__marker {
+  color: red;
+  margin-left: 2px;
+}
+
+.buyer__contacts__form-input {
+  margin-bottom: 20px;
+  height: 40px;
+  width: 80%;
+  align-self: start;
+  border: 1px solid $color-primary;
+  border-radius: 5px;
+}
+
+.buyer__contacts__form-input[name="comments"] {
+  height: 100px;
+  margin-bottom: 50px;
+}
+
+.order__form__btn__container {
+  display: flex;
+  width: 80%;
+  align-self: start;
+  justify-content: space-between;
+}

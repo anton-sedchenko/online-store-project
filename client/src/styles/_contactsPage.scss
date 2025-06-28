@@ -1,0 +1,60 @@
+@import "variables";
+
+.contacts__container {
+  display: flex;
+  justify-content: center;
+}
+
+.contacts__content {
+  min-width: 300px;
+  max-width: 600px;
+}
+
+.contacts__icon {
+  color: $color-primary;
+  margin-right: 10px;
+}
+
+.contacts__info__block {
+  margin-bottom: 30px;
+}
+
+.contacts__info__block h2, h4 {
+  margin-bottom: 20px;
+}
+
+.contacts__tel__block p {
+  margin-bottom: 5px;
+}
+
+.contacts__tel__block p:last-child {
+  margin-bottom: 0;
+}
+
+.contacts__graphic__block p {
+  margin-bottom: 10px;
+}
+
+.contacts__graphic__block p:last-child {
+  margin-bottom: 0;
+}
+
+.contacts__address__block p {
+  margin-bottom: 15px;
+}
+
+.contacts__support__block {
+  font-size: 16px;
+}
+
+.contacts__support__block h4 {
+  margin-bottom: 15px;
+}
+
+.contacts__support__block p {
+  margin-bottom: 10px;
+}
+
+.contacts__support__block p:last-child {
+  margin-bottom: 0;
+}

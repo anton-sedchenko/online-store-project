@@ -1,0 +1,48 @@
+.sidebar__aside__wrapper {
+  margin-bottom: 15px;
+}
+
+.sidebar__menu__container {
+  @include respond-to(xs) {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.sidebar__btn__container {
+  width: 60px;
+  height: 60px;
+}
+
+.sidebar__burger__menu {
+  font-size: 45px;
+}
+
+.sidebar {
+  padding-top: 120px;
+  width: 100%;
+
+  @include respond-to(xs) {
+    display: none;
+  }
+}
+
+.sidebar__nav__item {
+  height: 40px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar__nav__item:last-child {
+  margin-bottom: 0;
+}
+
+.sidebar__nav__item a {
+  width: 100%;
+  height: 100%;
+  line-height: 40px;
+  padding: 0 15px;
+}

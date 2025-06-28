@@ -1,0 +1,68 @@
+@import "variables";
+
+.gallery {
+  margin-bottom: 50px;
+}
+
+.gallery__row {
+  margin-bottom: 20px;
+
+  @include respond-to(xs) {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.gallery__card {
+  width: 250px;
+  height: 100%;
+  cursor: pointer;
+  padding: 20px;
+}
+
+.gallery__card img {
+  align-self: center;
+  width: 100%;
+  border-radius: 5px;
+  max-width: 200px;
+  height: 200px;
+}
+
+.gallery__title h2 {
+  padding: 0 20px 20px;
+  font-size: 20px;
+
+  @include respond-to(xs) {
+    display: none;
+  }
+}
+
+.gallery__cookies p {
+  @include respond-to(xs) {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+}
+
+.fa-heart {
+  color: $color-primary;
+}
+
+.gallery__card__product__code {
+  font-size: 15px;
+  margin-bottom: 15px;
+}
+
+.gallery__card__product__name {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.gallery__card__product__price {
+  font-size: 15px;
+}
+
+.gallery__card__product__price span {
+  color: $color-primary;
+  font-size: 22px;
+}

@@ -3,7 +3,7 @@ import {BrowserRouter} from "react-router-dom";
 import AppRouter from "./components/AppRouter.jsx";
 import Wrapper from "./components/Wrapper.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./style.css";
+import "./styles/main.scss";
 import {observer} from "mobx-react-lite";
 import {Context} from "./main.jsx";
 import {Spinner} from "react-bootstrap";

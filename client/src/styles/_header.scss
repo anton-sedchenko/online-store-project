@@ -1,0 +1,90 @@
+.header {
+  width: 100%;
+  padding: 0 40px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+
+  @include respond-to(xs) {
+    margin: 0 0 20px;
+    padding: 0;
+  }
+}
+
+.header__content {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: space-between;
+
+  @include respond-to(xs) {
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 0 0;
+  }
+}
+
+.header__logo-container {
+  height: 100%;
+  max-width: 180px;
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+
+  @include respond-to(xs) {
+    margin: 0 0 10px;
+  }
+}
+
+header h1 {
+  font-size: 20px;
+}
+
+.header__nav {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+
+  @include respond-to(xs) {
+    align-items: center;
+    width: 100%;
+  }
+}
+
+.header__nav__tel {
+  display: flex;
+  justify-content: end;
+  margin-bottom: 15px;
+}
+
+.header__nav__menu {
+  max-height: 80px;
+  display: flex;
+  font-size: 12px;
+
+  @include respond-to(xs) {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+.header__btn__container {
+  height: 60px;
+  width: 60px;
+  margin-right: 10px;
+}
+
+.header__btn__container:last-child {
+  margin-right: 0;
+}
+
+.header__link {
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+}
+
+.header__btn {
+  height: 100%;
+  width: 100%;
+}

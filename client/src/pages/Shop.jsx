@@ -42,6 +42,9 @@ const Shop = observer(() => {
                     <div className="gallery__title">
                         <h2>Наші вироби ручної роботи, виготовлені з любов'ю <i className="fa-solid fa-heart"></i></h2>
                     </div>
+                    <div className="gallery__cookies">
+                        <p>Каталог</p>
+                    </div>
                     <TypeBar/>
                     <ProductList/>
                     <Pages/>

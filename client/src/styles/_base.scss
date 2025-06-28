@@ -1,0 +1,37 @@
+@import "variables";
+
+:root {
+  --shadow1: rgba(255,255,255,0.7);
+  --shadow2: rgba(0, 0, 0, 0.15);
+  --radius:  16px;
+  --space:   1rem;
+}
+
+html, body {
+  text-rendering: optimizeSpeed;
+  font-family: "Poppins", sans-serif;
+  line-height: 1.5;
+}
+
+.wrapper {
+  min-height: 100vh;
+  overflow: hidden;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+
+  @include respond-to(xs) {
+    padding: 20px 20px 0;
+  }
+}
+
+.page__content {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+.component__container {
+  width: 100%;
+  max-width: 1200px;
+}
