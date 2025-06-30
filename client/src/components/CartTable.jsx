@@ -72,7 +72,7 @@ const CartTable = observer(() => {
                                     // коли уходимо з інпута, синхронізуємо зі стором та сервером
                                     onBlur={() => {
                                         const v = draftQty[item.id];
-                                        cartStore.setQuantity(item.id, v);
+                                        cartStore.setQuantity(item.productId, v);
                                     }}
                                 />
                             </td>

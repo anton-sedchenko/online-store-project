@@ -1,4 +1,6 @@
 const axios = require('axios');
+const nodemailer = require('nodemailer');
+
 const {
     Order,
     OrderProduct,
@@ -11,8 +13,22 @@ const ApiError = require('../error/ApiError');
 const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
+// транспортер для відправки пошти
+const mailer = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: Number(process.env.EMAIL_PORT),
+    secure: process.env.EMAIL_SECURE === 'true',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
 class OrderController {
     async createOrder(req, res, next) {
+
+        console.log('⏳ createOrder hit, body:', req.body, 'headers:', req.headers.origin);
+
         try {
             // якщо токен був, то в optionalAuth він попав req.user.id
             const userId = req.user?.id || null;
@@ -85,14 +101,38 @@ class OrderController {
                 console.error('Telegram send error:', tgErr.message);
             }
 
+            const htmlItems = orderItems.map((oi, idx) => {
+                return `<li>${idx + 1}. ${oi.product.name} (артикул ${oi.product.code}) — ${oi.quantity}×${oi.product.price}₴ = ${oi.quantity * oi.product.price}₴</li>`;
+            }).join('');
+
+            const mailHtml = `
+                <h2>Дякуємо за замовлення в інтернет-магазині Чарівна майстерня!</h2>
+                <p>Покупець:</p>
+                <p><strong>Імʼя:</strong> ${fullName}<br>
+                   <strong>Телефон:</strong> ${tel}<br>
+                   <strong>Email:</strong> ${email}
+                </p>
+                <h3>Ваші товари:</h3>
+                <ul>${htmlItems}</ul>
+                <p><strong>Загальна сума:</strong> ${orderItems.reduce((sum, oi) => sum + oi.quantity * oi.product.price, 0)}₴</p>
+                <p>Ми зв’яжемося з вами найближчим часом для підтвердження замовлення.</p>
+            `;
+
+            await mailer.sendMail({
+                from: process.env.EMAIL_FROM,
+                to: [email, 'charivnij.workshop@gmail.com'],
+                subject: 'Ваше замовлення оформлено',
+                html: mailHtml
+            });
+
             return res.status(201).json({
-                message: 'Замовлення оформлено',
+                message: 'Замовлення оформлено, лист відправлено',
                 orderId: newOrder.id,
                 fullName, tel, email, comments
             });
         } catch (e) {
-            console.error('💥 createOrder crashed:', e);
-            next(ApiError.internal(e.message));
+            console.error('💥 createOrder crashed:', e.stack || e);
+            return next(ApiError.internal('Помилка на сервері при створенні замовлення'));
         }
     }
 
@@ -105,7 +145,8 @@ class OrderController {
                 include: [{
                     model: OrderProduct,
                     include: [{model: Product}]
-                }]
+                }],
+                order: [['createdAt', 'DESC']]
             });
             return res.json(orders);
         } catch (e) {
