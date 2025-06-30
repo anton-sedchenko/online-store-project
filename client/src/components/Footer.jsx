@@ -1,13 +1,12 @@
 import React from 'react';
-import {Col, Row} from "react-bootstrap";
 import {Link} from "react-router-dom";
 
 const Footer = () => {
     return (
         <footer>
             <div className="footer__content">
-                <Row className="footer__links-container">
-                    <Col md={6} className="footer__column-links">
+                <div className="footer__links-container">
+                    <div className="footer__column-links">
                         <Link to="/" onClick={() => window.scrollTo(0, 0)}>
                             Блог
                         </Link>
@@ -20,19 +19,20 @@ const Footer = () => {
                         <Link to="/" onClick={() => window.scrollTo(0, 0)}>
                             Публічний договір
                         </Link>
-                    </Col>
-                    <Col md={6} className="footer__column-contacts">
+                    </div>
+                    <div className="footer__column-contacts">
                         <p>Ми у соціальних мережах</p>
                         <p>FB icon, Insta icon, Tik-Tok icon</p>
                         <p>+38 (068) 036-15-97</p>
                         <p>charivnij.workshop@gmail.com</p>
-                    </Col>
-                </Row>
-                <Row className="footer__copyrights-container">
-                    <Col md={4} className="footer__column-copyrights">
-                        <p>&copy; Created by Anton Sedchenko, 2025</p>
-                    </Col>
-                </Row>
+                    </div>
+                </div>
+                <div className="footer__copyrights-container">
+                    <div className="footer__column-copyrights">
+                        <p>Чарівна майстерня &copy;2025</p>
+                        <p>Developed by Anton Sedchenko</p>
+                    </div>
+                </div>
             </div>
         </footer>
     );

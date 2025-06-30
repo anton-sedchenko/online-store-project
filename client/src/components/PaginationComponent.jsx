@@ -3,7 +3,7 @@ import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
 import {Pagination} from "react-bootstrap";
 
-const Pages = observer(() => {
+const PaginationComponent = observer(() => {
     const {productStore} = useContext(Context);
     // Загальна кількість сторінок
     const pagesCount = Math.ceil(
@@ -33,4 +33,4 @@ const Pages = observer(() => {
     );
 });
 
-export default Pages;
+export default PaginationComponent;

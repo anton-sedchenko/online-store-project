@@ -4,11 +4,6 @@
   margin-bottom: 30px;
   display: flex;
   justify-content: center;
-
-  @include respond-to(xs) {
-    margin: 0 0 20px;
-    padding: 0;
-  }
 }
 
 .header__content {
@@ -17,10 +12,9 @@
   display: flex;
   justify-content: space-between;
 
-  @include respond-to(xs) {
+  @include respond-to(md) {
     flex-direction: column;
     align-items: center;
-    padding: 15px 0 0;
   }
 }
 
@@ -31,7 +25,7 @@
   align-items: center;
   margin-right: 20px;
 
-  @include respond-to(xs) {
+  @include respond-to(md) {
     margin: 0 0 10px;
   }
 }
@@ -45,7 +39,7 @@ header h1 {
   flex-direction: column;
   align-items: end;
 
-  @include respond-to(xs) {
+  @include respond-to(md) {
     align-items: center;
     width: 100%;
   }
@@ -55,6 +49,10 @@ header h1 {
   display: flex;
   justify-content: end;
   margin-bottom: 15px;
+
+  @include respond-to(xs) {
+    font-size: 14px;
+  }
 }
 
 .header__nav__menu {
@@ -62,7 +60,7 @@ header h1 {
   display: flex;
   font-size: 12px;
 
-  @include respond-to(xs) {
+  @include respond-to(md) {
     width: 100%;
     justify-content: space-between;
   }

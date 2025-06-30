@@ -1,0 +1,25 @@
+.profile__tabs__container {
+  margin-bottom: 15px;
+}
+
+.profile__tab {
+  @include respond-to(xs) {
+    margin-bottom: 10px;
+  }
+}
+
+.profile__tab:last-child {
+  @include respond-to(xs) {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 440px) {
+  .orders__history__table th:nth-child(1),
+  .orders__history__table td:nth-child(1),
+  .orders__history__table th:nth-child(2),
+  .orders__history__table td:nth-child(2) {
+    display: none;
+  }
+}
+

@@ -1,0 +1,19 @@
+.product__img__container {
+  @media (max-width: 768px) {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+}
+
+.product__img__container,
+.product__code,
+.product__title,
+.product__count,
+.product__description {
+  margin-bottom: 15px;
+}
+
+.product__page__btn__container {
+  text-align: center;
+}

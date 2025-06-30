@@ -7,14 +7,11 @@ const ProductItem = ({product}) => {
     const navigate = useNavigate();
 
     return (
-        <Col
-            className="gallery__row"
-            md={3}
-            onClick={() => navigate(`${PRODUCT_ROUTE}/${product.id}`)}
-        >
+        <>
             <Card
                 border={"light"}
                 className="gallery__card neu-card"
+                onClick={() => navigate(`${PRODUCT_ROUTE}/${product.id}`)}
             >
                 <Image
                     src={`${import.meta.env.VITE_APP_API_URL}${product.img}`}
@@ -23,7 +20,7 @@ const ProductItem = ({product}) => {
                 <h6 className="gallery__card__product__name">{product.name}</h6>
                 <p className="gallery__card__product__price">Ціна: <span>{product.price}</span> грн.</p>
             </Card>
-        </Col>
+        </>
     );
 };
 

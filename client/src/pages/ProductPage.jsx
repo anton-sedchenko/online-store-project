@@ -36,56 +36,58 @@ const ProductPage = () => {
     };
 
     return (
-        <div className="component__container">
+        <Col className="component__container">
             <Row>
-                <Col md={4}>
+                <Col xs={12} md={6} className="product__img__container">
                     <Image
                         width={300}
                         height={300}
                         src={`${import.meta.env.VITE_APP_API_URL}${product.img}`}
-                    />
+                    ></Image>
                 </Col>
                 <Col md={4}>
-                    <Row>
-                        <p>Код товару: {product.code}</p>
-                        <h3>{product.name}</h3>
+                    <div>
+                        <p className="product__code">Код товару: {product.code}</p>
+                        <h3 className="product__title">{product.name}</h3>
                         <div style={{display: "flex"}}>
-                            <p>Кількість:</p>
-                            <Form.Control
-                                style={{width: "70px"}}
+                            <p className="product__count">Кількість:</p>
+                            <input
+                                className="neu-input"
                                 type="number"
                                 min={1}
                                 value={qty}
                                 onChange={(e) => setQty(Number(e.target.value))}
                             />
                         </div>
-                        <h4>Опис:</h4>
-                        <p>{product.description}</p>
-                    </Row>
+                        <h4>Опис товару:</h4>
+                        <p className="product__description">{product.description}</p>
+                        <h4>Сума: {sum} грн.</h4>
+                    </div>
                 </Col>
                 <Col md={4}>
-                    <Card
-                        className="d-flex flex-column align-items-center justify-content-around"
-                        style={{width: 300, height: 300, fontSize: 32, border: "5px solid lightgray"}}>
-                        <h4>Сума: {sum} грн.</h4>
-                        <Button
-                            variant={"outline-dark"}
-                            onClick={handleAddToCart}
-                        >
-                            Додати в кошик
-                        </Button>
+                    <div>
                         {userStore.isAuth && userStore.user.role === 'ADMIN' && (
-                            <Button
-                                variant="outline-danger"
+                            <button
+                                className="neu-btn"
                                 onClick={handleDelete}
                             >
                                 Видалити фігурку
-                            </Button>
+                            </button>
                         )}
-                    </Card>
+                    </div>
                 </Col>
             </Row>
-        </div>
+            <Row>
+                <div className="product__page__btn__container">
+                    <button
+                        className="neu-btn product__page__btn"
+                        onClick={handleAddToCart}
+                    >
+                        Додати в кошик
+                    </button>
+                </div>
+            </Row>
+        </Col>
     );
 };
 

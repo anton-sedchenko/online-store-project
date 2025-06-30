@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Container, Tab, Nav, Row, Col, Form, Button, Table} from 'react-bootstrap';
+import {Tab, Nav, Row, Col, Form, Table} from 'react-bootstrap';
 import {observer} from 'mobx-react-lite';
 import {Context} from '../main.jsx';
 import {fetchMyOrders} from '../http/orderAPI.js';
@@ -77,10 +77,18 @@ const Profile = observer(() => {
         <div className="component__container">
             <Tab.Container activeKey={tab} onSelect={k => setTab(k)}>
                 <Row>
-                    <Col sm={3}>
+                    <Col sm={3} className="profile__tabs__container">
                         <Nav variant="pills" className="flex-column">
-                            <Nav.Item><Nav.Link eventKey="personal">Персональні дані</Nav.Link></Nav.Item>
-                            <Nav.Item><Nav.Link eventKey="orders">Мої замовлення</Nav.Link></Nav.Item>
+                            <Nav.Item
+                                className="profile__tab"
+                            >
+                                <Nav.Link eventKey="personal">Персональні дані</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item
+                                className="profile__tab"
+                            >
+                                <Nav.Link eventKey="orders">Мої замовлення</Nav.Link>
+                            </Nav.Item>
                         </Nav>
                     </Col>
                     <Col sm={9}>
@@ -92,7 +100,8 @@ const Profile = observer(() => {
                                 <Form onSubmit={handlePersonalSave} className="mb-4">
                                     <Form.Group className="mb-3" controlId="firstName">
                                         <Form.Label>Ім'я</Form.Label>
-                                        <Form.Control
+                                        <input
+                                            className="neu-input"
                                             type="text"
                                             value={form.firstName}
                                             onChange={e => setForm({ ...form, firstName: e.target.value })}
@@ -100,7 +109,8 @@ const Profile = observer(() => {
                                     </Form.Group>
                                     <Form.Group className="mb-3" controlId="lastName">
                                         <Form.Label>Прізвище</Form.Label>
-                                        <Form.Control
+                                        <input
+                                            className="neu-input"
                                             type="text"
                                             value={form.lastName}
                                             onChange={e => setForm({...form, lastName: e.target.value})}
@@ -108,7 +118,8 @@ const Profile = observer(() => {
                                     </Form.Group>
                                     <Form.Group className="mb-3" controlId="email">
                                         <Form.Label>Email</Form.Label>
-                                        <Form.Control
+                                        <input
+                                            className="neu-input"
                                             type="email"
                                             value={form.email}
                                             onChange={e => setForm({...form, email: e.target.value})}
@@ -116,20 +127,22 @@ const Profile = observer(() => {
                                     </Form.Group>
                                     <Form.Group className="mb-3" controlId="phone">
                                         <Form.Label>Телефон</Form.Label>
-                                        <Form.Control
+                                        <input
+                                            className="neu-input"
                                             type="tel"
                                             value={form.phone}
                                             onChange={e => setForm({...form, phone: e.target.value})}
                                         />
                                     </Form.Group>
-                                    <Button variant="primary" type="submit">Зберегти</Button>
+                                    <button className="neu-btn" type="submit">Зберегти зміни</button>
                                 </Form>
 
                                 <h4>Зміна паролю</h4>
                                 <Form onSubmit={handlePasswordSave}>
                                     <Form.Group className="mb-3" controlId="currentPassword">
                                         <Form.Label>Старий пароль</Form.Label>
-                                        <Form.Control
+                                        <input
+                                            className="neu-input"
                                             type="password"
                                             value={passwords.current}
                                             onChange={e => setPasswords({...passwords, current: e.target.value})}
@@ -137,7 +150,8 @@ const Profile = observer(() => {
                                     </Form.Group>
                                     <Form.Group className="mb-3" controlId="newPassword">
                                         <Form.Label>Новий пароль</Form.Label>
-                                        <Form.Control
+                                        <input
+                                            className="neu-input"
                                             type="password"
                                             value={passwords.new}
                                             onChange={e => setPasswords({...passwords, new: e.target.value})}
@@ -145,20 +159,24 @@ const Profile = observer(() => {
                                     </Form.Group>
                                     <Form.Group className="mb-3" controlId="confirmPassword">
                                         <Form.Label>Підтвердження паролю</Form.Label>
-                                        <Form.Control
+                                        <input
+                                            className="neu-input"
                                             type="password"
                                             value={passwords.confirm}
                                             onChange={e => setPasswords({...passwords, confirm: e.target.value})}
                                         />
                                     </Form.Group>
-                                    <Button variant="secondary" type="submit">Змінити пароль</Button>
+                                    <button className="neu-btn" type="submit">Змінити пароль</button>
                                 </Form>
                             </Tab.Pane>
 
                             {/* Мої замовлення */}
                             <Tab.Pane eventKey="orders">
                                 <h4>Мої замовлення</h4>
-                                <Table striped bordered hover>
+                                <Table
+                                    className="orders__history__table"
+                                    responsive striped bordered hover
+                                >
                                     <thead>
                                     <tr>
                                         <th>#</th>

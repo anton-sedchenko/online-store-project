@@ -2,7 +2,7 @@
   margin-bottom: 25px;
   padding: 0 15px;
 
-  @include respond-to(xs) {
+  @include respond-to(md) {
     display: none;
   }
 }
@@ -13,6 +13,7 @@
   justify-content: center;
   align-items: center;
   margin-right: 10px;
+  margin-bottom: 10px;
   padding: 0;
   max-width: 170px;
   height: 50px;

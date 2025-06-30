@@ -15,23 +15,21 @@ html, body {
 
 .wrapper {
   min-height: 100vh;
-  overflow: hidden;
+  //overflow: hidden;
   padding-top: 20px;
   display: flex;
   flex-direction: column;
-
-  @include respond-to(xs) {
-    padding: 20px 20px 0;
-  }
 }
 
 .page__content {
   display: flex;
   justify-content: center;
   flex: 1;
+  overflow-y: auto;
 }
 
 .component__container {
   width: 100%;
   max-width: 1200px;
+  padding: 0 15px;
 }

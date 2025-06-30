@@ -38,7 +38,7 @@ const Order = () => {
         <>
             <div className="component__container">
                 <Row>
-                    <Col md={6}>
+                    <Col md={6} className="order__form__container">
                         <h3 className="order__page__title">Оформлення замовлення</h3>
                         <form
                             className="buyer__contacts__form"
@@ -51,7 +51,7 @@ const Order = () => {
                                 required
                                 name="fullName"
                                 type="text"
-                                className="buyer__contacts__form-input"
+                                className="neu-input buyer__contacts__form-input"
                                 maxLength="50"
                             />
                             <p>Телефон
@@ -61,7 +61,7 @@ const Order = () => {
                                 required
                                 name="tel"
                                 type="tel"
-                                className="buyer__contacts__form-input"
+                                className="neu-input buyer__contacts__form-input"
                                 maxLength="20"
                             />
                             <p>E-mail
@@ -71,31 +71,31 @@ const Order = () => {
                                 required
                                 name="email"
                                 type="email"
-                                className="buyer__contacts__form-input"
+                                className="neu-input buyer__contacts__form-input"
                                 maxLength="50"
                             />
                             <p>Коментар до замовлення</p>
                             <input
                                 name="comments"
                                 type="text"
-                                className="buyer__contacts__form-input"
+                                className="neu-input buyer__contacts__form-input"
                                 maxLength="200"
                             />
                             <div className="order__form__btn__container">
-                                <Button
-                                    variant="outline-secondary"
+                                <button
+                                    className="neu-btn"
                                     type="button"
                                     onClick={() => navigate(SHOP_ROUTE)}
                                 >
                                     Продовжити покупки
-                                </Button>
+                                </button>
 
-                                <Button
-                                    variant="outline-success"
+                                <button
+                                    className="neu-btn"
                                     type="submit"
                                 >
                                     Підтвердити замовлення
-                                </Button>
+                                </button>
                             </div>
                         </form>
                     </Col>

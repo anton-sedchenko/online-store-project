@@ -44,6 +44,7 @@ const Auth = observer(() => {
                 <form className="auth__form">
                     <div className="auth__form-email">
                         <input
+                            className="neu-input"
                             type="email"
                             name="email"
                             id="email"
@@ -55,6 +56,7 @@ const Auth = observer(() => {
                     </div>
                     <div className="auth__form-pass">
                         <input
+                            className="neu-input"
                             type="password"
                             name="password"
                             placeholder="Введіть ваш пароль..."
@@ -77,13 +79,13 @@ const Auth = observer(() => {
                                 </p>
                             </div>
                         }
-                    <Button
-                        variant={"outline-success"}
+                    <button
+                        className="neu-btn"
                         type="button"
                         onClick={click}
                     >
                         {isLogin ? "Увійти" : "Зареєструватися"}
-                    </Button>
+                    </button>
                 </form>
             </div>
         </div>

@@ -14,6 +14,9 @@ const SideBar = observer(() => {
                 <button className="neu-btn header__btn sidebar__btn__container">
                     <p>Меню</p>
                 </button>
+                <div className="sidebar__title">
+                    <p>Каталог</p>
+                </div>
                 <button className="neu-btn header__btn sidebar__btn__container">
                     <FilterIcon />
                 </button>

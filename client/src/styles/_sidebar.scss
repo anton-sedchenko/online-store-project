@@ -1,9 +1,17 @@
 .sidebar__aside__wrapper {
   margin-bottom: 15px;
+
+  @include respond-to(md) {
+    padding: 0 25px;
+  }
 }
 
 .sidebar__menu__container {
-  @include respond-to(xs) {
+  display: none;
+}
+
+.sidebar__menu__container {
+  @include respond-to(md) {
     display: flex;
     justify-content: space-between;
   }
@@ -14,6 +22,13 @@
   height: 60px;
 }
 
+.sidebar__title p {
+  @include respond-to(md) {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+}
+
 .sidebar__burger__menu {
   font-size: 45px;
 }
@@ -22,7 +37,7 @@
   padding-top: 120px;
   width: 100%;
 
-  @include respond-to(xs) {
+  @include respond-to(md) {
     display: none;
   }
 }

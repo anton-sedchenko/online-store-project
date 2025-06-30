@@ -7,14 +7,15 @@
 .gallery__row {
   margin-bottom: 20px;
 
-  @include respond-to(xs) {
+  @include respond-to(md) {
     display: flex;
     justify-content: center;
   }
 }
 
 .gallery__card {
-  width: 250px;
+  width: 100%;
+  max-width: 250px;
   height: 100%;
   cursor: pointer;
   padding: 20px;
@@ -31,16 +32,10 @@
 .gallery__title h2 {
   padding: 0 20px 20px;
   font-size: 20px;
+  text-align: center;
 
   @include respond-to(xs) {
     display: none;
-  }
-}
-
-.gallery__cookies p {
-  @include respond-to(xs) {
-    font-size: 20px;
-    margin-bottom: 10px;
   }
 }
 

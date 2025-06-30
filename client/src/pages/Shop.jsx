@@ -1,12 +1,12 @@
 import React, {useContext, useEffect} from 'react';
-import {Col, Container, Row} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 import SideBar from "../components/SideBar.jsx";
 import TypeBar from "../components/TypeBar.jsx";
 import ProductList from "../components/ProductList.jsx";
 import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
 import {fetchProducts} from "../http/productAPI.js";
-import Pages from "../components/Pages.jsx";
+import PaginationComponent from "../components/PaginationComponent.jsx";
 
 const Shop = observer(() => {
     const {productStore} = useContext(Context);
@@ -37,17 +37,23 @@ const Shop = observer(() => {
     return (
         <div className="component__container">
             <Row>
-                <Col md={2}><SideBar/></Col>
-                <Col md={10}>
+                <Col
+                    md={3}
+                    lg={2}
+                    className="sidebar__col__container"
+                >
+                    <SideBar/>
+                </Col>
+                <Col
+                    md={9}
+                    lg={10}
+                >
                     <div className="gallery__title">
                         <h2>Наші вироби ручної роботи, виготовлені з любов'ю <i className="fa-solid fa-heart"></i></h2>
                     </div>
-                    <div className="gallery__cookies">
-                        <p>Каталог</p>
-                    </div>
                     <TypeBar/>
                     <ProductList/>
-                    <Pages/>
+                    <PaginationComponent/>
                 </Col>
             </Row>
         </div>

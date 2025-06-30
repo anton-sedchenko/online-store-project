@@ -1,20 +1,15 @@
 .pagination {
   display: flex;
   justify-content: center;
-  transform: translateX(-150px);
+}
 
-  @include respond-to(xs) {
-    transform: none;
+.page-item {
+  margin: 0 8px;
+}
 
-    .page-item {
-      margin: 0 8px;
-    }
-
-    .page-link {
-      padding: 10px 14px;
-      font-size: 20px;
-      line-height: 1;
-      min-width: 40px;
-    }
-  }
+.page-link {
+  padding: 10px 14px;
+  font-size: 20px;
+  line-height: 1;
+  min-width: 40px;
 }

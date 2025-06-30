@@ -17,4 +17,24 @@
   min-width: 300px;
   max-width: 900px;
   margin-bottom: 40px;
+
+  @include respond-to(xs) {
+    font-size: 14px;
+  }
+}
+
+
+@media (max-width: 440px) {
+  .cart__table__container table th:nth-child(1),
+  .cart__table__container table td:nth-child(1),
+  .cart__table__container table th:nth-child(3),
+  .cart__table__container table td:nth-child(3),{
+    display: none;
+  }
+}
+
+.cart__table__container img {
+  @media (max-width: 576px) {
+    display: none;
+  }
 }
