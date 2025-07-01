@@ -6,6 +6,8 @@ const fileUpload = require('express-fileupload');
 const router = require('./routes/index');
 const errorHandler = require('./middleware/ErrorHandlingMiddleware');
 const path = require('path');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -22,6 +24,14 @@ app.use(fileUpload({
     createParentPath: true,      // автoстворює папки
     limits: {fileSize: 5e6},   // обмеження розміру
 }));
+app.use(helmet());
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 хвилин
+    max: 100, // не більше 100 запитів з одного IP
+});
+app.use(limiter);
+
 app.use('/api', router);
 
 // Замикаючий middleware - опрацювання помилок та передача відповіді клієнту

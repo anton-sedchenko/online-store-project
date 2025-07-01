@@ -31,7 +31,7 @@ const CreateProduct = observer(({show, onHide}) => {
             formData.append("img", file);
             formData.append("typeId", productStore.selectedType.id);
             formData.append("code", code);
-            await createProduct(formData).then(data => onHide());
+            await createProduct(formData).then(() => onHide());
         } catch (e) {
             alert(e.response?.data?.message || e.message);
         }

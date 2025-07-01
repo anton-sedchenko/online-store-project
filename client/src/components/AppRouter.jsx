@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, {useContext} from 'react';
 import {Routes, Route, Navigate} from 'react-router-dom';
 import {authRoutes, publicRoutes} from "../routes.js";
@@ -18,6 +19,7 @@ const AppRouter = observer(() => {
             ))}
 
             {publicRoutes.map(({path, Component}) => (
+                // eslint-disable-next-line no-unused-vars
                 <Route
                     key={path}
                     path={path}
