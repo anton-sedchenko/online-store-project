@@ -9,7 +9,7 @@ const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 const app = express();
 const corsOptions = {
     origin: process.env.CLIENT_URL || 'http://localhost:5173',  // ваш React/Vite dev-сервер
@@ -18,11 +18,7 @@ const corsOptions = {
     credentials: true,
 };
 
-console.log("CLIENT_URL:", process.env.CLIENT_URL);
-
-// app.use(cors(corsOptions));
-app.use(cors());
-
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static(path.resolve(__dirname, 'static')));
 app.use(fileUpload({
@@ -38,6 +34,13 @@ const limiter = rateLimit({
 app.use(limiter);
 
 
+
+app.get('/api/ping', (req, res) => {
+    res.send('pong');
+});
+
+
+
 app.use('/api', router);
 
 // Замикаючий middleware - опрацювання помилок та передача відповіді клієнту
@@ -47,7 +50,16 @@ const start = async () => {
     try {
         await sequelize.authenticate();
         await sequelize.sync({alter: true});
+
+        if (!PORT) {
+            throw new Error('PORT is not defined!');
+        }
+
+        console.log('Starting server...');
+
         app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+
+        console.log(`Server is running on port ${PORT}`);
     } catch (e) {
         console.log(e);
     }
