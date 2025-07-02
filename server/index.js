@@ -26,7 +26,6 @@ const corsOptions = {
 console.log('CORS Allowed Origin:', corsOptions.origin); // тимчасово
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 
 app.use(express.json());
 app.use(express.static(path.resolve(__dirname, 'static')));
