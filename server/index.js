@@ -11,14 +11,23 @@ const rateLimit = require('express-rate-limit');
 
 const PORT = process.env.PORT;
 const app = express();
+
+const ORIGIN = process.env.CLIENT_URL || 'http://localhost:5173';
+console.log('Origin:', ORIGIN);
+
 const corsOptions = {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',  // ваш React/Vite dev-сервер
+    // origin: process.env.CLIENT_URL || 'http://localhost:5173',  // ваш React/Vite dev-сервер
+    origin: ORIGIN,
     methods: ['GET','POST','PUT','DELETE','OPTIONS'],
     allowedHeaders: ['Content-Type','Authorization'],
     credentials: true,
 };
 
+console.log('CORS Allowed Origin:', corsOptions.origin); // тимчасово
+
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
 app.use(express.json());
 app.use(express.static(path.resolve(__dirname, 'static')));
 app.use(fileUpload({
