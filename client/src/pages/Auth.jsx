@@ -18,14 +18,16 @@ const Auth = observer(() => {
 
     const click = async () => {
         try {
+            let user;
             if (isLogin) {
-                await login(email, password);
+                user = await login(email, password);       // отримуємо { id, email, role }
             } else {
                 await registration(email, password);
+                user = await fetchAuthUser();              // отримуємо користувача після реєстрації
             }
 
-            // Оновлюємо стан юзера в userStore (MobX)
-            await userStore.checkAuth();
+            userStore.setUser(user);                       // зберігаємо
+            userStore.setIsAuth(true);                     // позначаємо як авторизованого
             // Взяти з сервера той кошик, що на нього вказує userId
             await cartStore.switchToAuth();
             navigate(SHOP_ROUTE);

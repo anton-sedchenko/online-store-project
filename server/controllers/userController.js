@@ -47,7 +47,14 @@ class UserController {
         }
         // Генеруємо токен та повертаємо на клієнт
         const token = generateJwt(user.id, user.email, user.role);
-        return res.json({token});
+        return res.json({
+            token,
+            user: {
+                id: user.id,
+                email: user.email,
+                role: user.role
+            }
+        });
     }
 
     async checkAuth(req, res, next) {
