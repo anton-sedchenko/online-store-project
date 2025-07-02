@@ -2,12 +2,12 @@ import axios from "axios";
 
 // інстанс для запитів без авторизації
 const $host = axios.create({
-    baseURL: import.meta.env.VITE_APP_API_URL
+    baseURL: import.meta.env.VITE_API_URL
 });
 
 // інстанс для запитів з авторицією
 const $authHost = axios.create({
-    baseURL: import.meta.env.VITE_APP_API_URL
+    baseURL: import.meta.env.VITE_API_URL
 });
 
 // При кожному запиті в заголовки конфіга додаєм токен з локал стореджа
