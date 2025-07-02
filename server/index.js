@@ -9,7 +9,7 @@ const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 const app = express();
 const corsOptions = {
     origin: process.env.CLIENT_URL || 'http://localhost:5173',  // ваш React/Vite dev-сервер
