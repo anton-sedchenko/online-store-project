@@ -32,6 +32,7 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+
 app.use('/api', router);
 
 // Замикаючий middleware - опрацювання помилок та передача відповіді клієнту
