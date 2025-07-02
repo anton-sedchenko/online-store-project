@@ -7,9 +7,10 @@ const router = require('./routes/index');
 const errorHandler = require('./middleware/ErrorHandlingMiddleware');
 const path = require('path');
 const helmet = require('helmet');
+app.set('trust proxy', 1);
 const rateLimit = require('express-rate-limit');
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8080;
 const app = express();
 
 const ORIGIN = process.env.CLIENT_URL || 'http://localhost:5173';
