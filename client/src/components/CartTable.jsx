@@ -30,6 +30,9 @@ const CartTable = observer(() => {
 
     return (
         <div className="cart__table__container">
+
+            {console.log("Зображення в кошику:", cartStore.items.map(i => i.img))}
+            
                 <h2>Ваш кошик товарів:</h2>
                 <Table striped bordered hover>
                     <thead>
@@ -56,6 +59,13 @@ const CartTable = observer(() => {
                                         width={50}
                                         height={50}
                                         className="me-2"
+
+                                        // тимчасово шукаєм баг фікс
+                                        onError={(e) => {
+                                            console.log("Не завантажено:", getImageUrl(item.img));
+                                            e.target.src = "/fallback.jpg";
+                                        }}
+
                                     />
                                     {item.name}
                                 </Link>
