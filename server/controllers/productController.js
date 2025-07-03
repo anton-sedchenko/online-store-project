@@ -5,6 +5,9 @@ const cloudinary = require('../utils/cloudinary');
 
 class ProductController {
     async create(req, res, next) {
+
+        console.log('🟢 create() викликано');
+
         try {
             if (!req.files || !req.files.img) {
                 return res.status(400).json({message: 'Файл не завантажений'});
@@ -17,13 +20,17 @@ class ProductController {
 
             const {img} = req.files;
 
-            // Завантаження зображення на Cloudinary
-            const result = await cloudinary.uploader.upload(img.tempFilePath, {
-                folder: 'products', // кастомна папка
-                public_id: uuid.v4(), // випадкове ім'я
-            });
-            // Отримаємо пряме посилання на зображення
-            const imgUrl = result.secure_url;
+            let imgUrl = '';
+
+            try {
+                const result = await cloudinary.uploader.upload(file.path, {
+                    folder: 'products',
+                });
+                imgUrl = result.secure_url;
+            } catch (err) {
+                console.error('❌ Cloudinary upload error:', err);
+                return next(ApiError.internal('Не вдалося завантажити зображення на Cloudinary'));
+            }
 
             // Створення товару в БД з Cloudinary-посиланням
             const newProduct = await Product.create({
