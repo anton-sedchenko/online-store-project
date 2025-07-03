@@ -51,7 +51,7 @@ const CartTable = observer(() => {
                                     className="d-flex align-items-center"
                                 >
                                     <Image
-                                        src={product.img}
+                                        src={item.img}
                                         width={50}
                                         height={50}
                                         className="me-2"
@@ -72,7 +72,7 @@ const CartTable = observer(() => {
                                     // коли уходимо з інпута, синхронізуємо зі стором та сервером
                                     onBlur={() => {
                                         const v = draftQty[item.id];
-                                        cartStore.setQuantity(item.productId, v);
+                                        cartStore.setQuantity(cartStore._isGuest ? item.id : item.productId, v);
                                     }}
                                 />
                             </td>
