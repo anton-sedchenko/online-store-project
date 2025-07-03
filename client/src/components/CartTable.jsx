@@ -52,7 +52,7 @@ const CartTable = observer(() => {
                                     className="d-flex align-items-center"
                                 >
                                     <Image
-                                        src={getImageUrl(product.img)}
+                                        src={getImageUrl(item.img)}
                                         width={50}
                                         height={50}
                                         className="me-2"
