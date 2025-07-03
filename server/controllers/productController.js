@@ -1,24 +1,34 @@
 const uuid = require('uuid');
-const path = require('path');
 const {Product} = require('../models/models');
 const ApiError = require('../error/ApiError');
+const cloudinary = require('../utils/cloudinary');
 
 class ProductController {
     async create(req, res, next) {
         try {
             if (!req.files || !req.files.img) {
-                return res.status(400).json({ message: 'Файл не завантажений' });
+                return res.status(400).json({message: 'Файл не завантажений'});
             }
-            let {name, price, typeId, description, code} = req.body;
+
+            const {name, price, typeId, description, code} = req.body;
             if (!code) {
                 return next(ApiError.badRequest("Необхідно вказати код товару"));
             }
+
             const {img} = req.files;
-            let fileName = uuid.v4() + ".jpg";
-            img.mv(path.resolve(__dirname, '..', 'static', fileName));
-            const newProduct = await Product.create(
-                {name, price, typeId, description, img: fileName, code}
-            );
+
+            // Завантаження зображення на Cloudinary
+            const result = await cloudinary.uploader.upload(img.tempFilePath, {
+                folder: 'products', // кастомна папка
+                public_id: uuid.v4(), // випадкове ім'я
+            });
+            // Отримаємо пряме посилання на зображення
+            const imgUrl = result.secure_url;
+
+            // Створення товару в БД з Cloudinary-посиланням
+            const newProduct = await Product.create({
+                name, price, typeId, description, code, img: imgUrl
+            });
 
             return res.json(newProduct);
         } catch (e) {
@@ -36,9 +46,10 @@ class ProductController {
             // якщо прийшов файл - оновлюємо картинку
             if (req.files?.img) {
                 const {img} = req.files;
-                const fileName = uuid.v4() + path.extname(img.name);
-                await img.mv(path.resolve(__dirname, '..', 'static', fileName));
-                product.img = fileName;
+                const result = await cloudinary.uploader.upload(img.tempFilePath || img.path, {
+                    folder: 'products',
+                });
+                product.img = result.secure_url;
             }
 
             // оновлюємо інші поля

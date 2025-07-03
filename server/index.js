@@ -36,10 +36,10 @@ console.log('CORS Allowed Origin:', corsOptions.origin); // тимчасово
 app.use(cors(corsOptions));
 
 app.use(express.json());
-app.use('/static', express.static(path.resolve(__dirname, 'static')));
 app.use(fileUpload({
-    createParentPath: true,      // автoстворює папки
-    limits: {fileSize: 5e6},   // обмеження розміру
+    useTempFiles: true,               // Cloudinary читає з тимчасового файлу
+    tempFileDir: '/tmp/',            // тимчасова директорія (на Railway вона існує)
+    limits: {fileSize: 5e6},
 }));
 
 // app.use(helmet()); тимчасово вимкнули щоб знайти баг
@@ -50,40 +50,18 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-
-
-app.get('/api/ping', (req, res) => {
-    res.send('pong');
-});
-
-
-
 app.use('/api', router);
-
 // Замикаючий middleware - опрацювання помилок та передача відповіді клієнту
 app.use(errorHandler);
 
 const start = async () => {
     try {
-
-        console.log('Connecting to DB...');
-
         await sequelize.authenticate();
-
-        console.log('DB Connected.');
-
         await sequelize.sync({alter: true});
-
-        console.log('DB Synced.');
 
         if (!PORT) {
             throw new Error('PORT is not defined!');
         }
-
-        console.log('Starting server...');
-        console.log('ENV PORT:', process.env.PORT);
-
-        // app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
         app.listen(PORT, err => {
             if (err) {
@@ -92,8 +70,6 @@ const start = async () => {
                 console.log(`Server started on port ${PORT}`);
             }
         });
-
-        console.log(`Server is running on port ${PORT}`);
     } catch (e) {
         console.log(e);
     }
