@@ -10,6 +10,11 @@ module.exports = function (role) {
 
             console.log('🔐 checkRole running...');
 
+            if (decoded.role !== role) {
+                console.log('🚫 Користувач НЕ є', role, '| реальна роль:', decoded.role);
+                return res.status(403).json({ message: 'Немає доступу' });
+            }
+            
             // отримуємо токен із заголовків
             const token = req.headers.authorization.split(' ')[1];
             if (!token) {
