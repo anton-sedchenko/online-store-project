@@ -4,6 +4,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {deleteProduct, fetchOneProduct} from "../http/productAPI.js";
 import {Context} from "../main.jsx";
 import {CART_ROUTE} from "../utils/consts.js";
+import {getImageUrl} from "../helpers/helpers.js";
 
 const ProductPage = () => {
     const navigate = useNavigate();
@@ -42,7 +43,7 @@ const ProductPage = () => {
                     <Image
                         width={300}
                         height={300}
-                        src={`${import.meta.env.VITE_APP_API_URL}${product.img}`}
+                        src={getImageUrl(product.img)}
                     ></Image>
                 </Col>
                 <Col md={4}>

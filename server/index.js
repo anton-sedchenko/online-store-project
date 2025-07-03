@@ -36,7 +36,7 @@ console.log('CORS Allowed Origin:', corsOptions.origin); // тимчасово
 app.use(cors(corsOptions));
 
 app.use(express.json());
-app.use(express.static(path.resolve(__dirname, 'static')));
+app.use('/static', express.static(path.resolve(__dirname, 'static')));
 app.use(fileUpload({
     createParentPath: true,      // автoстворює папки
     limits: {fileSize: 5e6},   // обмеження розміру

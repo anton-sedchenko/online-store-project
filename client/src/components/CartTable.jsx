@@ -6,6 +6,7 @@ import {Context} from "../main.jsx";
 import {PRODUCT_ROUTE, ORDER_ROUTE} from "../utils/consts.js";
 import {Button, Image} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
+import {getImageUrl} from "../helpers/helpers.js";
 
 const CartTable = observer(() => {
     const {cartStore} = useContext(Context);
@@ -51,7 +52,7 @@ const CartTable = observer(() => {
                                     className="d-flex align-items-center"
                                 >
                                     <Image
-                                        src={`${import.meta.env.VITE_APP_API_URL}${item.img}`}
+                                        src={getImageUrl(product.img)}
                                         width={50}
                                         height={50}
                                         className="me-2"
