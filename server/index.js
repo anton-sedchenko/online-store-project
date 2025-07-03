@@ -14,12 +14,18 @@ const app = express();
 app.set('trust proxy', 1);
 const rateLimit = require('express-rate-limit');
 
-const ORIGIN = process.env.CLIENT_URL || 'http://localhost:5173';
+const ORIGIN = process.env.CLIENT_URL?.split(',') || 'http://localhost:5173';
+
 console.log('Origin:', ORIGIN);
 
 const corsOptions = {
-    // origin: process.env.CLIENT_URL || 'http://localhost:5173',  // ваш React/Vite dev-сервер
-    origin: ORIGIN,
+    origin: function (origin, callback) {
+        if (!origin || ORIGIN.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['GET','POST','PUT','DELETE','OPTIONS'],
     allowedHeaders: ['Content-Type','Authorization'],
     credentials: true,
