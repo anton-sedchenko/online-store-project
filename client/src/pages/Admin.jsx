@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, Container} from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import CreateType from "../components/modals/CreateType.jsx";
 import CreateProduct from "../components/modals/CreateProduct.jsx";
 import {observer} from "mobx-react-lite";

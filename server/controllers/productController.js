@@ -5,6 +5,9 @@ const cloudinary = require('../utils/cloudinary');
 
 class ProductController {
     async create(req, res, next) {
+
+        console.log("☁️ env cloud_name:", process.env.CLOUDINARY_CLOUD_NAME);
+
         try {
             if (!req.files || !req.files.img) {
                 return res.status(400).json({ message: 'Файл не завантажений' });
@@ -16,7 +19,7 @@ class ProductController {
                 return next(ApiError.badRequest("Необхідно вказати код товару"));
             }
 
-            const { img } = req.files;
+            const {img} = req.files;
 
             console.log('🟢 create() викликано');
             console.log('📂 Cloudinary завантаження з:', img.tempFilePath);
@@ -25,15 +28,13 @@ class ProductController {
                 folder: 'products',
             });
 
-            const imgUrl = result.secure_url;
-
             const newProduct = await Product.create({
                 name,
                 price,
                 typeId,
                 description,
                 code,
-                img: imgUrl,
+                img: result.secure_url,
             });
 
             return res.json(newProduct);

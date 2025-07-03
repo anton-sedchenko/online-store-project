@@ -6,7 +6,6 @@ import {Context} from "../main.jsx";
 import {PRODUCT_ROUTE, ORDER_ROUTE} from "../utils/consts.js";
 import {Button, Image} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
-import {getImageUrl} from "../helpers/helpers.js";
 
 const CartTable = observer(() => {
     const {cartStore} = useContext(Context);
@@ -25,15 +24,10 @@ const CartTable = observer(() => {
         const q = draftQty[item.id] ?? item.quantity;
         return sum + item.price * q;
     }, 0);
-
     const handleOrder = () => navigate(ORDER_ROUTE);
 
     return (
         <div className="cart__table__container">
-
-            {console.log("Зображення в кошику:", cartStore.items.map(i => i.img))}
-            {console.log(getImageUrl("file.jpg"))} // тимчасово шукаю баг
-
                 <h2>Ваш кошик товарів:</h2>
                 <Table striped bordered hover>
                     <thead>
@@ -57,23 +51,11 @@ const CartTable = observer(() => {
                                     className="d-flex align-items-center"
                                 >
                                     <Image
-                                        src={getImageUrl(item.img)}
+                                        src={product.img}
                                         width={50}
                                         height={50}
                                         className="me-2"
-
-                                        // тимчасово шукаєм баг фікс
-                                        onError={(e) => {
-                                            console.log("Не завантажено:", getImageUrl(item.img));
-                                            e.target.src = "/fallback.jpg";
-                                        }}
-
                                     />
-
-                                    {console.log("item:", item)}
-                                    {console.log("item.img:", item.img)}
-                                    {console.log("URL:", getImageUrl(item.img))}
-
                                     {item.name}
                                 </Link>
                             </td>

@@ -29,7 +29,7 @@ const Product = sequelize.define('product', {
     name: {type: DataTypes.STRING, unique: true, allowNull: false},
     price: {type: DataTypes.INTEGER, allowNull: false},
     description: {type: DataTypes.TEXT, allowNull: true},
-    img: {type: DataTypes.STRING, allowNull: false},
+    img: {type: DataTypes.STRING},
     code: {type: DataTypes.STRING, allowNull: false, unique: true},
 });
 

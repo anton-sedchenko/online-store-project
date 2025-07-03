@@ -1,10 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, Card, Col, Container, Form, Image, Row} from "react-bootstrap";
+import {Col, Image, Row} from "react-bootstrap";
 import {useNavigate, useParams} from "react-router-dom";
 import {deleteProduct, fetchOneProduct} from "../http/productAPI.js";
 import {Context} from "../main.jsx";
 import {CART_ROUTE} from "../utils/consts.js";
-import {getImageUrl} from "../helpers/helpers.js";
 
 const ProductPage = () => {
     const navigate = useNavigate();
@@ -47,7 +46,7 @@ const ProductPage = () => {
                     <Image
                         width={300}
                         height={300}
-                        src={getImageUrl(product.img)}
+                        src={product.img}
                     ></Image>
                 </Col>
                 <Col md={4}>
