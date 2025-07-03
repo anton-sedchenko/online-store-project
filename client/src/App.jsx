@@ -37,6 +37,8 @@ const App = observer(() => {
         return <Spinner animation={"grow"}/>
     }
 
+    console.log(import.meta.env.VITE_APP_API_URL) // тимчасово шукаю баг
+
     return (
         <BrowserRouter>
             <Wrapper>

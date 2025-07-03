@@ -32,7 +32,8 @@ const CartTable = observer(() => {
         <div className="cart__table__container">
 
             {console.log("Зображення в кошику:", cartStore.items.map(i => i.img))}
-            
+            {console.log(getImageUrl("file.jpg"))} // тимчасово шукаю баг
+
                 <h2>Ваш кошик товарів:</h2>
                 <Table striped bordered hover>
                     <thead>
@@ -50,9 +51,15 @@ const CartTable = observer(() => {
                         <tr key={item.id}>
                             <td>{idx + 1}</td>
                             <td>
+
                                 <Link
                                     to={`${PRODUCT_ROUTE}/${item.id}`}
                                     className="d-flex align-items-center"
+
+                                    {console.log("item:", item)} // тимчасово шукаю баг
+                                    {console.log("item.img:", item.img)} // тимчасово шукаю баг
+                                    {console.log("URL:", getImageUrl(item.img))} // тимчасово шукаю баг
+                                    
                                 >
                                     <Image
                                         src={getImageUrl(item.img)}
