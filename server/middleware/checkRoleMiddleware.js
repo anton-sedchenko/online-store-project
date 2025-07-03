@@ -1,36 +1,31 @@
 const jwt = require('jsonwebtoken');
+const ApiError = require('../error/ApiError');
 
 // Перевірка чи користувач є адміном для редагування товарів
-module.exports = function (role) {
+module.exports = function(role) {
     return function (req, res, next) {
         if (req.method === "OPTIONS") {
-            next();
+            return next();
         }
         try {
-
-            console.log('🔐 checkRole running...');
-
-            if (decoded.role !== role) {
-                console.log('🚫 Користувач НЕ є', role, '| реальна роль:', decoded.role);
-                return res.status(403).json({ message: 'Немає доступу' });
-            }
-            
-            // отримуємо токен із заголовків
-            const token = req.headers.authorization.split(' ')[1];
+            const token = req.headers.authorization?.split(' ')[1];
             if (!token) {
-                return res.status(401).json({message: "Спершу треба авторизуватися"});
+                return res.status(401).json({ message: 'Немає авторизації' });
             }
-
-            console.log('🔐 Роль користувача:', decoded.role);
 
             const decoded = jwt.verify(token, process.env.SECRET_KEY);
+            console.log("🔐 Розшифрований токен:", decoded);
+
             if (decoded.role !== role) {
-                return res.status(403).json({message: "Доступ відсутній"});
+                console.log("🚫 Недостатньо прав. Роль:", decoded.role);
+                return res.status(403).json({ message: 'Недостатньо прав' });
             }
+
             req.user = decoded;
             next();
         } catch (e) {
-            res.status(401).json({message: "Спершу треба авторизуватися"});
+            console.log("❌ Помилка токена:", e.message);
+            return res.status(401).json({ message: 'Користувач не авторизований' });
         }
     }
 }
