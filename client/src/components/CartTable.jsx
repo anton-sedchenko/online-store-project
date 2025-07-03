@@ -55,11 +55,6 @@ const CartTable = observer(() => {
                                 <Link
                                     to={`${PRODUCT_ROUTE}/${item.id}`}
                                     className="d-flex align-items-center"
-
-                                    {console.log("item:", item)} // тимчасово шукаю баг
-                                    {console.log("item.img:", item.img)} // тимчасово шукаю баг
-                                    {console.log("URL:", getImageUrl(item.img))} // тимчасово шукаю баг
-                                    
                                 >
                                     <Image
                                         src={getImageUrl(item.img)}
@@ -74,6 +69,11 @@ const CartTable = observer(() => {
                                         }}
 
                                     />
+
+                                    {console.log("item:", item)} // тимчасово шукаю баг
+                                    {console.log("item.img:", item.img)} // тимчасово шукаю баг
+                                    {console.log("URL:", getImageUrl(item.img))} // тимчасово шукаю баг
+
                                     {item.name}
                                 </Link>
                             </td>
