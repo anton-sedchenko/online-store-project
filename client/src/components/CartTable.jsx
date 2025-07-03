@@ -70,9 +70,9 @@ const CartTable = observer(() => {
 
                                     />
 
-                                    {console.log("item:", item)} // тимчасово шукаю баг
-                                    {console.log("item.img:", item.img)} // тимчасово шукаю баг
-                                    {console.log("URL:", getImageUrl(item.img))} // тимчасово шукаю баг
+                                    {console.log("item:", item)}
+                                    {console.log("item.img:", item.img)}
+                                    {console.log("URL:", getImageUrl(item.img))}
 
                                     {item.name}
                                 </Link>
