@@ -48,7 +48,7 @@ const Header = observer(() => {
                                         </button>
                                     </Link>
                                 </div>
-                                
+
                                 {userStore.isAuth && userStore.user?.role === "ADMIN" && (
                                     <div className="header__btn__container">
                                         <button

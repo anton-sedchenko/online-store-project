@@ -1,8 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE} from "../utils/consts.js";
-import {login, registration} from "../http/userAPI.js";
-import {Button} from "react-bootstrap";
+import {fetchAuthUser, login, registration} from "../http/userAPI.js";
 import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
 
