@@ -90,7 +90,7 @@ export default class CartStore {
             } else {
 
                 console.log("Додаємо в гостьовий кошик:", product);
-                
+
                 this._items.push({ ...product, quantity: qty });
             }
             this.saveGuestCart();
