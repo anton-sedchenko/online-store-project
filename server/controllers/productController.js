@@ -5,41 +5,41 @@ const cloudinary = require('../utils/cloudinary');
 
 class ProductController {
     async create(req, res, next) {
-
-        console.log('🟢 create() викликано');
-
         try {
             if (!req.files || !req.files.img) {
-                return res.status(400).json({message: 'Файл не завантажений'});
+                return res.status(400).json({ message: 'Файл не завантажений' });
             }
 
-            const {name, price, typeId, description, code} = req.body;
+            let { name, price, typeId, description, code } = req.body;
+
             if (!code) {
                 return next(ApiError.badRequest("Необхідно вказати код товару"));
             }
 
-            const {img} = req.files;
+            const { img } = req.files;
 
-            let imgUrl = '';
+            console.log('🟢 create() викликано');
+            console.log('📂 Cloudinary завантаження з:', img.tempFilePath);
 
-            try {
-                const result = await cloudinary.uploader.upload(file.path, {
-                    folder: 'products',
-                });
-                imgUrl = result.secure_url;
-            } catch (err) {
-                console.error('❌ Cloudinary upload error:', err);
-                return next(ApiError.internal('Не вдалося завантажити зображення на Cloudinary'));
-            }
+            const result = await cloudinary.uploader.upload(img.tempFilePath, {
+                folder: 'products',
+            });
 
-            // Створення товару в БД з Cloudinary-посиланням
+            const imgUrl = result.secure_url;
+
             const newProduct = await Product.create({
-                name, price, typeId, description, code, img: imgUrl
+                name,
+                price,
+                typeId,
+                description,
+                code,
+                img: imgUrl,
             });
 
             return res.json(newProduct);
         } catch (e) {
-            next(ApiError.badRequest(e.message));
+            console.error("❌ Cloudinary upload error:", e);
+            next(ApiError.internal("Помилка при створенні товару"));
         }
     }
 
