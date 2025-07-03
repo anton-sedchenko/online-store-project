@@ -21,8 +21,12 @@ const ProductPage = () => {
 
     const handleAddToCart = () => {
         cartStore.addItem(
-            { id: product.id, name: product.name, price: product.price, img: product.img },
-            qty
+            {
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                img: product.img
+            }, qty
         );
         navigate(CART_ROUTE);
     }
