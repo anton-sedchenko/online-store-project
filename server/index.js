@@ -19,13 +19,15 @@ const ORIGIN = process.env.CLIENT_URL?.split(',') || 'http://localhost:5173';
 console.log('Origin:', ORIGIN);
 
 const corsOptions = {
-    origin: function (origin, callback) {
-        if (!origin || ORIGIN.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+        origin: ['http://localhost:3000', 'https://online-store-project-navy.vercel.app'],
+
+    // origin: function (origin, callback) {
+    //     if (!origin || ORIGIN.includes(origin)) {
+    //         callback(null, true);
+    //     } else {
+    //         callback(new Error('Not allowed by CORS'));
+    //     }
+    // },
     methods: ['GET','POST','PUT','DELETE','OPTIONS'],
     allowedHeaders: ['Content-Type','Authorization'],
     credentials: true,
