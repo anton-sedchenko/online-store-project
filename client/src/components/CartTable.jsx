@@ -45,9 +45,8 @@ const CartTable = observer(() => {
                         <tr key={item.id}>
                             <td>{idx + 1}</td>
                             <td>
-
                                 <Link
-                                    to={`${PRODUCT_ROUTE}/${item.id}`}
+                                    to={`${PRODUCT_ROUTE}/${item.slug}`}
                                     className="d-flex align-items-center"
                                 >
                                     <Image

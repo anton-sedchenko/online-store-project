@@ -11,7 +11,7 @@ const ProductItem = ({product}) => {
             <Card
                 border={"light"}
                 className="gallery__card neu-card"
-                onClick={() => navigate(`${PRODUCT_ROUTE}/${product.id}`)}
+                onClick={() => navigate(`${PRODUCT_ROUTE}/${product.slug}`)}
             >
                 <Image
                     src={product.img}

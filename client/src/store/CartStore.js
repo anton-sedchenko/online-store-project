@@ -63,6 +63,12 @@ export default class CartStore {
     async loadCart() {
         try {
             const raw = await fetchCart();
+
+            if (!Array.isArray(raw)) {
+                console.error("❌ Очікував масив товарів, отримав:", raw);
+                return;
+            }
+
             const items = raw.map(ci => ({
                 cartProductId: ci.id,
                 productId: ci.productId,
@@ -70,6 +76,7 @@ export default class CartStore {
                 name: ci.product.name,
                 price: ci.product.price,
                 img: ci.product.img,
+                slug: ci.product.slug,
                 quantity: ci.quantity
             }));
             // Кладемо нормалізований масив в store
