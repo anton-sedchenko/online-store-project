@@ -5,7 +5,7 @@ const slugify = require('slugify');
 
 class ProductController {
     async getBySlug(req, res, next) {
-        const { slug } = req.params;
+        const {slug} = req.params;
         const product = await Product.findOne({where: {slug}});
         if (!product) return next(ApiError.notFound('Товар не знайдено'));
         return res.json(product);

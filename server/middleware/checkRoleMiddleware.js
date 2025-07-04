@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const ApiError = require('../error/ApiError');
 
 // Перевірка чи користувач є адміном для редагування товарів
 module.exports = function(role) {
@@ -14,7 +13,6 @@ module.exports = function(role) {
             }
 
             const decoded = jwt.verify(token, process.env.SECRET_KEY);
-            console.log("🔐 Розшифрований токен:", decoded);
 
             if (decoded.role !== role) {
                 console.log("🚫 Недостатньо прав. Роль:", decoded.role);

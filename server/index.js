@@ -5,7 +5,6 @@ const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const router = require('./routes/index');
 const errorHandler = require('./middleware/ErrorHandlingMiddleware');
-const path = require('path');
 const helmet = require('helmet');
 
 const PORT = process.env.PORT || 8080;
@@ -14,29 +13,14 @@ const app = express();
 app.set('trust proxy', 1);
 const rateLimit = require('express-rate-limit');
 
-const ORIGIN = process.env.CLIENT_URL?.split(',') || 'http://localhost:5173';
-
-console.log('Origin:', ORIGIN);
-
 const corsOptions = {
-        origin: ['http://localhost:3000', 'https://online-store-project-navy.vercel.app'],
-
-    // origin: function (origin, callback) {
-    //     if (!origin || ORIGIN.includes(origin)) {
-    //         callback(null, true);
-    //     } else {
-    //         callback(new Error('Not allowed by CORS'));
-    //     }
-    // },
+    origin: ['http://localhost:3000', 'https://online-store-project-navy.vercel.app'],
     methods: ['GET','POST','PUT','DELETE','OPTIONS'],
     allowedHeaders: ['Content-Type','Authorization'],
     credentials: true,
 };
 
-console.log('CORS Allowed Origin:', corsOptions.origin); // тимчасово
-
 app.use(cors(corsOptions));
-
 app.use(express.json());
 app.use(fileUpload({
     useTempFiles: true,               // Cloudinary читає з тимчасового файлу
@@ -51,12 +35,6 @@ const limiter = rateLimit({
     max: 100, // не більше 100 запитів з одного IP
 });
 app.use(limiter);
-
-app.use((req, res, next) => {
-    console.log(`📥 Запит: ${req.method} ${req.originalUrl}`);
-    next();
-});
-
 app.use('/api', router);
 // Замикаючий middleware - опрацювання помилок та передача відповіді клієнту
 app.use(errorHandler);

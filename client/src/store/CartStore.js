@@ -63,12 +63,6 @@ export default class CartStore {
     async loadCart() {
         try {
             const raw = await fetchCart();
-
-            if (!Array.isArray(raw)) {
-                console.error("❌ Очікував масив товарів, отримав:", raw);
-                return;
-            }
-
             const items = raw.map(ci => ({
                 cartProductId: ci.id,
                 productId: ci.productId,
