@@ -1,35 +1,37 @@
-const uuid = require('uuid');
 const {Product} = require('../models/models');
 const ApiError = require('../error/ApiError');
 const cloudinary = require('../utils/cloudinary');
+const slugify = require('slugify');
 
 class ProductController {
+    async getBySlug(req, res, next) {
+        const { slug } = req.params;
+        const product = await Product.findOne({where: {slug}});
+        if (!product) return next(ApiError.notFound('Товар не знайдено'));
+        return res.json(product);
+    }
+
     async create(req, res, next) {
-
-        console.log("☁️ env cloud_name:", process.env.CLOUDINARY_CLOUD_NAME);
-
         try {
             if (!req.files || !req.files.img) {
-                return res.status(400).json({ message: 'Файл не завантажений' });
+                return res.status(400).json({message: 'Файл не завантажений'});
             }
 
-            let { name, price, typeId, description, code } = req.body;
+            let {name, price, typeId, description, code} = req.body;
 
             if (!code) {
-                return next(ApiError.badRequest("Необхідно вказати код товару"));
+                return next(ApiError.badRequest('Необхідно вказати код товару'));
             }
 
             const {img} = req.files;
-
-            console.log('🟢 create() викликано');
-            console.log('📂 Cloudinary завантаження з:', img.tempFilePath);
-
             const result = await cloudinary.uploader.upload(img.tempFilePath, {
                 folder: 'products',
             });
 
+            const slug = slugify(name, {lower: true, strict: true}) + '-' + code;
             const newProduct = await Product.create({
                 name,
+                slug,
                 price,
                 typeId,
                 description,
@@ -39,7 +41,6 @@ class ProductController {
 
             return res.json(newProduct);
         } catch (e) {
-            console.error("❌ Cloudinary upload error:", e);
             next(ApiError.internal("Помилка при створенні товару"));
         }
     }
@@ -62,10 +63,13 @@ class ProductController {
 
             // оновлюємо інші поля
             if (name) product.name = name;
+            if (code) product.code = code;
+            if (name || code) {
+                product.slug = slugify(product.name, {lower: true, strict: true}) + '-' + product.code;
+            }
             if (price) product.price = price;
             if (typeId) product.typeId = typeId;
             if (description !== undefined) product.description = description;
-            if (code) product.code = code;
 
             await product.save();
             return res.json(product);

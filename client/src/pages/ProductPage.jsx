@@ -1,9 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Col, Image, Row} from "react-bootstrap";
 import {useNavigate, useParams} from "react-router-dom";
-import {deleteProduct, fetchOneProduct} from "../http/productAPI.js";
+import {deleteProduct, fetchProductBySlug} from "../http/productAPI.js";
 import {Context} from "../main.jsx";
 import {CART_ROUTE} from "../utils/consts.js";
+import {Helmet} from 'react-helmet-async';
 
 const ProductPage = () => {
     const navigate = useNavigate();
@@ -12,11 +13,11 @@ const ProductPage = () => {
     const [qty, setQty] = useState(1);
     let sum = product.price * qty;
     // Отримуєм параметри айді із строки запиту
-    const {id} = useParams();
+    const {slug} = useParams();
     // При завантаженні сторінки товару один раз підгружаємо цей товар
     useEffect(() => {
-        fetchOneProduct(id).then(data => setProduct(data));
-    }, []);
+        fetchProductBySlug(slug).then(data => setProduct(data));
+    }, [slug]);
 
     const handleAddToCart = () => {
         cartStore.addItem(
@@ -41,6 +42,17 @@ const ProductPage = () => {
 
     return (
         <Col className="component__container">
+            {product?.name && (
+                <Helmet>
+                    <title>{product.name} | Чарівна майстерня</title>
+                    <meta name="description" content={product.description || 'Опис товару'} />
+                    <meta property="og:title" content={product.name} />
+                    <meta property="og:description" content={product.description} />
+                    <meta property="og:image" content={product.img} />
+                    <meta property="og:url" content={`https://your-site.com/product/${product.id}`} />
+                    <meta property="og:type" content="product" />
+                </Helmet>
+            )}
             <Row>
                 <Col xs={12} md={6} className="product__img__container">
                     <Image

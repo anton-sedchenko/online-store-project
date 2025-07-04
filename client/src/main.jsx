@@ -5,6 +5,7 @@ import UserStore from "./store/UserStore.js";
 import ProductStore from "./store/ProductStore.js";
 import CartStore from "./store/CartStore.js";
 import AdminStore from "./store/AdminStore.js";
+import {HelmetProvider} from 'react-helmet-async';
 
 export const Context = createContext(null);
 const userStore   = new UserStore();
@@ -14,8 +15,10 @@ const adminStore = new AdminStore();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-      <Context.Provider value={{userStore, productStore, cartStore, adminStore}}>
-          <App />
-      </Context.Provider>
+      <HelmetProvider>
+          <Context.Provider value={{userStore, productStore, cartStore, adminStore}}>
+              <App />
+          </Context.Provider>
+      </HelmetProvider>
   </StrictMode>,
 );

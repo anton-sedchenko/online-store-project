@@ -43,7 +43,7 @@ export const publicRoutes = [
         Component: Auth
     },
     {
-        path: PRODUCT_ROUTE + '/:id',
+        path: PRODUCT_ROUTE + '/:slug',
         Component: ProductPage
     },
     {

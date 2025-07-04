@@ -1,5 +1,10 @@
 import {$authHost, $host} from "./index.js";
 
+export const fetchProductBySlug = async (slug) => {
+    const {data} = await $host.get(`/api/product/slug/${slug}`);
+    return data;
+};
+
 export const createProduct = async (product) => {
     const {data} = await $authHost.post("/api/product", product);
     return data;

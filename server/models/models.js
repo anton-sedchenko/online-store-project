@@ -31,6 +31,7 @@ const Product = sequelize.define('product', {
     description: {type: DataTypes.TEXT, allowNull: true},
     img: {type: DataTypes.STRING},
     code: {type: DataTypes.STRING, allowNull: false, unique: true},
+    slug: {type: DataTypes.STRING, unique: true},
 });
 
 const Type = sequelize.define('type', {
