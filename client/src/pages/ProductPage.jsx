@@ -12,7 +12,6 @@ const ProductPage = () => {
     const {userStore, cartStore} = useContext(Context);
     const [qty, setQty] = useState(1);
     let sum = product.price * qty;
-    // Отримуєм параметри айді із строки запиту
     const {slug} = useParams();
     // При завантаженні сторінки товару один раз підгружаємо цей товар
     useEffect(() => {
@@ -33,7 +32,7 @@ const ProductPage = () => {
 
     const handleDelete = async () => {
         try {
-            await deleteProduct(id);
+            await deleteProduct(product.id);
             navigate('/shop');
         } catch (e) {
             alert(e.response?.data?.message || 'Помилка при видаленні');
@@ -49,7 +48,9 @@ const ProductPage = () => {
                     <meta property="og:title" content={product.name} />
                     <meta property="og:description" content={product.description} />
                     <meta property="og:image" content={product.img} />
-                    <meta property="og:url" content={`https://your-site.com/product/${product.id}`} />
+                    {product?.slug && (
+                        <meta property="og:url" content={`https://online-store-project-navy.vercel.app/product/${product.slug}`} />
+                    )}
                     <meta property="og:type" content="product" />
                 </Helmet>
             )}
@@ -58,12 +59,13 @@ const ProductPage = () => {
                     <Image
                         width={300}
                         height={300}
-                        src={product.img}
+                        src={product.img || ""}
+                        alt={product.name || "зображення товару"}
                     ></Image>
                 </Col>
                 <Col md={4}>
                     <div>
-                        <p className="product__code">Код товару: {product.code}</p>
+                        <p className="product__code">Код товару: {product.code || '---'}</p>
                         <h3 className="product__title">{product.name}</h3>
                         <div style={{display: "flex"}}>
                             <p className="product__count">Кількість:</p>
@@ -76,7 +78,7 @@ const ProductPage = () => {
                             />
                         </div>
                         <h4>Опис товару:</h4>
-                        <p className="product__description">{product.description}</p>
+                        <p className="product__description">{product.description || 'Немає опису'}</p>
                         <h4>Сума: {sum} грн.</h4>
                     </div>
                 </Col>
