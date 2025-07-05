@@ -3,19 +3,19 @@
         xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
 >
     <url>
-        <loc>https://online-store-project-navy.vercel.app/</loc>
+        <loc>https://charivna-craft.com.ua/</loc>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://online-store-project-navy.vercel.app/cart</loc>
+        <loc>https://charivna-craft.com.ua/cart</loc>
     </url>
     <url>
-        <loc>https://online-store-project-navy.vercel.app/contacts</loc>
+        <loc>https://charivna-craft.com.ua/contacts</loc>
     </url>
     <url>
-        <loc>https://online-store-project-navy.vercel.app/profile</loc>
+        <loc>https://charivna-craft.com.ua/profile</loc>
     </url>
     <url>
-        <loc>https://online-store-project-navy.vercel.app/order</loc>
+        <loc>https://charivna-craft.com.ua/order</loc>
     </url>
 </urlset>
