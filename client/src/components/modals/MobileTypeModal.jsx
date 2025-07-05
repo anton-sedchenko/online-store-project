@@ -1,39 +1,46 @@
-import React, {useContext, useEffect} from 'react';
-import {Modal, Button} from 'react-bootstrap';
-import {observer} from 'mobx-react-lite';
-import {Context} from '../../main.jsx';
-import {fetchTypes} from '../../http/typeAPI.js';
+import React, { useContext } from "react";
+import { Modal, Button, ListGroup } from "react-bootstrap";
+import { observer } from "mobx-react-lite";
+import { Context } from "../../main.jsx";
 
-const MobileTypeModal = observer(({show, onHide}) => {
-    const {productStore} = useContext(Context);
+const MobileTypeModal = observer(({ show, onHide }) => {
+    const { productStore } = useContext(Context);
 
-    useEffect(() => {
-        fetchTypes().then(data => productStore.setTypes(data));
-    }, []);
-
-    const selectType = (type) => {
-        productStore.setSelectedType(type);
-        onHide(); // закриваємо після вибору
+    const resetFilter = () => {
+        productStore.setSelectedType({});
+        onHide(); // якщо хочеш одразу закривати модалку
     };
 
     return (
         <Modal show={show} onHide={onHide} centered>
             <Modal.Header closeButton>
-                <Modal.Title>Обрати категорію</Modal.Title>
+                <Modal.Title>Оберіть тип товару</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div className="d-flex flex-wrap gap-2">
-                    {productStore.types.map(type => (
-                        <Button
+                <ListGroup>
+                    {productStore.types.map((type) => (
+                        <ListGroup.Item
                             key={type.id}
-                            variant={type.id === productStore.selectedType.id ? 'primary' : 'outline-secondary'}
-                            onClick={() => selectType(type)}
+                            active={type.id === productStore.selectedType.id}
+                            onClick={() => {
+                                productStore.setSelectedType(type);
+                                onHide(); // можна прибрати, якщо хочеш залишити відкритою
+                            }}
+                            style={{ cursor: "pointer" }}
                         >
                             {type.name}
-                        </Button>
+                        </ListGroup.Item>
                     ))}
-                </div>
+                </ListGroup>
             </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={resetFilter}>
+                    Скинути фільтр
+                </Button>
+                <Button variant="outline-dark" onClick={onHide}>
+                    Закрити
+                </Button>
+            </Modal.Footer>
         </Modal>
     );
 });
