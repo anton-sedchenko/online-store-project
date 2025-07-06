@@ -1,14 +1,14 @@
-import React, { useContext } from "react";
-import { Modal, Button, ListGroup } from "react-bootstrap";
-import { observer } from "mobx-react-lite";
-import { Context } from "../../main.jsx";
+import React, {useContext} from "react";
+import {Modal, Button, ListGroup} from "react-bootstrap";
+import {observer} from "mobx-react-lite";
+import {Context} from "../../main.jsx";
 
 const MobileTypeModal = observer(({ show, onHide }) => {
-    const { productStore } = useContext(Context);
+    const {productStore} = useContext(Context);
 
     const resetFilter = () => {
         productStore.setSelectedType({});
-        onHide(); // якщо хочеш одразу закривати модалку
+        onHide();
     };
 
     return (
@@ -24,7 +24,7 @@ const MobileTypeModal = observer(({ show, onHide }) => {
                             active={type.id === productStore.selectedType.id}
                             onClick={() => {
                                 productStore.setSelectedType(type);
-                                onHide(); // можна прибрати, якщо хочеш залишити відкритою
+                                onHide();
                             }}
                             style={{ cursor: "pointer" }}
                         >

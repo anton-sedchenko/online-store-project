@@ -14,7 +14,12 @@ app.set('trust proxy', 1);
 const rateLimit = require('express-rate-limit');
 
 const corsOptions = {
-    origin: ['http://localhost:3000', 'https://online-store-project-navy.vercel.app'],
+    origin: [
+        'http://localhost:3000',
+        'https://online-store-project-navy.vercel.app',
+        'https://online-store-project-git-main-antonsedchenkos-projects.vercel.app',
+        'https://charivna-craft.com.ua'
+    ],
     methods: ['GET','POST','PUT','DELETE','OPTIONS'],
     allowedHeaders: ['Content-Type','Authorization'],
     credentials: true,
