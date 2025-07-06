@@ -20,13 +20,8 @@ export const login = async (email, password) => {
 }
 
 export const fetchAuthUser = async () => {
-    try {
-        const {data} = await $authHost.get('/api/user/auth');
-        return data;
-    } catch (e) {
-        console.log("Користувач не авторизований");
-        return null;
-    }
+    const {data} = await $authHost.get('/api/user/auth');
+    return data;
 };
 
 export const updateProfile = async ({firstName, lastName, email, phone}) => {
