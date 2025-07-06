@@ -21,8 +21,8 @@ const Footer = () => {
                         </Link>
                     </div>
                     <div className="footer__column-contacts">
-                        <p>Ми у соціальних мережах</p>
-                        <p>FB icon, Insta icon, Tik-Tok icon</p>
+                        {/*<p>Ми у соціальних мережах</p>*/}
+                        {/*<p>FB icon, Insta icon, Tik-Tok icon</p>*/}
                         <p>+38 (068) 036-15-97</p>
                         <p>charivnij.workshop@gmail.com</p>
                     </div>
