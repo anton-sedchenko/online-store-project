@@ -17,21 +17,18 @@ const Auth = observer(() => {
 
     const click = async () => {
         try {
-            let user;
+            let tokenUser;
             if (isLogin) {
-                user = await login(email, password);       // отримуємо { id, email, role }
-
-                // шукаєм баг
-                console.log("👤 USER AFTER LOGIN:", user);
-
+                await login(email, password); // лише зберігає токен
             } else {
                 await registration(email, password);
-                user = await fetchAuthUser();              // отримуємо користувача після реєстрації
             }
 
-            userStore.setUser(user);                       // зберігаємо
-            userStore.setIsAuth(true);                     // позначаємо як авторизованого
-            // Взяти з сервера той кошик, що на нього вказує userId
+            tokenUser = await fetchAuthUser(); // отримуємо юзера з БД
+
+            console.log("👤 USER AFTER LOGIN:", tokenUser);
+            userStore.setUser(tokenUser);
+            userStore.setIsAuth(true);
             await cartStore.switchToAuth();
             navigate(SHOP_ROUTE);
         } catch (e) {
