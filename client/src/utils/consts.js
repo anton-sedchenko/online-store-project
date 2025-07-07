@@ -7,3 +7,5 @@ export const PRODUCT_ROUTE = "/product";
 export const PROFILE_ROUTE = "/profile";
 export const ORDER_ROUTE = "/order";
 export const CONTACTS_ROUTE = "/contacts";
+export const FORGOT_PASSWORD_ROUTE = "/forgot-password";
+export const RESET_PASSWORD_ROUTE = "/reset-password";

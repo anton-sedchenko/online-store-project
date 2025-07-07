@@ -33,3 +33,13 @@ export const changePassword = async ({oldPassword, newPassword}) => {
     const {data} = await $authHost.put('/api/user/password', {oldPassword, newPassword});
     return data;
 };
+
+export const requestPasswordReset = async (email) => {
+    const {data} = await $host.post('/api/user/request-reset', {email});
+    return data;
+};
+
+export const resetPassword = async (token, password) => {
+    const {data} = await $host.post('/api/user/reset-password', {token, password});
+    return data;
+};

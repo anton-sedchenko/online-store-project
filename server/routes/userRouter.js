@@ -9,5 +9,7 @@ router.post('/login', userController.login);
 router.get('/auth', authMiddleware, userController.checkAuth);
 router.put('/profile',  authMiddleware, userController.updateProfile);
 router.put('/password', authMiddleware, userController.changePassword);
+router.post('/request-reset', userController.requestPasswordReset);
+router.post('/reset-password', userController.resetPassword);
 
 module.exports = router;

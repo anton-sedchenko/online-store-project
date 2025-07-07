@@ -10,6 +10,8 @@ import {
     SHOP_ROUTE,
     ORDER_ROUTE,
     CONTACTS_ROUTE,
+    FORGOT_PASSWORD_ROUTE,
+    RESET_PASSWORD_ROUTE,
 } from "./utils/consts.js";
 import Shop from "./pages/Shop.jsx";
 import Auth from "./pages/Auth.jsx";
@@ -17,6 +19,8 @@ import ProductPage from "./pages/ProductPage.jsx";
 import Profile from "./pages/Profile.jsx";
 import Order from "./pages/Order.jsx";
 import Contacts from "./pages/Contacts.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 
 export const authRoutes = [
     {
@@ -57,5 +61,13 @@ export const publicRoutes = [
     {
         path: CONTACTS_ROUTE,
         Component: Contacts
+    },
+    {
+        path: FORGOT_PASSWORD_ROUTE,
+        Component: ForgotPassword
+    },
+    {
+        path: RESET_PASSWORD_ROUTE + '/:token',
+        Component: ResetPassword
     },
 ]

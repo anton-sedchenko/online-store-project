@@ -9,6 +9,8 @@ const User = sequelize.define('user', {
     phone: {type: DataTypes.STRING, allowNull: true},
     password: {type: DataTypes.STRING},
     role: {type: DataTypes.STRING, defaultValue: "USER"},
+    resetToken: {type: DataTypes.STRING, allowNull: true},
+    resetTokenExpiry: {type: DataTypes.DATE, allowNull: true},
 });
 
 const Cart = sequelize.define('cart', {
