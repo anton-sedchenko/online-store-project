@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const {User, Cart} = require('../models/models');
 const {Op} = require("sequelize");
 const {createTransport} = require("nodemailer");
+const crypto = require('crypto');
 
 const generateJwt = (id, email, role) => {
     return jwt.sign(

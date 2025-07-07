@@ -31,5 +31,6 @@ html, body {
 .component__container {
   width: 100%;
   max-width: 1200px;
+  min-height: 60vh;
   padding: 0 15px;
 }
