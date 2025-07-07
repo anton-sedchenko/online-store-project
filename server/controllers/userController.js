@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const {User, Cart} = require('../models/models');
 const {Op} = require("sequelize");
+const {createTransport} = require("nodemailer");
 
 const generateJwt = (id, email, role) => {
     return jwt.sign(
@@ -12,7 +13,7 @@ const generateJwt = (id, email, role) => {
     );
 };
 
-const mailer = nodemailer.createTransport({
+const mailer = createTransport({
     host: process.env.EMAIL_HOST,
     port: Number(process.env.EMAIL_PORT),
     secure: process.env.EMAIL_SECURE === 'true',
