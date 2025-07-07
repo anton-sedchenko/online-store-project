@@ -42,11 +42,6 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-app.use((req, res, next) => {
-    console.log(`👉 ${req.method} ${req.originalUrl}`);
-    next();
-});
-
 app.use('/api', router);
 // Замикаючий middleware - опрацювання помилок та передача відповіді клієнту
 app.use(errorHandler);
