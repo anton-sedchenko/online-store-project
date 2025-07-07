@@ -75,6 +75,10 @@ class UserController {
             const user = await User.findByPk(req.user.id, {
                 attributes: ['id','firstName','lastName','email','phone','role']
             });
+
+            // шукаєм баг
+            console.log("👤 fetchAuthUser result", user);
+
             return res.json(user);
         } catch(e) {
             next(ApiError.internal(e.message));

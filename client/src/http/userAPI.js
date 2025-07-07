@@ -21,6 +21,10 @@ export const login = async (email, password) => {
 
 export const fetchAuthUser = async () => {
     const {data} = await $authHost.get('/api/user/auth');
+
+    // шукаєм баг
+    console.log("👤 fetchAuthUser result", data);
+
     return data;
 };
 
