@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import {LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE} from "../utils/consts.js";
+import {FORGOT_PASSWORD_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE} from "../utils/consts.js";
 import {fetchAuthUser, login, registration} from "../http/userAPI.js";
 import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
@@ -71,6 +71,9 @@ const Auth = observer(() => {
                             <div>
                                 <p className="auth__form__register__advice">
                                     Немає аккаунту? <Link to={REGISTRATION_ROUTE}>Зареєструйся!</Link>
+                                </p>
+                                <p className="auth__form__register__advice">
+                                    <Link to={FORGOT_PASSWORD_ROUTE}>Забули пароль?</Link>
                                 </p>
                             </div>
                             :
