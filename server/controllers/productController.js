@@ -82,7 +82,7 @@ class ProductController {
 
         // шукаєм баг
         console.log("📥 getAll query:", req.query);
-        
+
         try {
             let {typeId, limit, page} = req.query;
             page = page || 1;
