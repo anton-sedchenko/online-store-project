@@ -5,6 +5,7 @@ const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const router = require('./routes/index');
 const errorHandler = require('./middleware/ErrorHandlingMiddleware');
+const path = require('path');
 const helmet = require('helmet');
 
 const PORT = process.env.PORT || 8080;
@@ -43,6 +44,14 @@ app.use(limiter);
 app.use('/api', router);
 // Замикаючий middleware - опрацювання помилок та передача відповіді клієнту
 app.use(errorHandler);
+
+// Віддавати статичні файли з React
+app.use(express.static(path.resolve(__dirname, '..', 'client', 'dist')));
+
+// Для будь-якого GET-запиту, що не /api/... — повертати index.html
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '..', 'client', 'dist', 'index.html'));
+});
 
 const start = async () => {
     try {
