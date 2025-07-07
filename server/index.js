@@ -58,7 +58,7 @@ const start = async () => {
     try {
         console.log("🔌 Using DB:", process.env.DATABASE_URL);
         await sequelize.authenticate();
-        await sequelize.sync({alter: true});
+        await sequelize.sync({force: true});
 
         if (!PORT) throw new Error('PORT is not defined!');
         app.listen(PORT, () => {
