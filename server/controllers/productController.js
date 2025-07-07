@@ -90,6 +90,9 @@ class ProductController {
             let offset = page * limit - limit;
             let products;
 
+            // шукаєм баг
+            console.log("👉 typeId:", typeId)
+
             if (typeId) {
                 products = await Product.findAndCountAll({where: {typeId}, limit, offset});
             } else {
