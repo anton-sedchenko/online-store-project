@@ -56,6 +56,9 @@ app.get('*', (req, res) => {
 
 const start = async () => {
     try {
+
+        console.log("🔌 Using DB:", process.env.DATABASE_URL);
+        
         await sequelize.authenticate();
         // await sequelize.sync({alter: true});
 
