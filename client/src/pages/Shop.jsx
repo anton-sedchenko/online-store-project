@@ -11,8 +11,6 @@ import PaginationComponent from "../components/PaginationComponent.jsx";
 const Shop = observer(() => {
     const {productStore} = useContext(Context);
 
-    console.log("API URL:", import.meta.env.VITE_APP_API_URL);
-
     // Підгружаємо товари один раз при відкритті сторінки магазину
     useEffect(() => {
         productStore.fetchTypes();

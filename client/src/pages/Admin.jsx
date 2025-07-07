@@ -28,7 +28,6 @@ const Admin = observer(() => {
                 await deleteProduct(id);
                 await adminStore.loadProducts(); // оновлюємо список після видалення
             } catch (e) {
-                console.error("Не вдалося видалити товар:", e);
                 alert("Помилка при видаленні товару");
             }
         }

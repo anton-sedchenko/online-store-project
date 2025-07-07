@@ -21,10 +21,6 @@ export const login = async (email, password) => {
 
 export const fetchAuthUser = async () => {
     const {data} = await $authHost.get('/api/user/auth');
-
-    // шукаєм баг // railway trigger
-    console.log("👤 fetchAuthUser result", data);
-
     return data;
 };
 

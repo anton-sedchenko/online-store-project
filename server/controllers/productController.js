@@ -79,19 +79,12 @@ class ProductController {
     }
 
     async getAll(req, res, next) {
-
-        // шукаєм баг
-        console.log("📥 getAll query:", req.query);
-
         try {
             let {typeId, limit, page} = req.query;
             page = page || 1;
             limit = limit || 9;
             let offset = page * limit - limit;
             let products;
-
-            // шукаєм баг
-            console.log("👉 typeId:", typeId)
 
             if (typeId) {
                 products = await Product.findAndCountAll({where: {typeId}, limit, offset});

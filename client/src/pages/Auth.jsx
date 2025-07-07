@@ -25,8 +25,6 @@ const Auth = observer(() => {
             }
 
             tokenUser = await fetchAuthUser(); // отримуємо юзера з БД
-
-            console.log("👤 USER AFTER LOGIN:", tokenUser);
             userStore.setUser(tokenUser);
             userStore.setIsAuth(true);
             await cartStore.switchToAuth();

@@ -89,9 +89,6 @@ export default class CartStore {
             if (exist) {
                 exist.quantity += qty;
             } else {
-
-                console.log("Додаємо в гостьовий кошик:", product);
-
                 this._items.push({ ...product, quantity: qty });
             }
             this.saveGuestCart();

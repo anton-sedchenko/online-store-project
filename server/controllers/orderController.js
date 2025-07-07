@@ -26,9 +26,6 @@ const mailer = nodemailer.createTransport({
 
 class OrderController {
     async createOrder(req, res, next) {
-
-        console.log('⏳ createOrder hit, body:', req.body, 'headers:', req.headers.origin);
-
         try {
             // якщо токен був, то в optionalAuth він попав req.user.id
             const userId = req.user?.id || null;
@@ -131,7 +128,7 @@ class OrderController {
                 fullName, tel, email, comments
             });
         } catch (e) {
-            console.error('💥 createOrder crashed:', e.stack || e);
+            console.error('createOrder crashed:', e.stack || e);
             return next(ApiError.internal('Помилка на сервері при створенні замовлення'));
         }
     }
