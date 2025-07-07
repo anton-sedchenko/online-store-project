@@ -18,16 +18,15 @@ export const updateProduct = async (id, formData) => {
 };
 
 export const fetchProducts = async (typeId, page, limit = 4) => {
-    const {data} = await $host.get("/api/product", {
-        params: {
-            typeId: typeId || undefined,
-            page,
-            limit
-        }
-    });
+    const params = {page, limit};
+    if (typeId !== null) {
+        params.typeId = typeId;
+    }
+
+    const {data} = await $host.get("/api/product", {params});
 
     // шукаєм баг
-    console.log("fetchProducts", { typeId, page, limit })
+    console.log("fetchProducts", params);
 
     return data;
 }
