@@ -56,22 +56,13 @@ app.get('*', (req, res) => {
 
 const start = async () => {
     try {
-
         console.log("🔌 Using DB:", process.env.DATABASE_URL);
-        
         await sequelize.authenticate();
-        // await sequelize.sync({alter: true});
+        await sequelize.sync({alter: true});
 
-        if (!PORT) {
-            throw new Error('PORT is not defined!');
-        }
-
-        app.listen(PORT, err => {
-            if (err) {
-                console.error('Server failed to start:', err);
-            } else {
-                console.log(`Server started on port ${PORT}`);
-            }
+        if (!PORT) throw new Error('PORT is not defined!');
+        app.listen(PORT, () => {
+            console.log(`Server started on port ${PORT}`);
         });
     } catch (e) {
         console.log(e);
