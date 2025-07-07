@@ -20,6 +20,10 @@ const Auth = observer(() => {
             let user;
             if (isLogin) {
                 user = await login(email, password);       // отримуємо { id, email, role }
+
+                // шукаєм баг
+                console.log("👤 USER AFTER LOGIN:", user);
+
             } else {
                 await registration(email, password);
                 user = await fetchAuthUser();              // отримуємо користувача після реєстрації
