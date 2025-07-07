@@ -3,6 +3,8 @@ const router = new Router();
 const userController = require('../controllers/userController');
 const authMiddleware = require('../middleware/authMiddleware');
 
+console.log("✅ userRouter loaded");
+
 router.post('/registration', userController.registration);
 router.post('/login', userController.login);
 // Перевірка користувача на авторизацію
