@@ -25,6 +25,10 @@ export const fetchProducts = async (typeId, page, limit = 4) => {
             limit
         }
     });
+
+    // шукаєм баг
+    console.log("fetchProducts", { typeId, page, limit })
+
     return data;
 }
 
