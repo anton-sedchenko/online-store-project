@@ -7,9 +7,11 @@ const AddedToCartModal = ({show, onHide}) => {
             centered
             show={show}
             onHide={onHide}
-            className="added__to__cart__modal"
         >
-            <Modal.Body closeButton>
+            <Modal.Body
+                closeButton
+                className="added__to__cart__modal"
+            >
                 Товар додано до кошика 🛒
             </Modal.Body>
         </Modal>
