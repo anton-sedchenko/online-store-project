@@ -45,15 +45,17 @@
   color: $color-primary;
 }
 
+.gallery__card__info__container {
+  margin-bottom: 15px;
+}
+
 .gallery__card__btn__container {
-  align-self: end;
-  text-align: center;
-  padding: 10px;
+  align-self: center;
+  width: 100px;
 }
 
 .gallery__card__btn {
-  width: 70px;
-  height: 40px;
+  padding: 10px;
 }
 
 .gallery__card__product__code {

@@ -24,7 +24,7 @@ const ProductItem = observer(({product}) => {
                 className="gallery__card neu-card"
                 onClick={() => navigate(`${PRODUCT_ROUTE}/${product.slug}`)}
             >
-                <div>
+                <div className="gallery__card__info__container">
                     <Image
                         src={product.img}
                     />
