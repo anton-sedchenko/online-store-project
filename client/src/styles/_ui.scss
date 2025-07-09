@@ -68,6 +68,8 @@
 // gallery modal when product added to cart
 .added__to__cart__modal {
   height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text-align: center;
-  vertical-align: center;
 }
