@@ -24,21 +24,25 @@ const ProductItem = observer(({product}) => {
                 className="gallery__card neu-card"
                 onClick={() => navigate(`${PRODUCT_ROUTE}/${product.slug}`)}
             >
-                <Image
-                    src={product.img}
-                />
-                <p className="gallery__card__product__code">Артикул: {product.code}</p>
-                <h6 className="gallery__card__product__name">{product.name}</h6>
-                <p className="gallery__card__product__price">Ціна: <span>{product.price}</span> грн.</p>
-                <btn
-                    className="neu-btn"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddToCart();
-                    }}
-                >
-                    До кошика
-                </btn>
+                <div>
+                    <Image
+                        src={product.img}
+                    />
+                    <p className="gallery__card__product__code">Артикул: {product.code}</p>
+                    <h6 className="gallery__card__product__name">{product.name}</h6>
+                    <p className="gallery__card__product__price">Ціна: <span>{product.price}</span> грн.</p>
+                </div>
+                <div className="gallery__card__btn__container">
+                    <btn
+                        className="neu-btn gallery__card__btn"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddToCart();
+                        }}
+                    >
+                        До кошика
+                    </btn>
+                </div>
             </Card>
 
             <AddedToCartModal show={showModal} onHide={() => setShowModal(false)} />
