@@ -29,6 +29,8 @@
   height: 100%;
   cursor: pointer;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .gallery__card img {
@@ -37,8 +39,6 @@
   border-radius: 5px;
   max-width: 200px;
   height: 200px;
-  display: flex;
-  flex-direction: column;
 }
 
 .fa-heart {
