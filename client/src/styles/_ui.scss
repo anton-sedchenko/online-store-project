@@ -9,17 +9,17 @@
 }
 
 // Вдавлений inset стиль
-.neu-card:hover {
-  box-shadow:
-          inset -4px -4px 8px var(--shadow1),
-          inset  4px  4px 8px var(--shadow2);
-}
-
-.neu-card:active {
-  box-shadow:
-          inset -8px -8px 16px var(--shadow1),
-          inset  8px  8px 16px var(--shadow2);
-}
+//.neu-card:hover {
+//  box-shadow:
+//          inset -4px -4px 8px var(--shadow1),
+//          inset  4px  4px 8px var(--shadow2);
+//}
+//
+//.neu-card:active {
+//  box-shadow:
+//          inset -8px -8px 16px var(--shadow1),
+//          inset  8px  8px 16px var(--shadow2);
+//}
 
 /* Інпут в тому ж стилі */
 .neu-input {
