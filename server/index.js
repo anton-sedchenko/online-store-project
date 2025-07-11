@@ -34,7 +34,7 @@ app.use(fileUpload({
     limits: {fileSize: 5e6},
 }));
 
-// app.use(helmet()); тимчасово вимкнули щоб знайти баг
+app.use(helmet());
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 хвилин

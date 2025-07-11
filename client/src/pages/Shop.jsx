@@ -7,6 +7,7 @@ import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
 import {fetchProducts} from "../http/productAPI.js";
 import PaginationComponent from "../components/PaginationComponent.jsx";
+import {Helmet} from "react-helmet-async";
 
 const Shop = observer(() => {
     const {productStore} = useContext(Context);
@@ -35,28 +36,35 @@ const Shop = observer(() => {
     ]);
 
     return (
-        <div className="component__container">
-            <Row>
-                <Col
-                    md={3}
-                    lg={2}
-                    className="sidebar__col__container"
-                >
-                    <SideBar/>
-                </Col>
-                <Col
-                    md={9}
-                    lg={10}
-                >
-                    <div className="gallery__title">
-                        <h2>Наші вироби ручної роботи, виготовлені з любов'ю <i className="fa-solid fa-heart"></i></h2>
-                    </div>
-                    <TypeBar/>
-                    <ProductList/>
-                    <PaginationComponent/>
-                </Col>
-            </Row>
-        </div>
+        <>
+            <Helmet>
+                <title>Галерея – Чарівна майстерня</title>
+                <meta name="description" content="Унікальні вироби ручної роботи. Перегляньте асортимент нашої творчої майстерні." />
+            </Helmet>
+
+            <div className="component__container">
+                <Row>
+                    <Col
+                        md={3}
+                        lg={2}
+                        className="sidebar__col__container"
+                    >
+                        <SideBar/>
+                    </Col>
+                    <Col
+                        md={9}
+                        lg={10}
+                    >
+                        <div className="gallery__title">
+                            <h2>Наші вироби ручної роботи, виготовлені з любов'ю <i className="fa-solid fa-heart"></i></h2>
+                        </div>
+                        <TypeBar/>
+                        <ProductList/>
+                        <PaginationComponent/>
+                    </Col>
+                </Row>
+            </div>
+        </>
     );
 });
 

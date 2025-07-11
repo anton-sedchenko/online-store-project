@@ -1,10 +1,16 @@
 import React from 'react';
 import SideBar from "../components/SideBar.jsx";
 import {Col, Container, Row} from "react-bootstrap";
+import {Helmet} from "react-helmet-async";
 
 const Contacts = () => {
     return (
         <div className="component__container">
+            <Helmet>
+                <title>Контакти – Чарівна майстерня</title>
+                <meta name="description" content="Зв’яжіться з нами для консультації чи індивідуального замовлення." />
+            </Helmet>
+
             <Row>
                 <Col md={2}>
                     <SideBar/>

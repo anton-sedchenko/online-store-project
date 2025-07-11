@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 import {createOrder} from "../http/orderAPI.js";
 import {Context} from "../main.jsx";
 import OrderConfirm from "../components/modals/OrderConfirm.jsx";
+import {Helmet} from "react-helmet-async";
 
 const Order = () => {
     const navigate = useNavigate();
@@ -36,6 +37,12 @@ const Order = () => {
 
     return (
         <>
+            <Helmet>
+                <title>Оформлення замовлення – Чарівна майстерня</title>
+                <meta name="description"
+                      content="Вкажіть дані для доставки й завершення замовлення виробів ручної роботи."/>
+            </Helmet>
+
             <div className="component__container">
                 <Row>
                     <Col md={6} className="order__form__container">

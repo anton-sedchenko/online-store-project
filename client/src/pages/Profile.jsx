@@ -4,6 +4,7 @@ import {observer} from 'mobx-react-lite';
 import {Context} from '../main.jsx';
 import {fetchMyOrders} from '../http/orderAPI.js';
 import {changePassword, updateProfile} from "../http/userAPI.js";
+import {Helmet} from "react-helmet-async";
 
 const Profile = observer(() => {
     const {userStore} = useContext(Context);
@@ -75,6 +76,11 @@ const Profile = observer(() => {
 
     return (
         <div className="component__container">
+            <Helmet>
+                <title>Мій профіль – Чарівна майстерня</title>
+                <meta name="description" content="Редагуйте свої дані та переглядайте історію замовлень." />
+            </Helmet>
+
             <Tab.Container activeKey={tab} onSelect={k => setTab(k)}>
                 <Row>
                     <Col sm={3} className="profile__tabs__container">
