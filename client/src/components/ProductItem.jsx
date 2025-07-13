@@ -35,17 +35,17 @@ const ProductItem = observer(({product}) => {
                     <div>
                         <p className="gallery__card__product__price">Ціна: <span>{product.price}</span> грн.</p>
                     </div>
-                    <div className="gallery__card__btn__container">
-                        <btn
-                            className="neu-btn gallery__card__btn"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleAddToCart();
-                            }}
-                        >
-                            До кошика
-                        </btn>
-                    </div>
+                </div>
+                <div className="gallery__card__btn__container">
+                    <btn
+                        className="neu-btn gallery__card__btn"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddToCart();
+                        }}
+                    >
+                        До кошика
+                    </btn>
                 </div>
             </Card>
 
