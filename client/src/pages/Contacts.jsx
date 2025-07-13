@@ -21,17 +21,17 @@ const Contacts = () => {
                             <Row className="contacts__info__block contacts__tel__block">
                                 <h2>Наші контакти</h2>
                                 <Col md={6}>
-                                    <p>Телефон:</p>
-                                    <div>
+                                    <p>
                                         <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
+                                        Телефон:
+                                    </p>
+                                    <div>
                                         <span>+38 (068) 036 15 97</span>
                                     </div>
                                     <div>
-                                        <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
                                         <span>+38 (093) 744 25 11</span>
                                     </div>
                                     <div>
-                                        <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
                                         <span>+38 (050) 608 62 30</span>
                                     </div>
                                 </Col>
@@ -73,6 +73,14 @@ const Contacts = () => {
                                 <p>
                                     <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
                                     +38 (068) 036 15 97
+                                </p>
+                                <p>
+                                    <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
+                                    <span>+38 (093) 744 25 11</span>
+                                </p>
+                                <p>
+                                    <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
+                                    <span>+38 (050) 608 62 30</span>
                                 </p>
                                 <p>
                                     <i className="fa fa-envelope-o contacts__icon" aria-hidden="true"></i>
