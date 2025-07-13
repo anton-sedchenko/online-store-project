@@ -19,6 +19,9 @@ const Footer = () => {
                         <Link to="/" onClick={() => window.scrollTo(0, 0)}>
                             Публічний договір
                         </Link>
+                        <Link to="/RETURN_POLICY_ROUTE" onClick={() => window.scrollTo(0, 0)}>
+                            Політика повернення товару
+                        </Link>
                     </div>
                     <div className="footer__column-contacts">
                         {/*<p>Ми у соціальних мережах</p>*/}
