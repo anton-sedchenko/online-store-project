@@ -22,12 +22,18 @@ const Contacts = () => {
                                 <h2>Наші контакти</h2>
                                 <Col md={6}>
                                     <p>Телефон:</p>
-                                    <p>
+                                    <div>
                                         <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
                                         <span>+38 (068) 036 15 97</span>
+                                    </div>
+                                    <div>
+                                        <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
                                         <span>+38 (093) 744 25 11</span>
+                                    </div>
+                                    <div>
+                                        <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
                                         <span>+38 (050) 608 62 30</span>
-                                    </p>
+                                    </div>
                                 </Col>
                                 <Col md={6}>
                                     <p>E-mail:</p>

@@ -47,7 +47,8 @@ header h1 {
 
 .header__nav__tel {
   display: flex;
-  justify-content: end;
+  justify-content: space-around;
+  flex-wrap: wrap;
   margin-bottom: 15px;
 
   @include respond-to(xs) {

@@ -32,12 +32,18 @@ const Header = observer(() => {
 
                 <nav className="header__nav">
                     <div className="header__nav__tel">
-                        <p>
+                        <div>
                             <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
                             <span>+38 (068) 036 15 97</span>
+                        </div>
+                        <div>
+                            <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
                             <span>+38 (093) 744 25 11</span>
+                        </div>
+                        <div>
+                            <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
                             <span>+38 (050) 608 62 30</span>
-                        </p>
+                        </div>
                     </div>
                     <div className="header__nav__menu">
                         {userStore.isAuth ? (
