@@ -11,7 +11,7 @@ import {
     ORDER_ROUTE,
     CONTACTS_ROUTE,
     FORGOT_PASSWORD_ROUTE,
-    RESET_PASSWORD_ROUTE,
+    RESET_PASSWORD_ROUTE, RETURN_POLICY_ROUTE,
 } from "./utils/consts.js";
 import Shop from "./pages/Shop.jsx";
 import Auth from "./pages/Auth.jsx";
@@ -21,6 +21,7 @@ import Order from "./pages/Order.jsx";
 import Contacts from "./pages/Contacts.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
+import ReturnPolicy from "./pages/ReturnPolicy.jsx";
 
 export const authRoutes = [
     {
@@ -69,5 +70,9 @@ export const publicRoutes = [
     {
         path: RESET_PASSWORD_ROUTE + '/:token',
         Component: ResetPassword
+    },
+    {
+        path: RETURN_POLICY_ROUTE,
+        Component: ReturnPolicy
     },
 ]

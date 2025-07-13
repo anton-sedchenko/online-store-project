@@ -9,3 +9,4 @@ export const ORDER_ROUTE = "/order";
 export const CONTACTS_ROUTE = "/contacts";
 export const FORGOT_PASSWORD_ROUTE = "/forgot-password";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
+export const RETURN_POLICY_ROUTE = "/return-policy";
