@@ -36,9 +36,11 @@ const Contacts = () => {
                                     </div>
                                 </Col>
                                 <Col md={6}>
-                                    <p>E-mail:</p>
                                     <p>
                                         <i className="fa fa-envelope-o contacts__icon" aria-hidden="true"></i>
+                                        E-mail:
+                                    </p>
+                                    <p>
                                         charivnij.workshop@gmail.com
                                     </p>
                                 </Col>

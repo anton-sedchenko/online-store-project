@@ -24,6 +24,8 @@ const Footer = () => {
                         {/*<p>Ми у соціальних мережах</p>*/}
                         {/*<p>FB icon, Insta icon, Tik-Tok icon</p>*/}
                         <p>+38 (068) 036-15-97</p>
+                        <p>+38 (093) 744 25 11</p>
+                        <p>+38 (050) 608 62 30</p>
                         <p>charivnij.workshop@gmail.com</p>
                     </div>
                 </div>
