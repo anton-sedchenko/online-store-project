@@ -20,8 +20,7 @@ const ResetPassword = () => {
     };
 
     return (
-        <div className="component__container">
-            <div className="component__container" style={{padding: 20}}>
+        <div className="component__container" style={{padding: 20}}>
                 <h2>Новий пароль</h2>
                 <form onSubmit={handleSubmit} className="auth__form">
                     <input
@@ -37,7 +36,6 @@ const ResetPassword = () => {
                     </button>
                     {message && <p style={{marginTop: 10}}>{message}</p>}
                 </form>
-            </div>
         </div>
     );
 };
