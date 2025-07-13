@@ -2,7 +2,7 @@ import React from 'react';
 
 const ReturnPolicy = () => {
     return (
-        <div className="component__container" style={{padding: 20}}>
+        <div className="component__container return__policy__page__container">
             <h2>Політика повернення та обміну товарів</h2>
             <h3>1. Загальні положення</h3>
             <p>
