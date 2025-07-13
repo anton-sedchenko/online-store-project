@@ -24,7 +24,9 @@ const Contacts = () => {
                                     <p>Телефон:</p>
                                     <p>
                                         <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
-                                        +38 (068) 036 15 97
+                                        <span>+38 (068) 036 15 97</span>
+                                        <span>+38 (093) 744 25 11</span>
+                                        <span>+38 (050) 608 62 30</span>
                                     </p>
                                 </Col>
                                 <Col md={6}>
