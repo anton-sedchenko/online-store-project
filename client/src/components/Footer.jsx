@@ -30,7 +30,9 @@ const Footer = () => {
                         <p>+38 (068) 036 15 97</p>
                         <p>+38 (093) 744 25 11</p>
                         <p>+38 (050) 608 62 30</p>
-                        <p>charivnij.workshop@gmail.com</p>
+                        <p>
+                            <a href="mailto:charivna-craft@gmail.com">charivna-craft@gmail.com</a>
+                        </p>
                     </div>
                 </div>
                 <div className="footer__copyrights-container">
