@@ -11,7 +11,9 @@ import {
     ORDER_ROUTE,
     CONTACTS_ROUTE,
     FORGOT_PASSWORD_ROUTE,
-    RESET_PASSWORD_ROUTE, RETURN_POLICY_ROUTE,
+    RESET_PASSWORD_ROUTE,
+    RETURN_POLICY_ROUTE,
+    OFERTA_ROUTE,
 } from "./utils/consts.js";
 import Shop from "./pages/Shop.jsx";
 import Auth from "./pages/Auth.jsx";
@@ -22,6 +24,7 @@ import Contacts from "./pages/Contacts.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import ReturnPolicy from "./pages/ReturnPolicy.jsx";
+import Oferta from "./pages/Oferta.jsx";
 
 export const authRoutes = [
     {
@@ -74,5 +77,9 @@ export const publicRoutes = [
     {
         path: RETURN_POLICY_ROUTE,
         Component: ReturnPolicy
+    },
+    {
+        path: OFERTA_ROUTE,
+        Component: Oferta
     },
 ]

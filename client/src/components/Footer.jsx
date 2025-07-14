@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from "react-router-dom";
-import {CONTACTS_ROUTE, RETURN_POLICY_ROUTE, SHOP_ROUTE} from "../utils/consts.js";
+import {CONTACTS_ROUTE, OFERTA_ROUTE, RETURN_POLICY_ROUTE, SHOP_ROUTE} from "../utils/consts.js";
 
 const Footer = () => {
     return (
@@ -17,7 +17,7 @@ const Footer = () => {
                         <Link to={CONTACTS_ROUTE} onClick={() => window.scrollTo(0, 0)}>
                             Контакти
                         </Link>
-                        <Link to="/" onClick={() => window.scrollTo(0, 0)}>
+                        <Link to={OFERTA_ROUTE} onClick={() => window.scrollTo(0, 0)}>
                             Публічний договір
                         </Link>
                         <Link to={RETURN_POLICY_ROUTE} onClick={() => window.scrollTo(0, 0)}>
