@@ -2,7 +2,7 @@ import React from 'react';
 
 const ReturnPolicy = () => {
     return (
-        <div className="component__container">
+        <div className="component__container return__policy__page__container">
             <h1>Політика повернення та обміну товарів</h1>
 
             <section>

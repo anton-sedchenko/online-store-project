@@ -2,7 +2,7 @@ import React from 'react';
 
 const Oferta = () => {
     return (
-        <div className="component__container">
+        <div className="component__container oferta__page__container">
             <h1>Публічний договір (оферта)</h1>
             <p><strong>Оновлено:</strong> 14.07.2025 р.</p>
 

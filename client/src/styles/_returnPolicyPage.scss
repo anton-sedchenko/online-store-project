@@ -1,4 +1,5 @@
-//.return__policy__page__container {
-//  padding: 20px;
-//  white-space: pre-line;
-//}
+@import './mixins';
+
+.return__policy__page__container {
+  @include text-block-styles;
+}

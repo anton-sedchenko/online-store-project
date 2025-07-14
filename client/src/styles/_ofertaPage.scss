@@ -1,15 +1,5 @@
-h1, h2 {
-  color: #7b2cbf;
-}
+@import './mixins';
 
-h1 {
-  text-align: center;
-}
-
-section {
-  margin-bottom: 2rem;
-}
-
-strong {
-  color: #000;
+.oferta__page__container {
+  @include text-block-styles;
 }
