@@ -67,10 +67,10 @@ const ProductPage = () => {
                     <div>
                         <p className="product__code">Код товару: {product.code || '---'}</p>
                         <h3 className="product__title">{product.name}</h3>
-                        <div style={{display: "flex"}}>
+                        <div className="product__count__container">
                             <p className="product__count">Кількість:</p>
                             <input
-                                className="neu-input"
+                                className="neu-input product__count__input"
                                 type="number"
                                 min={1}
                                 value={qty}
