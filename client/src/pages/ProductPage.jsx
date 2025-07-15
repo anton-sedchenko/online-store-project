@@ -63,7 +63,7 @@ const ProductPage = () => {
                         alt={product.name || "зображення товару"}
                     ></Image>
                 </Col>
-                <Col md={4}>
+                <Col xs={12} md={6}>
                     <div>
                         <p className="product__code">Код товару: {product.code || '---'}</p>
                         <h3 className="product__title">{product.name}</h3>
@@ -78,6 +78,10 @@ const ProductPage = () => {
                             />
                         </div>
                     </div>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs={12} md={12}>
                     <div>
                         <h4>Опис товару:</h4>
                         <p className="product__description">{product.description || 'Немає опису'}</p>
