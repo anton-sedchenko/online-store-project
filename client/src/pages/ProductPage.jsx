@@ -55,7 +55,7 @@ const ProductPage = () => {
                 </Helmet>
             )}
             <Row>
-                <Col xs={12} md={6} className="product__img__container">
+                <Col xs={12} md={4} className="product__img__container">
                     <Image
                         width={300}
                         height={300}
@@ -63,7 +63,7 @@ const ProductPage = () => {
                         alt={product.name || "зображення товару"}
                     ></Image>
                 </Col>
-                <Col xs={12} md={6}>
+                <Col xs={12} md={8}>
                     <div>
                         <p className="product__code">Код товару: {product.code || '---'}</p>
                         <h3 className="product__title">{product.name}</h3>
