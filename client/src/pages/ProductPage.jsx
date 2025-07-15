@@ -77,6 +77,8 @@ const ProductPage = () => {
                                 onChange={(e) => setQty(Number(e.target.value))}
                             />
                         </div>
+                    </div>
+                    <div>
                         <h4>Опис товару:</h4>
                         <p className="product__description">{product.description || 'Немає опису'}</p>
                         <h4>Сума: {sum} грн.</h4>
