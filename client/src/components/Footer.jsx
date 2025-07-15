@@ -37,7 +37,7 @@ const Footer = () => {
                 </div>
                 <div className="footer__copyrights-container">
                     <div className="footer__column-copyrights">
-                        <p>Чарівна майстерня &copy;2025</p>
+                        <p>Charivna Craft &copy;2025</p>
                         <p>Developed by Anton Sedchenko</p>
                     </div>
                 </div>
