@@ -7,7 +7,7 @@ import {Context} from "../main.jsx";
 import Table from "react-bootstrap/Table";
 import EditProduct from "../components/modals/EditProduct.jsx";
 import AdminPages from "../components/AdminPages.jsx";
-import {deleteProduct} from "../http/productAPI.js";
+import {deleteProduct, fetchOneProduct} from "../http/productAPI.js";
 
 // виводимо список фігур, кнопка Edit задає фігуру для редагування,
 // коли її об’єкт непорожній — вмикаємо модалку редагування з поточним товаром
@@ -21,6 +21,15 @@ const Admin = observer(() => {
     useEffect(() => {
         adminStore.loadProducts();
     }, []);
+
+    const openEditModal = async (productId) => {
+        try {
+            const fullProduct = await fetchOneProduct(productId);
+            setEditing(fullProduct);
+        } catch (e) {
+            alert("Не вдалося завантажити товар для редагування");
+        }
+    };
 
     const handleDelete = async (id) => {
         if (window.confirm("Ви впевнені, що хочете видалити цей товар?")) {
@@ -81,7 +90,7 @@ const Admin = observer(() => {
                             <Button
                                 className="admin__page__edit__btn"
                                 size="sm"
-                                onClick={() => setEditing(prod)}
+                                onClick={() => openEditModal(prod.id)}
                             >
                                 Редагувати
                             </Button>

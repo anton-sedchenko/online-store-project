@@ -88,7 +88,18 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             onChange={e => setDescription(e.target.value)} />
                     </Form.Group>
                     <Form.Group className="mb-2">
-                        <Form.Label>Зображення</Form.Label>
+                        <Form.Label>Головне зображення</Form.Label>
+                        {mainImageUrl && (
+                            <div className="mb-2">
+                                <img src={mainImageUrl} alt="main" style={{width: '100px'}} />
+                            </div>
+                        )}
+                        <Form.Control
+                            type="file"
+                            accept="image/*"
+                            onChange={e => setMainImageFile(e.target.files[0])}
+                        />
+
                         <Form.Group className="mb-2">
                             <Form.Label>Додаткові зображення</Form.Label>
                             <Form.Control
@@ -99,19 +110,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             />
                         </Form.Group>
 
-                        <Form.Group className="mb-2">
-                            <Form.Label>Головне зображення</Form.Label>
-                            {mainImageUrl && (
-                                <div className="mb-2">
-                                    <img src={mainImageUrl} alt="main" style={{width: '100px'}} />
-                                </div>
-                            )}
-                            <Form.Control
-                                type="file"
-                                accept="image/*"
-                                onChange={e => setMainImageFile(e.target.files[0])}
-                            />
-                        </Form.Group>
+
                         <div className="existing-images">
                             {existingImages.map(img => (
                                 <div key={img.id} className="img-thumb-wrapper">
