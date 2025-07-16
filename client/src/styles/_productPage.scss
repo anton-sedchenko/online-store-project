@@ -40,10 +40,6 @@
   @include btn-style;
 }
 
-.product__page__btn:hover {
-  @include btn-style-on-hover;
-}
-
 .product__img__container {
   @media (max-width: 768px) {
     display: flex;

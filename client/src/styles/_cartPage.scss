@@ -19,11 +19,6 @@
   @include btn-style;
 }
 
-.cart__table__confirm__btn:hover {
-  @include btn-style-on-hover;
-}
-
-
 .cart__table__container table {
   min-width: 300px;
   max-width: 900px;

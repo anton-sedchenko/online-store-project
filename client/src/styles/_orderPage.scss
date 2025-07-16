@@ -52,8 +52,3 @@
 .order__form__return__btn {
   @include btn-style;
 }
-
-.order__form__confirm__btn:hover,
-.order__form__return__btn:hover {
-  @include btn-style-on-hover;
-}
