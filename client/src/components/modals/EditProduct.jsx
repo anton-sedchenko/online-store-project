@@ -13,15 +13,18 @@ const EditProduct = ({show, onHide, productToEdit}) => {
     const [imgFiles, setImgFiles] = useState([]);
     const [types, setTypes] = useState([]);
     const [existingImages, setExistingImages] = useState(productToEdit?.images || []);
+    const [mainImageFile, setMainImageFile] = useState(null);
+    const [mainImageUrl, setMainImageUrl] = useState('');
 
     useEffect(() => {
-        if (productToEdit?.images) {
+        if (productToEdit) {
             setName(productToEdit.name);
             setPrice(productToEdit.price);
             setCode(productToEdit.code);
             setTypeId(productToEdit.typeId);
             setDescription(productToEdit.description || '');
             setExistingImages(productToEdit.images);
+            setMainImageUrl(productToEdit.img || '');
         }
         fetchTypes().then(setTypes);
     }, [productToEdit]);
@@ -33,6 +36,9 @@ const EditProduct = ({show, onHide, productToEdit}) => {
         formData.append('code', code);
         formData.append('typeId', typeId);
         formData.append('description', description);
+        if (mainImageFile) {
+            formData.append('img', mainImageFile);
+        }
         imgFiles.forEach((file) => {
             formData.append('images', file); // саме цей рядок додає кілька файлів
         });
@@ -93,6 +99,19 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             />
                         </Form.Group>
 
+                        <Form.Group className="mb-2">
+                            <Form.Label>Головне зображення</Form.Label>
+                            {mainImageUrl && (
+                                <div className="mb-2">
+                                    <img src={mainImageUrl} alt="main" style={{width: '100px'}} />
+                                </div>
+                            )}
+                            <Form.Control
+                                type="file"
+                                accept="image/*"
+                                onChange={e => setMainImageFile(e.target.files[0])}
+                            />
+                        </Form.Group>
                         <div className="existing-images">
                             {existingImages.map(img => (
                                 <div key={img.id} className="img-thumb-wrapper">
