@@ -8,14 +8,17 @@ import {Helmet} from 'react-helmet-async';
 
 const ProductPage = () => {
     const navigate = useNavigate();
-    const [product, setProduct] = useState({info: []});
+    const [product, setProduct] = useState({images: []});
     const {userStore, cartStore} = useContext(Context);
     const [qty, setQty] = useState(1);
-    let sum = product.price * qty;
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const {slug} = useParams();
-    // При завантаженні сторінки товару один раз підгружаємо цей товар
+
     useEffect(() => {
-        fetchProductBySlug(slug).then(data => setProduct(data));
+        fetchProductBySlug(slug).then(data => {
+            setProduct(data);
+            setCurrentImageIndex(0); // скидаємо індекс при новому товарі
+        });
     }, [slug]);
 
     const handleAddToCart = () => {
@@ -29,7 +32,7 @@ const ProductPage = () => {
             }, qty
         );
         navigate(CART_ROUTE);
-    }
+    };
 
     const handleDelete = async () => {
         try {
@@ -40,6 +43,21 @@ const ProductPage = () => {
         }
     };
 
+    const handlePrev = () => {
+        setCurrentImageIndex((prev) =>
+            prev === 0 ? product.images.length - 1 : prev - 1
+        );
+    };
+
+    const handleNext = () => {
+        setCurrentImageIndex((prev) =>
+            prev === product.images.length - 1 ? 0 : prev + 1
+        );
+    };
+
+    const sum = product.price * qty;
+    const activeImage = product.images?.[currentImageIndex]?.url || product.img;
+
     return (
         <Col className="component__container">
             {product?.name && (
@@ -48,21 +66,27 @@ const ProductPage = () => {
                     <meta name="description" content={product.description || 'Опис товару'} />
                     <meta property="og:title" content={product.name} />
                     <meta property="og:description" content={product.description} />
-                    <meta property="og:image" content={product.img} />
-                    {product?.slug && (
-                        <meta property="og:url" content={`https://online-store-project-navy.vercel.app/product/${product.slug}`} />
-                    )}
+                    <meta property="og:image" content={activeImage} />
+                    <meta property="og:url" content={`https://charivna-craft.com.ua/product/${product.slug}`} />
                     <meta property="og:type" content="product" />
                 </Helmet>
             )}
             <Row>
-                <Col xs={12} md={4} className="product__img__container">
-                    <Image
-                        width={300}
-                        height={300}
-                        src={product.img || ""}
-                        alt={product.name || "зображення товару"}
-                    ></Image>
+                <Col xs={12} md={4} className="product__img__container text-center">
+                    <div style={{position: 'relative'}}>
+                        <Image
+                            width={300}
+                            height={300}
+                            src={activeImage}
+                            alt={product.name}
+                        />
+                        {product.images?.length > 1 && (
+                            <>
+                                <button onClick={handlePrev} className="slider-btn prev">‹</button>
+                                <button onClick={handleNext} className="slider-btn next">›</button>
+                            </>
+                        )}
+                    </div>
                 </Col>
                 <Col xs={12} md={8}>
                     <div>
@@ -80,10 +104,7 @@ const ProductPage = () => {
                         </div>
                         <p className="product__page__total__sum">Сума: {sum} грн.</p>
                         <div className="product__page__btn__container">
-                            <button
-                                className="product__page__btn"
-                                onClick={handleAddToCart}
-                            >
+                            <button className="product__page__btn" onClick={handleAddToCart}>
                                 Додати в кошик
                             </button>
                         </div>
@@ -91,23 +112,18 @@ const ProductPage = () => {
                 </Col>
             </Row>
             <Row>
-                <Col xs={12} md={12}>
+                <Col xs={12}>
                     <div>
                         <h4>Опис товару:</h4>
                         <p className="product__description">{product.description || 'Немає опису'}</p>
                     </div>
                 </Col>
                 <Col md={4}>
-                    <div>
-                        {userStore.isAuth && userStore.user.role === 'ADMIN' && (
-                            <button
-                                className="neu-btn"
-                                onClick={handleDelete}
-                            >
-                                Видалити фігурку
-                            </button>
-                        )}
-                    </div>
+                    {userStore.isAuth && userStore.user.role === 'ADMIN' && (
+                        <button className="neu-btn" onClick={handleDelete}>
+                            Видалити фігурку
+                        </button>
+                    )}
                 </Col>
             </Row>
         </Col>

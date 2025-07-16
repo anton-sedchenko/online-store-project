@@ -1,5 +1,30 @@
 @import "mixins";
 
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.7);
+  border: none;
+  font-size: 2rem;
+  padding: 0 10px;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.2s;
+
+  &:hover {
+    background: rgba(255,255,255,0.9);
+  }
+}
+
+.slider-btn.prev {
+  left: 0;
+}
+
+.slider-btn.next {
+  right: 0;
+}
+
 .product__img__container,
 .product__code,
 .product__title,
@@ -39,6 +64,8 @@
 .product__page__btn {
   @include btn-style;
 }
+
+
 
 .product__img__container {
   @media (max-width: 768px) {
