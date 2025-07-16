@@ -59,11 +59,10 @@
   max-width: 230px;
   border-radius: 10px;
   padding: 10px;
-  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
   border-color: purple;
 }
 
-//.order__form__confirm__btn:hover,
-//.order__form__return__btn:hover {
-//  background-color: rgba(240, 240, 240);
-//}
+.order__form__confirm__btn:hover,
+.order__form__return__btn:hover {
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+}
