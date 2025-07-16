@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Modal, Button, Form} from 'react-bootstrap';
-import {updateProduct, fetchProducts} from '../../http/productAPI.js';
+import {updateProduct, fetchProducts, deleteProductImage} from '../../http/productAPI.js';
 import {fetchTypes} from '../../http/typeAPI.js';
 
 // керує локальними станами, показом модалки й збиранням FormData
@@ -12,14 +12,16 @@ const EditProduct = ({show, onHide, productToEdit}) => {
     const [description, setDescription] = useState('');
     const [imgFiles, setImgFiles] = useState([]);
     const [types, setTypes] = useState([]);
+    const [existingImages, setExistingImages] = useState(productToEdit?.images || []);
 
     useEffect(() => {
-        if (productToEdit) {
+        if (productToEdit?.images) {
             setName(productToEdit.name);
             setPrice(productToEdit.price);
             setCode(productToEdit.code);
             setTypeId(productToEdit.typeId);
             setDescription(productToEdit.description || '');
+            setExistingImages(productToEdit.images);
         }
         fetchTypes().then(setTypes);
     }, [productToEdit]);
@@ -39,6 +41,11 @@ const EditProduct = ({show, onHide, productToEdit}) => {
         await updateProduct(productToEdit.id, formData);
         onHide();
         fetchProducts(null, 1, 8).then(() => {});
+    };
+
+    const handleDeleteImage = async (imageId) => {
+        await deleteProductImage(imageId);
+        setExistingImages(prev => prev.filter(img => img.id !== imageId));
     };
 
     return (
@@ -85,6 +92,20 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                                 onChange={e => setImgFiles(Array.from(e.target.files))}
                             />
                         </Form.Group>
+
+                        <div className="existing-images">
+                            {existingImages.map(img => (
+                                <div key={img.id} className="img-thumb-wrapper">
+                                    <img src={img.url} alt="existing" className="img-thumb" />
+                                    <button
+                                        type="button"
+                                        className="delete-btn"
+                                        onClick={() => handleDeleteImage(img.id)}
+                                    >×</button>
+                                </div>
+                            ))}
+                        </div>
+
                     </Form.Group>
                 </Form>
             </Modal.Body>

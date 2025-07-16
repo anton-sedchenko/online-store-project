@@ -25,5 +25,11 @@ router.delete(
     checkRole('ADMIN'),
     productController.deleteProduct
 );
+router.delete(
+    '/image/:id',
+    authMiddleware,
+    checkRole('ADMIN'),
+    productController.deleteImage
+);
 
 module.exports = router;

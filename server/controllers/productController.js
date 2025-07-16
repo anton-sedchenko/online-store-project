@@ -168,6 +168,19 @@ class ProductController {
             next(ApiError.internal('Помилка при додаванні зображень'));
         }
     }
+
+    async deleteImage(req, res, next) {
+        try {
+            const {id} = req.params;
+            const image = await ProductImage.findByPk(id);
+            if (!image) return next(ApiError.notFound('Зображення не знайдено'));
+
+            await ProductImage.destroy({where: {id}});
+            return res.json({message: 'Зображення видалено'});
+        } catch (e) {
+            next(ApiError.internal(e.message));
+        }
+    }
 }
 
 module.exports = new ProductController();

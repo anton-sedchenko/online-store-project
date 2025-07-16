@@ -35,3 +35,7 @@ export const deleteProduct = async (id) => {
     const {data} = await $authHost.delete(`/api/product/${id}`);
     return data;
 }
+
+export const deleteProductImage = (id) => {
+    return $authHost.delete(`api/product/image/${id}`);
+};
