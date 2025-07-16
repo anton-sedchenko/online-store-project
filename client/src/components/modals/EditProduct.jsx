@@ -10,7 +10,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
     const [code, setCode] = useState('');
     const [typeId, setTypeId] = useState('');
     const [description, setDescription] = useState('');
-    const [imgFile, setImgFile] = useState(null);
+    const [imgFiles, setImgFiles] = useState([]);
     const [types, setTypes] = useState([]);
 
     useEffect(() => {
@@ -31,7 +31,10 @@ const EditProduct = ({show, onHide, productToEdit}) => {
         formData.append('code', code);
         formData.append('typeId', typeId);
         formData.append('description', description);
-        if (imgFile) formData.append('img', imgFile);
+        imgFiles.forEach((file) => {
+            formData.append('images', file); // саме цей рядок додає кілька файлів
+        });
+
 
         await updateProduct(productToEdit.id, formData);
         onHide();
@@ -73,10 +76,15 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                     </Form.Group>
                     <Form.Group className="mb-2">
                         <Form.Label>Зображення</Form.Label>
-                        <Form.Control
-                            type="file"
-                            accept="image/*"
-                            onChange={e => setImgFile(e.target.files[0])} />
+                        <Form.Group className="mb-2">
+                            <Form.Label>Додаткові зображення</Form.Label>
+                            <Form.Control
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={e => setImgFiles(Array.from(e.target.files))}
+                            />
+                        </Form.Group>
                     </Form.Group>
                 </Form>
             </Modal.Body>

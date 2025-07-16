@@ -56,13 +56,28 @@ class ProductController {
             const product = await Product.findByPk(id);
             if (!product) return next(ApiError.badRequest(`Товар ${id} не знайдений`));
 
-            // якщо прийшов файл - оновлюємо картинку
+            // якщо прийшов файл - оновлюємо головне зображення
             if (req.files?.img) {
                 const {img} = req.files;
                 const result = await cloudinary.uploader.upload(img.tempFilePath || img.path, {
                     folder: 'products',
                 });
                 product.img = result.secure_url;
+            }
+
+            // 🆕 якщо прийшли додаткові фото — зберігаємо їх
+            const images = req.files?.images;
+            if (images) {
+                const filesArray = Array.isArray(images) ? images : [images];
+                for (const file of filesArray) {
+                    const result = await cloudinary.uploader.upload(file.tempFilePath || file.path, {
+                        folder: 'products',
+                    });
+                    await ProductImage.create({
+                        url: result.secure_url,
+                        productId: product.id,
+                    });
+                }
             }
 
             // оновлюємо інші поля
