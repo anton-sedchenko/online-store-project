@@ -38,7 +38,7 @@ const ProductItem = observer(({product}) => {
                 </div>
                 <div className="gallery__card__btn__container">
                     <btn
-                        className="neu-btn gallery__card__btn"
+                        className="gallery__card__btn"
                         onClick={(e) => {
                             e.stopPropagation();
                             handleAddToCart();

@@ -50,7 +50,9 @@
 @mixin btn-style {
   display: flex;
   justify-content: center;
-  max-width: 230px;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  //max-width: 230px;
   border-radius: 10px;
   padding: 10px;
   border-color: purple;
