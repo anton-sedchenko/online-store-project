@@ -24,7 +24,8 @@ const ProductPage = () => {
                 id: product.id,
                 name: product.name,
                 price: product.price,
-                img: product.img
+                img: product.img,
+                slug: product.slug
             }, qty
         );
         navigate(CART_ROUTE);
