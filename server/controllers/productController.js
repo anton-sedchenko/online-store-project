@@ -2,11 +2,15 @@ const {Product} = require('../models/models');
 const ApiError = require('../error/ApiError');
 const cloudinary = require('../utils/cloudinary');
 const slugify = require('slugify');
+const {ProductImage} = require('../models/models');
 
 class ProductController {
     async getBySlug(req, res, next) {
         const {slug} = req.params;
-        const product = await Product.findOne({where: {slug}});
+        const product = await Product.findOne({
+            where: {slug},
+            include: [{association: 'images'}]
+        });
         if (!product) return next(ApiError.notFound('Товар не знайдено'));
         return res.json(product);
     }
@@ -115,6 +119,38 @@ class ProductController {
             return res.json({message: `Товар id=${id} успішно видалений`});
         } catch (e) {
             next(ApiError.internal(e.message));
+        }
+    }
+
+    async addImages(req, res, next) {
+        try {
+            const {productId} = req.body;
+            if (!productId) return next(ApiError.badRequest('Не передано productId'));
+
+            const product = await Product.findByPk(productId);
+            if (!product) return next(ApiError.badRequest('Товар не знайдено'));
+
+            const files = req.files?.images;
+            if (!files) return next(ApiError.badRequest('Файли не передані'));
+
+            const uploaded = [];
+
+            const filesArray = Array.isArray(files) ? files : [files]; // якщо одне зображення
+            for (const file of filesArray) {
+                const result = await cloudinary.uploader.upload(file.tempFilePath || file.path, {
+                    folder: 'products',
+                });
+                const image = await ProductImage.create({
+                    url: result.secure_url,
+                    productId: product.id
+                });
+                uploaded.push(image);
+            }
+
+            return res.json(uploaded);
+        } catch (e) {
+            console.error(e);
+            next(ApiError.internal('Помилка при додаванні зображень'));
         }
     }
 }

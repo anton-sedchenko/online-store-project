@@ -100,7 +100,7 @@ const Order = () => {
                                 type="button"
                                 onClick={() => navigate(SHOP_ROUTE)}
                             >
-                                Продовжити покупки
+                                Повернутись до галереї
                             </button>
                         </div>
                     </form>

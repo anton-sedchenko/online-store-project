@@ -54,6 +54,11 @@ const OrderProduct = sequelize.define('order_product', {
     quantity: {type: DataTypes.INTEGER, allowNull: false, defaultValue: 1}
 });
 
+const ProductImage = sequelize.define('product_image', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    url: {type: DataTypes.STRING, allowNull: false},
+});
+
 User.hasOne(Cart);
 Cart.belongsTo(User);
 
@@ -75,6 +80,9 @@ Product.belongsTo(Type);
 Product.hasMany(CartProduct);
 CartProduct.belongsTo(Product);
 
+Product.hasMany(ProductImage, {as: 'images'});
+ProductImage.belongsTo(Product);
+
 module.exports = {
     User,
     Cart,
@@ -82,5 +90,6 @@ module.exports = {
     Product,
     Type,
     Order,
-    OrderProduct
+    OrderProduct,
+    ProductImage
 }

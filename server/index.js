@@ -13,6 +13,7 @@ const app = express();
 
 app.set('trust proxy', 1);
 const rateLimit = require('express-rate-limit');
+const {ProductImage} = require("./models/models");
 
 const corsOptions = {
     origin: [
@@ -57,7 +58,8 @@ app.get('*', (req, res) => {
 const start = async () => {
     try {
         await sequelize.authenticate();
-        // await sequelize.sync({alter: true});
+        // await sequelize.sync({alter: false});
+        await ProductImage.sync();
 
         if (!PORT) throw new Error('PORT is not defined!');
         app.listen(PORT, () => {

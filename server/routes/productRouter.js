@@ -14,6 +14,11 @@ router.put(
     checkRole('ADMIN'),
     productController.update
 );
+router.post('/images',
+    authMiddleware,
+    checkRole('ADMIN'),
+    productController.addImages
+);
 router.delete(
     '/:id',
     authMiddleware,
