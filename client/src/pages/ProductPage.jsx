@@ -77,7 +77,7 @@ const ProductPage = () => {
                                 onChange={(e) => setQty(Number(e.target.value))}
                             />
                         </div>
-                        <h4>Сума: {sum} грн.</h4>
+                        <p className="product__page__total__sum">Сума: {sum} грн.</p>
                         <div className="product__page__btn__container">
                             <button
                                 className="neu-btn product__page__btn"

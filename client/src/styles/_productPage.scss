@@ -8,6 +8,7 @@
 .product__count__container {
   display: flex;
   align-items: center;
+  margin-bottom: 15px;
 }
 
 .product__count {
@@ -19,18 +20,23 @@
   width: 80px;
 }
 
+.product__page__total__sum {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
 .product__description {
   white-space: pre-line;
 }
 
 .product__page__btn__container {
-  text-align: center;
   height: 80px;
   padding: 15px 0;
 }
 
 .product__page__btn {
   height: 100%;
+  border: 1px solid purple;
 }
 
 .product__img__container {
