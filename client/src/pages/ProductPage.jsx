@@ -77,6 +77,15 @@ const ProductPage = () => {
                                 onChange={(e) => setQty(Number(e.target.value))}
                             />
                         </div>
+                        <h4>Сума: {sum} грн.</h4>
+                        <div className="product__page__btn__container">
+                            <button
+                                className="neu-btn product__page__btn"
+                                onClick={handleAddToCart}
+                            >
+                                Додати в кошик
+                            </button>
+                        </div>
                     </div>
                 </Col>
             </Row>
@@ -85,7 +94,6 @@ const ProductPage = () => {
                     <div>
                         <h4>Опис товару:</h4>
                         <p className="product__description">{product.description || 'Немає опису'}</p>
-                        <h4>Сума: {sum} грн.</h4>
                     </div>
                 </Col>
                 <Col md={4}>
@@ -100,16 +108,6 @@ const ProductPage = () => {
                         )}
                     </div>
                 </Col>
-            </Row>
-            <Row>
-                <div className="product__page__btn__container">
-                    <button
-                        className="neu-btn product__page__btn"
-                        onClick={handleAddToCart}
-                    >
-                        Додати в кошик
-                    </button>
-                </div>
             </Row>
         </Col>
     );

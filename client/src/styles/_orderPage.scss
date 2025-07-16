@@ -46,12 +46,20 @@
 
 .order__form__confirm__btn {
   display: flex;
-  max-width: 240px;
-  padding: 10px;
+  padding: 5px;
+  border: 1px solid purple;
+  border-radius: 3px;
+  margin-bottom: 20px;
 }
 
 .order__form__return__btn {
   display: flex;
-  max-width: 240px;
-  padding: 10px;
+  padding: 5px;
+  border: 1px solid purple;
+  border-radius: 3px;
+}
+
+.order__form__confirm__btn:hover,
+.order__form__return__btn:hover {
+  background-color: grey;
 }
