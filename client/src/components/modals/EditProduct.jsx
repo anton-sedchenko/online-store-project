@@ -12,18 +12,18 @@ const EditProduct = ({show, onHide, productToEdit}) => {
     const [description, setDescription] = useState('');
     const [imgFiles, setImgFiles] = useState([]);
     const [types, setTypes] = useState([]);
-    const [existingImages, setExistingImages] = useState(productToEdit?.images || []);
+    const [existingImages, setExistingImages] = useState([]);
     const [mainImageFile, setMainImageFile] = useState(null);
     const [mainImageUrl, setMainImageUrl] = useState('');
 
     useEffect(() => {
         if (productToEdit) {
-            setName(productToEdit.name);
-            setPrice(productToEdit.price);
-            setCode(productToEdit.code);
-            setTypeId(productToEdit.typeId);
+            setName(productToEdit.name || '');
+            setPrice(productToEdit.price || '');
+            setCode(productToEdit.code || '');
+            setTypeId(productToEdit.typeId || '');
             setDescription(productToEdit.description || '');
-            setExistingImages(productToEdit.images);
+            setExistingImages(Array.isArray(productToEdit.images) ? productToEdit.images : []);
             setMainImageUrl(productToEdit.img || '');
         }
         fetchTypes().then(setTypes);
