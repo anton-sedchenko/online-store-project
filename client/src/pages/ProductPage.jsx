@@ -80,7 +80,7 @@ const ProductPage = () => {
                         <p className="product__page__total__sum">Сума: {sum} грн.</p>
                         <div className="product__page__btn__container">
                             <button
-                                className="neu-btn product__page__btn"
+                                className="product__page__btn"
                                 onClick={handleAddToCart}
                             >
                                 Додати в кошик
