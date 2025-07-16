@@ -13,7 +13,7 @@ import {
     FORGOT_PASSWORD_ROUTE,
     RESET_PASSWORD_ROUTE,
     RETURN_POLICY_ROUTE,
-    OFERTA_ROUTE,
+    OFERTA_ROUTE, DELIVERY_PAYMENT_ROUTE,
 } from "./utils/consts.js";
 import Shop from "./pages/Shop.jsx";
 import Auth from "./pages/Auth.jsx";
@@ -25,6 +25,7 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import ReturnPolicy from "./pages/ReturnPolicy.jsx";
 import Oferta from "./pages/Oferta.jsx";
+import DeliveryPayment from "./pages/DeliveryPayment.jsx";
 
 export const authRoutes = [
     {
@@ -81,5 +82,9 @@ export const publicRoutes = [
     {
         path: OFERTA_ROUTE,
         Component: Oferta
+    },
+    {
+        path: DELIVERY_PAYMENT_ROUTE,
+        Component: DeliveryPayment
     },
 ]

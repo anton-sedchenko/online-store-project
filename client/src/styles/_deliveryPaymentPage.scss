@@ -1,0 +1,5 @@
+@import './mixins';
+
+.delivery__payment__page__container {
+  @include text-block-styles;
+}

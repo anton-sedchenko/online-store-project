@@ -90,18 +90,18 @@ const Order = () => {
                             />
                             <div className="order__form__btn__container">
                                 <button
-                                    className="neu-btn"
+                                    className="neu-btn order__form__confirm__btn"
+                                    type="submit"
+                                >
+                                    Підтвердити замовлення
+                                </button>
+
+                                <button
+                                    className="neu-btn order__form__return__btn"
                                     type="button"
                                     onClick={() => navigate(SHOP_ROUTE)}
                                 >
                                     Продовжити покупки
-                                </button>
-
-                                <button
-                                    className="neu-btn"
-                                    type="submit"
-                                >
-                                    Підтвердити замовлення
                                 </button>
                             </div>
                         </form>
