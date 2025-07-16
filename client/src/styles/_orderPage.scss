@@ -1,4 +1,5 @@
 @import "variables";
+@import "mixins";
 
 .order__form__container {
   max-width: 700px;
@@ -44,25 +45,15 @@
 }
 
 .order__form__confirm__btn {
-  display: flex;
-  justify-content: center;
-  max-width: 230px;
-  border: 1px solid purple;
-  border-radius: 10px;
-  padding: 10px;
+  @include btn-style;
   margin-bottom: 20px;
 }
 
 .order__form__return__btn {
-  display: flex;
-  justify-content: center;
-  max-width: 230px;
-  border-radius: 10px;
-  padding: 10px;
-  border-color: purple;
+  @include btn-style;
 }
 
 .order__form__confirm__btn:hover,
 .order__form__return__btn:hover {
-  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+  @include btn-style-on-hover;
 }

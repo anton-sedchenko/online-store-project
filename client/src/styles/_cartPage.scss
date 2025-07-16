@@ -1,3 +1,5 @@
+@import "mixins";
+
 .order__page__title {
   margin-bottom: 30px;
 }
@@ -12,6 +14,15 @@
 .cart__table__container h2 {
   margin-bottom: 20px;
 }
+
+.cart__table__confirm__btn {
+  @include btn-style;
+}
+
+.cart__table__confirm__btn:hover {
+  @include btn-style-on-hover;
+}
+
 
 .cart__table__container table {
   min-width: 300px;

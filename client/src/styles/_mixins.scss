@@ -46,3 +46,17 @@
     color: #000;
   }
 }
+
+@mixin btn-style {
+  display: flex;
+  justify-content: center;
+  max-width: 230px;
+  border-radius: 10px;
+  padding: 10px;
+  border-color: purple;
+  background-color: white;
+}
+
+@mixin btn-style-on-hover {
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+}

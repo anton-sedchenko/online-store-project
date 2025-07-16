@@ -1,3 +1,5 @@
+@import "mixins";
+
 .product__img__container,
 .product__code,
 .product__title,
@@ -35,13 +37,11 @@
 }
 
 .product__page__btn {
-  height: 100%;
-  border: 1px solid purple;
-  border-radius: 10px;
+  @include btn-style;
 }
 
 .product__page__btn:hover {
-  border: 2px solid purple;
+  @include btn-style-on-hover;
 }
 
 .product__img__container {

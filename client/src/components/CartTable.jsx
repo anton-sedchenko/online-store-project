@@ -103,12 +103,12 @@ const CartTable = observer(() => {
                     </tbody>
                 </Table>
                 {cartStore.items.length > 0 && (
-                        <Button variant="light"
-                                style={{border: "1px solid purple"}}
-                                onClick={handleOrder}
+                        <button
+                            className="cart__table__confirm__btn"
+                            onClick={handleOrder}
                         >
                             Оформити замовлення
-                        </Button>
+                        </button>
                     )
                 }
                 {cartStore.items.length === 0 && (<p>Кошик порожній</p>)}
