@@ -60,8 +60,8 @@ const Shop = observer(() => {
                         </div>
                         <TypeBar/>
                         <ProductList/>
-                        <PaginationComponent/>
                     </Col>
+                    <PaginationComponent/>
                 </Row>
             </div>
         </>

@@ -37,6 +37,11 @@
 .product__page__btn {
   height: 100%;
   border: 1px solid purple;
+  border-radius: 10px;
+}
+
+.product__page__btn:hover {
+  background-color: rgba(240, 240, 240);
 }
 
 .product__img__container {
