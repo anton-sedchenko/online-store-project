@@ -20,6 +20,8 @@ const corsOptions = {
         'http://localhost:3000',
         'https://online-store-project-navy.vercel.app',
         'https://online-store-project-git-main-antonsedchenkos-projects.vercel.app',
+        'https://charivna-craft.com.ua',
+        'https://charivna-craft-staging.vercel.app',
         'https://charivna-craft.com.ua'
     ],
     methods: ['GET','POST','PUT','DELETE','OPTIONS'],
