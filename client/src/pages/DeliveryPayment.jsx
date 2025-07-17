@@ -8,7 +8,7 @@ const DeliveryPayment = () => {
                 <title>Доставка і оплата – Charivna Craft</title>
                 <meta
                     name="description"
-                    content="Умови доставки і оплати. Ознайомтесь з політикою магазину."
+                    content="Детальна інформація про умови доставки і оплати. Ознайомтесь з політикою магазину."
                 />
             </Helmet>
 
