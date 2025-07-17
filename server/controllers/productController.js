@@ -117,10 +117,17 @@ class ProductController {
         }
     }
 
-    async getOne(req, res) {
-        const {id} = req.params;
-        const product = await Product.findByPk(id);
-        return res.json(product);
+    async getOne(req, res, next) {
+        try {
+            const {id} = req.params;
+            const product = await Product.findByPk(id, {
+                include: [{association: 'images'}]
+            });
+            if (!product) return next(ApiError.notFound("Товар не знайдено"));
+            return res.json(product);
+        } catch (e) {
+            next(ApiError.internal(e.message));
+        }
     }
 
     async deleteProduct(req, res, next) {
