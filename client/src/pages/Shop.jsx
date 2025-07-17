@@ -38,7 +38,7 @@ const Shop = observer(() => {
     return (
         <>
             <Helmet>
-                <title>Галерея – Чарівна майстерня</title>
+                <title>Галерея – Charivna Craft</title>
                 <meta name="description" content="Унікальні вироби ручної роботи. Перегляньте асортимент нашої творчої майстерні." />
             </Helmet>
 

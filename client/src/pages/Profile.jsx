@@ -75,152 +75,153 @@ const Profile = observer(() => {
     };
 
     return (
-        <div className="component__container">
+        <>
             <Helmet>
-                <title>Мій профіль – Чарівна майстерня</title>
-                <meta name="description" content="Редагуйте свої дані та переглядайте історію замовлень." />
+                <meta name="robots" content="noindex, nofollow" />
             </Helmet>
 
-            <Tab.Container activeKey={tab} onSelect={k => setTab(k)}>
-                <Row>
-                    <Col sm={3} className="profile__tabs__container">
-                        <Nav variant="pills" className="flex-column">
-                            <Nav.Item
-                                className="profile__tab"
-                            >
-                                <Nav.Link eventKey="personal">Персональні дані</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item
-                                className="profile__tab"
-                            >
-                                <Nav.Link eventKey="orders">Мої замовлення</Nav.Link>
-                            </Nav.Item>
-                        </Nav>
-                    </Col>
-                    <Col sm={9}>
-                        <Tab.Content>
-
-                            {/* Персональні дані */}
-                            <Tab.Pane eventKey="personal">
-                                <h4>Редагування профілю</h4>
-                                <Form onSubmit={handlePersonalSave} className="mb-4">
-                                    <Form.Group className="mb-3" controlId="firstName">
-                                        <Form.Label>Ім'я</Form.Label>
-                                        <input
-                                            className="neu-input"
-                                            type="text"
-                                            value={form.firstName}
-                                            onChange={e => setForm({ ...form, firstName: e.target.value })}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group className="mb-3" controlId="lastName">
-                                        <Form.Label>Прізвище</Form.Label>
-                                        <input
-                                            className="neu-input"
-                                            type="text"
-                                            value={form.lastName}
-                                            onChange={e => setForm({...form, lastName: e.target.value})}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group className="mb-3" controlId="email">
-                                        <Form.Label>Email</Form.Label>
-                                        <input
-                                            className="neu-input"
-                                            type="email"
-                                            value={form.email}
-                                            onChange={e => setForm({...form, email: e.target.value})}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group className="mb-3" controlId="phone">
-                                        <Form.Label>Телефон</Form.Label>
-                                        <input
-                                            className="neu-input"
-                                            type="tel"
-                                            value={form.phone}
-                                            onChange={e => setForm({...form, phone: e.target.value})}
-                                        />
-                                    </Form.Group>
-                                    <button className="neu-btn" type="submit">Зберегти зміни</button>
-                                </Form>
-
-                                <h4>Зміна паролю</h4>
-                                <Form onSubmit={handlePasswordSave}>
-                                    <Form.Group className="mb-3" controlId="currentPassword">
-                                        <Form.Label>Старий пароль</Form.Label>
-                                        <input
-                                            className="neu-input"
-                                            type="password"
-                                            value={passwords.current}
-                                            onChange={e => setPasswords({...passwords, current: e.target.value})}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group className="mb-3" controlId="newPassword">
-                                        <Form.Label>Новий пароль</Form.Label>
-                                        <input
-                                            className="neu-input"
-                                            type="password"
-                                            value={passwords.new}
-                                            onChange={e => setPasswords({...passwords, new: e.target.value})}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group className="mb-3" controlId="confirmPassword">
-                                        <Form.Label>Підтвердження паролю</Form.Label>
-                                        <input
-                                            className="neu-input"
-                                            type="password"
-                                            value={passwords.confirm}
-                                            onChange={e => setPasswords({...passwords, confirm: e.target.value})}
-                                        />
-                                    </Form.Group>
-                                    <button className="neu-btn" type="submit">Змінити пароль</button>
-                                </Form>
-                            </Tab.Pane>
-
-                            {/* Мої замовлення */}
-                            <Tab.Pane eventKey="orders">
-                                <h4>Мої замовлення</h4>
-                                <Table
-                                    className="orders__history__table"
-                                    responsive striped bordered hover
+            <div className="component__container">
+                <Tab.Container activeKey={tab} onSelect={k => setTab(k)}>
+                    <Row>
+                        <Col sm={3} className="profile__tabs__container">
+                            <Nav variant="pills" className="flex-column">
+                                <Nav.Item
+                                    className="profile__tab"
                                 >
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Номер замовлення</th>
-                                        <th>Дата</th>
-                                        <th>Товари (назва × кількість)</th>
-                                        <th>Сума</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {orders.map((o, idx) => (
-                                        <tr key={o.id}>
-                                            <td>{idx + 1}</td>
-                                            <td>{o.id}</td>
-                                            <td>{new Date(o.createdAt).toLocaleDateString()}</td>
-                                            <td>
-                                                {o.order_products.map(of => (
-                                                    <div key={of.id}>
-                                                        {of.product.name} × {of.quantity}
-                                                    </div>
-                                                ))}
-                                            </td>
-                                            <td>
-                                                {o.order_products.reduce((sum, of) =>
-                                                    sum + of.product.price * of.quantity, 0
-                                                )} грн.
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    </tbody>
-                                </Table>
-                            </Tab.Pane>
+                                    <Nav.Link eventKey="personal">Персональні дані</Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item
+                                    className="profile__tab"
+                                >
+                                    <Nav.Link eventKey="orders">Мої замовлення</Nav.Link>
+                                </Nav.Item>
+                            </Nav>
+                        </Col>
+                        <Col sm={9}>
+                            <Tab.Content>
 
-                        </Tab.Content>
-                    </Col>
-                </Row>
-            </Tab.Container>
-        </div>
+                                {/* Персональні дані */}
+                                <Tab.Pane eventKey="personal">
+                                    <h4>Редагування профілю</h4>
+                                    <Form onSubmit={handlePersonalSave} className="mb-4">
+                                        <Form.Group className="mb-3" controlId="firstName">
+                                            <Form.Label>Ім'я</Form.Label>
+                                            <input
+                                                className="neu-input"
+                                                type="text"
+                                                value={form.firstName}
+                                                onChange={e => setForm({ ...form, firstName: e.target.value })}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3" controlId="lastName">
+                                            <Form.Label>Прізвище</Form.Label>
+                                            <input
+                                                className="neu-input"
+                                                type="text"
+                                                value={form.lastName}
+                                                onChange={e => setForm({...form, lastName: e.target.value})}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3" controlId="email">
+                                            <Form.Label>Email</Form.Label>
+                                            <input
+                                                className="neu-input"
+                                                type="email"
+                                                value={form.email}
+                                                onChange={e => setForm({...form, email: e.target.value})}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3" controlId="phone">
+                                            <Form.Label>Телефон</Form.Label>
+                                            <input
+                                                className="neu-input"
+                                                type="tel"
+                                                value={form.phone}
+                                                onChange={e => setForm({...form, phone: e.target.value})}
+                                            />
+                                        </Form.Group>
+                                        <button className="neu-btn" type="submit">Зберегти зміни</button>
+                                    </Form>
+
+                                    <h4>Зміна паролю</h4>
+                                    <Form onSubmit={handlePasswordSave}>
+                                        <Form.Group className="mb-3" controlId="currentPassword">
+                                            <Form.Label>Старий пароль</Form.Label>
+                                            <input
+                                                className="neu-input"
+                                                type="password"
+                                                value={passwords.current}
+                                                onChange={e => setPasswords({...passwords, current: e.target.value})}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3" controlId="newPassword">
+                                            <Form.Label>Новий пароль</Form.Label>
+                                            <input
+                                                className="neu-input"
+                                                type="password"
+                                                value={passwords.new}
+                                                onChange={e => setPasswords({...passwords, new: e.target.value})}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3" controlId="confirmPassword">
+                                            <Form.Label>Підтвердження паролю</Form.Label>
+                                            <input
+                                                className="neu-input"
+                                                type="password"
+                                                value={passwords.confirm}
+                                                onChange={e => setPasswords({...passwords, confirm: e.target.value})}
+                                            />
+                                        </Form.Group>
+                                        <button className="neu-btn" type="submit">Змінити пароль</button>
+                                    </Form>
+                                </Tab.Pane>
+
+                                {/* Мої замовлення */}
+                                <Tab.Pane eventKey="orders">
+                                    <h4>Мої замовлення</h4>
+                                    <Table
+                                        className="orders__history__table"
+                                        responsive striped bordered hover
+                                    >
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Номер замовлення</th>
+                                            <th>Дата</th>
+                                            <th>Товари (назва × кількість)</th>
+                                            <th>Сума</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {orders.map((o, idx) => (
+                                            <tr key={o.id}>
+                                                <td>{idx + 1}</td>
+                                                <td>{o.id}</td>
+                                                <td>{new Date(o.createdAt).toLocaleDateString()}</td>
+                                                <td>
+                                                    {o.order_products.map(of => (
+                                                        <div key={of.id}>
+                                                            {of.product.name} × {of.quantity}
+                                                        </div>
+                                                    ))}
+                                                </td>
+                                                <td>
+                                                    {o.order_products.reduce((sum, of) =>
+                                                        sum + of.product.price * of.quantity, 0
+                                                    )} грн.
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </Table>
+                                </Tab.Pane>
+
+                            </Tab.Content>
+                        </Col>
+                    </Row>
+                </Tab.Container>
+            </div>
+        </>
     );
 });
 

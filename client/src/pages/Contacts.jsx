@@ -7,7 +7,7 @@ const Contacts = () => {
     return (
         <div className="component__container">
             <Helmet>
-                <title>Контакти – Чарівна майстерня</title>
+                <title>Контакти – Charivna Craft</title>
                 <meta name="description" content="Зв’яжіться з нами для консультації чи індивідуального замовлення." />
             </Helmet>
 

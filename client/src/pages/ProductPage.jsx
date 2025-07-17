@@ -62,7 +62,7 @@ const ProductPage = () => {
         <Col className="component__container">
             {product?.name && (
                 <Helmet>
-                    <title>{product.name} | Чарівна майстерня</title>
+                    <title>{product.name} | Charivna Craft</title>
                     <meta name="description" content={product.description || 'Опис товару'} />
                     <meta property="og:title" content={product.name} />
                     <meta property="og:description" content={product.description} />
@@ -71,6 +71,7 @@ const ProductPage = () => {
                     <meta property="og:type" content="product" />
                 </Helmet>
             )}
+
             <Row>
                 <Col xs={12} md={4} className="product__img__container text-center">
                     <div style={{position: 'relative'}}>

@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {requestPasswordReset} from '../http/userAPI';
 import {useNavigate} from 'react-router-dom';
+import {Helmet} from "react-helmet-async";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -18,23 +19,29 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="component__container" style={{padding: 20}}>
-            <h2>Відновлення паролю</h2>
-            <form onSubmit={handleSubmit} className="auth__form">
-                <input
-                    className="neu-input"
-                    type="email"
-                    placeholder="Введіть ваш email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    required
-                />
-                <button className="neu-btn" type="submit">
-                    Надіслати посилання
-                </button>
-                {message && <p style={{marginTop: 10}}>{message}</p>}
-            </form>
-        </div>
+        <>
+            <Helmet>
+                <meta name="robots" content="noindex, nofollow" />
+            </Helmet>
+
+            <div className="component__container" style={{padding: 20}}>
+                <h2>Відновлення паролю</h2>
+                <form onSubmit={handleSubmit} className="auth__form">
+                    <input
+                        className="neu-input"
+                        type="email"
+                        placeholder="Введіть ваш email"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        required
+                    />
+                    <button className="neu-btn" type="submit">
+                        Надіслати посилання
+                    </button>
+                    {message && <p style={{marginTop: 10}}>{message}</p>}
+                </form>
+            </div>
+        </>
     );
 };
 

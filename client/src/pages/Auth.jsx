@@ -4,6 +4,7 @@ import {FORGOT_PASSWORD_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE} from
 import {fetchAuthUser, login, registration} from "../http/userAPI.js";
 import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
+import {Helmet} from "react-helmet-async";
 
 const Auth = observer(() => {
     const {userStore, cartStore} = useContext(Context);
@@ -35,63 +36,69 @@ const Auth = observer(() => {
     };
 
     return (
-        <div
-            className="component__container"
-            style={{height: window.innerHeight - 150, width: "100%"}}
-        >
-            <div className="auth__form__container">
-                <h2>{isLogin ? "Авторизація" : "Реєстрація"}</h2>
-                <form className="auth__form">
-                    <div className="auth__form-email">
-                        <input
-                            className="neu-input"
-                            type="email"
-                            name="email"
-                            id="email"
-                            placeholder="Введіть ваш email..."
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="auth__form-pass">
-                        <input
-                            className="neu-input"
-                            type="password"
-                            name="password"
-                            placeholder="Введіть ваш пароль..."
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
+        <>
+            <Helmet>
+                <meta name="robots" content="noindex, nofollow" />
+            </Helmet>
 
-                        {isLogin ?
-                            <div>
-                                <p className="auth__form__register__advice">
-                                    Немає аккаунту? <Link to={REGISTRATION_ROUTE}>Зареєструйся!</Link>
-                                </p>
-                                <p className="auth__form__register__advice">
-                                    <Link to={FORGOT_PASSWORD_ROUTE}>Забули пароль?</Link>
-                                </p>
-                            </div>
-                            :
-                            <div>
-                                <p className="auth__form__register__advice">
-                                    Є аккаунт? <Link to={LOGIN_ROUTE}>Увійдіть!</Link>
-                                </p>
-                            </div>
-                        }
-                    <button
-                        className="neu-btn"
-                        type="button"
-                        onClick={click}
-                    >
-                        {isLogin ? "Увійти" : "Зареєструватися"}
-                    </button>
-                </form>
+            <div
+                className="component__container"
+                style={{height: window.innerHeight - 150, width: "100%"}}
+            >
+                <div className="auth__form__container">
+                    <h2>{isLogin ? "Авторизація" : "Реєстрація"}</h2>
+                    <form className="auth__form">
+                        <div className="auth__form-email">
+                            <input
+                                className="neu-input"
+                                type="email"
+                                name="email"
+                                id="email"
+                                placeholder="Введіть ваш email..."
+                                value={email}
+                                onChange={e => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="auth__form-pass">
+                            <input
+                                className="neu-input"
+                                type="password"
+                                name="password"
+                                placeholder="Введіть ваш пароль..."
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                            {isLogin ?
+                                <div>
+                                    <p className="auth__form__register__advice">
+                                        Немає аккаунту? <Link to={REGISTRATION_ROUTE}>Зареєструйся!</Link>
+                                    </p>
+                                    <p className="auth__form__register__advice">
+                                        <Link to={FORGOT_PASSWORD_ROUTE}>Забули пароль?</Link>
+                                    </p>
+                                </div>
+                                :
+                                <div>
+                                    <p className="auth__form__register__advice">
+                                        Є аккаунт? <Link to={LOGIN_ROUTE}>Увійдіть!</Link>
+                                    </p>
+                                </div>
+                            }
+                        <button
+                            className="neu-btn"
+                            type="button"
+                            onClick={click}
+                        >
+                            {isLogin ? "Увійти" : "Зареєструватися"}
+                        </button>
+                    </form>
+                </div>
             </div>
-        </div>
+        </>
     );
 });
 

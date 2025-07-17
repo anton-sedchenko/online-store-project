@@ -8,7 +8,7 @@ const Cart = () => {
     return (
         <div className="component__container">
             <Helmet>
-                <title>Мій кошик – Чарівна майстерня</title>
+                <title>Мій кошик – Charivna Craft</title>
                 <meta name="description" content="Перевірте товари у своєму кошику перед оформленням замовлення." />
             </Helmet>
 

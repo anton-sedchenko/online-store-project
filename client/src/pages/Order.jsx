@@ -38,9 +38,11 @@ const Order = () => {
     return (
         <>
             <Helmet>
-                <title>Оформлення замовлення – Чарівна майстерня</title>
-                <meta name="description"
-                      content="Вкажіть дані для доставки й завершення замовлення виробів ручної роботи."/>
+                <title>Оформлення замовлення – Charivna Craft</title>
+                <meta
+                    name="description"
+                    content="Вкажіть дані для доставки й завершення замовлення виробів ручної роботи."
+                />
             </Helmet>
 
             <div className="component__container">
