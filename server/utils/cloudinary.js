@@ -7,4 +7,19 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-module.exports = cloudinary;
+function extractPublicId(url) {
+    try {
+        const parts = url.split('/');
+        const fileWithExt = parts.pop();
+        const folder = parts.pop();
+        const publicId = `${folder}/${fileWithExt.split('.')[0]}`;
+        return publicId;
+    } catch {
+        return null;
+    }
+}
+
+module.exports = {
+    cloudinary,
+    extractPublicId
+};

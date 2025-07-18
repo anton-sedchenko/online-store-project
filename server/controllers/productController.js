@@ -1,6 +1,6 @@
 const {Product} = require('../models/models');
 const ApiError = require('../error/ApiError');
-const cloudinary = require('../utils/cloudinary');
+const {cloudinary, extractPublicId} = require('../utils/cloudinary');
 const slugify = require('slugify');
 const {ProductImage} = require('../models/models');
 
@@ -133,12 +133,30 @@ class ProductController {
     async deleteProduct(req, res, next) {
         try {
             const {id} = req.params;
-            const product = await Product.findByPk(id); // Знаходимо в БД об'єкт фігурки
+            const product = await Product.findByPk(id, {include: [{association: 'images'}]});
             if (!product) {
                 return next(ApiError.badRequest(`Товар з id=${id} не знайдений`));
             }
+
+            // Видаляємо додаткові зображення з Cloudinary
+            for (const image of product.images) {
+                const publicId = extractPublicId(image.url);
+                if (publicId) {
+                    await cloudinary.uploader.destroy(publicId);
+                }
+            }
+
+            // Видаляємо головне зображення, якщо є
+            const mainPublicId = extractPublicId(product.img);
+            if (mainPublicId) {
+                await cloudinary.uploader.destroy(mainPublicId);
+            }
+
+            // Видаляємо всі записи
+            await ProductImage.destroy({where: {productId: id}});
             await Product.destroy({where: {id}});
-            return res.json({message: `Товар id=${id} успішно видалений`});
+
+            return res.json({ message: `Товар id=${id} та всі зображення видалені` });
         } catch (e) {
             next(ApiError.internal(e.message));
         }
@@ -182,7 +200,15 @@ class ProductController {
             const image = await ProductImage.findByPk(id);
             if (!image) return next(ApiError.notFound('Зображення не знайдено'));
 
+            // Отримуємо public_id з URL та видаляємо з клаудінарі
+            const publicId = extractPublicId(image.url);
+            if (publicId) {
+                await cloudinary.uploader.destroy(publicId);
+            }
+
+            // Видаляємо запис з БД
             await ProductImage.destroy({where: {id}});
+
             return res.json({message: 'Зображення видалено'});
         } catch (e) {
             next(ApiError.internal(e.message));
