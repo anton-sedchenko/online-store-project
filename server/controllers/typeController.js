@@ -36,6 +36,21 @@ class TypeController {
         }
     }
 
+    async update(req, res, next) {
+        try {
+            const {id} = req.params;
+            const {name, parentId} = req.body;
+            const type = await Type.findByPk(id);
+            if (!type) return next(ApiError.notFound(`Категорія ${id} не знайдена`));
+            if (name) type.name = name.trim();
+            if (parentId !== undefined) type.parentId = parentId;
+            await type.save();
+            return res.json(type);
+        } catch (e) {
+            next(ApiError.internal(e.message));
+        }
+    }
+
     // метод для оновлення картинки
     async updateImage(req, res, next) {
         try {
