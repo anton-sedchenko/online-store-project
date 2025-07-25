@@ -1,6 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button} from "react-bootstrap";
 import CreateType from "../components/modals/CreateType.jsx";
+import CreateCategory from "../components/modals/CreateCategory.jsx";
+import EditCategory from "../components/modals/EditCategory.jsx";
 import CreateProduct from "../components/modals/CreateProduct.jsx";
 import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
@@ -8,16 +10,20 @@ import Table from "react-bootstrap/Table";
 import EditProduct from "../components/modals/EditProduct.jsx";
 import AdminPages from "../components/AdminPages.jsx";
 import {deleteProduct, fetchOneProduct} from "../http/productAPI.js";
+import {deleteType} from '../http/typeAPI.js';
 import {Helmet} from "react-helmet-async";
 
 // виводимо список фігур, кнопка Edit задає фігуру для редагування,
 // коли її об’єкт непорожній — вмикаємо модалку редагування з поточним товаром
 const Admin = observer(() => {
     const {adminStore} = useContext(Context);
+    const {productStore} = useContext(Context);
     // поточний об’єкт фігури, яку редагуємо, null якщо жодної
     const [editing, setEditing] = useState(null);
     const [typeVisible, setTypeVisible] = useState(false);
     const [productVisible, setProductVisible] = useState(false);
+    const [categoryModalVisible, setCategoryModalVisible] = useState(false);
+    const [editCategoryId, setEditCategoryId] = useState(null);
 
     useEffect(() => {
         adminStore.loadProducts();
@@ -32,7 +38,7 @@ const Admin = observer(() => {
         }
     };
 
-    const handleDelete = async (id) => {
+    const handleDeleteProduct = async (id) => {
         if (window.confirm("Ви впевнені, що хочете видалити цей товар?")) {
             try {
                 await deleteProduct(id);
@@ -40,6 +46,16 @@ const Admin = observer(() => {
             } catch (e) {
                 alert("Помилка при видаленні товару");
             }
+        }
+    };
+
+    const handleDeleteType = async (id) => {
+        if (!window.confirm('Ви впевнені, що хочете видалити цю категорію?')) return;
+        try {
+            await deleteType(id);
+            await productStore.fetchTypes();  // перезавантажуємо список
+        } catch (err) {
+            alert(err.response?.data?.message || err.message);
         }
     };
 
@@ -54,6 +70,13 @@ const Admin = observer(() => {
                     <Button
                         variant={"outline-dark"}
                         className="admin__page__action__btn"
+                        onClick={() => setCategoryModalVisible(true)}
+                    >
+                        Додати категорію
+                    </Button>
+                    <Button
+                        variant={"outline-dark"}
+                        className="admin__page__action__btn"
                         onClick={() => setTypeVisible(true)}
                     >
                         Додати тип
@@ -65,6 +88,10 @@ const Admin = observer(() => {
                     >
                         Додати товар
                     </Button>
+                    <CreateCategory
+                        show={categoryModalVisible}
+                        onHide={() => setCategoryModalVisible(false)}
+                    />
                     <CreateProduct
                         show={productVisible}
                         onHide={() => {
@@ -77,6 +104,34 @@ const Admin = observer(() => {
                         onHide={() => setTypeVisible(false)}
                     />
                 </div>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr><td>Назва категорії</td><td>Картинка</td><td>Дія</td></tr>
+                    </thead>
+                    <tbody>
+                        {adminStore.types.map(cat => (
+                            <tr key={cat.id}>
+                                <td>{cat.name}</td>
+                                <td>
+                                    {cat.image && <img alt="" src={cat.image} width="50" />}
+                                </td>
+                                <td>
+                                    <Button
+                                        size="sm"
+                                        onClick={() => setEditCategoryId(cat.id)}>
+                                        Редагувати
+                                    </Button>
+                                    <Button
+                                        variant="outline-danger"
+                                        size="sm"
+                                        onClick={() => handleDeleteType(cat.id)}>
+                                        Видалити
+                                    </Button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
@@ -103,7 +158,7 @@ const Admin = observer(() => {
                                 <Button
                                     size="sm"
                                     variant="outline-danger"
-                                    onClick={() => handleDelete(prod.id)}
+                                    onClick={() => handleDeleteProduct(prod.id)}
                                 >
                                     Видалити
                                 </Button>
@@ -122,8 +177,15 @@ const Admin = observer(() => {
                     onPageChange={p => adminStore.setProductsPage(p)}
                 />
 
-                {/* Модалка редагування товару */}
+                {/* Модалки редагування категорій та товару */}
 
+                {editCategoryId && (
+                    <EditCategory
+                        show={!!editCategoryId}
+                        typeId={editCategoryId}
+                        onHide={() => setEditCategoryId(null)}
+                    />
+                )}
                 {editing &&
                     <EditProduct
                         show={!!editing}
