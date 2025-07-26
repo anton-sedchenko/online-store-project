@@ -7,15 +7,14 @@ import {
     LOGIN_ROUTE,
     PROFILE_ROUTE,
     REGISTRATION_ROUTE,
-    SHOP_ROUTE,
+    MAIN_ROUTE,
     ORDER_ROUTE,
     CONTACTS_ROUTE,
     FORGOT_PASSWORD_ROUTE,
     RESET_PASSWORD_ROUTE,
     RETURN_POLICY_ROUTE,
-    OFERTA_ROUTE, DELIVERY_PAYMENT_ROUTE,
+    OFERTA_ROUTE, DELIVERY_PAYMENT_ROUTE, CATEGORY_ROUTE,
 } from "./utils/consts.js";
-import Shop from "./pages/Shop.jsx";
 import Auth from "./pages/Auth.jsx";
 import ProductPage from "./pages/ProductPage.jsx";
 import Profile from "./pages/Profile.jsx";
@@ -26,6 +25,8 @@ import ResetPassword from "./pages/ResetPassword.jsx";
 import ReturnPolicy from "./pages/ReturnPolicy.jsx";
 import Oferta from "./pages/Oferta.jsx";
 import DeliveryPayment from "./pages/DeliveryPayment.jsx";
+import CategoryList from "./components/CategoryList.jsx";
+import CategoryPage from "./pages/CategoryPage.jsx";
 
 export const authRoutes = [
     {
@@ -40,8 +41,12 @@ export const authRoutes = [
 
 export const publicRoutes = [
     {
-        path: SHOP_ROUTE,
-        Component: Shop
+        path: MAIN_ROUTE,
+        Component: CategoryList
+    },
+    {
+        path: CATEGORY_ROUTE,
+        Component: CategoryPage
     },
     {
         path: LOGIN_ROUTE,

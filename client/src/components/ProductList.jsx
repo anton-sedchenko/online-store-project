@@ -4,12 +4,15 @@ import {Context} from "../main.jsx";
 import {Col, Row} from "react-bootstrap";
 import ProductItem from "./ProductItem.jsx";
 
-const ProductList = observer(() => {
+const ProductList = observer(({products}) => {
     const {productStore} = useContext(Context);
+    const list = Array.isArray(products)
+        ? products
+        : productStore.products;
 
     return (
         <Row className="gallery">
-            {productStore.products.map(product =>
+            {list.map(product =>
                 <Col
                     xs={12}    /* до 576px — 1 колонка */
                     sm={6}     /* 576–767 — 2 колонки */
