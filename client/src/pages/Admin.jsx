@@ -16,8 +16,7 @@ import {Helmet} from "react-helmet-async";
 // виводимо список фігур, кнопка Edit задає фігуру для редагування,
 // коли її об’єкт непорожній — вмикаємо модалку редагування з поточним товаром
 const Admin = observer(() => {
-    const {adminStore} = useContext(Context);
-    const {productStore} = useContext(Context);
+    const {adminStore, productStore} = useContext(Context);
     // поточний об’єкт фігури, яку редагуємо, null якщо жодної
     const [editing, setEditing] = useState(null);
     const [typeVisible, setTypeVisible] = useState(false);
@@ -26,8 +25,9 @@ const Admin = observer(() => {
     const [editCategoryId, setEditCategoryId] = useState(null);
 
     useEffect(() => {
+        productStore.fetchTypes();
         adminStore.loadProducts();
-    }, []);
+    }, [productStore, adminStore]);
 
     const openEditModal = async (productId) => {
         try {
@@ -109,7 +109,7 @@ const Admin = observer(() => {
                         <tr><td>Назва категорії</td><td>Картинка</td><td>Дія</td></tr>
                     </thead>
                     <tbody>
-                        {adminStore.types.map(cat => (
+                        {Array.isArray(productStore.types) && productStore.types.map(cat => (
                             <tr key={cat.id}>
                                 <td>{cat.name}</td>
                                 <td>
