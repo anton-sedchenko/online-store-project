@@ -142,29 +142,39 @@ const Admin = observer(() => {
                         </tr>
                     </thead>
                     <tbody>
-                    {adminStore.products.map(prod => (
-                        <tr key={prod.id}>
-                            <td>{prod.name}</td>
-                            <td>{prod.price}</td>
-                            <td>{prod.code}</td>
-                            <td className="admin__page__edit__btns__container">
-                                <Button
-                                    className="admin__page__edit__btn"
-                                    size="sm"
-                                    onClick={() => openEditModal(prod.id)}
-                                >
-                                    Редагувати
-                                </Button>
-                                <Button
-                                    size="sm"
-                                    variant="outline-danger"
-                                    onClick={() => handleDeleteProduct(prod.id)}
-                                >
-                                    Видалити
-                                </Button>
-                            </td>
-                        </tr>
-                    ))}
+                        {Array.isArray(adminStore.products) && adminStore.products.length > 0 ? (
+                            adminStore.products.map(prod => (
+                                <tr key={prod.id}>
+                                    <td>{prod.name}</td>
+                                    <td>{prod.price}</td>
+                                    <td>{prod.code}</td>
+                                    <td className="admin__page__edit__btns__container">
+                                        <Button
+                                            className="admin__page__edit__btn"
+                                            size="sm"
+                                            onClick={() => openEditModal(prod.id)}
+                                        >
+                                            Редагувати
+                                        </Button>
+                                        <Button
+                                            size="sm"
+                                            variant="outline-danger"
+                                            onClick={() => handleDeleteProduct(prod.id)}
+                                        >
+                                            Видалити
+                                        </Button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={4} style={{ textAlign: 'center', padding: '2rem 0' }}>
+                                    {adminStore.products === undefined
+                                        ? 'Завантаження...'
+                                        : 'Товари відсутні'}
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
                 </Table>
 
