@@ -7,7 +7,7 @@ import {
     LOGIN_ROUTE,
     PROFILE_ROUTE,
     REGISTRATION_ROUTE,
-    MAIN_ROUTE,
+    HOME_ROUTE,
     ORDER_ROUTE,
     CONTACTS_ROUTE,
     FORGOT_PASSWORD_ROUTE,
@@ -25,8 +25,8 @@ import ResetPassword from "./pages/ResetPassword.jsx";
 import ReturnPolicy from "./pages/ReturnPolicy.jsx";
 import Oferta from "./pages/Oferta.jsx";
 import DeliveryPayment from "./pages/DeliveryPayment.jsx";
-import CategoryList from "./components/CategoryList.jsx";
 import CategoryPage from "./pages/CategoryPage.jsx";
+import HomePage from "./pages/HomePage.jsx";
 
 export const authRoutes = [
     {
@@ -41,8 +41,8 @@ export const authRoutes = [
 
 export const publicRoutes = [
     {
-        path: MAIN_ROUTE,
-        Component: CategoryList
+        path: HOME_ROUTE,
+        Component: HomePage
     },
     {
         path: CATEGORY_ROUTE,

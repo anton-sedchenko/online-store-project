@@ -5,7 +5,7 @@ import {
     DELIVERY_PAYMENT_ROUTE,
     OFERTA_ROUTE,
     RETURN_POLICY_ROUTE,
-    MAIN_ROUTE
+    HOME_ROUTE
 } from "../utils/consts.js";
 
 const Footer = () => {
@@ -17,7 +17,7 @@ const Footer = () => {
                         <Link to="/" onClick={() => window.scrollTo(0, 0)}>
                             Блог
                         </Link>
-                        <Link to={MAIN_ROUTE} onClick={() => window.scrollTo(0, 0)}>
+                        <Link to={HOME_ROUTE} onClick={() => window.scrollTo(0, 0)}>
                             Каталог
                         </Link>
                         <Link to={CONTACTS_ROUTE} onClick={() => window.scrollTo(0, 0)}>
