@@ -1,6 +1,5 @@
 import React, {useContext, useState} from "react";
-import {Button, Col, Container, Row} from "react-bootstrap";
-import {SHOP_ROUTE} from "../utils/consts.js";
+import {MAIN_ROUTE} from "../utils/consts.js";
 import {useNavigate} from "react-router-dom";
 import {createOrder} from "../http/orderAPI.js";
 import {Context} from "../main.jsx";
@@ -31,7 +30,7 @@ const Order = () => {
         setTimeout(() => {
             setShowThankYou(false);
             cartStore.clearCart();
-            navigate(SHOP_ROUTE);
+            navigate(MAIN_ROUTE);
         }, 4000);
     }
 
@@ -100,7 +99,7 @@ const Order = () => {
                             <button
                                 className="order__form__return__btn"
                                 type="button"
-                                onClick={() => navigate(SHOP_ROUTE)}
+                                onClick={() => navigate(MAIN_ROUTE)}
                             >
                                 Повернутись до галереї
                             </button>

@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import {FORGOT_PASSWORD_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE} from "../utils/consts.js";
+import {FORGOT_PASSWORD_ROUTE, LOGIN_ROUTE, MAIN_ROUTE, REGISTRATION_ROUTE} from "../utils/consts.js";
 import {fetchAuthUser, login, registration} from "../http/userAPI.js";
 import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
@@ -29,7 +29,7 @@ const Auth = observer(() => {
             userStore.setUser(tokenUser);
             userStore.setIsAuth(true);
             await cartStore.switchToAuth();
-            navigate(SHOP_ROUTE);
+            navigate(MAIN_ROUTE);
         } catch (e) {
             alert(e.response?.data?.message || e.message);
         }
