@@ -15,21 +15,24 @@ app.set('trust proxy', 1);
 const rateLimit = require('express-rate-limit');
 const {ProductImage} = require("./models/models");
 
+// Для staging (і всіх preview-доменів) дозволяємо будь-який origin,
+// в деві - лишаєм статичний список
+if (process.env.NODE_ENV === 'staging') {
+    app.use(cors({ origin: true, credentials: true }));
+} else {
 const corsOptions = {
     origin: [
-        'http://localhost:3000',
-        'https://online-store-project-navy.vercel.app',
-        'https://online-store-project-git-main-antonsedchenkos-projects.vercel.app',
-        'https://charivna-craft.com.ua',
-        'https://charivna-craft-staging.vercel.app',
-        'https://charivna-craft.com.ua'
+    'http://localhost:3000',
+    'https://charivna-craft.com.ua',
+    // якщо є інші production-домени — сюди
     ],
     methods: ['GET','POST','PUT','DELETE','OPTIONS'],
     allowedHeaders: ['Content-Type','Authorization'],
     credentials: true,
 };
+    app.use(cors(corsOptions));
+}
 
-app.use(cors(corsOptions));
 app.use(express.json());
 app.use(fileUpload({
     useTempFiles: true,               // Cloudinary читає з тимчасового файлу
