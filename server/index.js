@@ -66,6 +66,11 @@ const start = async () => {
 
         console.log('Connection has been established successfully.');
 
+        if (process.env.NODE_ENV === 'staging' || process.env.NODE_ENV === 'production') {
+            await sequelize.sync({alter: true});
+            console.log(`Tables synced (${process.env.NODE_ENV})`);
+        }
+
         // if (process.env.NODE_ENV === 'staging') {
         //     await sequelize.sync({alter: true});
         //     console.log('Tables synced (staging)');
