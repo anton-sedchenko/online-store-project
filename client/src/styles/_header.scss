@@ -72,12 +72,13 @@ header h1 {
 .header__btn__container {
   height: 60px;
   width: 60px;
-  margin-right: 10px;
+  //margin-right: 10px;
+  margin-bottom: 10px;
 }
 
-.header__btn__container:last-child {
-  margin-right: 0;
-}
+//.header__btn__container:last-child {
+//  margin-right: 0;
+//}
 
 .header__link {
   display: inline-block;
