@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button} from "react-bootstrap";
-import CreateType from "../components/modals/CreateType.jsx";
 import CreateCategory from "../components/modals/CreateCategory.jsx";
 import EditCategory from "../components/modals/EditCategory.jsx";
 import CreateProduct from "../components/modals/CreateProduct.jsx";
@@ -19,7 +18,6 @@ const Admin = observer(() => {
     const {adminStore, productStore} = useContext(Context);
     // поточний об’єкт фігури, яку редагуємо, null якщо жодної
     const [editing, setEditing] = useState(null);
-    const [typeVisible, setTypeVisible] = useState(false);
     const [productVisible, setProductVisible] = useState(false);
     const [categoryModalVisible, setCategoryModalVisible] = useState(false);
     const [editCategoryId, setEditCategoryId] = useState(null);
@@ -66,6 +64,7 @@ const Admin = observer(() => {
             </Helmet>
 
             <div className="component__container">
+                <h1>Панель адміністратора</h1>
                 <div className="admin__page__action__btn__container">
                     <Button
                         variant={"outline-dark"}
@@ -73,13 +72,6 @@ const Admin = observer(() => {
                         onClick={() => setCategoryModalVisible(true)}
                     >
                         Додати категорію
-                    </Button>
-                    <Button
-                        variant={"outline-dark"}
-                        className="admin__page__action__btn"
-                        onClick={() => setTypeVisible(true)}
-                    >
-                        Додати тип
                     </Button>
                     <Button
                         variant={"outline-dark"}
@@ -99,14 +91,15 @@ const Admin = observer(() => {
                             adminStore.loadProducts();
                         }}
                     />
-                    <CreateType
-                        show={typeVisible}
-                        onHide={() => setTypeVisible(false)}
-                    />
                 </div>
+                <h2>Категорії магазину</h2>
                 <Table striped bordered hover>
                     <thead>
-                        <tr><td>Назва категорії</td><td>Картинка</td><td>Дія</td></tr>
+                        <tr>
+                            <td>Назва категорії</td>
+                            <td>Картинка</td>
+                            <td>Дія</td>
+                        </tr>
                     </thead>
                     <tbody>
                         {Array.isArray(productStore.types) && productStore.types.map(cat => (
@@ -115,15 +108,17 @@ const Admin = observer(() => {
                                 <td>
                                     {cat.image && <img alt="" src={cat.image} width="50" />}
                                 </td>
-                                <td>
+                                <td className="admin__page__edit__btns__container">
                                     <Button
                                         size="sm"
+                                        className="admin__page__edit__btn"
                                         onClick={() => setEditCategoryId(cat.id)}>
                                         Редагувати
                                     </Button>
                                     <Button
                                         variant="outline-danger"
                                         size="sm"
+                                        variant="outline-danger"
                                         onClick={() => handleDeleteType(cat.id)}>
                                         Видалити
                                     </Button>
@@ -132,6 +127,7 @@ const Admin = observer(() => {
                         ))}
                     </tbody>
                 </Table>
+                <h2>Товари магазину</h2>
                 <Table striped bordered hover>
                     <thead>
                         <tr>

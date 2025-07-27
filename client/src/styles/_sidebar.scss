@@ -13,20 +13,13 @@
 .sidebar__menu__container {
   @include respond-to(md) {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
   }
 }
 
 .sidebar__btn__container {
   width: 60px;
   height: 60px;
-}
-
-.sidebar__title p {
-  @include respond-to(md) {
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
 }
 
 .sidebar__burger__menu {
