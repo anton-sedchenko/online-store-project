@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {Context} from "../main.jsx";
 import {Link, useNavigate} from "react-router-dom";
 import {observer} from "mobx-react-lite";
@@ -7,10 +7,12 @@ import CartIcon from "./UI/CartIcon.jsx";
 import LoginIcon from "./UI/LoginIcon.jsx";
 import UserIcon from "./UI/UserIcon.jsx";
 import AdminPanelLogo from "./UI/AdminPanelLogo.jsx";
+import MobileMenuModal from "./modals/MobileMenuModal.jsx";
 
 const Header = observer(() => {
     const {userStore, cartStore} = useContext(Context);
     const navigate = useNavigate();
+    const [menuVisible, setMenuVisible] = useState(false);
 
     const logOut = () => {
         localStorage.removeItem("token");
@@ -86,6 +88,18 @@ const Header = observer(() => {
                                 </Link>
                             </div>
                         )}
+
+                        <div className="sidebar__menu__container">
+                            <div className="header__btn__container">
+                                <button
+                                    className="neu-btn header__btn"
+                                    onClick={() => setMenuVisible(true)}
+                                >
+                                    Меню
+                                </button>
+                            </div>
+                        </div>
+
                         <div className="header__btn__container">
                             <Link to={CART_ROUTE} className="header__link">
                                 <button className="neu-btn header__btn">
@@ -97,6 +111,11 @@ const Header = observer(() => {
                     </div>
                 </nav>
             </div>
+
+            <MobileMenuModal
+                show={menuVisible}
+                onHide={() => setMenuVisible(false)}
+            />
         </header>
     );
 });

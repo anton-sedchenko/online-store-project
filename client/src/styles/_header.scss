@@ -59,13 +59,13 @@ header h1 {
 }
 
 .header__nav__menu {
-  max-height: 80px;
   display: flex;
   font-size: 12px;
 
   @include respond-to(md) {
     width: 100%;
     justify-content: space-between;
+    flex-wrap: wrap;
   }
 }
 

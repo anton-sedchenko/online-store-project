@@ -3,25 +3,13 @@ import {Link} from "react-router-dom";
 import ProductsCounter from "./UI/ProductsCounter.jsx";
 import {Context} from "../main.jsx";
 import {observer} from "mobx-react-lite";
-import MobileMenuModal from "./modals/MobileMenuModal.jsx";
 
 const SideBar = observer(() => {
     const {userStore} = useContext(Context);
-    const [menuVisible, setMenuVisible] = useState(false);
 
     return (
         <>
             <aside className="sidebar__aside__wrapper">
-                <div className="sidebar__menu__container">
-                    <div className="header__btn__container">
-                        <button
-                            className="neu-btn header__btn"
-                            onClick={() => setMenuVisible(true)}
-                        >
-                            Меню
-                        </button>
-                    </div>
-                </div>
                 <div className="sidebar">
                     <ul>
                         <li className="neu-btn sidebar__nav__item">
@@ -42,10 +30,6 @@ const SideBar = observer(() => {
                     </ul>
                 </div>
             </aside>
-            <MobileMenuModal
-                show={menuVisible}
-                onHide={() => setMenuVisible(false)}
-            />
         </>
     );
 });
