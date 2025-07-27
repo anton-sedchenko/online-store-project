@@ -3,7 +3,6 @@ const router = new Router();
 const typeController = require('../controllers/typeController');
 const checkRole = require('../middleware/checkRoleMiddleware');
 const authMiddleware = require('../middleware/authMiddleware');
-const fileUpload = require('express-fileupload');
 
 router.post('/', checkRole('ADMIN'), typeController.create);
 router.get('/', typeController.getAll);
@@ -14,8 +13,8 @@ router.put(
     typeController.update
 );
 router.put('/:id/image',
-    authMiddleware, checkRole('ADMIN'),
-    fileUpload({useTempFiles:true, tempFileDir:'/tmp'}),
+    authMiddleware,
+    checkRole('ADMIN'),
     typeController.updateImage
 );
 router.delete(

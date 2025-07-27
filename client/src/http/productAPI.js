@@ -5,8 +5,12 @@ export const fetchProductBySlug = async (slug) => {
     return data;
 };
 
-export const createProduct = async (product) => {
-    const {data} = await $authHost.post("/api/product", product);
+export const createProduct = async (formData) => {
+    const {data} = await $authHost.post(
+        "/api/product",
+        formData,
+        {headers: {"Content-Type": "multipart/form-data"}}
+    );
     return data;
 }
 
