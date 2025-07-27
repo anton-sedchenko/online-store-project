@@ -84,6 +84,14 @@ header h1 {
   margin-right: 0;
 }
 
+.header__menu__btn__container {
+  display: none;
+
+  @include respond-to(md) {
+    display: flex;
+  }
+}
+
 .header__link {
   display: inline-block;
   height: 100%;

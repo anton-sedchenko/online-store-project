@@ -89,7 +89,7 @@ const Header = observer(() => {
                             </div>
                         )}
 
-                        <div className="header__btn__container">
+                        <div className="header__btn__container header__menu__btn__container">
                             <button
                                 className="neu-btn header__btn"
                                 onClick={() => setMenuVisible(true)}
