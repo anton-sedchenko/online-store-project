@@ -89,15 +89,13 @@ const Header = observer(() => {
                             </div>
                         )}
 
-                        <div className="sidebar__menu__container">
-                            <div className="header__btn__container">
-                                <button
-                                    className="neu-btn header__btn"
-                                    onClick={() => setMenuVisible(true)}
-                                >
-                                    Меню
-                                </button>
-                            </div>
+                        <div className="header__btn__container">
+                            <button
+                                className="neu-btn header__btn"
+                                onClick={() => setMenuVisible(true)}
+                            >
+                                Меню
+                            </button>
                         </div>
 
                         <div className="header__btn__container">
