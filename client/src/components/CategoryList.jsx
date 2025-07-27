@@ -25,20 +25,21 @@ const CategoryList = () => {
                     className="gallery__row"
                 >
                     <Card
-                        className="category-card text-center cursor-pointer h-100"
+                        border={"light"}
+                        className="gallery__card neu-card"
                         onClick={() => navigate(`/category/${type.id}`)}
                     >
                         {type.image ? (
-                            <Card.Img
-                                variant="top"
-                                src={type.image}
-                                style={{objectFit: 'cover', height: 120}}
-                            />
+                            <div className="gallery__card__info__container">
+                                <Card.Img src={type.image} />
+                            </div>
                         ) : (
-                            <div style={{height:120, background:'#f0f0f0'}} />
+                            <div style={{background:'#f0f0f0'}} />
                         )}
                         <Card.Body>
-                            <Card.Title>{type.name}</Card.Title>
+                            <Card.Title>
+                                <h6 className="gallery__card__product__name">{type.name}</h6>
+                            </Card.Title>
                         </Card.Body>
                     </Card>
                 </Col>
