@@ -13,7 +13,7 @@
 .sidebar__menu__container {
   @include respond-to(md) {
     display: flex;
-    justify-content: end;
+    justify-content: center;
   }
 }
 

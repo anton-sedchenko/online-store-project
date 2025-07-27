@@ -13,12 +13,14 @@ const SideBar = observer(() => {
         <>
             <aside className="sidebar__aside__wrapper">
                 <div className="sidebar__menu__container">
-                    <button
-                        className="neu-btn header__btn"
-                        onClick={() => setMenuVisible(true)}
-                    >
-                        Меню
-                    </button>
+                    <div className="header__btn__container">
+                        <button
+                            className="neu-btn header__btn"
+                            onClick={() => setMenuVisible(true)}
+                        >
+                            Меню
+                        </button>
+                    </div>
                 </div>
                 <div className="sidebar">
                     <ul>
