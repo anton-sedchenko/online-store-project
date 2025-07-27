@@ -3,9 +3,6 @@ import axios from "axios";
 const rawBase = import.meta.env.VITE_APP_API_URL || "";
 const apiBase = rawBase.replace(/\/api\/?$/, "");
 
-// шукаєм баг з подвійним /api в урл
-console.log("HTTP baseURL =", apiBase);
-
 // інстанс для запитів без авторизації
 const $host = axios.create({
     baseURL: apiBase,

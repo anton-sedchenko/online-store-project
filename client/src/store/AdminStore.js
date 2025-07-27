@@ -26,9 +26,6 @@ export default class AdminStore {
     async loadProducts() {
         const data = await fetchProducts(null, this.productsPage, this.productsLimit);
 
-        // шукаєм баг
-        console.log("AdminStore.loadProducts ->", data);
-
         runInAction(() => {
             this.products = data.rows;
             this.productsTotal = data.count;
