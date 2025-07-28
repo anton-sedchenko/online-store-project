@@ -8,7 +8,8 @@ const Contacts = () => {
         <div className="component__container">
             <Helmet>
                 <title>Контакти – Charivna Craft</title>
-                <meta name="description" content="Зв’яжіться з нами для консультації чи індивідуального замовлення." />
+                <meta name="description" content="Як з нами зв’язатися" />
+                <link rel="canonical" href="https://charivna-craft.com.ua/contacts" />
             </Helmet>
 
             <Row>
