@@ -34,11 +34,18 @@ const Footer = () => {
                         </Link>
                     </div>
                     <div className="footer__column-contacts">
-                        {/*<p>Ми у соціальних мережах</p>*/}
-                        {/*<p>FB icon, Insta icon, Tik-Tok icon</p>*/}
-                        <p>+38 (068) 036 15 97</p>
-                        <p>+38 (093) 744 25 11</p>
-                        <p>+38 (050) 608 62 30</p>
+                        <p>Наші контакти:</p>
+                        <a
+                            href="https://www.facebook.com/charivna.craft"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="footer__social-link"
+                        >
+                            <i className="fa fa-facebook-square" aria-hidden="true"></i>
+                        </a>
+                        <a href="tel:+380680361597">+38 (068) 036 15 97</a>
+                        <a href="tel:+380937442511">+38 (093) 744 25 11</a>
+                        <a href="tel:+380506086230">+38 (050) 608 62 30</a>
                         <p>
                             <a href="mailto:charivna-craft@gmail.com">charivna-craft@gmail.com</a>
                         </p>

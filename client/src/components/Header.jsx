@@ -38,10 +38,10 @@ const Header = observer(() => {
                             <a href="tel:+380680361597">+38 (068) 036 15 97</a>
                         </div>
                         <div>
-                            <a href="tel:+380680361597">+38 (093) 744 25 11</a>
+                            <a href="tel:+380937442511">+38 (093) 744 25 11</a>
                         </div>
                         <div>
-                            <a href="tel:+380680361597">+38 (050) 608 62 30</a>
+                            <a href="tel:+380506086230">+38 (050) 608 62 30</a>
                         </div>
                     </div>
                     <div className="header__nav__menu">
