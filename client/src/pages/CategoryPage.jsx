@@ -6,6 +6,7 @@ import SideBar from '../components/SideBar.jsx';
 import {fetchProducts} from '../http/productAPI.js';
 import {fetchOneType} from '../http/typeAPI.js';
 import Breadcrumbs from '../components/Breadcrumbs.jsx';
+import PaginationLocal from '../components/PaginationLocal.jsx';
 import ProductList from '../components/ProductList.jsx';
 
 const CategoryPage = () => {
@@ -13,10 +14,22 @@ const CategoryPage = () => {
     const [products, setProducts] = useState([]);
     const [type, setType] = useState(null);
 
+    //  Локальна пагінація
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 12; // скільки товарів на сторінці
+    const [totalCount, setTotalCount] = useState(0);
+
     useEffect(() => {
         fetchOneType(id).then(setType);
         fetchProducts(id, 1, 100).then(data => setProducts(data.rows));
     }, [id]);
+
+    useEffect(() => {
+        fetchProducts(id, currentPage, limit).then(data => {
+            setProducts(data.rows);
+            setTotalCount(data.count);
+        });
+    }, [id, currentPage]);
 
     if (!type) return null;
 
@@ -38,8 +51,12 @@ const CategoryPage = () => {
                 </Col>
             </Row>
 
-            {/* Можливо буде пагінація категорій */}
-
+            <PaginationLocal
+                totalCount={totalCount}
+                limit={limit}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+            />
         </div>
     );
 };

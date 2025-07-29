@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Card, Row, Col} from 'react-bootstrap';
 import {useNavigate} from 'react-router-dom';
 import {fetchTypes} from '../http/typeAPI.js';
-import ProductItem from "./ProductItem.jsx";
 
 const CategoryList = () => {
     const [types, setTypes] = useState([]);

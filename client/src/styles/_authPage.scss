@@ -1,4 +1,5 @@
 @import "variables";
+@import "mixins";
 
 .auth__form__container {
   border: 2px solid $color-primary;
@@ -33,4 +34,8 @@
 
 .auth__form__register__advice a:hover {
   color: green;
+}
+
+.auth__action__btn {
+  @include btn-style;
 }

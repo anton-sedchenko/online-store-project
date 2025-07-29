@@ -59,7 +59,14 @@ const ProductPage = () => {
     const activeImage = product.images?.[currentImageIndex]?.url || product.img;
 
     return (
-        <Col className="component__container">
+        <div className="component__container">
+            <button
+                className="neu-btn back-button"
+                style={{marginBottom: '1rem'}}
+                onClick={() => navigate(-1)}
+            >
+                ← Назад
+            </button>
             {product?.name && (
                 <Helmet>
                     <title>{product.name} | Charivna Craft</title>
@@ -127,7 +134,7 @@ const ProductPage = () => {
                     )}
                 </Col>
             </Row>
-        </Col>
+        </div>
     );
 };
 
