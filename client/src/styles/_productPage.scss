@@ -1,5 +1,9 @@
 @import "mixins";
 
+.product__back-button {
+  @include btn-style;
+}
+
 .slider-btn {
   position: absolute;
   top: 50%;

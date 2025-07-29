@@ -89,7 +89,7 @@ const Auth = observer(() => {
                                 </div>
                             }
                         <button
-                            className="neu-btn auth__action__btn"
+                            className="auth__action__btn"
                             type="button"
                             onClick={click}
                         >

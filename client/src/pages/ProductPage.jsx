@@ -61,7 +61,7 @@ const ProductPage = () => {
     return (
         <div className="component__container">
             <button
-                className="neu-btn back-button"
+                className="product__back-button"
                 style={{marginBottom: '1rem'}}
                 onClick={() => navigate(-1)}
             >

@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {Button, Card, Image} from "react-bootstrap";
+import {Card, Image} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {PRODUCT_ROUTE} from "../utils/consts.js";
 import {observer} from "mobx-react-lite";
@@ -25,7 +25,7 @@ const ProductItem = observer(({product}) => {
                 onClick={() => navigate(`${PRODUCT_ROUTE}/${product.slug}`)}
             >
                 <div className="gallery__card__info__container">
-                    <div>
+                    <div className="card__info__img__container">
                         <Image
                             src={product.img}
                         />

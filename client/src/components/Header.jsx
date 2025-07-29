@@ -35,13 +35,13 @@ const Header = observer(() => {
                 <nav className="header__nav">
                     <div className="header__nav__tel">
                         <div>
-                            <span>+38 (068) 036 15 97</span>
+                            <a href="tel:+380680361597">+38 (068) 036 15 97</a>
                         </div>
                         <div>
-                            <span>+38 (093) 744 25 11</span>
+                            <a href="tel:+380680361597">+38 (093) 744 25 11</a>
                         </div>
                         <div>
-                            <span>+38 (050) 608 62 30</span>
+                            <a href="tel:+380680361597">+38 (050) 608 62 30</a>
                         </div>
                     </div>
                     <div className="header__nav__menu">
