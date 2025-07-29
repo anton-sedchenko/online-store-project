@@ -60,13 +60,6 @@ const ProductPage = () => {
 
     return (
         <div className="component__container">
-            <button
-                className="product__back-button"
-                style={{marginBottom: '1rem'}}
-                onClick={() => navigate(-1)}
-            >
-                ← Назад
-            </button>
             {product?.name && (
                 <Helmet>
                     <title>{product.name} | Charivna Craft</title>
@@ -80,6 +73,16 @@ const ProductPage = () => {
             )}
 
             <Row>
+                <div>
+                    <button
+                        className="product__back-button"
+                        style={{marginBottom: '1rem'}}
+                        onClick={() => navigate(-1)}
+                    >
+                        ← Назад
+                    </button>
+                </div>
+
                 <Col xs={12} md={4} className="product__img__container text-center">
                     <div style={{position: 'relative'}}>
                         <Image
