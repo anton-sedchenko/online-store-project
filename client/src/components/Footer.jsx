@@ -42,7 +42,7 @@ const Footer = () => {
                                 rel="noopener noreferrer"
                                 className="footer__social-link"
                             >
-                                <i className="fa fa-facebook-square" aria-hidden="true"></i>
+                                <i className="fa fa-facebook-square footer__social__link__shadow" aria-hidden="true"></i>
                             </a>
                         </p>
                         <p>
