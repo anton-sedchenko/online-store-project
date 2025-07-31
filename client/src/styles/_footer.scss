@@ -52,6 +52,7 @@ footer {
 
   @include respond-to(xs) {
     margin-bottom: 15px;
+    align-items: center;
   }
 }
 
@@ -59,15 +60,15 @@ footer {
   display: flex;
   flex-direction: column;
   align-items: end;
+
+  @include respond-to(xs) {
+    align-items: center;
+  }
 }
 
-.footer__column-contacts p {
+.footer__contact__title__container p {
   margin: 0;
   padding: 0;
-
-  @include respond-to(sm) {
-    margin-bottom: 10px;
-  }
 }
 
 .footer__contact__container {
