@@ -27,6 +27,13 @@ html, body {
   overflow-y: auto;
 }
 
+.zsu__banner {
+  display: flex;
+  max-width: 1000px;
+  height: auto;
+  align-self: center;
+}
+
 .component__container {
   width: 100%;
   max-width: 1200px;
