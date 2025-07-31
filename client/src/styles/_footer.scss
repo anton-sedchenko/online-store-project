@@ -62,9 +62,20 @@ footer {
 }
 
 .footer__column-contacts p {
+  margin: 0;
+  padding: 0;
+
   @include respond-to(sm) {
     margin-bottom: 10px;
   }
+}
+
+.footer__contact__container {
+  margin-bottom: 5px;
+}
+
+.footer__contact__container:last-child {
+  margin-bottom: 0;
 }
 
 .footer__copyrights-container {

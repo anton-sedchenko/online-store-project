@@ -34,8 +34,10 @@ const Footer = () => {
                         </Link>
                     </div>
                     <div className="footer__column-contacts">
-                        <p>Наші контакти:</p>
-                        <p>
+                        <div className="footer__contact__container">
+                            <p>Наші контакти:</p>
+                        </div>
+                        <div className="footer__contact__container">
                             <a
                                 href="https://www.facebook.com/charivna.craft"
                                 target="_blank"
@@ -44,19 +46,19 @@ const Footer = () => {
                             >
                                 <i className="fa fa-facebook-square footer__social__link__shadow" aria-hidden="true"></i>
                             </a>
-                        </p>
-                        <p>
+                        </div>
+                        <div className="footer__contact__container">
                             <a href="tel:+380680361597">+38 (068) 036 15 97</a>
-                        </p>
-                        <p>
+                        </div>
+                        <div className="footer__contact__container">
                             <a href="tel:+380937442511">+38 (093) 744 25 11</a>
-                        </p>
-                        <p>
+                        </div>
+                        <div className="footer__contact__container">
                             <a href="tel:+380506086230">+38 (050) 608 62 30</a>
-                        </p>
-                        <p>
+                        </div>
+                        <div className="footer__contact__container">
                             <a href="mailto:charivna-craft@gmail.com">charivna-craft@gmail.com</a>
-                        </p>
+                        </div>
                     </div>
                 </div>
                 <div className="footer__copyrights-container">
