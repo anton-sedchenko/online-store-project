@@ -119,6 +119,11 @@ footer {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   transition: all 1s ease;
+  margin-right: 10px;
+}
+
+.footer__social-link:last-child {
+  margin-right: 0;
 }
 
 .footer__social-link:hover {

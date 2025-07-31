@@ -44,11 +44,9 @@ const Footer = () => {
                                 rel="noopener noreferrer"
                                 className="footer__social-link"
                             >
-                                <i className="fa fa-facebook-square footer__social__link__shadow"
+                                <i className="fa fa-facebook-square"
                                    aria-hidden="true"></i>
                             </a>
-                        </div>
-                        <div className="footer__contact__container">
                             <a
                                 href="https://www.pinterest.com/charivnacraft"
                                 target="_blank"
