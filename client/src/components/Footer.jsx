@@ -34,9 +34,6 @@ const Footer = () => {
                         </Link>
                     </div>
                     <div className="footer__column-contacts">
-                        <div className="footer__contact__container footer__contact__title__container">
-                            <p>Наші контакти:</p>
-                        </div>
                         <div className="footer__contact__container">
                             <a
                                 href="https://www.facebook.com/charivna.craft"
