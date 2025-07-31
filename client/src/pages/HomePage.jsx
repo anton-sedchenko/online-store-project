@@ -15,7 +15,7 @@ const HomePage = () => (
                     <SideBar/>
                 </Col>
                 <Col md={9} lg={10}>
-                    <h2 className="mb-4">Категорії</h2>
+                    <h2 className="mb-4">Каталог</h2>
                     <CategoryList/>
                 </Col>
             </Row>
