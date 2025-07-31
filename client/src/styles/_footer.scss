@@ -53,6 +53,7 @@ footer {
   @include respond-to(xs) {
     margin-bottom: 15px;
     align-items: center;
+    text-align: center;
   }
 }
 
@@ -63,6 +64,14 @@ footer {
 
   @include respond-to(xs) {
     align-items: center;
+  }
+}
+
+.footer__contact__title__container {
+  text-align: end;
+
+  @include respond-to(xs) {
+    text-align: center;
   }
 }
 
@@ -77,6 +86,10 @@ footer {
 
 .footer__contact__container:last-child {
   margin-bottom: 0;
+}
+
+.footer__contact__container a {
+  display: flex;
 }
 
 .footer__copyrights-container {
