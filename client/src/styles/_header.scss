@@ -52,10 +52,7 @@ header h1 {
   justify-content: space-around;
   flex-wrap: wrap;
   margin-bottom: 15px;
-
-  @include respond-to(xs) {
-    font-size: 14px;
-  }
+  font-size: 14px;
 }
 
 .header__nav__menu {

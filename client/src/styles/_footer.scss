@@ -39,6 +39,7 @@ footer {
   color: #E6E6E6;
   display: block;
   min-width: 140px;
+  margin-bottom: 5px;
 
   @include respond-to(sm) {
     margin-bottom: 10px;
