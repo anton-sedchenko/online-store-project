@@ -84,8 +84,17 @@ footer {
 
 .footer__social-link {
   font-size: 27px;
+  background: linear-gradient(to top, purple 50%, black 50%);
+  background-size: 100% 200%;
+  background-position: 0 0;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all 1s ease;
 }
 
-//.footer__social__link__shadow:hover {
-//    box-shadow: rgba(128, 0, 128, 0.4) 0px 4px 8px, rgba(128, 0, 128, 0.2) 0px 2px 4px;
-//}
+.footer__social-link:hover {
+  background-position: 0 100%;
+  transform: scale(125%);
+}
+
+
