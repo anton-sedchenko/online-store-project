@@ -21,7 +21,7 @@ class ProductController {
                 return res.status(400).json({message: 'Файл не завантажений'});
             }
 
-            let {name, price, typeId, description, code} = req.body;
+            let {name, price, typeId, description, code, availability} = req.body;
 
             if (!code) {
                 return next(ApiError.badRequest('Необхідно вказати код товару'));

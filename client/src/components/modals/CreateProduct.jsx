@@ -60,19 +60,19 @@ const CreateProduct = observer(({show, onHide}) => {
                         </Dropdown.Menu>
                     </Dropdown>
                     <Form.Control
-                        placeholder="Введіть назву фігурки"
+                        placeholder="Назва товару"
                         className="modal__input"
                         value={name}
                         onChange={e => setName(e.target.value)}
                     />
                     <Form.Control
-                        placeholder="Введіть код товару"
+                        placeholder="Код товару"
                         value={code}
                         onChange={e => setCode(e.target.value)}
                     />
                     <Form.Group className="mb-2">
-                        <Form.Label>Наявність</Form.Label>
                         <Form.Select
+                            placeholder="Наявність товару"
                             value={availability}
                             onChange={e => setAvailability(e.target.value)}
                         >
@@ -81,7 +81,7 @@ const CreateProduct = observer(({show, onHide}) => {
                         </Form.Select>
                     </Form.Group>
                     <Form.Control
-                        placeholder="Введіть ціну фігурки"
+                        placeholder="Ціна товару"
                         type="number"
                         className="modal__input"
                         value={price}
@@ -90,7 +90,7 @@ const CreateProduct = observer(({show, onHide}) => {
                     <Form.Control
                         as="textarea"
                         rows={4}
-                        placeholder="Додайте опис фігурки"
+                        placeholder="Опис товару"
                         className="modal__input"
                         value={descr}
                         onChange={e => setDescr(e.target.value)}
