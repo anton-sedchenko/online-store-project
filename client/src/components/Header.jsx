@@ -14,10 +14,15 @@ const Header = observer(() => {
     const navigate = useNavigate();
     const [menuVisible, setMenuVisible] = useState(false);
 
-    const logOut = () => {
+    const logOut = async () => {
         localStorage.removeItem("token");
         userStore.setUser({})
         userStore.setIsAuth(false);
+        // Очищаємо серверний кошик, якщо були товари під юзером
+        await cartStore.clearCart();
+        // Очищаємо гостьовий кошик у localStorage
+        localStorage.removeItem("guestCart");
+
         // Перемикаємось на кошик гостя
         cartStore.switchToGuest();
         navigate(HOME_ROUTE);
