@@ -117,7 +117,7 @@ class OrderController {
 
             await mailer.sendMail({
                 from: process.env.EMAIL_FROM,
-                to: [email, 'charivnij.workshop@gmail.com'],
+                to: [email, 'charivna.craft@gmail.com'],
                 subject: 'Ваше замовлення оформлено',
                 html: mailHtml
             });
