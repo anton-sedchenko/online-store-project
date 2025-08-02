@@ -30,20 +30,29 @@
   right: 0;
 }
 
-.product__img__container,
-.product__code,
-.product__title,
-.product__description {
-  margin-bottom: 30px;
+.product__code {
+  margin-bottom: 10px;
+  font-size: 14px;
 }
 
 .product__availability {
+  margin-bottom: 10px;
+  font-size: 14px;
+
   .availability-value {
     color: green;
   }
   .pre-order & {
     color: orange;
   }
+}
+
+.product__title {
+  margin-bottom: 10px;
+}
+
+.product__description {
+  margin-bottom: 30px;
 }
 
 .product__img__container {
@@ -59,11 +68,25 @@
 
 .product__count {
   margin-right: 20px;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .product__count__input {
   width: 80px;
+  font-size: 18px;
+  height: 36px;
+  border-radius: 4px;
+  padding-left: 12px;
+  border: 1px solid rgb(137, 151, 155);
+  transition: border-color 150ms ease-in-out 0s;
+  outline: none;
+  color: rgb(33, 49, 60);
+  background-color: rgb(255, 255, 255);
+  padding-right: 12px;
+  :hover{
+    box-shadow: rgb(231 238 236) 0px 0px 0px 3px;
+  }
+
 }
 
 .product__page__total__sum {
