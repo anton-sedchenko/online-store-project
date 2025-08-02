@@ -5,9 +5,15 @@ import {Context} from '../main.jsx';
 import {fetchMyOrders} from '../http/orderAPI.js';
 import {changePassword, updateProfile} from "../http/userAPI.js";
 import {Helmet} from "react-helmet-async";
+import {LOGIN_ROUTE} from "../utils/consts.js";
+import {Navigate} from "react-router-dom";
 
 const Profile = observer(() => {
     const {userStore} = useContext(Context);
+
+    if (!userStore.isAuth) {
+        return <Navigate to={LOGIN_ROUTE} replace/>;
+    }
 
     // стейт форми профілю
     const [form, setForm] = useState({
@@ -199,15 +205,18 @@ const Profile = observer(() => {
                                                 <td>{o.id}</td>
                                                 <td>{new Date(o.createdAt).toLocaleDateString()}</td>
                                                 <td>
-                                                    {o.order_products.map(of => (
-                                                        <div key={of.id}>
-                                                            {of.product.name} × {of.quantity}
-                                                        </div>
-                                                    ))}
+                                                    {o.order_products.map(of => {
+                                                        const productName = of.product?.name ?? '—';
+                                                        return (
+                                                            <div key={of.id}>
+                                                                {productName} × {of.quantity}
+                                                            </div>
+                                                        );
+                                                    })}
                                                 </td>
                                                 <td>
                                                     {o.order_products.reduce((sum, of) =>
-                                                        sum + of.product.price * of.quantity, 0
+                                                        sum + (of.product?.price ?? 0) * of.quantity, 0
                                                     )} грн.
                                                 </td>
                                             </tr>

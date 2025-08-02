@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react';
 import {Context} from "../main.jsx";
 import {Link, useNavigate} from "react-router-dom";
 import {observer} from "mobx-react-lite";
-import {ADMIN_ROUTE, CART_ROUTE, HOME_ROUTE, REGISTRATION_ROUTE} from "../utils/consts.js";
+import {ADMIN_ROUTE, CART_ROUTE, HOME_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE} from "../utils/consts.js";
 import CartIcon from "./UI/CartIcon.jsx";
 import LoginIcon from "./UI/LoginIcon.jsx";
 import UserIcon from "./UI/UserIcon.jsx";
@@ -62,7 +62,7 @@ const Header = observer(() => {
                         {userStore.isAuth ? (
                             <>
                                 <div className="header__btn__container">
-                                    <Link to="/profile" className="header__link">
+                                    <Link to={PROFILE_ROUTE} className="header__link">
                                         <button className="neu-btn header__btn">
                                             <UserIcon />
                                             <p>Кабінет</p>

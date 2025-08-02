@@ -13,12 +13,13 @@ const productStore = new ProductStore();
 const cartStore   = new CartStore(userStore);
 const adminStore = new AdminStore();
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-      <HelmetProvider>
-          <Context.Provider value={{userStore, productStore, cartStore, adminStore}}>
-              <App />
-          </Context.Provider>
-      </HelmetProvider>
-  </StrictMode>,
-);
+userStore.checkAuth().finally(() => {
+    createRoot(document.getElementById('root')).render(
+      <StrictMode>
+          <HelmetProvider>
+              <Context.Provider value={{userStore, productStore, cartStore, adminStore}}>
+                  <App />
+              </Context.Provider>
+          </HelmetProvider>
+      </StrictMode>,
+)});
