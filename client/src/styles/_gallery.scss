@@ -70,6 +70,15 @@
   margin-bottom: 15px;
 }
 
+.gallery__product__availability {
+  .availability-value {
+    color: green;
+  }
+  .pre-order & {
+    color: orange;
+  }
+}
+
 .gallery__card__product__name {
   font-size: 18px;
   margin-bottom: 5px;

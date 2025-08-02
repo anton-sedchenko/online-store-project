@@ -12,6 +12,7 @@ const CreateProduct = observer(({show, onHide}) => {
     const [descr, setDescr] = useState('');
     const [file, setFile] = useState(null);
     const [code, setCode] = useState('');
+    const [availability, setAvailability] = useState('IN_STOCK');
 
     // Підгружаємо перелік типів
     useEffect(() => {
@@ -31,6 +32,7 @@ const CreateProduct = observer(({show, onHide}) => {
             formData.append("img", file);
             formData.append("typeId", productStore.selectedType.id);
             formData.append("code", code);
+            formData.append('availability', availability);
             await createProduct(formData).then(() => onHide());
         } catch (e) {
             alert(e.response?.data?.message || e.message);
@@ -68,6 +70,16 @@ const CreateProduct = observer(({show, onHide}) => {
                         value={code}
                         onChange={e => setCode(e.target.value)}
                     />
+                    <Form.Group className="mb-2">
+                        <Form.Label>Наявність</Form.Label>
+                        <Form.Select
+                            value={availability}
+                            onChange={e => setAvailability(e.target.value)}
+                        >
+                            <option value="IN_STOCK">В наявності</option>
+                            <option value="PRE_ORDER">Під замовлення (2–3 дні)</option>
+                        </Form.Select>
+                    </Form.Group>
                     <Form.Control
                         placeholder="Введіть ціну фігурки"
                         type="number"

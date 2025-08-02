@@ -37,6 +37,15 @@
   margin-bottom: 30px;
 }
 
+.product__availability {
+  .availability-value {
+    color: green;
+  }
+  .pre-order & {
+    color: orange;
+  }
+}
+
 .product__img__container {
   display: flex;
   justify-content: center;

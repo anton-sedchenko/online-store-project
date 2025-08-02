@@ -33,6 +33,11 @@ const Product = sequelize.define('product', {
     description: {type: DataTypes.TEXT, allowNull: true},
     img: {type: DataTypes.STRING},
     code: {type: DataTypes.STRING, allowNull: false, unique: true},
+    availability: {
+        type: DataTypes.ENUM('IN_STOCK', 'PRE_ORDER'),
+        allowNull: false,
+        defaultValue: 'IN_STOCK',
+    },
     slug: {type: DataTypes.STRING, unique: true},
 });
 

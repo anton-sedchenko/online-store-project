@@ -40,6 +40,7 @@ class ProductController {
                 typeId,
                 description,
                 code,
+                availability,
                 img: result.secure_url,
             });
 
@@ -55,6 +56,7 @@ class ProductController {
             let {name, price, typeId, description, code} = req.body;
             const product = await Product.findByPk(id);
             if (!product) return next(ApiError.badRequest(`Товар ${id} не знайдений`));
+            if (req.body.availability) product.availability = req.body.availability;
 
             // якщо прийшов файл - оновлюємо головне зображення
             if (req.files?.img) {

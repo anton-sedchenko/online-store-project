@@ -68,15 +68,15 @@ const start = async () => {
 
         // Обережно sequelize синхронізація для проду
 
-        // if (process.env.NODE_ENV === 'staging' || process.env.NODE_ENV === 'production') {
-        //     await sequelize.sync({alter: true});
-        //     console.log(`Tables synced (${process.env.NODE_ENV})`);
-        // }
-
-        if (process.env.NODE_ENV === 'staging') {
+        if (process.env.NODE_ENV === 'staging' || process.env.NODE_ENV === 'production') {
             await sequelize.sync({alter: true});
-            console.log('Tables synced (staging)');
+            console.log(`Tables synced (${process.env.NODE_ENV})`);
         }
+
+        // if (process.env.NODE_ENV === 'staging') {
+        //     await sequelize.sync({alter: true});
+        //     console.log('Tables synced (staging)');
+        // }
 
         await ProductImage.sync();
 

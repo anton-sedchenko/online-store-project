@@ -102,6 +102,18 @@ const ProductPage = () => {
                 <Col xs={12} md={8}>
                     <div>
                         <p className="product__code">Код товару: {product.code || '---'}</p>
+                        <p className="gallery__product__availability">
+                            <span className="availability-label">Наявність:</span>{' '}
+                            <span className={
+                                product.availability === 'IN_STOCK'
+                                    ? 'availability-value in-stock'
+                                    : 'availability-value pre-order'
+                            }>
+                                {product.availability === 'IN_STOCK'
+                                    ? 'В наявності'
+                                    : 'Під замовлення (2–3 дні)'}
+                            </span>
+                        </p>
                         <h3 className="product__title">{product.name}</h3>
                         <div className="product__count__container">
                             <p className="product__count">Кількість:</p>

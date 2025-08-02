@@ -30,6 +30,19 @@ const ProductItem = observer(({product}) => {
                             src={product.img}
                         />
                         <p className="gallery__card__product__code">Артикул: {product.code}</p>
+                        <p className="product__availability">
+                            <span className="availability-label">Наявність:</span>{' '}
+                            <span className={
+                                product.availability === 'IN_STOCK'
+                                    ? 'availability-value in-stock'
+                                    : 'availability-value pre-order'
+                            }>
+                                {product.availability === 'IN_STOCK'
+                                    ? 'В наявності'
+                                    : 'Під замовлення (2–3 дні)'
+                                }
+                            </span>
+                        </p>
                         <h6 className="gallery__card__product__name">{product.name}</h6>
                     </div>
                     <div>

@@ -36,6 +36,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
         formData.append('code', code);
         formData.append('typeId', typeId);
         formData.append('description', description);
+        formData.append('availability', availability);
         if (mainImageFile) {
             formData.append('img', mainImageFile);
         }
