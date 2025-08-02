@@ -18,18 +18,21 @@ const MobileTypeModal = observer(({ show, onHide }) => {
             </Modal.Header>
             <Modal.Body>
                 <ListGroup>
-                    {productStore.types.map((type) => (
-                        <ListGroup.Item
-                            key={type.id}
-                            active={type.id === productStore.selectedType.id}
-                            onClick={() => {
-                                productStore.setSelectedType(type);
-                                onHide();
-                            }}
-                            style={{ cursor: "pointer" }}
-                        >
-                            {type.name}
-                        </ListGroup.Item>
+                    {Array.isArray(productStore.types) &&
+                        productStore.types
+                            .filter(t => t && t.name)
+                            .map((type) => (
+                                <ListGroup.Item
+                                    key={type.id}
+                                    active={type.id === productStore.selectedType.id}
+                                    onClick={() => {
+                                        productStore.setSelectedType(type);
+                                        onHide();
+                                    }}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    {type.name}
+                                </ListGroup.Item>
                     ))}
                 </ListGroup>
             </Modal.Body>

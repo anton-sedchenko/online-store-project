@@ -15,15 +15,24 @@ const Header = observer(() => {
     const [menuVisible, setMenuVisible] = useState(false);
 
     const logOut = async () => {
+        // Якщо ми ще авторизовані очищаємо серверний кошик
+        if (userStore.isAuth) {
+            try {
+                await cartStore.clearCart();
+            } catch (_) {
+                // ігноруємо помилку, якщо щось піде не так
+            }
+        }
+
+        // Видаляємо токен і чистимо профіль
         localStorage.removeItem("token");
-        userStore.setUser({})
+        userStore.setUser({});
         userStore.setIsAuth(false);
-        // Очищаємо серверний кошик, якщо були товари під юзером
-        await cartStore.clearCart();
-        // Очищаємо гостьовий кошик у localStorage
+
+        // Очищаємо guest кошик
         localStorage.removeItem("guestCart");
 
-        // Перемикаємось на кошик гостя
+        // Переключаємося на гостьовий режим із порожнім кошиком
         cartStore.switchToGuest();
         navigate(HOME_ROUTE);
     }

@@ -49,13 +49,16 @@ const CreateProduct = observer(({show, onHide}) => {
                     <Dropdown className="modal__dropdown">
                         <Dropdown.Toggle>{productStore.selectedType.name || "Обрати тип"}</Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {productStore.types.map((type) =>
-                                <Dropdown.Item
-                                    onClick={() => productStore.setSelectedType(type)}
-                                    key={type.id}
-                                >
-                                    {type.name}
-                                </Dropdown.Item>
+                            {Array.isArray(productStore.types) &&
+                                productStore.types
+                                    .filter(t => t && t.name)
+                                    .map((type) =>
+                                        <Dropdown.Item
+                                            onClick={() => productStore.setSelectedType(type)}
+                                            key={type.id}
+                                        >
+                                            {type.name}
+                                        </Dropdown.Item>
                             )}
                         </Dropdown.Menu>
                     </Dropdown>
