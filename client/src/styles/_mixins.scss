@@ -62,3 +62,14 @@
     box-shadow: rgba(128, 0, 128, 0.4) 0px 4px 8px, rgba(128, 0, 128, 0.2) 0px 2px 4px;
   }
 }
+
+@mixin input-style {
+  border-radius: 10px;
+  padding: 10px;
+  background-color: white;
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+
+  &:focus {
+    box-shadow: rgba(128, 0, 128, 0.4) 0px 4px 8px, rgba(128, 0, 128, 0.2) 0px 2px 4px;
+  }
+}

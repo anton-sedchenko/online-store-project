@@ -72,7 +72,7 @@ const ProductPage = () => {
                 </Helmet>
             )}
 
-            <Row>
+            <Row className="product__info__row">
                 <div>
                     <button
                         className="product__back-button"
