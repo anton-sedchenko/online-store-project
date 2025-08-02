@@ -15,6 +15,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
     const [existingImages, setExistingImages] = useState([]);
     const [mainImageFile, setMainImageFile] = useState(null);
     const [mainImageUrl, setMainImageUrl] = useState('');
+    const [availability, setAvailability] = useState('IN_STOCK');
 
     useEffect(() => {
         if (productToEdit) {
@@ -73,6 +74,16 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                     <Form.Group className="mb-2">
                         <Form.Label>Код товару</Form.Label>
                         <Form.Control value={code} onChange={e => setCode(e.target.value)} />
+                    </Form.Group>
+                    <Form.Group className="mb-2">
+                        <Form.Label>Наявність</Form.Label>
+                        <Form.Select
+                            value={availability}
+                            onChange={e => setAvailability(e.target.value)}
+                        >
+                            <option value="IN_STOCK">В наявності</option>
+                            <option value="PRE_ORDER">Під замовлення (2–3 дні)</option>
+                        </Form.Select>
                     </Form.Group>
                     <Form.Group className="mb-2">
                         <Form.Label>Тип</Form.Label>
