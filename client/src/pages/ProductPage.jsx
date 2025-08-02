@@ -111,7 +111,7 @@ const ProductPage = () => {
                             }>
                                 {product.availability === 'IN_STOCK'
                                     ? 'В наявності'
-                                    : 'Під замовлення (2–3 дні)'}
+                                    : 'Під замовлення (2-3 дні)'}
                             </span>
                         </p>
                         <h3 className="product__title">{product.name}</h3>

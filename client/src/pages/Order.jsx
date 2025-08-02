@@ -58,7 +58,7 @@ const Order = () => {
                             required
                             name="fullName"
                             type="text"
-                            className="neu-input buyer__contacts__form-input"
+                            className="buyer__contacts__form-input"
                             maxLength="50"
                         />
                         <p>Телефон
@@ -68,7 +68,7 @@ const Order = () => {
                             required
                             name="tel"
                             type="tel"
-                            className="neu-input buyer__contacts__form-input"
+                            className="buyer__contacts__form-input"
                             maxLength="20"
                         />
                         <p>E-mail
@@ -78,14 +78,14 @@ const Order = () => {
                             required
                             name="email"
                             type="email"
-                            className="neu-input buyer__contacts__form-input"
+                            className="buyer__contacts__form-input"
                             maxLength="50"
                         />
                         <p>Коментар до замовлення</p>
                         <input
                             name="comments"
                             type="text"
-                            className="neu-input buyer__contacts__form-input"
+                            className="buyer__contacts__form-input"
                             maxLength="200"
                         />
                         <div className="order__form__btn__container">
