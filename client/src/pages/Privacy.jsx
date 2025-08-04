@@ -13,7 +13,7 @@ const Privacy = () => {
                 />
             </Helmet>
 
-            <div className="component__container return__policy__page__container">
+            <div className="component__container privacy__page__container">
                 <h1>Політика конфіденційності</h1>
 
                 <section>

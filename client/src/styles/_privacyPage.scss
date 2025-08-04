@@ -1,0 +1,5 @@
+@import "mixins";
+
+.privacy__page__container {
+  @include text-block-styles;
+}
