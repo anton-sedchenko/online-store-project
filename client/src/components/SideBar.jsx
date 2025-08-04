@@ -25,6 +25,9 @@ const SideBar = observer(() => {
                             <ProductsCounter/>
                         </li>
                         <li className="neu-btn sidebar__nav__item">
+                            <Link to="/blog">Блог</Link>
+                        </li>
+                        <li className="neu-btn sidebar__nav__item">
                             <Link to="/contacts">Контакти</Link>
                         </li>
                     </ul>

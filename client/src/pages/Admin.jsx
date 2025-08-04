@@ -11,6 +11,9 @@ import AdminPages from "../components/AdminPages.jsx";
 import {deleteProduct, fetchOneProduct} from "../http/productAPI.js";
 import {deleteType} from '../http/typeAPI.js';
 import {Helmet} from "react-helmet-async";
+import EditArticle from '../components/modals/EditArticle.jsx';
+import CreateArticle   from '../components/modals/CreateArticle.jsx';
+import {deleteArticle, fetchArticles}  from '../http/articleAPI.js';
 
 // виводимо список фігур, кнопка Edit задає фігуру для редагування,
 // коли її об’єкт непорожній — вмикаємо модалку редагування з поточним товаром
@@ -21,10 +24,15 @@ const Admin = observer(() => {
     const [productVisible, setProductVisible] = useState(false);
     const [categoryModalVisible, setCategoryModalVisible] = useState(false);
     const [editCategoryId, setEditCategoryId] = useState(null);
+    const [editingArticle, setEditingArticle] = useState(null);
+    const [editArticleVisible, setEditArticleVisible] = useState(false);
+    const [articleVisible, setArticleVisible] = useState(false);
+    const [articles, setArticles] = useState([]);
 
     useEffect(() => {
         productStore.fetchTypes();
         adminStore.loadProducts();
+        fetchArticles(1, 100).then(data => setArticles(data.rows));
     }, [productStore, adminStore]);
 
     const openEditModal = async (productId) => {
@@ -57,6 +65,17 @@ const Admin = observer(() => {
         }
     };
 
+    const openEditArticleModal = (article) => {
+        setEditingArticle(article);
+        setEditArticleVisible(true);
+    };
+
+    const handleDeleteArticle = async id => {
+        if (!window.confirm('Видалити статтю?')) return;
+        await deleteArticle(id);
+        setArticles(articles.filter(a => a.id !== id));
+    };
+
     return (
         <>
             <Helmet>
@@ -80,6 +99,12 @@ const Admin = observer(() => {
                     >
                         Додати товар
                     </Button>
+                    <Button
+                        variant={"outline-dark"}
+                        onClick={() => setArticleVisible(true)}
+                    >
+                        Додати статтю
+                    </Button>
                     <CreateCategory
                         show={categoryModalVisible}
                         onHide={() => setCategoryModalVisible(false)}
@@ -90,6 +115,11 @@ const Admin = observer(() => {
                             setProductVisible(false);
                             adminStore.loadProducts();
                         }}
+                    />
+                    <CreateArticle
+                        show={articleVisible}
+                        onHide={() => setArticleVisible(false)}
+                        onCreated={art => setArticles([art, ...articles])}
                     />
                 </div>
                 <h2>Категорії магазину</h2>
@@ -174,6 +204,37 @@ const Admin = observer(() => {
                     </tbody>
                 </Table>
 
+                <h2>Наші статті</h2>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr><td>Заголовок</td><td>Дата</td><td>Дія</td></tr>
+                    </thead>
+                    <tbody>
+                        {articles.map(a=>(
+                            <tr key={a.id}>
+                                <td>{a.title}</td>
+                                <td>{new Date(a.createdAt).toLocaleDateString()}</td>
+                                <td>
+                                    <Button
+                                        size="sm"
+                                        variant="outline-primary"
+                                        onClick={() => openEditArticleModal(a)}
+                                    >
+                                        Редагувати
+                                    </Button>
+                                    <Button
+                                        size="sm"
+                                        variant="danger"
+                                        onClick={()=>handleDeleteArticle(a.id)}
+                                    >
+                                Видалити
+                                </Button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+
                 {/* Пагінація */}
 
                 <AdminPages
@@ -202,6 +263,18 @@ const Admin = observer(() => {
                         productToEdit={editing}
                     />
                 }
+                <EditArticle
+                    show={editArticleVisible}
+                    onHide={() => {
+                        setEditArticleVisible(false);
+                        setEditingArticle(null);
+                    }}
+                    articleToEdit={editingArticle}
+                    onUpdated={updated => {
+                        // оновлюємо список на місці
+                        setArticles(articles.map(a => a.id === updated.id ? updated : a));
+                    }}
+                />
             </div>
         </>
     );

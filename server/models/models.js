@@ -66,6 +66,14 @@ const ProductImage = sequelize.define('product_image', {
     url: {type: DataTypes.STRING, allowNull: false},
 });
 
+const Article = sequelize.define('article', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    title: {type: DataTypes.STRING, allowNull: false, unique: true},
+    slug: {type: DataTypes.STRING, allowNull: false, unique: true},
+    content: {type: DataTypes.TEXT, allowNull: false},
+    image: {type: DataTypes.STRING, allowNull: true},
+});
+
 User.hasOne(Cart);
 Cart.belongsTo(User);
 
@@ -98,5 +106,6 @@ module.exports = {
     Type,
     Order,
     OrderProduct,
-    ProductImage
+    ProductImage,
+    Article
 }
