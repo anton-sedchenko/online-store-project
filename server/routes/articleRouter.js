@@ -23,8 +23,21 @@ router.get('/', articleController.getAll);
 router.get('/:slug', articleController.getOne);
 router.put(
     '/:id',
-    authMiddleware, checkRole('ADMIN'),
-    fileUpload({ useTempFiles: true, tempFileDir: '/tmp' }),
+    // шукаєм баг
+    (req, res, next) => {
+        console.log('🔥 [PUT /api/article/:id] запит на редагування:', req.params.id);
+        next();
+    },
+    authMiddleware,
+    checkRole('ADMIN'),
+    fileUpload({useTempFiles: true, tempFileDir: '/tmp'}),
+
+    // шукаєм баг
+    (req, res, next) => {
+        console.log('📦 [PUT] після fileUpload, body =', req.body);
+        console.log('📦 [PUT] після fileUpload, files =', req.files);
+        next();
+    },
     articleController.update
 );
 router.delete(

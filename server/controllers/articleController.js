@@ -89,6 +89,11 @@ class ArticleController {
 
     // [PUT] /api/article/:id
     async update(req, res, next) {
+
+        console.log('✏️ ArticleController.update() — параметри:', req.params.id);
+        console.log('✏️ ArticleController.update() — body:', req.body);
+        console.log('✏️ ArticleController.update() — files:', req.files);
+
         try {
             const {id} = req.params;
             const article = await Article.findByPk(id);
@@ -124,6 +129,8 @@ class ArticleController {
             await article.save();
             return res.json(article);
         } catch (e) {
+
+            console.error('❌ ArticleController.update помилка:', e);
             next(ApiError.internal(e.message));
         }
     }

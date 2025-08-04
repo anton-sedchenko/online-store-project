@@ -13,17 +13,15 @@ export const fetchArticleBySlug = async (slug) => {
 export const createArticle = async (formData) => {
     const { data } = await $authHost.post(
         '/api/article',
-        formData,
-        {headers: {'Content-Type': 'multipart/form-data'}}
+        formData
     );
     return data;
 };
 
 export const updateArticle = async (id, formData) => {
-    const { data } = await $authHost.put(
+    const {data} = await $authHost.put(
         `/api/article/${id}`,
-        formData,
-        {headers: {'Content-Type': 'multipart/form-data'}}
+        formData
     );
     return data;
 };
