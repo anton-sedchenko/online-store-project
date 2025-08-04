@@ -27,13 +27,13 @@ const Contacts = () => {
                                         Телефон:
                                     </p>
                                     <div>
-                                        <span>+38 (068) 036 15 97</span>
+                                        <a href="tel:+380680361597">+38 (068) 036 15 97</a>
                                     </div>
                                     <div>
-                                        <span>+38 (093) 744 25 11</span>
+                                        <a href="tel:+380937442511">+38 (093) 744 25 11</a>
                                     </div>
                                     <div>
-                                        <span>+38 (050) 608 62 30</span>
+                                        <a href="tel:+380506086230">+38 (050) 608 62 30</a>
                                     </div>
                                 </Col>
                                 <Col md={6}>
@@ -42,7 +42,7 @@ const Contacts = () => {
                                         E-mail:
                                     </p>
                                     <p>
-                                        charivnij.workshop@gmail.com
+                                        <a href="mailto:charivna-craft@gmail.com">charivna-craft@gmail.com</a>
                                     </p>
                                 </Col>
                             </Row>
@@ -75,19 +75,19 @@ const Contacts = () => {
                                 </p>
                                 <p>
                                     <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
-                                    +38 (068) 036 15 97
+                                    <a href="tel:+380680361597">+38 (068) 036 15 97</a>
                                 </p>
                                 <p>
                                     <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
-                                    <span>+38 (093) 744 25 11</span>
+                                    <a href="tel:+380937442511">+38 (093) 744 25 11</a>
                                 </p>
                                 <p>
                                     <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
-                                    <span>+38 (050) 608 62 30</span>
+                                    <a href="tel:+380506086230">+38 (050) 608 62 30</a>
                                 </p>
                                 <p>
                                     <i className="fa fa-envelope-o contacts__icon" aria-hidden="true"></i>
-                                    charivnij.workshop@gmail.com
+                                    <a href="mailto:charivna-craft@gmail.com">charivna-craft@gmail.com</a>
                                 </p>
                             </div>
                         </div>

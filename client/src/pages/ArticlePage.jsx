@@ -29,10 +29,14 @@ const ArticlePage = () => {
                     </Col>
                     <Col md={9} lg={10}>
                         <h1>{article.title}</h1>
-                        <div className="article__img__container">
-                            {article.image && <img src={article.image} alt="" className="img-fluid mb-4" />}
+                        <div className="article__content__container">
+                            <div className="article__img__container">
+                                {article.image && <img src={article.image} alt="" className="img-fluid mb-4" />}
+                            </div>
+                            <div
+                                className="article__text__container"
+                                dangerouslySetInnerHTML={{__html: article.content}} />
                         </div>
-                        <div dangerouslySetInnerHTML={{__html: article.content}} />
                     </Col>
                 </Row>
             </div>

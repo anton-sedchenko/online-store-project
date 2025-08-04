@@ -37,7 +37,6 @@ const ProductPage = () => {
     const handleDelete = async () => {
         try {
             await deleteProduct(product.id);
-            navigate('/shop');
         } catch (e) {
             alert(e.response?.data?.message || 'Помилка при видаленні');
         }

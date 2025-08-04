@@ -1,5 +1,13 @@
+.article__content__container {
+  display: flex;
+}
+
 .article__img__container {
   display: flex;
-  max-width: 600px;
-  max-height: 600px;
+  max-width: 350px;
+  max-height: 350px;
+}
+
+.article__text__container {
+  padding: 0 15px;
 }
