@@ -43,7 +43,7 @@ const BlogList = observer(() => {
                                 >
                                     <Card
                                         onClick={() => navigate(`/blog/${a.slug}`)}
-                                        className="neu-card"
+                                        className="neu-card gallery__card"
                                     >
                                         {a.image && <Card.Img variant="top" src={a.image} />}
                                         <Card.Body>

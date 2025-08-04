@@ -9,7 +9,9 @@ import {
     HOME_ROUTE,
     OFERTA_ROUTE,
     PRIVACY_ROUTE,
-    RETURN_POLICY_ROUTE
+    RETURN_POLICY_ROUTE,
+    CONTACTS_ROUTE,
+    CART_ROUTE
 } from "../utils/consts.js";
 
 const Wrapper = ({children}) => {
@@ -20,7 +22,9 @@ const Wrapper = ({children}) => {
         DELIVERY_PAYMENT_ROUTE,
         RETURN_POLICY_ROUTE,
         PRIVACY_ROUTE,
-        BLOG_ROUTE
+        BLOG_ROUTE,
+        CONTACTS_ROUTE,
+        CART_ROUTE
     ];
     const isBannerShow = bannerRoutes.includes(location.pathname);
 

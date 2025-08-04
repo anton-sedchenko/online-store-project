@@ -77,10 +77,10 @@ const Oferta = () => {
                     <h2>8. Контакти Продавця</h2>
                     <p>
                         Charivna Craft<br/>
-                        +38 (068) 036 15 97<br/>
-                        +38 (093) 744 25 11<br/>
-                        +38 (050) 608 62 30<br/>
-                        charivna-craft@gmail.com
+                        <a href="tel:+380680361597">+38 (068) 036 15 97</a><br/>
+                        <a href="tel:+380937442511">+38 (093) 744 25 11</a><br/>
+                        <a href="tel:+380506086230">+38 (050) 608 62 30</a><br/>
+                        charivna.craft@gmail.com
                     </p>
                 </section>
 
