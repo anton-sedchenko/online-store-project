@@ -101,6 +101,7 @@ const Admin = observer(() => {
                     </Button>
                     <Button
                         variant={"outline-dark"}
+                        className="admin__page__action__btn"
                         onClick={() => setArticleVisible(true)}
                     >
                         Додати статтю

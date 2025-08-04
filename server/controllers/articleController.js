@@ -35,8 +35,11 @@ class ArticleController {
 
             return res.json(article);
         } catch (e) {
+
+            // шукаєм баг
+            console.error("⚠️ ArticleController.create error:", e);
             if (e.name === 'SequelizeUniqueConstraintError') {
-                return next(ApiError.badRequest('An article with this title already exists'));
+                return next(ApiError.badRequest('Стаття з таким заголовком уже існує'));
             }
             next(ApiError.internal(e.message));
         }
