@@ -25,7 +25,8 @@ const EditArticle = ({show, onHide, articleToEdit, onUpdated}) => {
             onUpdated(updated);
             onHide();
         } catch (e) {
-            alert(e.response?.data?.message || e.message);
+            console.error('UPDATE ARTICLE ERROR:', e.response?.data || e.message);
+            alert(e.response?.data?.error || e.response?.data?.message || e.message);
         }
     };
 

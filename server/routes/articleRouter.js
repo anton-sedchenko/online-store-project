@@ -25,7 +25,7 @@ router.put(
     '/:id',
     // шукаєм баг
     (req, res, next) => {
-        console.log('🔥 [PUT /api/article/:id] запит на редагування:', req.params.id);
+        console.log('☢️ PUT /api/article/:id body=', req.body, 'files=', req.files);
         next();
     },
     authMiddleware,
