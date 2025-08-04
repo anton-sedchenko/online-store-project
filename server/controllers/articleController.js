@@ -102,7 +102,7 @@ class ArticleController {
             }
 
             const {title, content} = req.body;
-            if (title) {
+            if (title && title.trim() !== article.title) {
                 article.title = title.trim();
                 article.slug = slugify(article.title, {lower: true, strict: true});
             }
@@ -131,6 +131,9 @@ class ArticleController {
         } catch (e) {
 
             console.error('❌ ArticleController.update помилка:', e);
+            if (e.name === 'SequelizeUniqueConstraintError') {
+                return next(ApiError.badRequest('Стаття з таким заголовком уже існує'));
+            }
             next(ApiError.internal(e.message));
         }
     }
