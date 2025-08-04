@@ -7,12 +7,13 @@
 
 .article__img__container {
   flex: 0 0 auto;
-  max-width: 100%;
+  max-width: 350px;
+  height: auto;
 }
 
 .article__img__container img {
   display: block;
-  width: 100%;
+  max-width: 100%;
   height: auto;
 }
 
