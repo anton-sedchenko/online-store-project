@@ -13,3 +13,4 @@ export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const RETURN_POLICY_ROUTE = "/return-policy";
 export const OFERTA_ROUTE = "/oferta";
 export const DELIVERY_PAYMENT_ROUTE = "/delivery-payment";
+export const PRIVACY_ROUTE = "/privacy";

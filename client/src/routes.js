@@ -13,7 +13,7 @@ import {
     FORGOT_PASSWORD_ROUTE,
     RESET_PASSWORD_ROUTE,
     RETURN_POLICY_ROUTE,
-    OFERTA_ROUTE, DELIVERY_PAYMENT_ROUTE, CATEGORY_ROUTE,
+    OFERTA_ROUTE, DELIVERY_PAYMENT_ROUTE, CATEGORY_ROUTE, PRIVACY_ROUTE,
 } from "./utils/consts.js";
 import Auth from "./pages/Auth.jsx";
 import ProductPage from "./pages/ProductPage.jsx";
@@ -27,6 +27,7 @@ import Oferta from "./pages/Oferta.jsx";
 import DeliveryPayment from "./pages/DeliveryPayment.jsx";
 import CategoryPage from "./pages/CategoryPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
+import Privacy from "./pages/Privacy.jsx";
 
 export const authRoutes = [
     {
@@ -91,5 +92,9 @@ export const publicRoutes = [
     {
         path: DELIVERY_PAYMENT_ROUTE,
         Component: DeliveryPayment
+    },
+    {
+        path: PRIVACY_ROUTE,
+        Component: Privacy
     },
 ]
