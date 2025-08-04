@@ -5,7 +5,7 @@ import {
     DELIVERY_PAYMENT_ROUTE,
     OFERTA_ROUTE,
     RETURN_POLICY_ROUTE,
-    HOME_ROUTE
+    HOME_ROUTE, PRIVACY_ROUTE
 } from "../utils/consts.js";
 
 const Footer = () => {
@@ -28,6 +28,9 @@ const Footer = () => {
                         </Link>
                         <Link to={OFERTA_ROUTE} onClick={() => window.scrollTo(0, 0)}>
                             Публічний договір
+                        </Link>
+                        <Link to={PRIVACY_ROUTE} onClick={() => window.scrollTo(0, 0)}>
+                            Політика конфіденційності
                         </Link>
                         <Link to={RETURN_POLICY_ROUTE} onClick={() => window.scrollTo(0, 0)}>
                             Політика повернення товару
