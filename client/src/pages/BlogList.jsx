@@ -47,7 +47,7 @@ const BlogList = observer(() => {
                                     >
                                         {a.image && <Card.Img variant="top" src={a.image} />}
                                         <Card.Body>
-                                            <Card.Title>{a.title}</Card.Title>
+                                            <h6 className="article__card__title">{a.title}</h6>
                                         </Card.Body>
                                     </Card>
                                 </Col>
