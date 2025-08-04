@@ -29,19 +29,29 @@ const BlogList = observer(() => {
                         md={9}
                         lg={10}
                     >
-                        {articleStore.articles.map(a => (
-                            <Col key={a.id} xs={12} sm={6} md={4} lg={3}>
-                                <Card
-                                    onClick={() => navigate(`/blog/${a.slug}`)}
-                                    className="neu-card"
+                        <Row className="gallery">
+                            {articleStore.articles.map(a => (
+                                <Col
+                                    xs={12}    /* до 576px — 1 колонка */
+                                    sm={6}     /* 576–767 — 2 колонки */
+                                    md={6}     /* 768–991 — 2 колонки */
+                                    lg={4}     /* 992–1199 — 3 колонки (12/4=3) */
+                                    xl={3}     /* від 1200px — 4 колонки (12/3=4) */
+                                    key={a.id}
+                                    className="gallery__row"
                                 >
-                                    {a.image && <Card.Img variant="top" src={a.image} />}
-                                    <Card.Body>
-                                        <Card.Title>{a.title}</Card.Title>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        ))}
+                                    <Card
+                                        onClick={() => navigate(`/blog/${a.slug}`)}
+                                        className="neu-card"
+                                    >
+                                        {a.image && <Card.Img variant="top" src={a.image} />}
+                                        <Card.Body>
+                                            <Card.Title>{a.title}</Card.Title>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            ))}
+                        </Row>
                     </Col>
                     <PaginationLocal
                         totalCount={articleStore.total}

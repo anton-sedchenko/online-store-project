@@ -6,11 +6,6 @@ const {cloudinary, extractPublicId} = require('../utils/cloudinary');
 class ArticleController {
     // [POST] /api/article
     async create(req, res, next) {
-
-        // шукаєм баг
-        // шукаєм баг
-        console.log('ololololololololololololo');
-
         try {
             const {title, content} = req.body;
             if (!title || !title.trim()) {
@@ -40,16 +35,10 @@ class ArticleController {
 
             return res.json(article);
         } catch (e) {
-
-            // шукаєм баг
-            console.error("⚠️ ArticleController.create error:", e);
             if (e.name === 'SequelizeUniqueConstraintError') {
                 return next(ApiError.badRequest('Стаття з таким заголовком уже існує'));
             }
-
-            // шукаєм баг
-            // next(ApiError.internal(e.message));
-            return res.status(500).json({ error: e.message, stack: e.stack });
+            next(ApiError.internal(e.message));
         }
     }
 
@@ -76,7 +65,7 @@ class ArticleController {
     // [GET] /api/article/:slug
     async getOne(req, res, next) {
         try {
-            const { slug } = req.params;
+            const {slug} = req.params;
             const article = await Article.findOne({where: {slug}});
             if (!article) {
                 return next(ApiError.notFound('Article not found'));
@@ -89,11 +78,6 @@ class ArticleController {
 
     // [PUT] /api/article/:id
     async update(req, res, next) {
-
-        console.log('✏️ ArticleController.update() — параметри:', req.params.id);
-        console.log('✏️ ArticleController.update() — body:', req.body);
-        console.log('✏️ ArticleController.update() — files:', req.files);
-
         try {
             const {id} = req.params;
             const article = await Article.findByPk(id);
@@ -129,11 +113,6 @@ class ArticleController {
             await article.save();
             return res.json(article);
         } catch (e) {
-
-            console.error('❌ ArticleController.update помилка:', e);
-            if (e.name === 'SequelizeUniqueConstraintError') {
-                return next(ApiError.badRequest('Стаття з таким заголовком уже існує'));
-            }
             next(ApiError.internal(e.message));
         }
     }
