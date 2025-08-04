@@ -34,30 +34,31 @@ const CategoryPage = () => {
     if (!type) return null;
 
     return (
-        <div className="component__container">
-            <Row>
-                <Col md={3} lg={2}>
-                    <SideBar/>
-                </Col>
-                <Col md={9} lg={10}>
-                    <Helmet>
-                        <title>{type.name} – Charivna Craft</title>
-                        <meta name="description" content={`Всі товари категорії ${type.name}`} />
-                    </Helmet>
+        <>
+            <Helmet>
+                <title>{type.name} – Charivna Craft</title>
+                <meta name="description" content={`Всі товари категорії ${type.name}`} />
+            </Helmet>
+            <div className="component__container">
+                <Row>
+                    <Col md={3} lg={2}>
+                        <SideBar/>
+                    </Col>
+                    <Col md={9} lg={10}>
+                        <Breadcrumbs typeId={type.parentId ? type.parentId : type.id} />
+                        <h2 className="mb-4">{type.name}</h2>
+                        <ProductList products={products} />
+                    </Col>
+                </Row>
 
-                    <Breadcrumbs typeId={type.parentId ? type.parentId : type.id} />
-                    <h2 className="mb-4">{type.name}</h2>
-                    <ProductList products={products} />
-                </Col>
-            </Row>
-
-            <PaginationLocal
-                totalCount={totalCount}
-                limit={limit}
-                currentPage={currentPage}
-                onPageChange={setCurrentPage}
-            />
-        </div>
+                <PaginationLocal
+                    totalCount={totalCount}
+                    limit={limit}
+                    currentPage={currentPage}
+                    onPageChange={setCurrentPage}
+                />
+            </div>
+        </>
     );
 };
 
