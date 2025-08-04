@@ -14,7 +14,6 @@ router.post(
 
     // шукаєм баг
     (req, res, next) => { console.log('🔑 пройшли auth+role'); next() },
-    fileUpload({ useTempFiles: true, tempFileDir: '/tmp' }),
 
     // шукаєм баг
     (req, res, next) => { console.log('📦 після fileUpload, перед controller'); next() },
