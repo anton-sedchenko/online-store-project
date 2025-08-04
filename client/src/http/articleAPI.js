@@ -1,4 +1,4 @@
-import {$host} from "./index.js";
+import {$authHost, $host} from "./index.js";
 
 export const fetchArticles = async (page = 1, limit = 8) => {
     const {data} = await $host.get('/api/article', {params: {page, limit}});
@@ -11,16 +11,24 @@ export const fetchArticleBySlug = async (slug) => {
 };
 
 export const createArticle = async (formData) => {
-    const {data} = await $host.post('/api/article', formData)
-    return data
-}
+    const { data } = await $authHost.post(
+        '/api/article',
+        formData,
+        {headers: {'Content-Type': 'multipart/form-data'}}
+    );
+    return data;
+};
 
 export const updateArticle = async (id, formData) => {
-    const {data} = await $host.put(`/api/article/${id}`, formData)
-    return data
-}
+    const { data } = await $authHost.put(
+        `/api/article/${id}`,
+        formData,
+        {headers: {'Content-Type': 'multipart/form-data'}}
+    );
+    return data;
+};
 
 export const deleteArticle = async (id) => {
-    const {data} = await $host.delete(`/api/article/${id}`)
-    return data
-}
+    const { data } = await $authHost.delete(`/api/article/${id}`);
+    return data;
+};

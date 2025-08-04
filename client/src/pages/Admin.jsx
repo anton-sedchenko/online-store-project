@@ -157,6 +157,38 @@ const Admin = observer(() => {
                         ))}
                     </tbody>
                 </Table>
+
+                <h2>Наші статті</h2>
+                <Table striped bordered hover>
+                    <thead>
+                    <tr><td>Заголовок</td><td>Дата</td><td>Дія</td></tr>
+                    </thead>
+                    <tbody>
+                    {articles.map(a=>(
+                        <tr key={a.id}>
+                            <td>{a.title}</td>
+                            <td>{new Date(a.createdAt).toLocaleDateString()}</td>
+                            <td>
+                                <Button
+                                    size="sm"
+                                    variant="outline-primary"
+                                    onClick={() => openEditArticleModal(a)}
+                                >
+                                    Редагувати
+                                </Button>
+                                <Button
+                                    size="sm"
+                                    variant="danger"
+                                    onClick={()=>handleDeleteArticle(a.id)}
+                                >
+                                    Видалити
+                                </Button>
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </Table>
+
                 <h2>Товари магазину</h2>
                 <Table striped bordered hover>
                     <thead>
@@ -201,37 +233,6 @@ const Admin = observer(() => {
                                 </td>
                             </tr>
                         )}
-                    </tbody>
-                </Table>
-
-                <h2>Наші статті</h2>
-                <Table striped bordered hover>
-                    <thead>
-                        <tr><td>Заголовок</td><td>Дата</td><td>Дія</td></tr>
-                    </thead>
-                    <tbody>
-                        {articles.map(a=>(
-                            <tr key={a.id}>
-                                <td>{a.title}</td>
-                                <td>{new Date(a.createdAt).toLocaleDateString()}</td>
-                                <td>
-                                    <Button
-                                        size="sm"
-                                        variant="outline-primary"
-                                        onClick={() => openEditArticleModal(a)}
-                                    >
-                                        Редагувати
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        variant="danger"
-                                        onClick={()=>handleDeleteArticle(a.id)}
-                                    >
-                                Видалити
-                                </Button>
-                                </td>
-                            </tr>
-                        ))}
                     </tbody>
                 </Table>
 
