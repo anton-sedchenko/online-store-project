@@ -30,7 +30,9 @@ router.put(
     },
     authMiddleware,
     checkRole('ADMIN'),
-    fileUpload({useTempFiles: true, tempFileDir: '/tmp'}),
+
+    // тимчасово вимкнули поки шукаєм баг
+    // fileUpload({useTempFiles: true, tempFileDir: '/tmp'}),
 
     // шукаєм баг
     (req, res, next) => {
