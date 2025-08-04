@@ -7,8 +7,17 @@ const fileUpload = require('express-fileupload');
 
 router.post(
     '/',
+
+    // шукаєм баг
+    (req, res, next) => { console.log('🔥 /api/article POST: увійшли у перше middleware'); next() },
     authMiddleware, checkRole('ADMIN'),
+
+    // шукаєм баг
+    (req, res, next) => { console.log('🔑 пройшли auth+role'); next() },
     fileUpload({ useTempFiles: true, tempFileDir: '/tmp' }),
+
+    // шукаєм баг
+    (req, res, next) => { console.log('📦 після fileUpload, перед controller'); next() },
     articleController.create
 );
 router.get('/', articleController.getAll);
