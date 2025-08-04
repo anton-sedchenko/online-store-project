@@ -1,13 +1,22 @@
 .article__content__container {
   display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
 }
 
 .article__img__container {
-  display: flex;
-  max-width: 350px;
-  max-height: 350px;
+  flex: 0 0 auto;
+  max-width: 100%;
+}
+
+.article__img__container img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .article__text__container {
-  padding: 0 15px;
+  flex: 1 1 200px;
+  min-width: 200px;
 }
