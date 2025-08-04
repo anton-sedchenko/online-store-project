@@ -6,6 +6,10 @@ const {cloudinary, extractPublicId} = require('../utils/cloudinary');
 class ArticleController {
     // [POST] /api/article
     async create(req, res, next) {
+
+        // шукаєм баг
+        console.log('ololololololololololololo');
+
         try {
             const {title, content} = req.body;
             if (!title || !title.trim()) {
