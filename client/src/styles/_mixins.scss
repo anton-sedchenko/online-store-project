@@ -30,8 +30,7 @@
 
 @mixin text-block-styles {
   h1, h2 {
-    font-size: 20px;
-    color: #6c757d;
+    color: #495057;
   }
 
   h1 {
@@ -39,12 +38,16 @@
     font-size: 26px;
   }
 
+  h2 {
+    font-size: 18px;
+  }
+
   section {
     margin-bottom: 2rem;
   }
 
-  p {
-    color: #6c757d;
+  p, ul {
+    color: #495057;
     font-size: 14px;
   }
 }
