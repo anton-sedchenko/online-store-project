@@ -112,6 +112,9 @@ const Header = observer(() => {
                         </div>
                     </nav>
                 </div>
+                <div className="header__minsum__container">
+                    <p>Мінімальна сума замовлення - 250 грн.</p>
+                </div>
                 <div className="header__tel__container">
                     <div>
                         <a href="tel:+380680361597">+38 (068) 036 15 97</a>

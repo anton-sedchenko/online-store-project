@@ -51,6 +51,15 @@ header h1 {
   }
 }
 
+.header__minsum__container {
+  width: 100%;
+}
+
+.header__minsum__container p {
+  font-size: 14px;
+  text-align: center;
+}
+
 .header__tel__container {
   width: 100%;
   display: flex;
@@ -63,6 +72,8 @@ header h1 {
 .header__nav__menu {
   display: flex;
   font-size: 12px;
+  height: 100%;
+  align-items: center;
 
   @include respond-to(md) {
     width: 100%;
