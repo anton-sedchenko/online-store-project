@@ -40,7 +40,7 @@ const Header = observer(() => {
     return (
         <header className="header">
             <div className="header__content__wrapper">
-                <div className=header__content>
+                <div className="header__content">
                     <div className="header__logo-container">
                         <Link to="/">
                             <img src="/logo.png" className="header__logo" alt="logo"/>
