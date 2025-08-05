@@ -6,12 +6,16 @@
   justify-content: center;
 }
 
-.header__content {
+.header__content__wrapper {
   width: 100%;
   max-width: 1200px;
+  border-bottom: 1px solid lightgrey;
+}
+
+.header__content {
+  width: 100%;
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid lightgrey;
 
   @include respond-to(md) {
     flex-direction: column;
