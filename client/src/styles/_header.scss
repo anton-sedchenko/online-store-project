@@ -11,6 +11,7 @@
   max-width: 1200px;
   display: flex;
   justify-content: space-between;
+  border-bottom: 0.5px solid #5A4D41;
 
   @include respond-to(md) {
     flex-direction: column;
