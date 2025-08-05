@@ -120,8 +120,9 @@
   color: mediumpurple;
 }
 
-.purchase__conditions__callback__link {
+.purchase__conditions__callback__link:hover {
   color: purple;
+  cursor: pointer;
 }
 
 .product__description {
