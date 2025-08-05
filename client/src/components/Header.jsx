@@ -39,89 +39,90 @@ const Header = observer(() => {
 
     return (
         <header className="header">
-            <div className="header__content">
-                <div className="header__logo-container">
-                    <Link to="/">
-                        <img src="/logo.png" className="header__logo" alt="logo"/>
-                    </Link>
-                </div>
-
-                <nav className="header__nav">
-                    <div className="header__nav__tel">
-                        <div>
-                            <a href="tel:+380680361597">+38 (068) 036 15 97</a>
-                        </div>
-                        <div>
-                            <a href="tel:+380937442511">+38 (093) 744 25 11</a>
-                        </div>
-                        <div>
-                            <a href="tel:+380506086230">+38 (050) 608 62 30</a>
-                        </div>
+            <div className="header__content__wrapper">
+                <div className=header__content>
+                    <div className="header__logo-container">
+                        <Link to="/">
+                            <img src="/logo.png" className="header__logo" alt="logo"/>
+                        </Link>
                     </div>
-                    <div className="header__nav__menu">
-                        {userStore.isAuth ? (
-                            <>
-                                <div className="header__btn__container">
-                                    <Link to={PROFILE_ROUTE} className="header__link">
-                                        <button className="neu-btn header__btn">
-                                            <UserIcon />
-                                            <p>Кабінет</p>
-                                        </button>
-                                    </Link>
-                                </div>
+                    <nav className="header__nav">
+                        <div className="header__nav__menu">
+                            {userStore.isAuth ? (
+                                <>
+                                    <div className="header__btn__container">
+                                        <Link to={PROFILE_ROUTE} className="header__link">
+                                            <button className="neu-btn header__btn">
+                                                <UserIcon />
+                                                <p>Кабінет</p>
+                                            </button>
+                                        </Link>
+                                    </div>
 
-                                {userStore.isAuth && userStore.user?.role === "ADMIN" && (
+                                    {userStore.isAuth && userStore.user?.role === "ADMIN" && (
+                                        <div className="header__btn__container">
+                                            <button
+                                                className="neu-btn header__btn"
+                                                onClick={() => navigate(ADMIN_ROUTE)}
+                                            >
+                                                <AdminPanelLogo />
+                                                <p>Адмін панель</p>
+                                            </button>
+                                        </div>
+                                    )}
+
                                     <div className="header__btn__container">
                                         <button
                                             className="neu-btn header__btn"
-                                            onClick={() => navigate(ADMIN_ROUTE)}
+                                            onClick={() => logOut()}
                                         >
-                                            <AdminPanelLogo />
-                                            <p>Адмін панель</p>
+                                            <LoginIcon />
+                                            <p>Вийти</p>
                                         </button>
                                     </div>
-                                )}
-
+                                </>
+                            ) : (
                                 <div className="header__btn__container">
-                                    <button
-                                        className="neu-btn header__btn"
-                                        onClick={() => logOut()}
-                                    >
-                                        <LoginIcon />
-                                        <p>Вийти</p>
-                                    </button>
+                                    <Link to={REGISTRATION_ROUTE} className="header__link">
+                                        <button className="neu-btn header__btn">
+                                            <LoginIcon />
+                                            <p>Увійти</p>
+                                        </button>
+                                    </Link>
                                 </div>
-                            </>
-                        ) : (
+                            )}
+
+                            <div className="header__btn__container header__menu__btn__container">
+                                <button
+                                    className="neu-btn header__btn"
+                                    onClick={() => setMenuVisible(true)}
+                                >
+                                    Меню
+                                </button>
+                            </div>
+
                             <div className="header__btn__container">
-                                <Link to={REGISTRATION_ROUTE} className="header__link">
+                                <Link to={CART_ROUTE} className="header__link">
                                     <button className="neu-btn header__btn">
-                                        <LoginIcon />
-                                        <p>Увійти</p>
+                                        <CartIcon/>
+                                        <p>Кошик</p>
                                     </button>
                                 </Link>
                             </div>
-                        )}
-
-                        <div className="header__btn__container header__menu__btn__container">
-                            <button
-                                className="neu-btn header__btn"
-                                onClick={() => setMenuVisible(true)}
-                            >
-                                Меню
-                            </button>
                         </div>
-
-                        <div className="header__btn__container">
-                            <Link to={CART_ROUTE} className="header__link">
-                                <button className="neu-btn header__btn">
-                                    <CartIcon/>
-                                    <p>Кошик</p>
-                                </button>
-                            </Link>
-                        </div>
+                    </nav>
+                </div>
+                <div className="header__tel__container">
+                    <div>
+                        <a href="tel:+380680361597">+38 (068) 036 15 97</a>
                     </div>
-                </nav>
+                    <div>
+                        <a href="tel:+380937442511">+38 (093) 744 25 11</a>
+                    </div>
+                    <div>
+                        <a href="tel:+380506086230">+38 (050) 608 62 30</a>
+                    </div>
+                </div>
             </div>
 
             <MobileMenuModal

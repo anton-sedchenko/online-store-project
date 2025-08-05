@@ -11,7 +11,7 @@
   max-width: 1200px;
   display: flex;
   justify-content: space-between;
-  border-bottom: 0.5px solid #5A4D41;
+  border-bottom: 1px solid lightgrey;
 
   @include respond-to(md) {
     flex-direction: column;
@@ -47,7 +47,7 @@ header h1 {
   }
 }
 
-.header__nav__tel {
+.header__tel__container {
   width: 100%;
   display: flex;
   justify-content: space-around;
