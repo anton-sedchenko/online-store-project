@@ -99,7 +99,7 @@ const ProductPage = () => {
                     </div>
                 </Col>
                 <Col xs={12} md={6}>
-                    <div>
+                    <div className="product__info__container">
                         <p className="product__code">Код товару: {product.code || '---'}</p>
                         <p className="product__availability">
                             <span className="availability-label">Наявність:</span>{' '}

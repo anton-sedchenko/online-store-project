@@ -3,6 +3,7 @@
 
 .product__info__row {
   margin-bottom: 15px;
+  padding-bottom: 15px;
   border-bottom: 1px solid lightgray;
 }
 
@@ -33,6 +34,11 @@
 
 .slider-btn.next {
   right: 0;
+}
+
+.product__info__container {
+  display: flex;
+  flex-direction: column;
 }
 
 .product__code {
@@ -84,6 +90,10 @@
 .product__page__total__sum {
   font-size: 20px;
   margin-bottom: 15px;
+}
+
+.product__page__btn__container {
+  align-self: end;
 }
 
 .purchase__conditions__container {
