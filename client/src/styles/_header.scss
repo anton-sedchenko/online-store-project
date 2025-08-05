@@ -1,3 +1,5 @@
+@import "mixins";
+
 .header {
   width: 100%;
   padding: 0 40px;
@@ -116,4 +118,5 @@ header h1 {
 .header__btn {
   height: 100%;
   width: 100%;
+  @include btn-style;
 }

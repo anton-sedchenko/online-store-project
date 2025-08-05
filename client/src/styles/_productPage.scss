@@ -39,6 +39,7 @@
 .product__info__container {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .product__code {
@@ -93,7 +94,13 @@
 }
 
 .product__page__btn__container {
+  height: 80px;
+  padding: 15px 0;
   margin-top: auto;
+}
+
+.product__page__btn {
+  @include btn-style;
 }
 
 .purchase__conditions__container {
@@ -137,15 +144,6 @@
 
 .product__description {
   white-space: pre-line;
-}
-
-.product__page__btn__container {
-  height: 80px;
-  padding: 15px 0;
-}
-
-.product__page__btn {
-  @include btn-style;
 }
 
 .product__img__container {

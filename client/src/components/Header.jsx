@@ -52,7 +52,7 @@ const Header = observer(() => {
                                 <>
                                     <div className="header__btn__container">
                                         <Link to={PROFILE_ROUTE} className="header__link">
-                                            <button className="neu-btn header__btn">
+                                            <button className="header__btn">
                                                 <UserIcon />
                                                 <p>Кабінет</p>
                                             </button>
@@ -62,7 +62,7 @@ const Header = observer(() => {
                                     {userStore.isAuth && userStore.user?.role === "ADMIN" && (
                                         <div className="header__btn__container">
                                             <button
-                                                className="neu-btn header__btn"
+                                                className="header__btn"
                                                 onClick={() => navigate(ADMIN_ROUTE)}
                                             >
                                                 <AdminPanelLogo />
@@ -73,7 +73,7 @@ const Header = observer(() => {
 
                                     <div className="header__btn__container">
                                         <button
-                                            className="neu-btn header__btn"
+                                            className="header__btn"
                                             onClick={() => logOut()}
                                         >
                                             <LoginIcon />
@@ -84,7 +84,7 @@ const Header = observer(() => {
                             ) : (
                                 <div className="header__btn__container">
                                     <Link to={REGISTRATION_ROUTE} className="header__link">
-                                        <button className="neu-btn header__btn">
+                                        <button className="header__btn">
                                             <LoginIcon />
                                             <p>Увійти</p>
                                         </button>
@@ -94,7 +94,7 @@ const Header = observer(() => {
 
                             <div className="header__btn__container header__menu__btn__container">
                                 <button
-                                    className="neu-btn header__btn"
+                                    className="header__btn"
                                     onClick={() => setMenuVisible(true)}
                                 >
                                     Меню
@@ -103,7 +103,7 @@ const Header = observer(() => {
 
                             <div className="header__btn__container">
                                 <Link to={CART_ROUTE} className="header__link">
-                                    <button className="neu-btn header__btn">
+                                    <button className="header__btn">
                                         <CartIcon/>
                                         <p>Кошик</p>
                                     </button>
