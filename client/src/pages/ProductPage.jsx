@@ -159,7 +159,7 @@ const ProductPage = () => {
                             <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
                             Замовити по телефону
                         </h6>
-                        <a>Замовити дзвінок</a>
+                        <a className="purchase__conditions__callback__link">Замовити дзвінок</a>
                     </div>
                 </Col>
             </Row>
