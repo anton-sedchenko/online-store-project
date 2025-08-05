@@ -87,7 +87,15 @@
 
 .purchase__conditions__container {
   border: 1px solid red;
+}
 
+.purchase__conditions__section i {
+  margin-right: 10px;
+  color: purple;
+}
+
+.purchase__conditions__section ul {
+  font-size: 14px;
 }
 
 .product__description {

@@ -133,21 +133,28 @@ const ProductPage = () => {
                     </div>
                 </Col>
                 <Col xs={12} md={2} className="purchase__conditions__container">
-                    <div className="conditions__delivery">
+                    <div className="purchase__conditions__section">
                         <h6>
                             <i className="fa fa-truck" aria-hidden="true"></i>
                             Доставка
                         </h6>
-                        <p>Нова пошта</p>
-                        <p>Укрпошта</p>
+                        <ul>
+                            <li>Нова пошта</li>
+                            <li>Укрпошта</li>
+                        </ul>
                     </div>
-                    <div className="conditions__payment">
+                    <div className="purchase__conditions__section">
                         <h6>
                             <i className="fa fa-credit-card" aria-hidden="true"></i>
                             Оплата
                         </h6>
+                        <ul>
+                            <li>Готівкою при отриманні</li>
+                            <li>Безготівковий переказ</li>
+                            <li>Приват 24</li>
+                        </ul>
                     </div>
-                    <div className="conditions__tel__purchase">
+                    <div className="purchase__conditions__section">
                         <h6>
                             <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
                             Замовити по телефону
