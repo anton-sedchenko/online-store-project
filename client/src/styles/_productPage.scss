@@ -87,18 +87,19 @@
 
 .purchase__conditions__container {
   border-left: 1px solid lightgray;
+  padding-left: 20px;
 }
 
-.purchase__conditions__container h6 {
-  margin-bottom: 10px;
+.purchase__conditions__section h6 {
+  margin-bottom: 15px;
 }
 
-.purchase__conditions__container {
+.purchase__conditions__section {
   margin-bottom: 10px;
   border-bottom: 1px solid lightgray;
 }
 
-.purchase__conditions__container:last-child {
+.purchase__conditions__section:last-child {
   margin-bottom: 0;
   border-bottom: none;
 }
