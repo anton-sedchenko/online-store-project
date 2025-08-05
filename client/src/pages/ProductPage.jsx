@@ -98,7 +98,7 @@ const ProductPage = () => {
                         )}
                     </div>
                 </Col>
-                <Col xs={12} md={8}>
+                <Col xs={12} md={6}>
                     <div>
                         <p className="product__code">Код товару: {product.code || '---'}</p>
                         <p className="product__availability">
@@ -132,7 +132,31 @@ const ProductPage = () => {
                         </div>
                     </div>
                 </Col>
+                <Col xs={12} md={2} className="purchase__conditions__container">
+                    <div className="conditions__delivery">
+                        <h6>
+                            <i className="fa fa-truck" aria-hidden="true"></i>
+                            Доставка
+                        </h6>
+                        <p>Нова пошта</p>
+                        <p>Укрпошта</p>
+                    </div>
+                    <div className="conditions__payment">
+                        <h6>
+                            <i className="fa fa-credit-card" aria-hidden="true"></i>
+                            Оплата
+                        </h6>
+                    </div>
+                    <div className="conditions__tel__purchase">
+                        <h6>
+                            <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
+                            Замовити по телефону
+                        </h6>
+                        <a>Замовити дзвінок</a>
+                    </div>
+                </Col>
             </Row>
+
             <Row>
                 <Col xs={12}>
                     <div>
