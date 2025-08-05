@@ -86,7 +86,21 @@
 }
 
 .purchase__conditions__container {
-  border: 1px solid red;
+  border-left: 1px solid lightgray;
+}
+
+.purchase__conditions__container h6 {
+  margin-bottom: 10px;
+}
+
+.purchase__conditions__container {
+  margin-bottom: 10px;
+  border-bottom: 1px solid lightgray;
+}
+
+.purchase__conditions__container:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
 }
 
 .purchase__conditions__section i {
@@ -94,7 +108,7 @@
   color: purple;
 }
 
-.purchase__conditions__section ul {
+.purchase__conditions__section ul, a {
   font-size: 14px;
 }
 
