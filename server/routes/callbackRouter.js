@@ -1,6 +1,5 @@
 const Router = require('express')
 const router = new Router()
-const fetch = require('node-fetch')
 const nodemailer = require('nodemailer')
 
 /**
