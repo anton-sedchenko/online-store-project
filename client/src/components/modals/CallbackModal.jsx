@@ -15,7 +15,7 @@ export default function CallbackModal({show, onHide}) {
         setError(null)
         try {
             await axios.post('/api/callback', {name, phone, comment});
-            onHide(); // закриваємо модалку
+            onHide();
             setName('');
             setPhone('');
             setComment('');
