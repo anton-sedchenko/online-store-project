@@ -6,7 +6,6 @@ const fileUpload = require('express-fileupload');
 const router = require('./routes/index');
 const errorHandler = require('./middleware/ErrorHandlingMiddleware');
 const helmet = require('helmet');
-const callbackRouter = require('./routes/callbackRouter');
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -20,16 +19,16 @@ const {ProductImage} = require("./models/models");
 if (process.env.NODE_ENV === 'staging') {
     app.use(cors({origin: true, credentials: true}));
 } else {
-const corsOptions = {
-    origin: [
-    'http://localhost:3000',
-    'https://charivna-craft.com.ua',
-    // якщо є інші production-домени — сюди
-    ],
-    methods: ['GET','POST','PUT','DELETE','OPTIONS'],
-    allowedHeaders: ['Content-Type','Authorization'],
-    credentials: true,
-};
+    const corsOptions = {
+        origin: [
+        'http://localhost:3000',
+        'https://charivna-craft.com.ua',
+        // якщо є інші production-домени — сюди
+        ],
+        methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+        allowedHeaders: ['Content-Type','Authorization'],
+        credentials: true,
+    };
     app.use(cors(corsOptions));
 }
 

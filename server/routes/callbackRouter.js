@@ -20,12 +20,12 @@ async function sendTelegram(text) {
  */
 async function sendEmail({name, phone, comment}) {
     const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: +process.env.SMTP_PORT,
-        secure: process.env.SMTP_SECURE === 'true',
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
+        secure: process.env.EMAIL_SECURE === 'true',
         auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
         }
     })
 
@@ -37,8 +37,8 @@ async function sendEmail({name, phone, comment}) {
       `
 
     await transporter.sendMail({
-        from: `"Charivna Craft" <${process.env.SMTP_USER}>`,
-        to: process.env.NOTIFY_EMAIL,
+        from: `"Charivna Craft" <${process.env.EMAIL_FROM}>`,
+        to: process.env.EMAIL_USER,
         subject: 'Нове замовлення зворотнього дзвінка',
         html
     })
