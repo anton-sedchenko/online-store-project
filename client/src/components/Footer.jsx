@@ -66,7 +66,7 @@ const Footer = () => {
                             <a href="tel:+380506086230">+38 (050) 608 62 30</a>
                         </div>
                         <div className="footer__contact__container">
-                            <a href="mailto:charivna-craft@gmail.com">charivna-craft@gmail.com</a>
+                            <a href="mailto:charivna.craft@gmail.com">charivna.craft@gmail.com</a>
                         </div>
                     </div>
                 </div>

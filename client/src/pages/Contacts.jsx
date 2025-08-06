@@ -42,7 +42,7 @@ const Contacts = () => {
                                         E-mail:
                                     </p>
                                     <p>
-                                        <a href="mailto:charivna-craft@gmail.com">charivna-craft@gmail.com</a>
+                                        <a href="mailto:charivna.craft@gmail.com">charivna.craft@gmail.com</a>
                                     </p>
                                 </Col>
                             </Row>
@@ -87,7 +87,7 @@ const Contacts = () => {
                                 </p>
                                 <p>
                                     <i className="fa fa-envelope-o contacts__icon" aria-hidden="true"></i>
-                                    <a href="mailto:charivna-craft@gmail.com">charivna-craft@gmail.com</a>
+                                    <a href="mailto:charivna.craft@gmail.com">charivna.craft@gmail.com</a>
                                 </p>
                             </div>
                         </div>

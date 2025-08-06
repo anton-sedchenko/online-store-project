@@ -5,6 +5,7 @@ import {deleteProduct, fetchProductBySlug} from "../http/productAPI.js";
 import {Context} from "../main.jsx";
 import {CART_ROUTE} from "../utils/consts.js";
 import {Helmet} from 'react-helmet-async';
+import CallbackModal from "../components/modals/CallbackModal.jsx";
 
 const ProductPage = () => {
     const navigate = useNavigate();
@@ -12,6 +13,7 @@ const ProductPage = () => {
     const {userStore, cartStore} = useContext(Context);
     const [qty, setQty] = useState(1);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [showCallback, setShowCallback] = useState(false)
     const {slug} = useParams();
 
     useEffect(() => {
@@ -159,7 +161,12 @@ const ProductPage = () => {
                             <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
                             Замовити по телефону
                         </h6>
-                        <a className="purchase__conditions__callback__link">Замовити дзвінок</a>
+                        <a
+                            className="purchase__conditions__callback__link"
+                            onClick={() => setShowCallback(true)}
+                        >
+                            Замовити дзвінок
+                        </a>
                     </div>
                 </Col>
             </Row>
@@ -179,6 +186,7 @@ const ProductPage = () => {
                     )}
                 </Col>
             </Row>
+            <CallbackModal show={showCallback} onHide={() => setShowCallback(false)} />
         </div>
     );
 };

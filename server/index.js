@@ -5,8 +5,8 @@ const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const router = require('./routes/index');
 const errorHandler = require('./middleware/ErrorHandlingMiddleware');
-const path = require('path');
 const helmet = require('helmet');
+const callbackRouter = require('./routes/callbackRouter');
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -18,7 +18,7 @@ const {ProductImage} = require("./models/models");
 // Для staging (і всіх preview-доменів) дозволяємо будь-який origin,
 // в деві - лишаєм статичний список
 if (process.env.NODE_ENV === 'staging') {
-    app.use(cors({ origin: true, credentials: true }));
+    app.use(cors({origin: true, credentials: true}));
 } else {
 const corsOptions = {
     origin: [
@@ -34,6 +34,9 @@ const corsOptions = {
 }
 
 app.use(express.json());
+
+app.use(express.urlencoded({extended: true}))  // для formData
+
 app.use(fileUpload({
     useTempFiles: true,               // Cloudinary читає з тимчасового файлу
     tempFileDir: '/tmp/',            // тимчасова директорія (на Railway вона існує)
