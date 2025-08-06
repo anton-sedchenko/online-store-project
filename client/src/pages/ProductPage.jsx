@@ -186,7 +186,10 @@ const ProductPage = () => {
                     )}
                 </Col>
             </Row>
-            <CallbackModal show={showCallback} onHide={() => setShowCallback(false)} />
+            <CallbackModal
+                show={showCallback}
+                onClose={() => setShowCallback(false)}
+            />
         </div>
     );
 };
