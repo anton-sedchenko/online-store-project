@@ -38,7 +38,7 @@ async function sendEmail({name, phone, comment}) {
 
     await transporter.sendMail({
         from: `"Charivna Craft" <${process.env.EMAIL_FROM}>`,
-        to: process.env.EMAIL_USER,
+        to: process.env.NOTIFY_EMAIL,
         subject: 'Нове замовлення зворотнього дзвінка',
         html
     })

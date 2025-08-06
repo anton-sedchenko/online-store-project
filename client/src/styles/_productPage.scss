@@ -159,3 +159,12 @@
     margin-bottom: 15px;
   }
 }
+
+.modal-backdrop.show {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+  opacity: 1 !important;
+}
+
+.modal-content {
+  background-color: #ffffff;
+}
