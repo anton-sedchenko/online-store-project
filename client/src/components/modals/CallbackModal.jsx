@@ -1,81 +1,83 @@
-import React, {useState} from 'react'
-import {Modal, Button, Form} from 'react-bootstrap'
-import axios from 'axios'
+import React, {useState} from "react";
+import {sendCallback} from "../../http/callbackAPI.js";
 
 export default function CallbackModal({show, onHide}) {
-    const [name, setName] = useState('')
-    const [phone, setPhone] = useState('')
-    const [comment, setComment] = useState('')
-    const [sending, setSending] = useState(false)
-    const [error, setError] = useState(null)
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
+    const [comment, setComment] = useState("");
+    const [error, setError] = useState("");
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        setSending(true)
-        setError(null)
-        try {
-            await axios.post('/api/callback', {name, phone, comment});
-            onHide();
-            setName('');
-            setPhone('');
-            setComment('');
-            alert('Дякуєм! Очікуйте дзвінок.');
-        } catch (e) {
-            console.error(e)
-            setError('Не вдалося відправити. Спробуйте пізніше.')
-        } finally {
-            setSending(false)
+    const handleSubmit = async e => {
+        e.preventDefault();
+        setError("");
+        if (!name.trim() || !phone.trim()) {
+            setError("Ім’я та телефон обов’язкові");
+            return;
         }
-    }
+
+        try {
+            await sendCallback({ name, phone, comment });
+            // відмінусуй з поля, закрий модалку
+            onClose();
+            // опціонально: show toast “Отлично, скоро зателефонуємо”
+        } catch (err) {
+            setError("Не вдалося відправити. Спробуйте пізніше.");
+            console.error(err);
+        }
+    };
+
+    if (!show) return null;
 
     return (
-        <Modal show={show} onHide={onHide} centered>
-            <Modal.Header closeButton>
-                <Modal.Title>Замовити зворотній дзвінок</Modal.Title>
-            </Modal.Header>
-            <Form onSubmit={handleSubmit}>
-                <Modal.Body>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Ім’я</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Ваше ім’я"
-                            value={name}
-                            onChange={e => setName(e.target.value)}
-                            required
-                        />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Телефон</Form.Label>
-                        <Form.Control
-                            type="tel"
-                            placeholder="+380XXXXXXXXX"
-                            value={phone}
-                            onChange={e => setPhone(e.target.value)}
-                            required
-                        />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Коментар (необов’язково)</Form.Label>
-                        <Form.Control
-                            as="textarea"
-                            rows={3}
-                            placeholder="Ваше повідомлення"
-                            value={comment}
-                            onChange={e => setComment(e.target.value)}
-                        />
-                    </Form.Group>
-                    {error && <div className="text-danger">{error}</div>}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={onHide} disabled={sending}>
-                        Відмінити
-                    </Button>
-                    <Button variant="primary" type="submit" disabled={sending}>
-                        {sending ? 'Відправка...' : 'Замовити дзвінок'}
-                    </Button>
-                </Modal.Footer>
-            </Form>
-        </Modal>
-    )
+        <div className="modal-backdrop show">
+            <div className="modal d-block" tabIndex={-1}>
+                <div className="modal-dialog">
+                    <form className="modal-content" onSubmit={handleSubmit}>
+                        <div className="modal-header">
+                            <h5 className="modal-title">Замовити зворотний дзвінок</h5>
+                            <button type="button" className="btn-close" onClick={onClose}/>
+                        </div>
+                        <div className="modal-body">
+                            <div className="mb-3">
+                                <label className="form-label">Ім’я</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={name}
+                                    onChange={e => setName(e.target.value)}
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label">Телефон</label>
+                                <input
+                                    type="tel"
+                                    className="form-control"
+                                    value={phone}
+                                    onChange={e => setPhone(e.target.value)}
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label">Коментар (необов’язково)</label>
+                                <textarea
+                                    className="form-control"
+                                    rows="3"
+                                    value={comment}
+                                    onChange={e => setComment(e.target.value)}
+                                />
+                            </div>
+                            {error && <div className="text-danger">{error}</div>}
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" onClick={onClose}>
+                                Відмінити
+                            </button>
+                            <button type="submit" className="btn btn-primary">
+                                Замовити дзвінок
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
 }
