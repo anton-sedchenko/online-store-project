@@ -7,7 +7,7 @@ const router = require('./routes/index');
 const errorHandler = require('./middleware/ErrorHandlingMiddleware');
 const helmet = require('helmet');
 const {create } = require('xmlbuilder2');
-const {Article} = require('./models/models');
+const {Article, Product} = require('./models/models');
 
 const PORT = process.env.PORT || 8080;
 const app = express();
