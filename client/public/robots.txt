@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://http://charivna-craft.com.ua/sitemap.xml
+Sitemap: https://online-store-project-production.up.railway.app/sitemap.xml
