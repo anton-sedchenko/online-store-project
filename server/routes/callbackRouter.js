@@ -45,7 +45,7 @@ async function sendEmail({name, phone, comment}) {
             html
         });
     } catch (smtpError) {
-        console.error('❌ SMTP sendMail error:', smtpError);
+        console.error('SMTP sendMail error:', smtpError);
         throw smtpError;
     }
 }
