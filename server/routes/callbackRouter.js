@@ -20,6 +20,7 @@ async function sendTelegram(text) {
  */
 async function sendEmail({name, phone, comment}) {
     const transporter = nodemailer.createTransport({
+        service: 'gmail',
         host: process.env.EMAIL_HOST,
         port: process.env.EMAIL_PORT,
         secure: process.env.EMAIL_SECURE === 'true',
@@ -36,12 +37,17 @@ async function sendEmail({name, phone, comment}) {
         ${comment ? `<p><strong>Коментар:</strong><br/>${comment}</p>` : ''}
       `
 
-    await transporter.sendMail({
-        from: `"Charivna Craft" <${process.env.EMAIL_FROM}>`,
-        to: process.env.NOTIFY_EMAIL,
-        subject: 'Нове замовлення зворотнього дзвінка',
-        html
-    })
+    try {
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: process.env.NOTIFY_EMAIL,
+            subject: 'Нове замовлення зворотнього дзвінка',
+            html
+        });
+    } catch (smtpError) {
+        console.error('❌ SMTP sendMail error:', smtpError);
+        throw smtpError;
+    }
 }
 
 router.post('/', async (req, res) => {
