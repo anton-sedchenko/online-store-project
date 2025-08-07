@@ -143,6 +143,7 @@ const ProductPage = () => {
                         <ul>
                             <li>Нова пошта</li>
                             <li>Укрпошта</li>
+                            <li>Безкоштовна доставка при замовленні від 1500 грн.</li>
                         </ul>
                     </div>
                     <div className="purchase__conditions__section">

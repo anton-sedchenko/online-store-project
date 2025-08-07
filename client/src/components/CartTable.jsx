@@ -4,12 +4,13 @@ import Form from 'react-bootstrap/Form';
 import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
 import {PRODUCT_ROUTE, ORDER_ROUTE} from "../utils/consts.js";
-import {Button, Image} from "react-bootstrap";
+import {Button, Image, Modal} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
 
 const CartTable = observer(() => {
     const {cartStore} = useContext(Context);
     const [draftQty, setDraftQty] = useState({});
+    const [showMinModal, setShowMinModal] = useState(false);
     const navigate = useNavigate();
 
     // дістаємо локальний стейт cartStore.items
@@ -24,7 +25,16 @@ const CartTable = observer(() => {
         const q = draftQty[item.id] ?? item.quantity;
         return sum + item.price * q;
     }, 0);
-    const handleOrder = () => navigate(ORDER_ROUTE);
+
+    const MIN_ORDER = 250;
+
+    const handleOrder = () => {
+        if (total < MIN_ORDER) {
+            setShowMinModal(true);
+        } else {
+            navigate(ORDER_ROUTE);
+        }
+    };
 
     return (
         <div className="cart__table__container">
@@ -112,6 +122,22 @@ const CartTable = observer(() => {
                     )
                 }
                 {cartStore.items.length === 0 && (<p>Кошик порожній</p>)}
+
+                {/* --- Модалка про мінімальну суму --- */}
+                <Modal show={showMinModal} onHide={() => setShowMinModal(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Зверніть увагу:</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Мінімальна сума замовлення — {MIN_ORDER} грн.
+                        У вашому кошику зараз {total} грн.
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowMinModal(false)}>
+                            Закрити
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
     );
 });
