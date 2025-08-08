@@ -80,8 +80,12 @@ const CartTable = observer(() => {
                                     }}
                                     // коли уходимо з інпута, синхронізуємо зі стором та сервером
                                     onBlur={() => {
-                                        const v = draftQty[item.id];
-                                        cartStore.setQuantity(cartStore._isGuest ? item.id : item.productId, v);
+                                        const v = Number(draftQty[item.id]);
+                                        const safe = Number.isFinite(v) ? v : 0;
+                                        const prev = item.quantity;
+                                        if (safe === prev) return; // якщо ️нічого не мінялося не шлемо запит
+                                        const id = cartStore._isGuest ? item.id : item.cartProductId; // ️для auth – cartProductId
+                                        cartStore.setQuantity(id, safe);
                                     }}
                                 />
                             </td>

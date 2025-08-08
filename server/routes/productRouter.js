@@ -5,7 +5,11 @@ const checkRole = require("../middleware/checkRoleMiddleware");
 const authMiddleware = require('../middleware/authMiddleware');
 
 router.get('/slug/:slug', productController.getBySlug);
-router.post('/', checkRole('ADMIN'), productController.create);
+router.post('/',
+    authMiddleware,
+    checkRole('ADMIN'),
+    productController.create
+);
 router.get('/', productController.getAll);
 router.get('/:id', productController.getOne);
 router.put(

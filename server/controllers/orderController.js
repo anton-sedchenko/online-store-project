@@ -24,6 +24,12 @@ const mailer = nodemailer.createTransport({
     }
 });
 
+const {Cart} = require('../models/models');
+async function getCartIdForUser(userId) {
+    const cart = await Cart.findOne({where: {userId}});
+    return cart?.id || null;
+}
+
 class OrderController {
     async createOrder(req, res, next) {
         try {
@@ -63,7 +69,8 @@ class OrderController {
             }
             // Якщо користувач залогінений очищаємо кошик
             if (userId) {
-                await CartProduct.destroy({where: {cartId: userId}});
+                const cartId = await getCartIdForUser(userId);
+                if (cartId) await CartProduct.destroy({where: {cartId}});
             }
 
             const orderItems = await OrderProduct.findAll({

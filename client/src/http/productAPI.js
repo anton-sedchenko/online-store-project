@@ -41,5 +41,5 @@ export const deleteProduct = async (id) => {
 }
 
 export const deleteProductImage = (id) => {
-    return $authHost.delete(`api/product/image/${id}`);
+    return $authHost.delete(`/api/product/image/${id}`);
 };

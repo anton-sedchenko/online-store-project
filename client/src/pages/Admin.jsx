@@ -147,7 +147,6 @@ const Admin = observer(() => {
                                         Редагувати
                                     </Button>
                                     <Button
-                                        variant="outline-danger"
                                         size="sm"
                                         variant="outline-danger"
                                         onClick={() => handleDeleteType(cat.id)}>

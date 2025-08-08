@@ -1,6 +1,12 @@
 const {Cart, CartProduct, Product} = require('../models/models');
 const ApiError = require('../error/ApiError');
 
+async function getCartIdForUser(userId) {
+    const cart = await Cart.findOne({where: {userId}});
+    if (!cart) throw ApiError.internal('Кошик користувача не знайдено');
+    return cart.id;
+}
+
 class CartController {
     // додає/оновлює позицію в кошику
     async addToCart(req, res, next) {
@@ -9,7 +15,8 @@ class CartController {
             const {productId, quantity = 1} = req.body;
 
             // Перевіряємо чи вже є така позиція в кошику
-            const existing = await CartProduct.findOne({where: {cartId: userId, productId}});
+            const cartId = await getCartIdForUser(userId);
+            const existing = await CartProduct.findOne({where: {cartId, productId}});
             if (existing) {
                 existing.quantity += quantity;
                 await existing.save();
@@ -17,11 +24,8 @@ class CartController {
             }
 
             // Інакше створюємо новий запис
-            const cartItem = await CartProduct.create({
-                cartId: userId,
-                productId,
-                quantity
-            });
+            const cartItem = await CartProduct.create({cartId, productId, quantity});
+
             return res.status(201).json(cartItem);
         } catch (e) {
             next(ApiError.internal(e.message));
@@ -32,11 +36,10 @@ class CartController {
     async getCart(req, res, next) {
         try {
             const userId = req.user.id;
+            const cartId = await getCartIdForUser(userId);
             const items = await CartProduct.findAll({
-                where: {cartId: userId},
-                include: [{model: Product}] // через include: [Product] Sequelize автоматично підтягує для кожного
-                // елементу дані з таблиці product (тобто маємо об’єкт Product у відповіді з name, price, img)
-                // і повертаємо масив таких елементів
+                where: {cartId},
+                include: [{model: Product}]
             });
             return res.json(items);
         } catch(e) {
@@ -49,7 +52,8 @@ class CartController {
         try {
             const userId = req.user.id;
             const {cartProductId} = req.params;
-            await CartProduct.destroy({where: {cartId: userId, id: cartProductId}});
+            const cartId = await getCartIdForUser(userId);
+            await CartProduct.destroy({where: {cartId, id: cartProductId}});
             return res.json({message: 'Товар видалено з кошика'});
         } catch (e) {
             next(ApiError.internal(e.message));
@@ -60,7 +64,8 @@ class CartController {
     async clearCart(req, res, next) {
         try {
             const userId = req.user.id;
-            await CartProduct.destroy({where: {cartId: userId}});
+            const cartId = await getCartIdForUser(userId);
+            await CartProduct.destroy({where: {cartId}});
             return res.json({message: 'Кошик очищений'});
         } catch (e) {
             next(ApiError.internal(e.message));
@@ -70,16 +75,17 @@ class CartController {
     async updateItem(req, res, next) {
         try {
             const userId = req.user.id;
-            const {productId} = req.params;
+            const {cartProductId} = req.params;
             const {quantity} = req.body;
-            const item = await CartProduct.findOne({
-                where: {cartId: userId, productId}
-            });
+
+            const cartId = await getCartIdForUser(userId);
+            const item = await CartProduct.findOne({where: {id: cartProductId, cartId}});
             if (!item) return next(ApiError.badRequest("Позиція не знайдена"));
+
             item.quantity = quantity;
             await item.save();
             return res.json(item);
-        } catch(e) {
+        } catch (e) {
             next(ApiError.internal(e.message));
         }
     }

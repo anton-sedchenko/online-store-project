@@ -50,7 +50,7 @@ const ProductItem = observer(({product}) => {
                     </div>
                 </div>
                 <div className="gallery__card__btn__container">
-                    <btn
+                    <button
                         className="gallery__card__btn"
                         onClick={(e) => {
                             e.stopPropagation();
@@ -58,7 +58,7 @@ const ProductItem = observer(({product}) => {
                         }}
                     >
                         До кошика
-                    </btn>
+                    </button>
                 </div>
             </Card>
 

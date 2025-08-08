@@ -25,6 +25,7 @@ if (process.env.NODE_ENV === 'staging') {
         origin: [
         'http://localhost:3000',
         'https://charivna-craft.com.ua',
+        'https://www.charivna-craft.com.ua'
         // якщо є інші production-домени — сюди
         ],
         methods: ['GET','POST','PUT','DELETE','OPTIONS'],
@@ -46,11 +47,12 @@ app.use(fileUpload({
 
 app.use(helmet());
 
-const limiter = rateLimit({
+const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 хвилин
     max: 100, // не більше 100 запитів з одного IP
 });
-app.use(limiter);
+app.use('/api', apiLimiter);
+app.use('/callback', apiLimiter);
 app.use('/api', router);
 
 // Генеруємо sitemap.xml динамічно

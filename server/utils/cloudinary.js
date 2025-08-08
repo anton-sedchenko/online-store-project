@@ -9,11 +9,13 @@ cloudinary.config({
 
 function extractPublicId(url) {
     try {
-        const parts = url.split('/');
-        const fileWithExt = parts.pop();
-        const folder = parts.pop();
-        const publicId = `${folder}/${fileWithExt.split('.')[0]}`;
-        return publicId;
+        const u = new URL(url);
+        const parts = u.pathname.split('/'); // ["","<res>","upload","v123","folder","img.jpg"]
+        const file = parts.pop(); // "img.jpg"
+        // забираємо все після "upload" і до файлу як шлях
+        const uploadIndex = parts.findIndex(p => p === 'upload');
+        const folders = parts.slice(uploadIndex + 2); // пропускаємо "upload","v123"
+        return `${folders.join('/')}/${file.split('.')[0]}`.replace(/^\/+/, '');
     } catch {
         return null;
     }
