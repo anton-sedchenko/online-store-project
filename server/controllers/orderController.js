@@ -15,14 +15,12 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 // транспортер для відправки пошти
 const mailer = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || process.env.EMAIL_HOST,
-    port: Number(process.env.SMTP_PORT || process.env.EMAIL_PORT || 587),
-    secure: String(process.env.SMTP_PORT || process.env.EMAIL_PORT) === '465' ||
-        process.env.SMTP_SECURE === 'true' || process.env.EMAIL_SECURE === 'true',
-    auth: {
-        user: process.env.SMTP_USER || process.env.EMAIL_USER,
-        pass: process.env.SMTP_PASS || process.env.EMAIL_PASS,
-    },
+    host: process.env.EMAIL_HOST,
+    port: Number(process.env.EMAIL_PORT),
+    secure: process.env.EMAIL_SECURE === 'true',
+    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+    logger: true,
+    debug: true,
 });
 
 const {Cart} = require('../models/models');
