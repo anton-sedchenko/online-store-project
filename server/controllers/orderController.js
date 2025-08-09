@@ -15,13 +15,14 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 // транспортер для відправки пошти
 const mailer = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT),
-    secure: process.env.EMAIL_SECURE === 'true',
+    host: process.env.SMTP_HOST || process.env.EMAIL_HOST,
+    port: Number(process.env.SMTP_PORT || process.env.EMAIL_PORT || 587),
+    secure: String(process.env.SMTP_PORT || process.env.EMAIL_PORT) === '465' ||
+        process.env.SMTP_SECURE === 'true' || process.env.EMAIL_SECURE === 'true',
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
+        user: process.env.SMTP_USER || process.env.EMAIL_USER,
+        pass: process.env.SMTP_PASS || process.env.EMAIL_PASS,
+    },
 });
 
 const {Cart} = require('../models/models');
@@ -122,12 +123,20 @@ class OrderController {
                 <p>Ми зв’яжемося з вами найближчим часом для підтвердження замовлення.</p>
             `;
 
-            await mailer.sendMail({
-                from: process.env.EMAIL_FROM,
-                to: [email, 'charivna.craft@gmail.com'],
-                subject: 'Ваше замовлення оформлено',
-                html: mailHtml
-            });
+            try {
+                // опційно: перевірка з’єднання
+                await mailer.verify();
+
+                await mailer.sendMail({
+                    from: process.env.EMAIL_FROM,
+                    to: [email, 'charivna.craft@gmail.com'],
+                    subject: 'Ваше замовлення оформлено',
+                    html: mailHtml,
+                });
+            } catch (mailErr) {
+                console.error('Email send error:', mailErr?.message || mailErr);
+                // не кидаємо помилку – замовлення вже створене, просто лог.
+            }
 
             return res.status(201).json({
                 message: 'Замовлення оформлено, лист відправлено',
