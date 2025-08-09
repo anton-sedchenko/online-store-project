@@ -110,7 +110,7 @@ class OrderController {
             }).join('');
 
             const mailHtml = `
-                <h2>Дякуємо за замовлення в інтернет-магазині Чарівна майстерня!</h2>
+                <h2>Дякуємо за замовлення в інтернет-магазині Charivna Craft!</h2>
                 <p>Покупець:</p>
                 <p><strong>Імʼя:</strong> ${fullName}<br>
                    <strong>Телефон:</strong> ${tel}<br>

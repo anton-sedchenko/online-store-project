@@ -35,7 +35,7 @@ async function sendEmail({name, phone, comment}) {
 
     try {
         await transporter.sendMail({
-            from: process.env.EMAIL_USER,
+            from: process.env.EMAIL_FROM,
             to: process.env.NOTIFY_EMAIL,
             subject: 'Нове замовлення зворотнього дзвінка',
             html
