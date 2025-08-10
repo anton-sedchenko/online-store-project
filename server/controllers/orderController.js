@@ -19,6 +19,7 @@ const mailer = nodemailer.createTransport({
     port: Number(process.env.EMAIL_PORT),
     secure: process.env.EMAIL_SECURE === 'true',
     auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+    authMethod: 'LOGIN',   // додай оце
     logger: true,
     debug: true,
 });
@@ -122,7 +123,7 @@ class OrderController {
             `;
 
             try {
-                // опційно: перевірка з’єднання
+                // просто перевірка з’єднання
                 await mailer.verify();
 
                 await mailer.sendMail({
