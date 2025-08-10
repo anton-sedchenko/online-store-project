@@ -18,8 +18,10 @@ const mailer = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: Number(process.env.EMAIL_PORT),
     secure: process.env.EMAIL_SECURE === 'true',
-    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-    authMethod: 'LOGIN',   // додай оце
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    },
     logger: true,
     debug: true,
 });
