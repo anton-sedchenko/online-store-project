@@ -1,5 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Col, Image, Row} from "react-bootstrap";
+import Modal from "react-bootstrap/Modal";
 import {useNavigate, useParams} from "react-router-dom";
 import {deleteProduct, fetchProductBySlug} from "../http/productAPI.js";
 import {Context} from "../main.jsx";
@@ -13,7 +14,9 @@ const ProductPage = () => {
     const {userStore, cartStore} = useContext(Context);
     const [qty, setQty] = useState(1);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [showCallback, setShowCallback] = useState(false)
+    const [showCallback, setShowCallback] = useState(false);
+    const [lightboxOpen, setLightboxOpen] = useState(false);
+    const [lightboxIndex, setLightboxIndex] = useState(0);
     const {slug} = useParams();
 
     useEffect(() => {
@@ -56,6 +59,23 @@ const ProductPage = () => {
         );
     };
 
+    const openLightbox = (i) => { setLightboxIndex(i); setLightboxOpen(true); };
+    const closeLightbox = () => setLightboxOpen(false);
+
+    const lbPrev = () => setLightboxIndex(i => (i === 0 ? product.images.length - 1 : i - 1));
+    const lbNext = () => setLightboxIndex(i => (i === product.images.length - 1 ? 0 : i + 1));
+
+    useEffect(() => {
+        if (!lightboxOpen) return;
+        const onKey = (e) => {
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') lbPrev();
+            if (e.key === 'ArrowRight') lbNext();
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, [lightboxOpen, product.images?.length]);
+
     const sum = product.price * qty;
     const activeImage = product.images?.[currentImageIndex]?.url || product.img;
 
@@ -91,6 +111,8 @@ const ProductPage = () => {
                             height={300}
                             src={activeImage}
                             alt={product.name}
+                            onClick={() => openLightbox(currentImageIndex)}
+                            style={{cursor: 'zoom-in'}}
                         />
                         {product.images?.length > 1 && (
                             <>
@@ -191,6 +213,59 @@ const ProductPage = () => {
                 show={showCallback}
                 onClose={() => setShowCallback(false)}
             />
+
+            <Modal show={lightboxOpen} onHide={closeLightbox} centered size="lg" contentClassName="bg-transparent border-0">
+                <div
+                    style={{
+                        position: 'relative',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'rgba(0,0,0,0.8)',
+                        borderRadius: 8,
+                        padding: 8
+                    }}
+                >
+                    <button
+                        onClick={lbPrev}
+                        aria-label="Попереднє"
+                        className="btn btn-light"
+                        style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }}
+                    >‹</button>
+
+                    <img
+                        src={(product.images?.[lightboxIndex]?.url) || product.img}
+                        alt={product.name}
+                        style={{ maxWidth: '90vw', maxHeight: '80vh', objectFit: 'contain' }}
+                    />
+
+                    <button
+                        onClick={lbNext}
+                        aria-label="Наступне"
+                        className="btn btn-light"
+                        style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }}
+                    >›</button>
+                </div>
+
+                {/* Мініатюри під фото */}
+                {product.images?.length > 1 && (
+                    <div className="mt-2 d-flex flex-wrap justify-content-center gap-2">
+                        {product.images.map((im, i) => (
+                            <img
+                                key={i}
+                                src={im.url}
+                                alt=""
+                                onClick={() => setLightboxIndex(i)}
+                                style={{
+                                    width: 64, height: 64, objectFit: 'cover', cursor: 'pointer',
+                                    border: i === lightboxIndex ? '2px solid #fff' : '2px solid transparent',
+                                    borderRadius: 6
+                                }}
+                            />
+                        ))}
+                    </div>
+                )}
+            </Modal>
         </div>
     );
 };
