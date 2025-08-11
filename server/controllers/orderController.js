@@ -85,35 +85,21 @@ class OrderController {
             function shippingText(s) {
                 if (!s) return 'Спосіб доставки: не вказано';
 
-                // підстраховка: раптом прилетів код, перетворяємо на текст
-                const code2label = {
-                    NP_BRANCH:  'Самовивіз з відділення Нової Пошти',
-                    NP_POSTOMAT:'Самовивіз з поштомату Нової Пошти',
-                    NP_COURIER: 'Курʼєр Нова Пошта',
-                    UKR_BRANCH: 'Самовивіз з відділення Укрпошти'
-                };
-                const method = code2label[s.method] || s.method || '—';
-
                 const lines = [];
-                lines.push(`Спосіб доставки: ${method}`);
+                lines.push(`Спосіб доставки: ${s.method || '—'}`);
                 if (s.service) lines.push(`Служба: ${s.service}`);
 
-                // НП: відділення / поштомат
-                if (method.includes('Нова Пошта') && (s.branch || s.postomat)) {
-                    if (s.city)     lines.push(`Місто: ${s.city.name}`);
-                    if (s.branch)   lines.push(`Відділення: №${s.branch.number} — ${s.branch.description}`);
-                    if (s.postomat) lines.push(`Поштомат: №${s.postomat.number} — ${s.postomat.description}`);
+                // Нова Пошта (відділення, поштомат або кур’єр)
+                if (s.method === 'Нова Пошта') {
+                    if (s.city)    lines.push(`Місто: ${s.city.name}`);
+                    if (s.branch)  lines.push(`Відділення: №${s.branch.number} — ${s.branch.description}`);
+                    if (s.postomat)lines.push(`Поштомат: №${s.postomat.number} — ${s.postomat.description}`);
+                    if (s.address) lines.push(`Адреса: ${s.address}`);
                     if (s.map?.address) lines.push(`Адреса на мапі: ${s.map.address}`);
                 }
 
-                // НП: курʼєр
-                if (method === 'Курʼєр Нова Пошта') {
-                    if (s.city)    lines.push(`Місто: ${s.city.name}`);
-                    if (s.address) lines.push(`Адреса: ${s.address}`);
-                }
-
                 // Укрпошта
-                if (method.includes('Укрпошта')) {
+                if (s.method === 'Укрпошта') {
                     if (s.city)    lines.push(`Місто: ${s.city.name}`);
                     if (s.address) lines.push(`Відділення/Адреса: ${s.address}`);
                 }
@@ -144,18 +130,22 @@ class OrderController {
 
                 if (shipping.method === 'Нова Пошта') {
                     if (shipping.city) parts.push(`<p><strong>Місто:</strong> ${shipping.city.name}</p>`);
-                    if (shipping.branch) parts.push(`<p><strong>Відділення:</strong> ${shipping.branch.description}</p>`);
-                    if (shipping.postomat) parts.push(`<p><strong>Поштомат:</strong> ${shipping.postomat.description}</p>`);
+                    if (shipping.branch) parts.push(
+                        `<p><strong>Відділення:</strong> №${shipping.branch.number} — ${shipping.branch.description}</p>`
+                    );
+                    if (shipping.postomat) parts.push(
+                        `<p><strong>Поштомат:</strong> №${shipping.postomat.number} — ${shipping.postomat.description}</p>`
+                    );
+                    if (shipping.address) parts.push(`<p><strong>Адреса:</strong> ${shipping.address}</p>`);
                     if (shipping.map?.address) parts.push(`<p><strong>Адреса на мапі:</strong> ${shipping.map.address}</p>`);
                     if (shipping.map?.url) parts.push(`<p><a href="${shipping.map.url}">Посилання на мапу</a></p>`);
-                } else if (shipping.method === 'Укрпошта') {
-                    if (shipping.index) parts.push(`<p><strong>Індекс:</strong> ${shipping.index}</p>`);
-                    if (shipping.address) parts.push(`<p><strong>Адреса:</strong> ${shipping.address}</p>`);
-                } else if (shipping.method === 'Самовивіз') {
-                    if (shipping.address) parts.push(`<p><strong>Адреса самовивозу:</strong> ${shipping.address}</p>`);
-                } else if (shipping.method === 'Курʼєр') {
-                    if (shipping.address) parts.push(`<p><strong>Адреса доставки:</strong> ${shipping.address}</p>`);
                 }
+
+                if (shipping.method === 'Укрпошта') {
+                    if (shipping.city) parts.push(`<p><strong>Місто:</strong> ${shipping.city.name}</p>`);
+                    if (shipping.address) parts.push(`<p><strong>Відділення/Адреса:</strong> ${shipping.address}</p>`);
+                }
+
                 return parts.join('');
             })();
 
