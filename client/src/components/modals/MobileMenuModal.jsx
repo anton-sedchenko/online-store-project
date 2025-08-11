@@ -27,6 +27,9 @@ const MobileMenuModal = observer(({show, onHide}) => {
                         <Link to="/cart" onClick={onHide}>Мій кошик <ProductsCounter/></Link>
                     </li>
                     <li>
+                        <Link to="/blog" onClick={onHide}>Блог</Link>
+                    </li>
+                    <li>
                         <Link to="/contacts" onClick={onHide}>Контакти</Link>
                     </li>
                 </ul>
