@@ -2,7 +2,7 @@ import React from "react";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 import Banner from "./Banner.jsx";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import {
     BLOG_ROUTE,
     DELIVERY_PAYMENT_ROUTE,
@@ -13,6 +13,7 @@ import {
     CONTACTS_ROUTE,
     CART_ROUTE
 } from "../utils/consts.js";
+import ScrollToTop from "./ScrollToTop.js";
 
 const Wrapper = ({children}) => {
     const location = useLocation();
@@ -31,6 +32,7 @@ const Wrapper = ({children}) => {
     return (
         <div className="wrapper">
             <Header />
+            <ScrollToTop />
             <div className="page__content">
                 {(isBannerShow) && <Banner />}
                 {children}

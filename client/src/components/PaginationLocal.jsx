@@ -15,7 +15,6 @@ const PaginationLocal = ({totalCount, limit, currentPage, onPageChange}) => {
                     active={page === currentPage}
                     onClick={() => {
                         onPageChange(page)
-                        window.scrollTo({top: 0, behavior: 'smooth'})
                     }}
                 >
                     {page}

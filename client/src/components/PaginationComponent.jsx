@@ -23,7 +23,6 @@ const PaginationComponent = observer(() => {
                     active={productStore.currentPage === page}
                     onClick={() => {
                         productStore.setCurrentPage(page);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                 >
                     {page}

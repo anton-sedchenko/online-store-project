@@ -5,7 +5,7 @@ import {
     DELIVERY_PAYMENT_ROUTE,
     OFERTA_ROUTE,
     RETURN_POLICY_ROUTE,
-    HOME_ROUTE, PRIVACY_ROUTE
+    HOME_ROUTE, PRIVACY_ROUTE, BLOG_ROUTE
 } from "../utils/consts.js";
 
 const Footer = () => {
@@ -14,25 +14,25 @@ const Footer = () => {
             <div className="footer__content">
                 <div className="footer__links-container">
                     <div className="footer__column-links">
-                        <Link to="/" onClick={() => window.scrollTo(0, 0)}>
+                        <Link to={BLOG_ROUTE}>
                             Блог
                         </Link>
-                        <Link to={HOME_ROUTE} onClick={() => window.scrollTo(0, 0)}>
+                        <Link to={HOME_ROUTE}>
                             Каталог
                         </Link>
-                        <Link to={CONTACTS_ROUTE} onClick={() => window.scrollTo(0, 0)}>
+                        <Link to={CONTACTS_ROUTE}>
                             Контакти
                         </Link>
-                        <Link to={DELIVERY_PAYMENT_ROUTE} onClick={() => window.scrollTo(0, 0)}>
+                        <Link to={DELIVERY_PAYMENT_ROUTE}>
                             Доставка і оплата
                         </Link>
-                        <Link to={OFERTA_ROUTE} onClick={() => window.scrollTo(0, 0)}>
+                        <Link to={OFERTA_ROUTE}>
                             Публічний договір
                         </Link>
-                        <Link to={PRIVACY_ROUTE} onClick={() => window.scrollTo(0, 0)}>
+                        <Link to={PRIVACY_ROUTE}>
                             Політика конфіденційності
                         </Link>
-                        <Link to={RETURN_POLICY_ROUTE} onClick={() => window.scrollTo(0, 0)}>
+                        <Link to={RETURN_POLICY_ROUTE}>
                             Політика повернення товару
                         </Link>
                     </div>
