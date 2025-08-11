@@ -84,23 +84,40 @@ class OrderController {
 
             function shippingText(s) {
                 if (!s) return 'Спосіб доставки: не вказано';
+
+                // підстраховка: раптом прилетів код, перетворяємо на текст
+                const code2label = {
+                    NP_BRANCH:  'Самовивіз з відділення Нової Пошти',
+                    NP_POSTOMAT:'Самовивіз з поштомату Нової Пошти',
+                    NP_COURIER: 'Курʼєр Нова Пошта',
+                    UKR_BRANCH: 'Самовивіз з відділення Укрпошти'
+                };
+                const method = code2label[s.method] || s.method || '—';
+
                 const lines = [];
-                lines.push(`Спосіб доставки: ${s.method || '—'}`);
+                lines.push(`Спосіб доставки: ${method}`);
                 if (s.service) lines.push(`Служба: ${s.service}`);
 
-                if (s.method === 'Нова Пошта') {
-                    if (s.city) lines.push(`Місто: ${s.city.name}`);
-                    if (s.branch) lines.push(`Відділення: ${s.branch.description}`);
-                    if (s.postomat) lines.push(`Поштомат: ${s.postomat.description}`);
-                    if (s.map && s.map.address) lines.push(`Адреса на мапі: ${s.map.address}`);
-                } else if (s.method === 'Укрпошта') {
-                    if (s.index) lines.push(`Індекс: ${s.index}`);
-                    if (s.address) lines.push(`Адреса: ${s.address}`);
-                } else if (s.method === 'Самовивіз') {
-                    if (s.address) lines.push(`Адреса самовивозу: ${s.address}`);
-                } else if (s.method === 'Курʼєр') {
-                    if (s.address) lines.push(`Адреса доставки: ${s.address}`);
+                // НП: відділення / поштомат
+                if (method.includes('Нова Пошта') && (s.branch || s.postomat)) {
+                    if (s.city)     lines.push(`Місто: ${s.city.name}`);
+                    if (s.branch)   lines.push(`Відділення: №${s.branch.number} — ${s.branch.description}`);
+                    if (s.postomat) lines.push(`Поштомат: №${s.postomat.number} — ${s.postomat.description}`);
+                    if (s.map?.address) lines.push(`Адреса на мапі: ${s.map.address}`);
                 }
+
+                // НП: курʼєр
+                if (method === 'Курʼєр Нова Пошта') {
+                    if (s.city)    lines.push(`Місто: ${s.city.name}`);
+                    if (s.address) lines.push(`Адреса: ${s.address}`);
+                }
+
+                // Укрпошта
+                if (method.includes('Укрпошта')) {
+                    if (s.city)    lines.push(`Місто: ${s.city.name}`);
+                    if (s.address) lines.push(`Відділення/Адреса: ${s.address}`);
+                }
+
                 return lines.join('\n');
             }
 

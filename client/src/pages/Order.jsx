@@ -23,9 +23,7 @@ const Order = () => {
     const [showMap, setShowMap] = useState(false);
 
     // стани кур'єра
-    const [crStreet, setCrStreet] = useState('');
-    const [crHouse, setCrHouse]   = useState('');
-    const [crFlat, setCrFlat]     = useState('');
+    const [crAddress, setCrAddress] = useState('');
 
     // укрпошта пока що просто поле
     const [ukrCity, setUkrCity] = useState('');
@@ -74,8 +72,8 @@ const Order = () => {
         if ((deliveryMethod==='NP_BRANCH' || deliveryMethod==='NP_POSTOMAT') && !warehouseRef) {
             return alert('Оберіть відділення/поштомат Нової Пошти');
         }
-        if (deliveryMethod==='NP_COURIER' && (!cityRef || !crStreet.trim() || !crHouse.trim())) {
-            return alert('Вкажіть місто, вулицю та будинок для курʼєрської доставки');
+        if (deliveryMethod === 'NP_COURIER' && (!cityRef || !crAddress.trim())) {
+            return alert('Для курʼєрської доставки вкажіть місто і повну адресу (вулиця, будинок, квартира).');
         }
         if (deliveryMethod==='UKR_BRANCH' && (!ukrCity.trim() || !ukrOffice.trim())) {
             return alert('Вкажіть місто та відділення Укрпошти');
@@ -87,7 +85,7 @@ const Order = () => {
             const selectedW = warehouses.find(w => w.Ref === warehouseRef);
             const isPostomat = deliveryMethod === 'NP_POSTOMAT';
 
-            // мапа з даних складу (якщо є координати)
+            // координати/коротка адреса з довідника НП (для відділення/поштомату)
             const map = selectedW ? {
                 address: selectedW.ShortAddress || selectedW.Description,
                 lat: +selectedW.Latitude || undefined,
@@ -95,24 +93,19 @@ const Order = () => {
             } : undefined;
 
             if (deliveryMethod === 'NP_COURIER') {
-                const addressLine = `${crStreet.trim()}, ${crHouse.trim()}${crFlat ? `, кв. ${crFlat.trim()}` : ''}`;
                 shipping = {
-                    method: 'Курʼєр',            // важливо! у контролері саме так перевіряється курʼєр
+                    method: 'Курʼєр Нова Пошта',
                     service: 'Нова Пошта',
-                    city: selectedCity ? {name: cityLabel, ref: cityRef} : undefined,
-                    address: addressLine,        // щоб контролер показав адресу в листі/ТГ
-                    courier: {                   // плюс структуровано
-                        street: crStreet.trim(),
-                        house: crHouse.trim(),
-                        flat: crFlat.trim() || undefined
-                    }
+                    city: selectedCity ? { name: cityLabel, ref: cityRef } : undefined,
+                    address: crAddress.trim()
                 };
             } else {
-                // відділення або поштомат
                 shipping = {
-                    method: 'Нова Пошта',
+                    method: isPostomat
+                        ? 'Самовивіз з поштомату Нової Пошти'
+                        : 'Самовивіз з відділення Нової Пошти',
                     service: 'Нова Пошта',
-                    city: selectedCity ? {name: cityLabel, ref: cityRef} : undefined,
+                    city: selectedCity ? { name: cityLabel, ref: cityRef } : undefined,
                     branch: (!isPostomat && selectedW) ? {
                         ref: selectedW.Ref,
                         description: selectedW.Description,
@@ -126,10 +119,9 @@ const Order = () => {
                     map
                 };
             }
-
         } else if (deliveryMethod === 'UKR_BRANCH') {
             shipping = {
-                method: 'Укрпошта',
+                method: 'Самовивіз з відділення Укрпошти',
                 service: 'Укрпошта',
                 city: {name: ukrCity.trim()},
                 address: ukrOffice.trim()
@@ -224,34 +216,14 @@ const Order = () => {
                                 {/* >>> COURIER FIELDS START — показуємо тільки для NP_COURIER */}
                                 {deliveryMethod === 'NP_COURIER' && selectedCity && (
                                     <>
-                                        <p style={{marginTop:12}}>Вулиця</p>
+                                        <p style={{marginTop:12}}>Адреса доставки (вулиця, будинок, квартира)</p>
                                         <input
                                             className="buyer__contacts__form-input"
-                                            value={crStreet}
-                                            onChange={e=>setCrStreet(e.target.value)}
-                                            placeholder="Наприклад, Тараса Шевченка"
+                                            value={crAddress}
+                                            onChange={e => setCrAddress(e.target.value)}
+                                            placeholder="Наприклад: вул. Шевченка, 10, кв. 25"
+                                            maxLength={120}
                                         />
-
-                                        <div style={{display:'flex', gap:8, marginTop:12}}>
-                                            <div style={{flex:1}}>
-                                                <p>Будинок</p>
-                                                <input
-                                                    className="buyer__contacts__form-input"
-                                                    value={crHouse}
-                                                    onChange={e=>setCrHouse(e.target.value)}
-                                                    placeholder="№"
-                                                />
-                                            </div>
-                                            <div style={{flex:1}}>
-                                                <p>Квартира (необовʼязково)</p>
-                                                <input
-                                                    className="buyer__contacts__form-input"
-                                                    value={crFlat}
-                                                    onChange={e=>setCrFlat(e.target.value)}
-                                                    placeholder="№"
-                                                />
-                                            </div>
-                                        </div>
                                     </>
                                 )}
                                 {/* <<< COURIER FIELDS END */}
