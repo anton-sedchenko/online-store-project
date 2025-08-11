@@ -42,7 +42,8 @@ class OrderController {
                 tel,
                 email,
                 comments,
-                order       /* масив позицій (id, quantity...) */
+                order,       /* масив позицій (id, quantity...) */
+                shipping = null
             } = req.body;
 
             if (!order?.length) {
@@ -55,7 +56,8 @@ class OrderController {
                 fullName,
                 tel,
                 email,
-                comments
+                comments,
+                shipping
             });
 
             // Додаємо позиції
@@ -80,10 +82,33 @@ class OrderController {
                 include: [{model: Product, attributes: ["name", "price", "code"]}]
             });
 
+            function shippingText(s) {
+                if (!s) return 'Спосіб доставки: не вказано';
+                const lines = [];
+                lines.push(`Спосіб доставки: ${s.method || '—'}`);
+                if (s.service) lines.push(`Служба: ${s.service}`);
+
+                if (s.method === 'Нова Пошта') {
+                    if (s.city) lines.push(`Місто: ${s.city.name}`);
+                    if (s.branch) lines.push(`Відділення: ${s.branch.description}`);
+                    if (s.postomat) lines.push(`Поштомат: ${s.postomat.description}`);
+                    if (s.map && s.map.address) lines.push(`Адреса на мапі: ${s.map.address}`);
+                } else if (s.method === 'Укрпошта') {
+                    if (s.index) lines.push(`Індекс: ${s.index}`);
+                    if (s.address) lines.push(`Адреса: ${s.address}`);
+                } else if (s.method === 'Самовивіз') {
+                    if (s.address) lines.push(`Адреса самовивозу: ${s.address}`);
+                } else if (s.method === 'Курʼєр') {
+                    if (s.address) lines.push(`Адреса доставки: ${s.address}`);
+                }
+                return lines.join('\n');
+            }
+
             let text = `🆕 *Нове замовлення #${newOrder.id}*\n`;
             text += `👤 Імʼя: ${fullName}\n`;
             text += `📞 Телефон: ${tel}\n`;
             text += `✉️ Email: ${email}\n`;
+            text += `🚚 ${shippingText(shipping)}\n`;
             if (comments) text += `💬 Коментар: ${comments}\n`;
             text += `\n🛒 *Товари:*\n`;
             orderItems.forEach((oi, idx) => {
@@ -94,13 +119,36 @@ class OrderController {
                 text += `${idx + 1}. Артикул: ${code} ${name} — ${qty}×${price}₴ = ${qty * price}₴\n`;
             });
 
+            const shippingHtml = (() => {
+                if (!shipping) return '<p><strong>Спосіб доставки:</strong> не вказано</p>';
+                const parts = [];
+                parts.push(`<p><strong>Спосіб доставки:</strong> ${shipping.method || '—'}</p>`);
+                if (shipping.service) parts.push(`<p><strong>Служба:</strong> ${shipping.service}</p>`);
+
+                if (shipping.method === 'Нова Пошта') {
+                    if (shipping.city) parts.push(`<p><strong>Місто:</strong> ${shipping.city.name}</p>`);
+                    if (shipping.branch) parts.push(`<p><strong>Відділення:</strong> ${shipping.branch.description}</p>`);
+                    if (shipping.postomat) parts.push(`<p><strong>Поштомат:</strong> ${shipping.postomat.description}</p>`);
+                    if (shipping.map?.address) parts.push(`<p><strong>Адреса на мапі:</strong> ${shipping.map.address}</p>`);
+                    if (shipping.map?.url) parts.push(`<p><a href="${shipping.map.url}">Посилання на мапу</a></p>`);
+                } else if (shipping.method === 'Укрпошта') {
+                    if (shipping.index) parts.push(`<p><strong>Індекс:</strong> ${shipping.index}</p>`);
+                    if (shipping.address) parts.push(`<p><strong>Адреса:</strong> ${shipping.address}</p>`);
+                } else if (shipping.method === 'Самовивіз') {
+                    if (shipping.address) parts.push(`<p><strong>Адреса самовивозу:</strong> ${shipping.address}</p>`);
+                } else if (shipping.method === 'Курʼєр') {
+                    if (shipping.address) parts.push(`<p><strong>Адреса доставки:</strong> ${shipping.address}</p>`);
+                }
+                return parts.join('');
+            })();
+
             try {
                 await axios.post(
                     `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,
                     {
                         chat_id: TELEGRAM_CHAT_ID,
                         text: text,
-                        parse_mode: 'Markdown'
+                        parse_mode: 'HTML'
                     }
                 );
             } catch (tgErr) {
@@ -118,6 +166,10 @@ class OrderController {
                    <strong>Телефон:</strong> ${tel}<br>
                    <strong>Email:</strong> ${email}
                 </p>
+                
+                <h3>Доставка</h3>
+                ${shippingHtml}
+                
                 <h3>Ваші товари:</h3>
                 <ul>${htmlItems}</ul>
                 <p><strong>Загальна сума:</strong> ${orderItems.reduce((sum, oi) => sum + oi.quantity * oi.product.price, 0)}₴</p>

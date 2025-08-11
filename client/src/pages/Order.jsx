@@ -5,7 +5,7 @@ import {createOrder} from "../http/orderAPI.js";
 import {Context} from "../main.jsx";
 import OrderConfirm from "../components/modals/OrderConfirm.jsx";
 import {Helmet} from "react-helmet-async";
-import {searchCities, getWarehouses} from "../http/npAPI.js";
+import {searchCities, getWarehouses} from "../http/npAPI.jsx";
 import NPMapModal from "../components/modals/NPMapModal.jsx";
 
 const Order = () => {
@@ -22,7 +22,12 @@ const Order = () => {
     const [warehouseRef, setWarehouseRef] = useState('');
     const [showMap, setShowMap] = useState(false);
 
-    // укрпошта пока що — просто поле
+    // стани кур'єра
+    const [crStreet, setCrStreet] = useState('');
+    const [crHouse, setCrHouse]   = useState('');
+    const [crFlat, setCrFlat]     = useState('');
+
+    // укрпошта пока що просто поле
     const [ukrCity, setUkrCity] = useState('');
     const [ukrOffice, setUkrOffice] = useState('');
 
@@ -37,11 +42,11 @@ const Order = () => {
     useEffect(() => {
         (async () => {
             setWarehouses([]); setWarehouseRef('');
-            if (!selectedCity?.DeliveryCity) return;
+            if (!cityRef) return;
             if (!deliveryMethod.startsWith('NP_')) return;
             try {
                 const type = deliveryMethod === 'NP_POSTOMAT' ? 'Postomat' : 'Branch';
-                const list = await getWarehouses({ cityRef: selectedCity.DeliveryCity, type });
+                const list = await getWarehouses({cityRef, type});
                 setWarehouses(list);
             } catch {}
         })();
@@ -54,17 +59,81 @@ const Order = () => {
         UKR_BRANCH: 'Самовивіз з відділення Укрпошти'
     }), []);
 
+    // УНІВЕРСАЛЬНІ ПОЛЯ ДЛЯ МІСТА
+    const cityRef = selectedCity ? (selectedCity.DeliveryCity || selectedCity.Ref) : null;
+    const cityLabel = selectedCity
+        ? (selectedCity.Present || selectedCity.Description)
+        : cityQuery;
+
     const handleOrderConfirm = async (e) => {
         e.preventDefault();
 
-        if (deliveryMethod.startsWith('NP_') && !selectedCity) {
+        if (deliveryMethod.startsWith('NP_') && !cityRef) {
             return alert('Оберіть місто доставки Нової Пошти');
         }
         if ((deliveryMethod==='NP_BRANCH' || deliveryMethod==='NP_POSTOMAT') && !warehouseRef) {
             return alert('Оберіть відділення/поштомат Нової Пошти');
         }
-        if (deliveryMethod==='UKR_BRANCH' && (!ukrCity || !ukrOffice)) {
+        if (deliveryMethod==='NP_COURIER' && (!cityRef || !crStreet.trim() || !crHouse.trim())) {
+            return alert('Вкажіть місто, вулицю та будинок для курʼєрської доставки');
+        }
+        if (deliveryMethod==='UKR_BRANCH' && (!ukrCity.trim() || !ukrOffice.trim())) {
             return alert('Вкажіть місто та відділення Укрпошти');
+        }
+
+        let shipping = null;
+
+        if (deliveryMethod.startsWith('NP_')) {
+            const selectedW = warehouses.find(w => w.Ref === warehouseRef);
+            const isPostomat = deliveryMethod === 'NP_POSTOMAT';
+
+            // мапа з даних складу (якщо є координати)
+            const map = selectedW ? {
+                address: selectedW.ShortAddress || selectedW.Description,
+                lat: +selectedW.Latitude || undefined,
+                lng: +selectedW.Longitude || undefined
+            } : undefined;
+
+            if (deliveryMethod === 'NP_COURIER') {
+                const addressLine = `${crStreet.trim()}, ${crHouse.trim()}${crFlat ? `, кв. ${crFlat.trim()}` : ''}`;
+                shipping = {
+                    method: 'Курʼєр',            // важливо! у контролері саме так перевіряється курʼєр
+                    service: 'Нова Пошта',
+                    city: selectedCity ? {name: cityLabel, ref: cityRef} : undefined,
+                    address: addressLine,        // щоб контролер показав адресу в листі/ТГ
+                    courier: {                   // плюс структуровано
+                        street: crStreet.trim(),
+                        house: crHouse.trim(),
+                        flat: crFlat.trim() || undefined
+                    }
+                };
+            } else {
+                // відділення або поштомат
+                shipping = {
+                    method: 'Нова Пошта',
+                    service: 'Нова Пошта',
+                    city: selectedCity ? {name: cityLabel, ref: cityRef} : undefined,
+                    branch: (!isPostomat && selectedW) ? {
+                        ref: selectedW.Ref,
+                        description: selectedW.Description,
+                        number: selectedW.Number
+                    } : undefined,
+                    postomat: (isPostomat && selectedW) ? {
+                        ref: selectedW.Ref,
+                        description: selectedW.Description,
+                        number: selectedW.Number
+                    } : undefined,
+                    map
+                };
+            }
+
+        } else if (deliveryMethod === 'UKR_BRANCH') {
+            shipping = {
+                method: 'Укрпошта',
+                service: 'Укрпошта',
+                city: {name: ukrCity.trim()},
+                address: ukrOffice.trim()
+            };
         }
 
         try {
@@ -74,19 +143,7 @@ const Order = () => {
                 email: e.target.email.value,
                 comments: e.target.comments.value,
                 order: cartStore.items,
-                shipping: deliveryMethod.startsWith('NP_') ? {
-                    method: deliveryMethod,
-                    methodLabel: methodLabel[deliveryMethod],
-                    city: selectedCity?.Present || '',
-                    cityRef: selectedCity?.DeliveryCity || '',
-                    warehouseRef,
-                    warehouse: warehouses.find(w => w.Ref === warehouseRef)?.Description || '',
-                } : {
-                    method: deliveryMethod,
-                    methodLabel: methodLabel[deliveryMethod],
-                    city: ukrCity,
-                    warehouse: ukrOffice
-                }
+                shipping
             }, userStore.isAuth);
         } catch {
             return alert("Не вдалося оформити замовлення");
@@ -147,18 +204,57 @@ const Order = () => {
                                     type="text"
                                     className="buyer__contacts__form-input"
                                     placeholder="Почніть вводити місто…"
-                                    value={selectedCity ? selectedCity.Present : cityQuery}
-                                    onChange={(e)=>{ setSelectedCity(null); setCityQuery(e.target.value); }}
+                                    value={cityLabel}
+                                    onChange={(e)=>{setSelectedCity(null); setCityQuery(e.target.value);}}
                                 />
                                 {(!selectedCity && cityOptions.length > 0) && (
                                     <div className="dropdown-list">
                                         {cityOptions.map(c=>(
-                                            <div key={c.DeliveryCity} className="dropdown-item" onClick={()=>{ setSelectedCity(c); setCityOptions([]);} }>
-                                                {c.Present}
+                                            <div
+                                                key={c.DeliveryCity || c.Ref}
+                                                className="dropdown-item"
+                                                onClick={() => {setSelectedCity(c); setCityOptions([]);}}
+                                            >
+                                                {c.Present || c.Description}
                                             </div>
                                         ))}
                                     </div>
                                 )}
+
+                                {/* >>> COURIER FIELDS START — показуємо тільки для NP_COURIER */}
+                                {deliveryMethod === 'NP_COURIER' && selectedCity && (
+                                    <>
+                                        <p style={{marginTop:12}}>Вулиця</p>
+                                        <input
+                                            className="buyer__contacts__form-input"
+                                            value={crStreet}
+                                            onChange={e=>setCrStreet(e.target.value)}
+                                            placeholder="Наприклад, Тараса Шевченка"
+                                        />
+
+                                        <div style={{display:'flex', gap:8, marginTop:12}}>
+                                            <div style={{flex:1}}>
+                                                <p>Будинок</p>
+                                                <input
+                                                    className="buyer__contacts__form-input"
+                                                    value={crHouse}
+                                                    onChange={e=>setCrHouse(e.target.value)}
+                                                    placeholder="№"
+                                                />
+                                            </div>
+                                            <div style={{flex:1}}>
+                                                <p>Квартира (необовʼязково)</p>
+                                                <input
+                                                    className="buyer__contacts__form-input"
+                                                    value={crFlat}
+                                                    onChange={e=>setCrFlat(e.target.value)}
+                                                    placeholder="№"
+                                                />
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+                                {/* <<< COURIER FIELDS END */}
 
                                 {(deliveryMethod==='NP_BRANCH' || deliveryMethod==='NP_POSTOMAT') && selectedCity && (
                                     <>
@@ -212,7 +308,7 @@ const Order = () => {
             <NPMapModal
                 show={showMap}
                 onHide={()=>setShowMap(false)}
-                cityRef={selectedCity?.DeliveryCity}
+                cityRef={cityRef}
                 type={deliveryMethod==='NP_POSTOMAT' ? 'Postomat' : 'Branch'}
                 onSelect={w => setWarehouseRef(w.Ref)}
             />

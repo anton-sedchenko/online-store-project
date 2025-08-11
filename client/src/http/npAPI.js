@@ -1,41 +1,32 @@
-const NP_URL = 'https://api.novaposhta.ua/v2.0/json/';
+const API_BASE = '/api/shipping';
 
-async function np(method, modelName, methodProperties = {}) {
-    const body = {
-        apiKey: import.meta.env.VITE_NP_API_KEY,
-        modelName,
-        calledMethod: method,
-        methodProperties
-    };
-    const res = await fetch(NP_URL, {
+async function post(url, body) {
+    const res = await fetch(url, {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(body)
+        body: JSON.stringify(body || {})
     });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    if (!data.success) throw new Error(data.errors?.[0] || 'Nova Poshta API error');
-    return data.data;
+    // відповіді беку з НП мають вигляд {success, data, errors}
+    if (data?.success === false) {
+        throw new Error(data?.errors?.[0] || 'Nova Poshta API error');
+    }
+    // Якщо бек просто проксить відповідь — вертаємо data.data, інакше data
+    return data?.data ?? data;
 }
 
 // автокомпліт міст
 export async function searchCities(query) {
     if (!query?.trim()) return [];
-    const [result] = await np('searchSettlements', 'Address', {
-        CityName: query.trim(),
-        Limit: 10
-    });
-    return result?.Addresses || [];
+    const payload = { search: query.trim() };
+    const data = await post(`${API_BASE}/np/cities`, payload);
+    // бек віддає response.data від НП, що містить масив міст
+    return data?.[0]?.Addresses ? data[0].Addresses : (data?.data ?? data);
 }
 
 // відділення/поштомати по місту
-export async function getWarehouses({cityRef, type = 'Branch'}) {
-    const typeOfWarehouseRef = type === 'Postomat'
-        ? 'f9316480-5f2d-425d-bc2c-ac7cd29decf0' // поштомат
-        : '';
-    return await np('getWarehouses', 'AddressGeneral', {
-        CityRef: cityRef,
-        TypeOfWarehouseRef: typeOfWarehouseRef,
-        Page: 1,
-        Limit: 100
-    });
+export async function getWarehouses({ cityRef, type = 'Branch' }) {
+    const payload = { cityRef, type: type === 'Postomat' ? 'Postomat' : 'Warehouse' };
+    return await post(`${API_BASE}/np/warehouses`, payload);
 }

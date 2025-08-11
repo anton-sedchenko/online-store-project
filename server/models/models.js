@@ -54,6 +54,7 @@ const Order = sequelize.define('order', {
     tel: {type: DataTypes.STRING, allowNull: false},
     email: {type: DataTypes.STRING, allowNull: false},
     comments: {type: DataTypes.TEXT, allowNull: true},
+    shipping: {type: DataTypes.JSONB, allowNull: true},
 });
 
 const OrderProduct = sequelize.define('order_product', {
