@@ -2,7 +2,7 @@ import {$authHost, $host} from "./index.js";
 
 export const createCategory = async formData => {
     const {data} = await $authHost.post(
-        '/api/type',
+        '/type',
         formData,
         {headers: {'Content-Type': 'multipart/form-data'}}
     );
@@ -10,17 +10,17 @@ export const createCategory = async formData => {
 };
 
 export const fetchOneType = async id => {
-    const {data} = await $host.get(`/api/type/${id}`);
+    const {data} = await $host.get(`/type/${id}`);
     return data;
 };
 
 export const updateType = async (id, body) => {
-    const {data} = await $authHost.put(`/api/type/${id}`, body);
+    const {data} = await $authHost.put(`/type/${id}`, body);
     return data;
 };
 
 export const updateTypeImage = async (id, formData) => {
-    const {data} = await $authHost.put(`/api/type/${id}/image`, formData, {
+    const {data} = await $authHost.put(`/type/${id}/image`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
     });
     return data;
@@ -29,16 +29,16 @@ export const updateTypeImage = async (id, formData) => {
 //
 
 export const createType = async (type) => {
-    const {data} = await $authHost.post("/api/type", type);
+    const {data} = await $authHost.post("/type", type);
     return data;
 }
 
 export const fetchTypes = async () => {
-    const {data} = await $host.get("/api/type");
+    const {data} = await $host.get("/type");
     return data;
 }
 
 export const deleteType = async (id) => {
-    const {data} = await $authHost.delete(`/api/type/${id}`);
+    const {data} = await $authHost.delete(`/type/${id}`);
     return data;
 }

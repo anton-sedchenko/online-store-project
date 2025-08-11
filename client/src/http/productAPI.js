@@ -1,13 +1,13 @@
 import {$authHost, $host} from "./index.js";
 
 export const fetchProductBySlug = async (slug) => {
-    const {data} = await $host.get(`/api/product/slug/${slug}`);
+    const {data} = await $host.get(`/product/slug/${slug}`);
     return data;
 };
 
 export const createProduct = async (formData) => {
     const {data} = await $authHost.post(
-        "/api/product",
+        "/product",
         formData,
         {headers: {"Content-Type": "multipart/form-data"}}
     );
@@ -15,7 +15,7 @@ export const createProduct = async (formData) => {
 }
 
 export const updateProduct = async (id, formData) => {
-    const {data} = await $authHost.put(`/api/product/${id}`, formData, {
+    const {data} = await $authHost.put(`/product/${id}`, formData, {
         headers: {"Content-Type": "multipart/form-data"}
     });
     return data;
@@ -26,20 +26,20 @@ export const fetchProducts = async (typeId, page, limit = 4) => {
     if (typeId !== null) {
         params.typeId = typeId;
     }
-    const {data} = await $host.get("/api/product", {params});
+    const {data} = await $host.get("/product", {params});
     return data;
 }
 
 export const fetchOneProduct = async (id) => {
-    const {data} = await $host.get(`/api/product/${id}`);
+    const {data} = await $host.get(`/product/${id}`);
     return data;
 }
 
 export const deleteProduct = async (id) => {
-    const {data} = await $authHost.delete(`/api/product/${id}`);
+    const {data} = await $authHost.delete(`/product/${id}`);
     return data;
 }
 
 export const deleteProductImage = (id) => {
-    return $authHost.delete(`/api/product/image/${id}`);
+    return $authHost.delete(`/product/image/${id}`);
 };

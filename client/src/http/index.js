@@ -1,30 +1,30 @@
 import axios from "axios";
 
-const rawBase = import.meta.env.VITE_APP_API_URL || "";
-const apiBase = rawBase.replace(/\/api\/?$/, "");
+// Приходимо або з повним URL (може бути з /api, може без), або порожнім (той самий origin)
+const raw = (import.meta.env.VITE_APP_API_URL || '').replace(/\/+$/, '');
+
+// Якщо env порожній → працюємо по тому ж origin і додаємо "/api"
+const baseURL = raw
+    ? (raw.endsWith('/api') ? raw : `${raw}/api`)
+    : '/api';
 
 // інстанс для запитів без авторизації
 const $host = axios.create({
-    baseURL: apiBase + "/api",
+    baseURL,
     withCredentials: true,
 });
 
-// інстанс для запитів з авторицією
+// інстанс для запитів з авторизацією
 const $authHost = axios.create({
-    baseURL: apiBase + "/api",
+    baseURL,
     withCredentials: true,
 });
 
-// При кожному запиті в заголовки конфіга додаєм токен з локал стореджа
 const authInterceptor = config => {
     const token = localStorage.getItem("token");
     if (token) config.headers.authorization = `Bearer ${token}`;
     return config;
-}
-
+};
 $authHost.interceptors.request.use(authInterceptor);
 
-export {
-    $host,
-    $authHost
-}
+export { $host, $authHost };

@@ -1,18 +1,18 @@
 import {$authHost, $host} from "./index.js";
 
 export const fetchArticles = async (page = 1, limit = 8) => {
-    const {data} = await $host.get('/api/article', {params: {page, limit}});
+    const {data} = await $host.get('/article', {params: {page, limit}});
     return data; // { rows: [...], count }
 };
 
 export const fetchArticleBySlug = async (slug) => {
-    const {data} = await $host.get(`/api/article/${slug}`);
+    const {data} = await $host.get(`/article/${slug}`);
     return data;
 };
 
 export const createArticle = async (formData) => {
     const { data } = await $authHost.post(
-        '/api/article',
+        '/article',
         formData
     );
     return data;

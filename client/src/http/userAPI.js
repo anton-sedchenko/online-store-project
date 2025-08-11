@@ -3,7 +3,7 @@ import {jwtDecode} from "jwt-decode";
 
 export const registration = async (email, password) => {
     const {data} = await $host.post(
-        "/api/user/registration",
+        "/user/registration",
         {email, password, role: "USER"}
     );
     localStorage.setItem("token", data.token);
@@ -12,7 +12,7 @@ export const registration = async (email, password) => {
 
 export const login = async (email, password) => {
     const {data} = await $host.post(
-        "/api/user/login",
+        "/user/login",
         {email, password}
     );
     localStorage.setItem("token", data.token);
@@ -20,26 +20,26 @@ export const login = async (email, password) => {
 }
 
 export const fetchAuthUser = async () => {
-    const {data} = await $authHost.get('/api/user/auth');
+    const {data} = await $authHost.get('/user/auth');
     return data;
 };
 
 export const updateProfile = async ({firstName, lastName, email, phone}) => {
-    const {data} = await $authHost.put('/api/user/profile', {firstName, lastName, email, phone});
+    const {data} = await $authHost.put('/user/profile', {firstName, lastName, email, phone});
     return data;
 };
 
 export const changePassword = async ({oldPassword, newPassword}) => {
-    const {data} = await $authHost.put('/api/user/password', {oldPassword, newPassword});
+    const {data} = await $authHost.put('/user/password', {oldPassword, newPassword});
     return data;
 };
 
 export const requestPasswordReset = async (email) => {
-    const {data} = await $host.post('/api/user/request-reset', {email});
+    const {data} = await $host.post('/user/request-reset', {email});
     return data;
 };
 
 export const resetPassword = async (token, password) => {
-    const {data} = await $host.post('/api/user/reset-password', {token, password});
+    const {data} = await $host.post('/user/reset-password', {token, password});
     return data;
 };

@@ -5,6 +5,6 @@ import { $host } from "./index.js";
  * @returns {Promise<{ message: string }>}
  */
 export const sendCallback = async (data) => {
-    const { data: res } = await $host.post("/api/callback", data);
+    const { data: res } = await $host.post("/callback", data);
     return res;
 };
