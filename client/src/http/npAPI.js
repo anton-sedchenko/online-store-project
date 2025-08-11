@@ -1,32 +1,17 @@
-const API_BASE = '/api/shipping';
-
-async function post(url, body) {
-    const res = await fetch(url, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(body || {})
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    // відповіді беку з НП мають вигляд {success, data, errors}
-    if (data?.success === false) {
-        throw new Error(data?.errors?.[0] || 'Nova Poshta API error');
-    }
-    // Якщо бек просто проксить відповідь — вертаємо data.data, інакше data
-    return data?.data ?? data;
-}
+import {$host} from './index.js';
 
 // автокомпліт міст
 export async function searchCities(query) {
     if (!query?.trim()) return [];
-    const payload = { search: query.trim() };
-    const data = await post(`${API_BASE}/np/cities`, payload);
-    // бек віддає response.data від НП, що містить масив міст
-    return data?.[0]?.Addresses ? data[0].Addresses : (data?.data ?? data);
+    const { data } = await $host.post('/shipping/np/cities', { search: query.trim() });
+    // Бек віддає або data.data (як відповідь НП), або одразу масив
+    const payload = data?.data ?? data;
+    return payload?.[0]?.Addresses ? payload[0].Addresses : payload;
 }
 
 // відділення/поштомати по місту
 export async function getWarehouses({ cityRef, type = 'Branch' }) {
-    const payload = { cityRef, type: type === 'Postomat' ? 'Postomat' : 'Warehouse' };
-    return await post(`${API_BASE}/np/warehouses`, payload);
+    const kind = type === 'Postomat' ? 'Postomat' : 'Warehouse';
+    const { data } = await $host.post('/shipping/np/warehouses', { cityRef, type: kind });
+    return data?.data ?? data;
 }
