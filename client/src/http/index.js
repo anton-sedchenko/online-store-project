@@ -5,13 +5,13 @@ const apiBase = rawBase.replace(/\/api\/?$/, "");
 
 // інстанс для запитів без авторизації
 const $host = axios.create({
-    baseURL: apiBase,
+    baseURL: apiBase + "/api",
     withCredentials: true,
 });
 
 // інстанс для запитів з авторицією
 const $authHost = axios.create({
-    baseURL: apiBase,
+    baseURL: apiBase + "/api",
     withCredentials: true,
 });
 
