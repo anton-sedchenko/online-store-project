@@ -5,7 +5,7 @@ import {createOrder} from "../http/orderAPI.js";
 import {Context} from "../main.jsx";
 import OrderConfirm from "../components/modals/OrderConfirm.jsx";
 import {Helmet} from "react-helmet-async";
-import {searchCities, getWarehouses} from "../http/npAPI.jsx";
+import {searchCities, getWarehouses} from "../http/npAPI.js";
 import NPMapModal from "../components/modals/NPMapModal.jsx";
 
 const Order = () => {
