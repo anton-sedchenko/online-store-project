@@ -52,3 +52,26 @@
 .order__form__return__btn {
   @include btn-style;
 }
+
+.dropdown-list {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  margin-top: 4px;
+  max-height: 240px;
+  overflow: auto;
+}
+
+.dropdown-item {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: #f7f7f7;
+}
+
+.muted {
+  color:#6c757d;
+  font-size: .9em;
+}

@@ -7,6 +7,7 @@ import CartStore from "./store/CartStore.js";
 import AdminStore from "./store/AdminStore.js";
 import {HelmetProvider} from 'react-helmet-async';
 import ArticleStore from "./store/ArticleStore.js";
+import 'leaflet/dist/leaflet.css';
 
 export const Context = createContext(null);
 const userStore   = new UserStore();

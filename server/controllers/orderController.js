@@ -132,7 +132,23 @@ class OrderController {
                     from: process.env.EMAIL_FROM,
                     to: [email, 'charivna.craft@gmail.com'],
                     subject: 'Ваше замовлення оформлено',
-                    html: mailHtml,
+                    attachments: process.env.EMAIL_LOGO_URL ? [{
+                        filename: 'logo.png',
+                        path: process.env.EMAIL_LOGO_URL,
+                        cid: 'brandlogo' // <img src="cid:brandlogo">
+                    }] : [],
+                    html: `
+                        <div style="text-align:center;margin-bottom:16px">
+                            ${process.env.EMAIL_LOGO_URL ? 
+                            `<img 
+                                src="cid:brandlogo" 
+                                alt="Charivna Craft" 
+                                style="max-width:180px;height:auto" 
+                            />` :
+                            ''}
+                        </div>
+                        ${mailHtml}
+                      `,
                 });
             } catch (mailErr) {
                 console.error('Email send error:', mailErr?.message || mailErr);
