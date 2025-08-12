@@ -28,7 +28,7 @@ const CreateProduct = observer(({show, onHide}) => {
             const formData = new FormData();
             formData.append("name", name);
             formData.append("price", `${price}`);
-            formData.append("description", descr);
+            formData.append("description", descr || "");
             formData.append("img", file);
             formData.append("typeId", productStore.selectedType.id);
             formData.append("code", code);

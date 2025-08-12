@@ -23,8 +23,11 @@ class ProductController {
 
             let {name, price, typeId, description, code, availability} = req.body;
 
-            if (!code) {
-                return next(ApiError.badRequest('Необхідно вказати код товару'));
+            const typeIdNum = Number(typeId);
+            const priceNum  = Number(price);
+
+            if (!name || !code || !typeId || Number.isNaN(typeIdNum) || Number.isNaN(priceNum)) {
+                return next(ApiError.badRequest('Заповніть назву, артикул, коректну ціну та категорію'));
             }
 
             const {img} = req.files;
@@ -36,8 +39,8 @@ class ProductController {
             const newProduct = await Product.create({
                 name,
                 slug,
-                price,
-                typeId,
+                price: priceNum,
+                typeId: typeIdNum,
                 description,
                 code,
                 availability,
@@ -46,6 +49,7 @@ class ProductController {
 
             return res.json(newProduct);
         } catch (e) {
+            console.error('PRODUCT CREATE ERROR:', e);
             next(ApiError.internal("Помилка при створенні товару"));
         }
     }
