@@ -24,6 +24,15 @@ const CreateProduct = observer(({show, onHide}) => {
     }
 
     const addProduct = async () => {
+        if (!productStore.selectedType.id) {
+            alert("Будь ласка, оберіть категорію (тип) товару");
+            return;
+        }
+        if (!file) {
+            alert("Додайте зображення товару");
+            return;
+        }
+
         try {
             const formData = new FormData();
             formData.append("name", name);
