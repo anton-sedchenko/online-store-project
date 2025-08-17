@@ -8,6 +8,7 @@ const orderRouter = require('./orderRouter');
 const articleRouter = require('./articleRouter');
 const callbackRouter = require('./callbackRouter');
 const shippingRouter = require('./shippingRouter');
+const reviewRouter = require('./reviewRouter');
 
 router.use('/user', userRouter);
 router.use('/type', typeRouter);
@@ -17,5 +18,6 @@ router.use('/order', orderRouter);
 router.use('/article', articleRouter);
 router.use('/callback', callbackRouter);
 router.use('/shipping', shippingRouter);
+router.use('/review', reviewRouter);
 
 module.exports = router;

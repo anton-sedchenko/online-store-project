@@ -75,6 +75,21 @@ const Article = sequelize.define('article', {
     image: {type: DataTypes.STRING, allowNull: true},
 });
 
+const Review = sequelize.define('review', {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    // для верхнього рівня відгуків parentId = null; для відповіді — id батьківського відгуку
+    parentId: { type: DataTypes.INTEGER, allowNull: true },
+    rating: { type: DataTypes.INTEGER, allowNull: true, validate: { min:1, max:5 } }, // тільки для верхнього рівня
+    text: { type: DataTypes.TEXT, allowNull: false },
+    deletedAt: { type: DataTypes.DATE, allowNull: true }
+}, {
+    indexes: [
+        // Забороняємо більше 1 оцінки на товар від одного юзера (тільки для parentId = null)
+        { unique: true, fields: ['productId','userId','parentId'] }
+    ],
+    paranoid: false,
+});
+
 User.hasOne(Cart);
 Cart.belongsTo(User);
 
@@ -99,6 +114,12 @@ CartProduct.belongsTo(Product);
 Product.hasMany(ProductImage, {as: 'images'});
 ProductImage.belongsTo(Product);
 
+Product.hasMany(Review, {foreignKey: 'productId'});
+Review.belongsTo(Product, {foreignKey: 'productId'});
+
+User.hasMany(Review, {foreignKey: 'userId'});
+Review.belongsTo(User, {foreignKey: 'userId'});
+
 module.exports = {
     User,
     Cart,
@@ -108,5 +129,6 @@ module.exports = {
     Order,
     OrderProduct,
     ProductImage,
-    Article
+    Article,
+    Review,
 }

@@ -1,5 +1,5 @@
 const axios = require('axios');
-const nodemailer = require('nodemailer');
+import transporter from '../mailer.js';
 
 const {
     Order,
@@ -12,19 +12,6 @@ const ApiError = require('../error/ApiError');
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-
-// транспортер для відправки пошти
-const mailer = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT),
-    secure: process.env.EMAIL_SECURE === 'true',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    },
-    logger: true,
-    debug: true,
-});
 
 const {Cart} = require('../models/models');
 async function getCartIdForUser(userId) {
@@ -185,9 +172,9 @@ class OrderController {
 
             try {
                 // просто перевірка з’єднання
-                await mailer.verify();
+                await transporter.verify();
 
-                await mailer.sendMail({
+                await transporter.sendMail({
                     from: process.env.EMAIL_FROM,
                     to: [email, 'charivna.craft@gmail.com'],
                     subject: 'Ваше замовлення оформлено',

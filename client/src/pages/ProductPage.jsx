@@ -7,6 +7,9 @@ import {Context} from "../main.jsx";
 import {CART_ROUTE} from "../utils/consts.js";
 import {Helmet} from 'react-helmet-async';
 import CallbackModal from "../components/modals/CallbackModal.jsx";
+import StarRating from "../components/StarRating.jsx";
+import Reviews from "../components/Reviews.jsx";
+import {getReviews} from "../http/reviewAPI.js";
 
 const ProductPage = () => {
     const navigate = useNavigate();
@@ -17,13 +20,22 @@ const ProductPage = () => {
     const [showCallback, setShowCallback] = useState(false);
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
+    const [ratingAvg, setRatingAvg] = useState(0);
+    const [ratingCount, setRatingCount] = useState(0);
     const {slug} = useParams();
 
     useEffect(() => {
-        fetchProductBySlug(slug).then(data => {
+        (async () => {
+            const data = await fetchProductBySlug(slug);
             setProduct(data);
-            setCurrentImageIndex(0); // скидаємо індекс при новому товарі
-        });
+            setCurrentImageIndex(0);
+            // рейтинг для шапки картки
+            try {
+                const r = await getReviews(data.id);
+                setRatingAvg(r?.rating?.avg || 0);
+                setRatingCount(r?.rating?.count || 0);
+            } catch {}
+        })();
     }, [slug]);
 
     const handleAddToCart = () => {
@@ -124,7 +136,13 @@ const ProductPage = () => {
                 </Col>
                 <Col xs={12} md={6}>
                     <div className="product__info__container">
-                        <p className="product__code">Код товару: {product.code || '---'}</p>
+                        <div style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 8 }}>
+                            <StarRating value={ratingAvg} size={22} />
+                            <span className="muted" style={{ fontSize: 13 }}>
+                                {ratingCount > 0 ? `(${ratingCount})` : "(оцінок ще немає)"}
+                            </span>
+                        </div>
+                        <p className="product__code">Код: {product.code || '---'}</p>
                         <p className="product__availability">
                             <span className="availability-label">Наявність:</span>{' '}
                             <span className={
@@ -200,6 +218,12 @@ const ProductPage = () => {
                         <h4>Опис товару:</h4>
                         <p className="product__description">{product.description || 'Немає опису'}</p>
                     </div>
+                    <Reviews
+                        productId={product.id}
+                        isAuth={userStore.isAuth}
+                        isAdmin={userStore.isAuth && userStore.user?.role === 'ADMIN'}
+                        userEmail={userStore.user?.email}
+                    />
                 </Col>
                 <Col md={4}>
                     {userStore.isAuth && userStore.user.role === 'ADMIN' && (
