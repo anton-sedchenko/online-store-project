@@ -1,5 +1,5 @@
 const axios = require('axios');
-import transporter from '../mailer.js';
+import mailer from '../mailer.js';
 
 const {
     Order,
@@ -172,9 +172,9 @@ class OrderController {
 
             try {
                 // просто перевірка з’єднання
-                await transporter.verify();
+                await mailer.verify();
 
-                await transporter.sendMail({
+                await mailer.sendMail({
                     from: process.env.EMAIL_FROM,
                     to: [email, 'charivna.craft@gmail.com'],
                     subject: 'Ваше замовлення оформлено',
