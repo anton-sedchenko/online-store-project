@@ -36,18 +36,16 @@ const ProductPage = () => {
         })();
     }, [slug]);
 
-// другий useEffect — вантажимо відгуки і рейтинг
+// другий useEffect — вантажимо лише зведення рейтингу для зірочок
     useEffect(() => {
         if (!product?.id) return;
         (async () => {
             try {
-                const data = await getReviews(product.id);
-                setReviews(data?.items || []);
-                setRating(data?.rating || { avg: 0, count: 0 });
+                const data = await getReviews(product.id); // { items, rating }
                 setRatingAvg(data?.rating?.avg || 0);
                 setRatingCount(data?.rating?.count || 0);
             } catch (e) {
-                console.warn('Не вдалося завантажити відгуки:', e?.response?.data?.message || e.message);
+                console.warn('Не вдалося завантажити рейтинг:', e?.response?.data?.message || e.message);
             }
         })();
     }, [product?.id]);
