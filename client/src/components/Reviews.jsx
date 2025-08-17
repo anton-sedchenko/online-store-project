@@ -233,20 +233,22 @@ function ReviewItem({ node, isAdmin, onReply, onDelete, userId }) {
                     marginLeft: isRoot ? 0 : 24,
                 }}
             >
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <strong>{node.user?.name || "Користувач"}</strong>
-                    {mineBadge && <span className="muted">(це ви)</span>}
-                    {isRoot && node.rating ? (
-                        <span style={{ marginLeft: "auto" }}>
-                            <StarRating value={node.rating} size={16} />
-                        </span>
-                    ) : null}
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <strong>{node.user?.name || "Гість"}</strong>
+                    {node.rating && (
+                        <StarRating value={node.rating} readOnly />
+                    )}
+                    {node.userId === userId && <span style={{ color: "#999" }}> (це ви)</span>}
                 </div>
 
                 {node.text && <div style={{ marginTop: 6, whiteSpace: "pre-wrap" }}>{node.text}</div>}
 
                 <div className="muted" style={{ fontSize: 12, marginTop: 6 }}>
-                    {new Date(node.createdAt).toLocaleString()}
+                    {new Date(node.createdAt).toLocaleDateString("uk-UA", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                    })}
                 </div>
 
                 <div style={{ display: "flex", gap: 12, marginTop: 6 }}>
