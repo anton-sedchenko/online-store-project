@@ -20,7 +20,7 @@ class ReviewController {
 
             // корені
             const roots = await Review.findAll({
-                where: { productId, parentId: null, deletedAt: null },
+                where: {productId, parentId: null},
                 order: [['createdAt', 'DESC']],
                 include: [{ model: User, attributes: ['id', 'name'] }]
             });
@@ -29,7 +29,7 @@ class ReviewController {
             const ids = roots.map(r => r.id);
             const replies = ids.length
                 ? await Review.findAll({
-                    where: { parentId: ids, deletedAt: null },
+                    where: {parentId: ids},
                     order: [['createdAt', 'ASC']],
                     include: [{ model: User, attributes: ['id', 'name'] }]
                 })
@@ -163,18 +163,38 @@ class ReviewController {
         }catch(e){ next(ApiError.internal(e.message)); }
     }
 
-    // DELETE /api/review/:id (ADMIN)
-    async remove(req,res,next){
-        try{
+    // DELETE /api/review/:id (ADMIN) — ЖОРСТКЕ видалення з каскадом
+    async remove(req, res, next) {
+        try {
             const { id } = req.params;
-            const item = await Review.findByPk(id);
-            if (!item) return next(ApiError.notFound('Коментар не знайдено'));
+            const root = await Review.findByPk(id);
+            if (!root) return next(ApiError.notFound('Коментар не знайдено'));
 
-            // “мʼяке” видалення — позначимо deletedAt, щоб зберегти гілку
-            item.deletedAt = new Date();
-            await item.save();
-            return res.json({ ok:true });
-        }catch(e){ next(ApiError.internal(e.message)); }
+            // Збираємо ВСІ нащадки рекурсивно (будь-яка глибина)
+            const toDelete = [Number(id)];
+            const allIds = [];
+
+            while (toDelete.length) {
+                const batch = toDelete.splice(0, toDelete.length);
+                allIds.push(...batch);
+
+                // шукаємо прямих дітей для кожного id з batch
+                const children = await Review.findAll({
+                    where: { parentId: batch },
+                    attributes: ['id'],
+                });
+                if (children.length) {
+                    toDelete.push(...children.map(c => c.id));
+                }
+            }
+
+            // Жорстко видаляємо все
+            await Review.destroy({ where: { id: allIds } });
+
+            return res.json({ ok: true, deleted: allIds.length });
+        } catch (e) {
+            next(ApiError.internal(e.message));
+        }
     }
 }
 

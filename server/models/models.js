@@ -80,7 +80,6 @@ const Review = sequelize.define('review', {
     parentId: { type: DataTypes.INTEGER, allowNull: true },
     rating: { type: DataTypes.INTEGER, allowNull: true, validate: { min:1, max:5 } }, // тільки для верхнього рівня
     text: { type: DataTypes.TEXT, allowNull: true },
-    deletedAt: { type: DataTypes.DATE, allowNull: true }
 }, {
     paranoid: false,
 });
