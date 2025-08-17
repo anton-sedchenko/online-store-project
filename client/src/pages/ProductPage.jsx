@@ -9,7 +9,7 @@ import {Helmet} from 'react-helmet-async';
 import CallbackModal from "../components/modals/CallbackModal.jsx";
 import StarRating from "../components/StarRating.jsx";
 import Reviews from "../components/Reviews.jsx";
-import {getReviews} from "../http/reviewAPI.js";
+import {getReviews, addReview, replyReview, deleteReview} from '../http/reviewAPI.js';
 
 const ProductPage = () => {
     const navigate = useNavigate();
@@ -22,6 +22,8 @@ const ProductPage = () => {
     const [lightboxIndex, setLightboxIndex] = useState(0);
     const [ratingAvg, setRatingAvg] = useState(0);
     const [ratingCount, setRatingCount] = useState(0);
+    const [reviews, setReviews] = useState([]);
+    const [rating, setRating] = useState({ avg: 0, count: 0 });
     const {slug} = useParams();
 
     useEffect(() => {
@@ -37,6 +39,20 @@ const ProductPage = () => {
             } catch {}
         })();
     }, [slug]);
+
+    // вантажимо відгуки тільки коли вже є product.id
+    useEffect(() => {
+        if (!product?.id) return;               // ← важливо: НЕ робимо запит без id
+        (async () => {
+            try {
+                const data = await getReviews(product.id);
+                setReviews(data?.items || []);
+                setRating(data?.rating || { avg: 0, count: 0 });
+            } catch (e) {
+                console.warn('Не вдалося завантажити відгуки:', e?.response?.data?.message || e.message);
+            }
+        })();
+    }, [product?.id]);
 
     const handleAddToCart = () => {
         cartStore.addItem(

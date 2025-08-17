@@ -13,6 +13,9 @@ class ReviewController {
     async listByProduct(req,res,next){
         try{
             const { productId } = req.params;
+            if (!productId || isNaN(Number(productId))) {
+                return res.status(400).json({ message: 'Invalid productId' }); // [ADD] замість 500
+            }
             const roots = await Review.findAll({
                 where: { productId, parentId: null, deletedAt: null },
                 order: [['createdAt','DESC']],
