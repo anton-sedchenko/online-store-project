@@ -26,24 +26,35 @@ const mailer = createTransport({
 
 class UserController {
     async registration(req, res, next) {
-        const {email, password} = req.body;
-        if (!email || !password) {
-            return next(ApiError.badRequest('Некоректний email або пароль'));
+        const { email, password, name } = req.body;
+
+        if (!email || !password || !name?.trim()) {
+            return next(ApiError.badRequest('Вкажіть ім’я, email і пароль'));
         }
-        const candidate = await User.findOne({where: {email}});
+
+        const candidate = await User.findOne({ where: { email } });
         if (candidate) {
             return next(ApiError.badRequest('Користувач з таким email вже існує'));
         }
+
         const hashPassword = await bcrypt.hash(password, 5);
+
         const user = await User.create({
             email,
-            role: "USER",
-            password: hashPassword
+            role: 'USER',
+            password: hashPassword,
+            name: name.trim(),
         });
-        const cart = await Cart.create({userId: user.id});
+
+        await Cart.create({ userId: user.id });
+
         const token = generateJwt(user.id, user.email, user.role);
 
-        return res.json({token});
+        // одразу повертаємо й базову інфу про користувача з ім’ям
+        return res.json({
+            token,
+            user: { id: user.id, email: user.email, role: user.role, name: user.name },
+        });
     }
 
     async login(req, res, next) {
@@ -65,7 +76,8 @@ class UserController {
             user: {
                 id: user.id,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                name: user.name,
             }
         });
     }
@@ -73,9 +85,8 @@ class UserController {
     async checkAuth(req, res, next) {
         try {
             const user = await User.findByPk(req.user.id, {
-                attributes: ['id','firstName','lastName','email','phone','role']
+                attributes: ['id','name','email','phone','role']
             });
-
             return res.json(user);
         } catch(e) {
             next(ApiError.internal(e.message));
@@ -85,14 +96,14 @@ class UserController {
     async updateProfile(req, res, next) {
         try {
             const userId = req.user.id;
-            const {firstName, lastName, email, phone} = req.body;
+            const { name, email, phone } = req.body;
             const user = await User.findByPk(userId);
             if (!user) return next(ApiError.badRequest("Користувача не знайдено"));
             // оновлюємо в БД
-            await user.update({firstName, lastName, email, phone});
+            await user.update({ name, email, phone });
             // повертаємо свіжі дані
             const updated = await User.findByPk(userId, {
-                attributes: ['id','firstName','lastName','email','phone','role']
+                attributes: ['id','name','email','phone','role']
             });
             return res.json(updated);
         } catch(e) {

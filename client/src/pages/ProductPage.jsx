@@ -235,7 +235,7 @@ const ProductPage = () => {
                             productId={product.id}
                             isAuth={userStore.isAuth}
                             isAdmin={userStore.isAuth && userStore.user?.role === 'ADMIN'}
-                            userEmail={userStore.user?.email}
+                            userId={userStore.user?.id}
                         />
                     )}
                 </Col>

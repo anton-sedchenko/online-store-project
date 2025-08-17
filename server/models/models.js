@@ -3,8 +3,7 @@ const {DataTypes} = require('sequelize');
 
 const User = sequelize.define('user', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    firstName: {type: DataTypes.STRING, allowNull: true},
-    lastName: {type: DataTypes.STRING, allowNull: true},
+    name: {type: DataTypes.STRING, allowNull: true},
     email: {type: DataTypes.STRING, unique: true},
     phone: {type: DataTypes.STRING, allowNull: true},
     password: {type: DataTypes.STRING},
@@ -80,13 +79,9 @@ const Review = sequelize.define('review', {
     // для верхнього рівня відгуків parentId = null; для відповіді — id батьківського відгуку
     parentId: { type: DataTypes.INTEGER, allowNull: true },
     rating: { type: DataTypes.INTEGER, allowNull: true, validate: { min:1, max:5 } }, // тільки для верхнього рівня
-    text: { type: DataTypes.TEXT, allowNull: false },
+    text: { type: DataTypes.TEXT, allowNull: true },
     deletedAt: { type: DataTypes.DATE, allowNull: true }
 }, {
-    indexes: [
-        // Забороняємо більше 1 оцінки на товар від одного юзера (тільки для parentId = null)
-        { unique: true, fields: ['productId','userId','parentId'] }
-    ],
     paranoid: false,
 });
 

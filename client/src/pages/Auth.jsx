@@ -13,6 +13,7 @@ const Auth = observer(() => {
     const location = useLocation();
     const navigate = useNavigate();
     const isLogin = location.pathname === LOGIN_ROUTE;
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -20,9 +21,12 @@ const Auth = observer(() => {
         try {
             let tokenUser;
             if (isLogin) {
-                await login(email, password); // лише зберігає токен
+                await login(email, password); // Лише зберігає токен
             } else {
-                await registration(email, password);
+                if (!name.trim()) {
+                    return alert("Будь ласка, вкажіть ім'я.");
+                }
+                await registration(email, password, name.trim());
             }
 
             tokenUser = await fetchAuthUser(); // отримуємо юзера з БД
@@ -47,6 +51,19 @@ const Auth = observer(() => {
             >
                 <div className="auth__form__container">
                     <h2>{isLogin ? "Авторизація" : "Реєстрація"}</h2>
+                    {!isLogin && (
+                        <div className="auth__form-name">
+                            <input
+                                className="neu-input"
+                                type="text"
+                                name="name"
+                                placeholder="Введіть ваше ім'я..."
+                                value={name}
+                                onChange={e => setName(e.target.value)}
+                                required
+                            />
+                        </div>
+                    )}
                     <form className="auth__form">
                         <div className="auth__form-email">
                             <input

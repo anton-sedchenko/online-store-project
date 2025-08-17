@@ -8,22 +8,24 @@ import StarRating from "./StarRating.jsx";
  * - productId (number)
  * - isAuth (boolean)
  * - isAdmin (boolean)
- * - userEmail? (string) — лише для відображення "ви"
+ * - userId? (number) — для маркування «це ви»
  */
-export default function Reviews({ productId, isAuth, isAdmin, userEmail }) {
-    const [items, setItems] = useState([]); // плаский список
+export default function Reviews({ productId, isAuth, isAdmin, userId }) {
+    const [items, setItems] = useState([]); // плаский список (root + replies)
     const [avg, setAvg] = useState(0);
     const [count, setCount] = useState(0);
     const [loading, setLoading] = useState(true);
 
-    // форма нового відгуку/оцінки (top-level)
+    // окрема форма ДЛЯ ОЦІНКИ
     const [newRating, setNewRating] = useState(0);
-    const [newText, setNewText] = useState("");
-    const [submitting, setSubmitting] = useState(false);
+    const [ratingSubmitting, setRatingSubmitting] = useState(false);
+
+    // окрема форма ДЛЯ КОМЕНТАРЯ (без оцінки)
+    const [commentText, setCommentText] = useState("");
+    const [commentSubmitting, setCommentSubmitting] = useState(false);
 
     useEffect(() => {
         if (!productId) return;
-
         let mounted = true;
         (async () => {
             try {
@@ -40,7 +42,7 @@ export default function Reviews({ productId, isAuth, isAdmin, userEmail }) {
         return () => { mounted = false; };
     }, [productId]);
 
-    // будуємо дерево з плаского масиву
+    // дерево
     const tree = useMemo(() => {
         const byId = new Map();
         const roots = [];
@@ -54,7 +56,6 @@ export default function Reviews({ productId, isAuth, isAdmin, userEmail }) {
                 roots.push(node);
             }
         });
-        // сортуємо: новіші зверху
         const sortFn = (a, b) => new Date(b.createdAt) - new Date(a.createdAt);
         const deepSort = (arr) => arr.sort(sortFn).map(n => ({ ...n, children: deepSort(n.children) }));
         return deepSort(roots);
@@ -68,20 +69,44 @@ export default function Reviews({ productId, isAuth, isAdmin, userEmail }) {
         setCount(data?.rating?.count || 0);
     };
 
-    const submitTop = async () => {
-        if (!isAuth) return alert("Щоб залишити відгук, увійдіть у кабінет.");
+    // чи користувач вже ставив оцінку
+    const userHasRated = useMemo(
+        () => (items || []).some(r => !r.parentId && r.user?.id === userId && r.rating),
+        [items, userId]
+    );
+
+    // відправити ОЦІНКУ (без тексту)
+    const submitRating = async () => {
+        if (!isAuth) return alert("Щоб поставити оцінку, увійдіть у кабінет.");
         if (!newRating) return alert("Оберіть оцінку (1–5 зірок).");
+        if (userHasRated) return;
+
         try {
-            setSubmitting(true);
-            await addReview({ productId, rating: newRating, text: newText.trim() });
+            setRatingSubmitting(true);
+            await addReview({ productId, rating: newRating, text: null });
             setNewRating(0);
-            setNewText("");
             await refresh();
         } catch (e) {
-            const msg = e?.response?.data?.message || e.message;
-            alert(msg);
+            alert(e?.response?.data?.message || e.message);
         } finally {
-            setSubmitting(false);
+            setRatingSubmitting(false);
+        }
+    };
+
+    // відправити КОМЕНТАР (без оцінки)
+    const submitComment = async () => {
+        if (!isAuth) return alert("Щоб лишити коментар, увійдіть у кабінет.");
+        const txt = commentText.trim();
+        if (!txt) return;
+        try {
+            setCommentSubmitting(true);
+            await addReview({ productId, text: txt }); // без rating
+            setCommentText("");
+            await refresh();
+        } catch (e) {
+            alert(e?.response?.data?.message || e.message);
+        } finally {
+            setCommentSubmitting(false);
         }
     };
 
@@ -113,7 +138,7 @@ export default function Reviews({ productId, isAuth, isAdmin, userEmail }) {
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <h4 style={{ margin: 0 }}>Відгуки</h4>
                 <span className="muted">
-          (Щоб залишити відгук — увійдіть або зареєструйтесь)
+          (Щоб лишити коментар або оцінку — увійдіть або зареєструйтесь)
         </span>
             </div>
 
@@ -131,43 +156,70 @@ export default function Reviews({ productId, isAuth, isAdmin, userEmail }) {
                         isAdmin={isAdmin}
                         onReply={submitReply}
                         onDelete={removeReview}
-                        userEmail={userEmail}
+                        userId={userId}
                     />
                 ))}
             </div>
 
-            {/* Форма топ-рівня */}
+            {/* Форма ОЦІНКИ */}
             <div style={{ marginTop: 16, borderTop: "1px solid #eee", paddingTop: 12 }}>
                 <p style={{ marginBottom: 6 }}>Ваша оцінка товару:</p>
-                <StarRating value={newRating} onChange={setNewRating} size={24} />
-                <textarea
-                    placeholder="Ваш відгук (необов'язково)"
-                    className="buyer__contacts__form-input"
-                    style={{ marginTop: 8, minHeight: 80 }}
-                    value={newText}
-                    onChange={(e) => setNewText(e.target.value)}
-                />
+                <StarRating value={newRating} onChange={userHasRated ? undefined : setNewRating} size={24} />
+                {userHasRated && (
+                    <div className="muted" style={{ marginTop: 4 }}>
+                        Ви вже оцінювали цей товар.
+                    </div>
+                )}
                 <div style={{ marginTop: 8 }}>
-                    <button className="neu-btn" disabled={submitting} onClick={submitTop}>
-                        Надіслати відгук
+                    <button
+                        className="neu-btn"
+                        disabled={ratingSubmitting || userHasRated || !isAuth || !newRating}
+                        onClick={submitRating}
+                    >
+                        Поставити оцінку
                     </button>
                 </div>
             </div>
 
-            {/* Підсумок рейтингу (видно і тут, і зверху в картці) */}
+            {/* Форма КОМЕНТАРЯ */}
+            <div style={{ marginTop: 16 }}>
+                <p style={{ marginBottom: 6 }}>Залиште коментар:</p>
+                <textarea
+                    placeholder={
+                        isAuth
+                            ? "Залиште відгук"
+                            : "Залиште відгук (Щоб лишити відгук — увійдіть або зареєструйтесь)"
+                    }
+                    className="buyer__contacts__form-input"
+                    style={{ minHeight: 80 }}
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                />
+                <div style={{ marginTop: 8 }}>
+                    <button
+                        className="neu-btn"
+                        disabled={commentSubmitting || !isAuth || !commentText.trim()}
+                        onClick={submitComment}
+                    >
+                        Надіслати коментар
+                    </button>
+                </div>
+            </div>
+
+            {/* Підсумок рейтингу */}
             <div style={{ marginTop: 10 }} className="muted">
-                Середня оцінка: <b>{avg.toFixed(1)}</b> із 5 • відгуків: <b>{count}</b>
+                Середня оцінка: <b>{avg.toFixed(1)}</b> із 5 • оцінок: <b>{count}</b>
             </div>
         </section>
     );
 }
 
-function ReviewItem({ node, isAdmin, onReply, onDelete, userEmail }) {
+function ReviewItem({ node, isAdmin, onReply, onDelete, userId }) {
     const [replyOpen, setReplyOpen] = useState(false);
     const [text, setText] = useState("");
 
     const isRoot = !node.parentId;
-    const mineBadge = userEmail && node.user?.email && node.user.email === userEmail;
+    const mineBadge = userId && node.user?.id === userId;
 
     return (
         <div style={{ marginBottom: 12 }}>
@@ -177,11 +229,11 @@ function ReviewItem({ node, isAdmin, onReply, onDelete, userEmail }) {
                     border: "1px solid #eee",
                     borderRadius: 8,
                     padding: 10,
-                    marginLeft: isRoot ? 0 : 24,   // один відступ для гілки
+                    marginLeft: isRoot ? 0 : 24,
                 }}
             >
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <strong>{node.user?.name || node.user?.email || "Користувач"}</strong>
+                    <strong>{node.user?.name || "Користувач"}</strong>
                     {mineBadge && <span className="muted">(це ви)</span>}
                     {isRoot && node.rating ? (
                         <span style={{ marginLeft: "auto" }}>
@@ -207,7 +259,6 @@ function ReviewItem({ node, isAdmin, onReply, onDelete, userEmail }) {
 
                 {replyOpen && (
                     <div style={{ marginTop: 8 }}>
-                        {/* коротка цитата батьківського коментаря */}
                         {node.text && (
                             <blockquote
                                 style={{
@@ -240,7 +291,6 @@ function ReviewItem({ node, isAdmin, onReply, onDelete, userEmail }) {
                 )}
             </div>
 
-            {/* діти */}
             {node.children?.length > 0 &&
                 node.children.map((ch) => (
                     <ReviewItem
@@ -249,7 +299,7 @@ function ReviewItem({ node, isAdmin, onReply, onDelete, userEmail }) {
                         isAdmin={isAdmin}
                         onReply={onReply}
                         onDelete={onDelete}
-                        userEmail={userEmail}
+                        userId={userId}
                     />
                 ))}
         </div>

@@ -1,5 +1,6 @@
 const { Review, Product, User } = require('../models/models');
 const ApiError = require('../error/ApiError');
+const { Op } = require('sequelize');
 
 const mailer = require('../mailer');
 
@@ -19,14 +20,14 @@ class ReviewController {
             const roots = await Review.findAll({
                 where: { productId, parentId: null, deletedAt: null },
                 order: [['createdAt','DESC']],
-                include: [{ model: User, attributes: ['id','email'] }]
+                include: [{ model: User, attributes: ['id', 'name'] }]
             });
 
             const ids = roots.map(r=>r.id);
             const replies = ids.length ? await Review.findAll({
                 where: { parentId: ids, deletedAt: null },
                 order: [['createdAt','ASC']],
-                include: [{ model: User, attributes: ['id','email'] }]
+                include: [{ model: User, attributes: ['id', 'name'] }]
             }) : [];
 
             // групуємо відповіді до батьків
@@ -48,42 +49,56 @@ class ReviewController {
     }
 
     // POST /api/review
-    async createRoot(req,res,next){
-        try{
+    async createRoot(req, res, next) {
+        try {
             const userId = req.user.id;
             const { productId, rating, text } = req.body;
-            if (!productId || !text?.trim()) return next(ApiError.badRequest('Не передано productId або текст'));
 
-            // перевіряємо, чи вже є верхньорівневий відгук від цього користувача з оцінкою (або без — унікальний індекс усе одно не дасть)
-            if (rating) {
-                const num = Number(rating);
-                if (Number.isNaN(num) || num < 1 || num > 5) return next(ApiError.badRequest('Рейтинг 1–5'));
+            if (!productId) {
+                return next(ApiError.badRequest('Не передано productId'));
+            }
+
+            // чи прийшла оцінка?
+            const hasRating = rating !== undefined && rating !== null && rating !== '';
+            let num = null;
+
+            if (hasRating) {
+                num = Number(rating);
+                if (Number.isNaN(num) || num < 1 || num > 5) {
+                    return next(ApiError.badRequest('Оцінка має бути від 1 до 5'));
+                }
+
+                // обмеження: одна оцінка на користувача для товару
+                const alreadyRated = await Review.findOne({
+                    where: {
+                        productId,
+                        userId,
+                        parentId: null,
+                        rating: { [Op.not]: null },
+                    },
+                });
+                if (alreadyRated) {
+                    return next(ApiError.badRequest('Ви вже оцінювали цей товар'));
+                }
+            }
+
+            // якщо немає оцінки — це просто коментар; текст має бути
+            if (!hasRating && !text?.trim()) {
+                return next(ApiError.badRequest('Порожній коментар'));
             }
 
             const created = await Review.create({
                 productId,
                 userId,
                 parentId: null,
-                rating: rating ? Number(rating) : null,
-                text: text.trim()
+                rating: hasRating ? num : null, // оцінка або null
+                text: text?.trim() || null, // коментар може бути порожнім, якщо це чиста оцінка
             });
 
-            // email адміну
-            try {
-                const link = `${process.env.CLIENT_URL}/product/${productId}`;
-                await mailer.sendMail({
-                    from: process.env.EMAIL_FROM,
-                    to: process.env.NOTIFY_EMAIL || 'charivna.craft@gmail.com',
-                    subject: 'Новий відгук на сайті',
-                    html: `<p>Користувач ${req.user.email} залишив відгук.</p><p><a href="${link}">Відкрити товар</a></p>`
-                });
-            } catch(e){ console.error('review email admin fail', e?.message); }
-
             return res.status(201).json(created);
-        }catch(e){
-            // якщо вперлися в unique (productId,userId,parentId)
+        } catch (e) {
             if (e?.name === 'SequelizeUniqueConstraintError') {
-                return next(ApiError.badRequest('Ви вже залишали відгук до цього товару'));
+                return next(ApiError.badRequest('Ви вже оцінювали цей товар'));
             }
             next(ApiError.internal(e.message));
         }
@@ -97,10 +112,13 @@ class ReviewController {
             const { text } = req.body;
             if (!text?.trim()) return next(ApiError.badRequest('Порожній текст'));
 
-            const parent = await Review.findByPk(parentId, { include: [{ model: User, attributes: ['id','email'] }] });
+            const parent = await Review.findByPk(
+                parentId,
+                {include: [{ model: User, attributes: ['id','email'] }]}
+            );
             if (!parent || parent.deletedAt) return next(ApiError.notFound('Батьківський відгук не знайдено'));
 
-            const created = await Review.create({
+            const review = await Review.create({
                 productId: parent.productId,
                 userId,
                 parentId: parent.id,
@@ -131,7 +149,7 @@ class ReviewController {
                 }
             } catch(e){ console.error('reply email user fail', e?.message); }
 
-            return res.status(201).json(created);
+            return res.status(201).json(review);
         }catch(e){ next(ApiError.internal(e.message)); }
     }
 
