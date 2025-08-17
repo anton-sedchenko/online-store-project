@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+const nodemailer = require('nodemailer');
 
 // транспортер для відправки пошти
 const transporter = nodemailer.createTransport({

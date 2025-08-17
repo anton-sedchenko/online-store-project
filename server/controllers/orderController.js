@@ -1,5 +1,5 @@
 const axios = require('axios');
-import mailer from '../mailer.js';
+const mailer = require('../mailer.js');
 
 const {
     Order,
