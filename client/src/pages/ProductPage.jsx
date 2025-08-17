@@ -9,45 +9,43 @@ import {Helmet} from 'react-helmet-async';
 import CallbackModal from "../components/modals/CallbackModal.jsx";
 import StarRating from "../components/StarRating.jsx";
 import Reviews from "../components/Reviews.jsx";
-import {getReviews, addReview, replyReview, deleteReview} from '../http/reviewAPI.js';
+import {getReviews} from '../http/reviewAPI.js';
 
 const ProductPage = () => {
     const navigate = useNavigate();
     const [product, setProduct] = useState({images: []});
     const {userStore, cartStore} = useContext(Context);
+
     const [qty, setQty] = useState(1);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [showCallback, setShowCallback] = useState(false);
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
+
+    // агрегований рейтинг для зірочок нагорі
     const [ratingAvg, setRatingAvg] = useState(0);
     const [ratingCount, setRatingCount] = useState(0);
-    const [reviews, setReviews] = useState([]);
-    const [rating, setRating] = useState({ avg: 0, count: 0 });
     const {slug} = useParams();
 
+    // перший useEffect — тільки завантаження товару
     useEffect(() => {
         (async () => {
             const data = await fetchProductBySlug(slug);
             setProduct(data);
             setCurrentImageIndex(0);
-            // рейтинг для шапки картки
-            try {
-                const r = await getReviews(data.id);
-                setRatingAvg(r?.rating?.avg || 0);
-                setRatingCount(r?.rating?.count || 0);
-            } catch {}
         })();
     }, [slug]);
 
-    // вантажимо відгуки тільки коли вже є product.id
+// другий useEffect — вантажимо відгуки і рейтинг
     useEffect(() => {
-        if (!product?.id) return;               // ← важливо: НЕ робимо запит без id
+        if (!product?.id) return;
         (async () => {
             try {
                 const data = await getReviews(product.id);
                 setReviews(data?.items || []);
                 setRating(data?.rating || { avg: 0, count: 0 });
+                setRatingAvg(data?.rating?.avg || 0);
+                setRatingCount(data?.rating?.count || 0);
             } catch (e) {
                 console.warn('Не вдалося завантажити відгуки:', e?.response?.data?.message || e.message);
             }
