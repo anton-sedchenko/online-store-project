@@ -102,6 +102,33 @@ class ReviewController {
                 text: text?.trim() || null, // коментар може бути порожнім, якщо це чиста оцінка
             });
 
+            // Надсилаємо лист адміну про новий відгук/оцінку
+            try {
+                // дістаємо товар, щоб зробити посилання зі slug
+                const product = await Product.findByPk(productId, { attributes: ['id', 'slug', 'name'] });
+                const link = product?.slug
+                    ? `${process.env.CLIENT_URL}/product/${product.slug}`
+                    : `${process.env.CLIENT_URL}/product/${productId}`;
+
+                const parts = [];
+                if (hasRating) parts.push(`Оцінка: ${num} ★`);
+                if (text?.trim()) parts.push(`Текст: ${text.trim()}`);
+                const body = parts.length ? parts.join('<br>') : 'Без тексту';
+
+                await mailer.sendMail({
+                    from: process.env.EMAIL_FROM,
+                    to: process.env.NOTIFY_EMAIL || 'charivna.craft@gmail.com',
+                    subject: 'Новий відгук/оцінка на сайті',
+                    html: `
+                        <p>Новий відгук до товару <strong>${product?.name || '#' + productId}</strong>.</p>
+                        <p>${body}</p>
+                        <p><a href="${link}">Відкрити товар</a></p>
+                    `
+                });
+            } catch (e) {
+                console.error('createRoot email admin fail:', e?.message);
+            }
+
             return res.status(201).json(created);
         } catch (e) {
             if (e?.name === 'SequelizeUniqueConstraintError') {
@@ -138,7 +165,10 @@ class ReviewController {
 
             // email адміну
             try {
-                const link = `${process.env.CLIENT_URL}/product/${parent.productId}`;
+                const parentProduct = await Product.findByPk(parent.productId, { attributes: ['slug','name'] });
+                const link = parentProduct?.slug
+                    ? `${process.env.CLIENT_URL}/product/${parentProduct.slug}`
+                    : `${process.env.CLIENT_URL}/product/${parent.productId}`;
                 await mailer.sendMail({
                     from: process.env.EMAIL_FROM,
                     to: process.env.NOTIFY_EMAIL || 'charivna.craft@gmail.com',
