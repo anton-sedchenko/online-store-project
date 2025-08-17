@@ -6,7 +6,7 @@ import React from "react";
  * - onChange?: (n) => void  // якщо передано — рейтинг клікабельний
  * - size?: розмір іконок у px (за замовч. 20)
  */
-export default function StarRating({ value = 0, onChange, size = 20 }) {
+export default function StarRating({value = 0, onChange, size = 20}) {
     const full = Math.floor(value);
     const half = value - full >= 0.5;
 
