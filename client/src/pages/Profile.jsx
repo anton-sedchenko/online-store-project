@@ -17,7 +17,7 @@ const Profile = observer(() => {
 
     // стейт форми профілю
     const [form, setForm] = useState({
-        firstName: '', lastName: '', email: '', phone: ''
+        name: '', email: '', phone: ''
     });
     // стейт паролів
     const [passwords, setPasswords] = useState({
@@ -31,8 +31,7 @@ const Profile = observer(() => {
     useEffect(() => {
         if (userStore.user && userStore.user.id) {
             setForm({
-                firstName: userStore.user.firstName || '',
-                lastName: userStore.user.lastName || '',
+                name: userStore.user.name || '',
                 email: userStore.user.email || '',
                 phone: userStore.user.phone || ''
             });
@@ -51,10 +50,9 @@ const Profile = observer(() => {
             userStore.setUser(updated);
             // і форму, щоб відразу відобразити збережені значення
             setForm({
-                firstName: updated.firstName,
-                lastName: updated.lastName,
-                email: updated.email,
-                phone: updated.phone
+                name: updated.name || '',
+                email: updated.email || '',
+                phone: updated.phone || ''
             });
             alert('Дані профілю оновлено');
         } catch (err) {
@@ -110,22 +108,13 @@ const Profile = observer(() => {
                                 <Tab.Pane eventKey="personal">
                                     <h4>Редагування профілю</h4>
                                     <Form onSubmit={handlePersonalSave} className="mb-4">
-                                        <Form.Group className="mb-3" controlId="firstName">
-                                            <Form.Label>Ім'я</Form.Label>
+                                        <Form.Group className="mb-3" controlId="name">
+                                            <Form.Label>Ім’я</Form.Label>
                                             <input
                                                 className="neu-input"
                                                 type="text"
-                                                value={form.firstName}
-                                                onChange={e => setForm({ ...form, firstName: e.target.value })}
-                                            />
-                                        </Form.Group>
-                                        <Form.Group className="mb-3" controlId="lastName">
-                                            <Form.Label>Прізвище</Form.Label>
-                                            <input
-                                                className="neu-input"
-                                                type="text"
-                                                value={form.lastName}
-                                                onChange={e => setForm({...form, lastName: e.target.value})}
+                                                value={form.name}
+                                                onChange={e => setForm({ ...form, name: e.target.value })}
                                             />
                                         </Form.Group>
                                         <Form.Group className="mb-3" controlId="email">
