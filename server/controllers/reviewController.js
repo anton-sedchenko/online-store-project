@@ -11,41 +11,48 @@ function avg(arr) {
 
 class ReviewController {
     // GET /api/review/:productId
-    async listByProduct(req,res,next){
-        try{
+    async listByProduct(req, res, next) {
+        try {
             const { productId } = req.params;
             if (!productId || isNaN(Number(productId))) {
-                return res.status(400).json({ message: 'Invalid productId' }); // [ADD] замість 500
+                return res.status(400).json({ message: 'Invalid productId' });
             }
+
+            // корені
             const roots = await Review.findAll({
                 where: { productId, parentId: null, deletedAt: null },
-                order: [['createdAt','DESC']],
+                order: [['createdAt', 'DESC']],
                 include: [{ model: User, attributes: ['id', 'name'] }]
             });
 
-            const ids = roots.map(r=>r.id);
-            const replies = ids.length ? await Review.findAll({
-                where: { parentId: ids, deletedAt: null },
-                order: [['createdAt','ASC']],
-                include: [{ model: User, attributes: ['id', 'name'] }]
-            }) : [];
+            // відповіді
+            const ids = roots.map(r => r.id);
+            const replies = ids.length
+                ? await Review.findAll({
+                    where: { parentId: ids, deletedAt: null },
+                    order: [['createdAt', 'ASC']],
+                    include: [{ model: User, attributes: ['id', 'name'] }]
+                })
+                : [];
 
-            // групуємо відповіді до батьків
-            const byParent = replies.reduce((m,r)=>{
-                (m[r.parentId] ||= []).push(r);
-                return m;
-            },{});
+            // плаский список: корені + відповіді
+            const items = [...roots, ...replies]
+                .map(r => r.toJSON())
+                // (не обов’язково) загальне сортування за часом, новіші вище
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
             const ratingValues = roots.map(r => r.rating).filter(Boolean);
-            const response = {
-                items: roots.map(r => ({...r.toJSON(), replies: byParent[r.id] || []})),
+
+            return res.json({
+                items,
                 rating: {
                     avg: avg(ratingValues),
-                    count: ratingValues.length
-                }
-            };
-            return res.json(response);
-        }catch(e){ next(ApiError.internal(e.message)); }
+                    count: ratingValues.length,
+                },
+            });
+        } catch (e) {
+            next(ApiError.internal(e.message));
+        }
     }
 
     // POST /api/review
@@ -107,6 +114,9 @@ class ReviewController {
     // POST /api/review/:parentId/reply
     async reply(req,res,next){
         try{
+            if (req.user?.role !== 'ADMIN') {
+                return next(ApiError.forbidden('Лише адміністратор може відповідати'));
+            }
             const userId = req.user.id;
             const { parentId } = req.params;
             const { text } = req.body;

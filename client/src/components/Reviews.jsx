@@ -111,6 +111,7 @@ export default function Reviews({ productId, isAuth, isAdmin, userId }) {
     };
 
     const submitReply = async (parentId, text, after) => {
+        if (!isAdmin) return;
         if (!isAuth) return alert("Спершу увійдіть у кабінет.");
         if (!text.trim()) return;
         try {
@@ -237,8 +238,8 @@ function ReviewItem({ node, isAdmin, onReply, onDelete, userId }) {
                     {mineBadge && <span className="muted">(це ви)</span>}
                     {isRoot && node.rating ? (
                         <span style={{ marginLeft: "auto" }}>
-              <StarRating value={node.rating} size={16} />
-            </span>
+                            <StarRating value={node.rating} size={16} />
+                        </span>
                     ) : null}
                 </div>
 
@@ -249,7 +250,11 @@ function ReviewItem({ node, isAdmin, onReply, onDelete, userId }) {
                 </div>
 
                 <div style={{ display: "flex", gap: 12, marginTop: 6 }}>
-                    <button className="link-btn" onClick={() => setReplyOpen((s) => !s)}>Відповісти</button>
+                    {isAdmin && (
+                        <button className="link-btn" onClick={() => setReplyOpen((s) => !s)}>
+                            Відповісти
+                        </button>
+                    )}
                     {isAdmin && (
                         <button className="link-btn danger" onClick={() => onDelete(node.id)}>
                             Видалити
@@ -257,7 +262,7 @@ function ReviewItem({ node, isAdmin, onReply, onDelete, userId }) {
                     )}
                 </div>
 
-                {replyOpen && (
+                {isAdmin && replyOpen && (
                     <div style={{ marginTop: 8 }}>
                         {node.text && (
                             <blockquote
