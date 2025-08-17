@@ -22,6 +22,8 @@ export default function Reviews({ productId, isAuth, isAdmin, userEmail }) {
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
+        if (!productId) return;
+
         let mounted = true;
         (async () => {
             try {
@@ -59,6 +61,7 @@ export default function Reviews({ productId, isAuth, isAdmin, userEmail }) {
     }, [items]);
 
     const refresh = async () => {
+        if (!productId) return;
         const data = await getReviews(productId);
         setItems(Array.isArray(data.items) ? data.items : []);
         setAvg(data?.rating?.avg || 0);
