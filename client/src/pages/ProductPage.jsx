@@ -230,12 +230,14 @@ const ProductPage = () => {
                         <h4>Опис товару:</h4>
                         <p className="product__description">{product.description || 'Немає опису'}</p>
                     </div>
-                    <Reviews
-                        productId={product.id}
-                        isAuth={userStore.isAuth}
-                        isAdmin={userStore.isAuth && userStore.user?.role === 'ADMIN'}
-                        userEmail={userStore.user?.email}
-                    />
+                    {product.id && (
+                        <Reviews
+                            productId={product.id}
+                            isAuth={userStore.isAuth}
+                            isAdmin={userStore.isAuth && userStore.user?.role === 'ADMIN'}
+                            userEmail={userStore.user?.email}
+                        />
+                    )}
                 </Col>
                 <Col md={4}>
                     {userStore.isAuth && userStore.user.role === 'ADMIN' && (
