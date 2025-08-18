@@ -20,7 +20,8 @@ const {ProductImage} = require("./models/models");
 const allowedOrigins = [
     'http://localhost:3000',
     'https://charivna-craft.com.ua',
-    'https://www.charivna-craft.com.ua'
+    'https://www.charivna-craft.com.ua',
+    'https://online-store-project-git-staging-antonsedchenkos-projects.vercel.app'
 ];
 
 app.use(cors({
