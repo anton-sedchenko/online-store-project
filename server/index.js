@@ -16,24 +16,26 @@ app.set('trust proxy', 1);
 const rateLimit = require('express-rate-limit');
 const {ProductImage} = require("./models/models");
 
-// Для staging (і всіх preview-доменів) дозволяємо будь-який origin,
-// в деві - лишаєм статичний список
-if (process.env.NODE_ENV === 'staging') {
-    app.use(cors({origin: true, credentials: true}));
-} else {
-    const corsOptions = {
-        origin: [
-        'http://localhost:3000',
-        'https://charivna-craft.com.ua',
-        'https://www.charivna-craft.com.ua'
-        // якщо є інші production-домени — сюди
-        ],
-        methods: ['GET','POST','PUT','DELETE','OPTIONS'],
-        allowedHeaders: ['Content-Type','Authorization'],
-        credentials: true,
-    };
-    app.use(cors(corsOptions));
-}
+// --- CORS Setup ---
+const allowedOrigins = [
+    'http://localhost:3000',
+    'https://charivna-craft.com.ua',
+    'https://www.charivna-craft.com.ua'
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // дозволяємо запити без Origin (наприклад, Postman) або з білого списку
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('CORS not allowed from this origin: ' + origin));
+        }
+    },
+    methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+    allowedHeaders: ['Content-Type','Authorization'],
+    credentials: true,
+}));
 
 app.use(express.json());
 
