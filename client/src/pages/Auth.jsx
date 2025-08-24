@@ -51,20 +51,20 @@ const Auth = observer(() => {
             >
                 <div className="auth__form__container">
                     <h2>{isLogin ? "Авторизація" : "Реєстрація"}</h2>
-                    {!isLogin && (
-                        <div className="auth__form-name">
-                            <input
-                                className="neu-input"
-                                type="text"
-                                name="name"
-                                placeholder="Введіть ваше ім'я..."
-                                value={name}
-                                onChange={e => setName(e.target.value)}
-                                required
-                            />
-                        </div>
-                    )}
                     <form className="auth__form">
+                        {!isLogin && (
+                            <div className="auth__form-name">
+                                <input
+                                    className="neu-input"
+                                    type="text"
+                                    name="name"
+                                    placeholder="Введіть ваше ім'я..."
+                                    value={name}
+                                    onChange={e => setName(e.target.value)}
+                                    required
+                                />
+                            </div>
+                        )}
                         <div className="auth__form-email">
                             <input
                                 className="neu-input"
