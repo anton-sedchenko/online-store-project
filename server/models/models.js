@@ -33,9 +33,12 @@ const Product = sequelize.define('product', {
     img: {type: DataTypes.STRING},
     code: {type: DataTypes.STRING, allowNull: false, unique: true},
     availability: {
-        type: DataTypes.ENUM('IN_STOCK', 'PRE_ORDER'),
+        type: DataTypes.STRING, // було ENUM
         allowNull: false,
-        defaultValue: 'IN_STOCK',
+        defaultValue: 'MADE_TO_ORDER',
+        validate: {
+            isIn: [['IN_STOCK', 'MADE_TO_ORDER', 'OUT_OF_STOCK']]
+        }
     },
     slug: {type: DataTypes.STRING, unique: true},
 });
@@ -44,7 +47,8 @@ const Type = sequelize.define('type', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     name: {type: DataTypes.STRING, unique: true, allowNull: false},
     image: {type: DataTypes.STRING, allowNull: true},
-    parentId: {type: DataTypes.INTEGER, allowNull: true}
+    parentId: {type: DataTypes.INTEGER, allowNull: true},
+    rozetkaCategoryId: {type: DataTypes.INTEGER, allowNull: true},
 });
 
 const Order = sequelize.define('order', {
