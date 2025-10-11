@@ -22,24 +22,26 @@ const allowedOrigins = [
     'http://localhost:5173',
     'https://charivna-craft.com.ua',
     'https://www.charivna-craft.com.ua',
+    'https://charivna-craft-staging.vercel.app',
     'https://online-store-project-git-staging-antonsedchenkos-projects.vercel.app',
     'https://online-store-project.vercel.app'
 ];
 
 app.use(cors({
-    origin(origin, callback) {
-        if (!origin) return callback(null, true); // Postman/серверні запити без Origin
-        if (allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
-            return callback(null, true);
-        }
-        return callback(new Error('CORS not allowed from: ' + origin));
+    origin(origin, cb) {
+        if (!origin) return cb(null, true); // Postman/сервер-до-сервера
+        const ok =
+            allowedOrigins.includes(origin) ||
+            /\.vercel\.app$/.test(origin); // дозволяємо будь-які *.vercel.app
+        cb(ok ? null : new Error('CORS not allowed from: ' + origin), ok);
     },
     methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
     allowedHeaders: ['Content-Type','Authorization'],
     credentials: true,
 }));
 
-app.options('*', cors());
+// Відповідаємо НАПЕВНЕ на preflight
+app.options('*', cors(), (req, res) => res.sendStatus(204));
 
 app.use(express.json());
 
@@ -51,7 +53,10 @@ app.use(fileUpload({
     limits: {fileSize: 5e6},
 }));
 
-app.use(helmet());
+app.use(helmet({
+    crossOriginResourcePolicy: false,                 // важливо для крос-оригін ресурсів
+    crossOriginOpenerPolicy: {policy: 'same-origin-allow-popups'}
+}));
 
 const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 хвилин
