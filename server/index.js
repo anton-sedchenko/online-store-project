@@ -160,33 +160,41 @@ app.get('/sitemap.xml', async (req, res) => {
 // Замикаючий middleware - опрацювання помилок та передача відповіді клієнту
 app.use(errorHandler);
 
+app.get('/__health', (req, res) => res.status(200).send('ok'));
+app.get('/api/ping',  (req, res) => res.json({ ok: true, ts: Date.now() }));
+
 const start = async () => {
     try {
-        await sequelize.authenticate();
-
-        console.log('Connection has been established successfully.');
-
-        // Обережно sequelize синхронізація для проду
-
-        if (process.env.NODE_ENV === 'staging' || process.env.NODE_ENV === 'production') {
-            await sequelize.sync({alter: true});
-            console.log(`Tables synced (${process.env.NODE_ENV})`);
-        }
-
-        // if (process.env.NODE_ENV === 'staging') {
-        //     await sequelize.sync({alter: true});
-        //     console.log('Tables synced (staging)');
-        // }
-
-        await ProductImage.sync();
-
+        // 1) Спочатку стартуємо HTTP-сервер,
+        //    щоб Railway бачив живу відповідь (не 502)
         if (!PORT) throw new Error('PORT is not defined!');
         app.listen(PORT, () => {
             console.log(`Server started on port ${PORT}`);
         });
+
+        // 2) Підключення до БД робимо асинхронно,
+        //    НЕ блокуючи слухач порта
+        try {
+            await sequelize.authenticate();
+            console.log('DB connection OK');
+
+            // УВАГА: alter може бути довгий і важкий
+            if (process.env.NODE_ENV === 'staging' || process.env.NODE_ENV === 'production') {
+                await sequelize.sync({ alter: true });
+                console.log(`Tables synced (${process.env.NODE_ENV})`);
+            }
+
+            await ProductImage.sync();
+            console.log('ProductImage synced');
+        } catch (dbErr) {
+            console.error('DB init failed:', dbErr.message);
+            // не валимо процес — нехай API /health живе, щоб бачити логи
+        }
+
     } catch (e) {
-        console.log(e);
+        console.error('Startup error:', e);
+        process.exit(1);
     }
-}
+};
 
 start();
