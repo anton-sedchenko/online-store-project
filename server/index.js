@@ -16,8 +16,19 @@ app.set('trust proxy', 1);
 const rateLimit = require('express-rate-limit');
 const {ProductImage} = require("./models/models");
 
-// --- CORS Setup ---
-const allowedOrigins = [
+// // --- CORS Setup ---
+// const allowedOrigins = [
+//     'http://localhost:3000',
+//     'http://localhost:5173',
+//     'https://charivna-craft.com.ua',
+//     'https://www.charivna-craft.com.ua',
+//     'https://charivna-craft-staging.vercel.app',
+//     'https://online-store-project-git-staging-antonsedchenkos-projects.vercel.app',
+//     'https://online-store-project.vercel.app'
+// ];
+
+// === HARD CORS (ручний, без пакетів) ===
+const ALLOWED_ORIGINS = new Set([
     'http://localhost:3000',
     'http://localhost:5173',
     'https://charivna-craft.com.ua',
@@ -25,21 +36,42 @@ const allowedOrigins = [
     'https://charivna-craft-staging.vercel.app',
     'https://online-store-project-git-staging-antonsedchenkos-projects.vercel.app',
     'https://online-store-project.vercel.app'
-];
+]);
 
-app.use(cors({
-    origin(origin, cb) {
-        if (!origin) return cb(null, true); // напряму в браузері / Postman
-        const ok = allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin);
-        cb(ok ? null : new Error('CORS not allowed from: ' + origin), ok);
-    },
-    credentials: true,
-}));
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    // Дозволимо ВСІ *.vercel.app + whitelisted
+    const allow =
+        !origin ||
+        ALLOWED_ORIGINS.has(origin) ||
+        /\.vercel\.app$/i.test(origin);
 
-// відповідь на preflight
-app.options('*', cors());
+    if (allow) {
+        res.setHeader('Access-Control-Allow-Origin', origin || '*');
+        res.setHeader('Vary', 'Origin');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        res.setHeader(
+            'Access-Control-Allow-Methods',
+            'GET,POST,PUT,PATCH,DELETE,OPTIONS'
+        );
+        // Віддзеркалюємо заголовки, які просить браузер у preflight
+        const reqHdr = req.headers['access-control-request-headers'];
+        res.setHeader(
+            'Access-Control-Allow-Headers',
+            reqHdr || 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+        );
+    }
+
+    if (req.method === 'OPTIONS') {
+        // Завжди відповідати на preflight тут і зараз
+        return res.sendStatus(204);
+    }
+
+    return allow
+        ? next()
+        : res.status(403).send('CORS: origin not allowed');
+});
 app.use(express.json());
-app.use((req, res, next) => {res.setHeader('Vary', 'Origin'); next();});
 
 app.use(express.urlencoded({extended: true}))  // для formData
 
