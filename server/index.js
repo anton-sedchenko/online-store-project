@@ -30,17 +30,13 @@ const allowedOrigins = [
 app.use(cors({
     origin(origin, cb) {
         if (!origin) return cb(null, true); // Postman/сервер-до-сервера
-        const ok =
-            allowedOrigins.includes(origin) ||
-            /\.vercel\.app$/.test(origin); // дозволяємо будь-які *.vercel.app
+        const ok = allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin);
         cb(ok ? null : new Error('CORS not allowed from: ' + origin), ok);
     },
-    methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
-    allowedHeaders: ['Content-Type','Authorization'],
-    credentials: true,
+    credentials: true, // ок, якщо колись будуть cookies
 }));
 
-// Відповідаємо НАПЕВНЕ на preflight
+// відповідь на preflight
 app.options('*', cors(), (req, res) => res.sendStatus(204));
 
 app.use(express.json());
