@@ -19,24 +19,27 @@ const {ProductImage} = require("./models/models");
 // --- CORS Setup ---
 const allowedOrigins = [
     'http://localhost:3000',
+    'http://localhost:5173',
     'https://charivna-craft.com.ua',
     'https://www.charivna-craft.com.ua',
-    'https://online-store-project-git-staging-antonsedchenkos-projects.vercel.app'
+    'https://online-store-project-git-staging-antonsedchenkos-projects.vercel.app',
+    'https://online-store-project.vercel.app'
 ];
 
 app.use(cors({
-    origin: function (origin, callback) {
-        // дозволяємо запити без Origin (наприклад, Postman) або з білого списку
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('CORS not allowed from this origin: ' + origin));
+    origin(origin, callback) {
+        if (!origin) return callback(null, true); // Postman/серверні запити без Origin
+        if (allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
+            return callback(null, true);
         }
+        return callback(new Error('CORS not allowed from: ' + origin));
     },
-    methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+    methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
     allowedHeaders: ['Content-Type','Authorization'],
     credentials: true,
 }));
+
+app.options('*', cors());
 
 app.use(express.json());
 
