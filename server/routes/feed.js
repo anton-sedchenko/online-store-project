@@ -1,46 +1,55 @@
-const {Router} = require('express');
-const {create} = require('xmlbuilder2');
-const {Product, ProductImage, Type} = require('../models/models');
+const { Router } = require('express');
+const { create } = require('xmlbuilder2');
+const { Product, ProductImage, Type } = require('../models/models');
 
 const router = Router();
 
-// простий in-memory кеш, щоб не навантажувати БД при кожному запиті
-const CACHE_TTL_MS = 120000; // 2 хв
+// ===== helpers =====
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 хв
 let cachedXml = null;
 let cachedAt = 0;
-
 const now = () => Date.now();
 
 function mapAvailability(av) {
-    // стани товару: 'IN_STOCK' | 'MADE_TO_ORDER' | 'OUT_OF_STOCK'
-    if (av === 'IN_STOCK') return {available: 'true', stock: '1', madeToOrder: false};
-    if (av === 'MADE_TO_ORDER') return {available: 'true', stock: '1', madeToOrder: true};
-    return {available: 'false', stock: '0', madeToOrder: false}; // OUT_OF_STOCK або будь-що інше
+    if (av === 'IN_STOCK')      return { available: 'true', stock: '1', madeToOrder: false };
+    if (av === 'MADE_TO_ORDER') return { available: 'true', stock: '1', madeToOrder: true  };
+    return { available: 'false', stock: '0', madeToOrder: false };
 }
 
+const safe = (v) => (v == null ? '' : String(v));
+const truncate = (s, n) => (s.length > n ? s.slice(0, n - 1) + '…' : s);
+const isAbsUrl = (u) => /^https?:\/\//i.test(u);
+const toAbsUrl = (base, u) => (isAbsUrl(u) ? u : `${base}${u.startsWith('/') ? '' : '/'}${u}`);
+
+// додає <param name="...">...</param>, якщо є значення
+function addParamIf(offer, name, val) {
+    if (val != null && String(val).trim() !== '') {
+        offer.ele('param', { name }).txt(String(val)).up();
+    }
+}
+
+// ===== route =====
 router.get('/rozetka.xml', async (req, res, next) => {
     try {
         // кеш
         if (cachedXml && (now() - cachedAt) < CACHE_TTL_MS) {
             res.set('Content-Type', 'application/xml; charset=utf-8');
+            res.set('Cache-Control', 'public, max-age=600');
             return res.send(cachedXml);
         }
 
-        // базова URL магазину
         const baseUrl = process.env.BASE_URL || 'https://charivna-craft.com.ua';
 
-        // 1) тягнемо товари з пов'язаними фото та типами
         const products = await Product.findAll({
             include: [
-                {model: ProductImage, as: 'images'},
-                {model: Type} // Product.belongsTo(Type) без alias, доступ буде як p.type
+                { model: ProductImage, as: 'images' },
+                { model: Type },
             ],
-            order: [['id', 'ASC']]
+            order: [['id', 'ASC']],
         });
 
-        // 2) будуємо XML
-        const doc = create({version: '1.0', encoding: 'UTF-8'})
-            .ele('yml_catalog', {date: new Date().toISOString().slice(0, 16).replace('T', ' ')})
+        const doc = create({ version: '1.0', encoding: 'UTF-8' })
+            .ele('yml_catalog', { date: new Date().toISOString().slice(0, 16).replace('T', ' ') })
             .ele('shop');
 
         doc.ele('name').txt('Charivna Craft').up()
@@ -51,13 +60,12 @@ router.get('/rozetka.xml', async (req, res, next) => {
         currencies.ele('currency', { id: 'UAH', rate: '1' }).up();
         currencies.up();
 
-        // категорії, беремо лише ті, що реально присутні у вибірці товарів
         const categories = doc.ele('categories');
         const seen = new Set();
         for (const p of products) {
             if (p.type && !seen.has(p.type.id)) {
                 const cid = p.type.rozetkaCategoryId || p.type.id;
-                categories.ele('category', {id: String(cid)}).txt(p.type.name).up();
+                categories.ele('category', { id: String(cid) }).txt(p.type.name).up();
                 seen.add(p.type.id);
             }
         }
@@ -66,55 +74,65 @@ router.get('/rozetka.xml', async (req, res, next) => {
         const offers = doc.ele('offers');
 
         for (const p of products) {
-            const {available, stock, madeToOrder} = mapAvailability(p.availability);
+            const { available, stock, madeToOrder } = mapAvailability(p.availability);
             const categoryId = p.type?.rozetkaCategoryId || p.type?.id || 1;
 
-            const offer = offers.ele('offer', {id: String(p.id), available});
+            const offer = offers.ele('offer', { id: String(p.id), available });
 
             // ціна / валюта / категорія
-            offer.ele('price').txt(Number(p.price).toFixed(2)).up();
+            const price = Number(p.price || 0);
+            offer.ele('price').txt(price.toFixed(2)).up();
             offer.ele('currencyId').txt('UAH').up();
             offer.ele('categoryId').txt(String(categoryId)).up();
 
-            // картинки: спершу головне фото img, потім додаткові з product_images
+            // картинки: головне + додаткові, абсолютні, без дублікатів
             const pics = [];
-            if (p.img && /^https?:\/\//i.test(p.img)) pics.push(p.img);
+            if (safe(p.img)) pics.push(toAbsUrl(baseUrl, safe(p.img)));
             for (const im of (p.images || [])) {
-                if (im.url && /^https?:\/\//i.test(im.url)) pics.push(im.url);
+                if (safe(im.url)) pics.push(toAbsUrl(baseUrl, safe(im.url)));
             }
-            // видаляємо дублікати
-            const uniquePics = [...new Set(pics)];
-            uniquePics.forEach(url => offer.ele('picture').txt(url).up());
+            [...new Set(pics)].forEach(url => offer.ele('picture').txt(url).up());
 
-            // обов’язкові/корисні атрибути
+            // бренд / артикул / склад
             offer.ele('vendor').txt('Charivna Craft').up();
-            if (p.code) offer.ele('article').txt(p.code).up();          // твій артикул
-            offer.ele('stock_quantity').txt(stock).up();                 // ключове поле для Rozetka
+            if (p.code) offer.ele('vendorCode').txt(p.code).up();
+            offer.ele('stock_quantity').txt(stock).up();
 
             // назва та опис
-            offer.ele('name').txt(p.name).up();
+            offer.ele('name').txt(safe(p.name)).up();
             if (p.description) {
-                offer.ele('description').dat(`<p>${p.description}</p>`).up();
+                const html = `<p>${truncate(String(p.description), 4800)}</p>`;
+                offer.ele('description').dat(html).up();
             }
 
             // параметри
             if (madeToOrder) {
-                offer.ele('param', {name: 'Готовність'}).txt('Виготовлення ~1 доба').up();
+                offer.ele('param', { name: 'Готовність' }).txt('Виготовлення ~1 доба').up();
             }
-            offer.ele('param', {name: 'Країна-виробник товару'}).txt('Україна').up();
 
-            offer.up(); // </offer>
+            // розміри / вага / країна / колір / матеріал (опціонально)
+            addParamIf(offer, 'Ширина',  p.width);
+            addParamIf(offer, 'Довжина', p.length);
+            addParamIf(offer, 'Висота',  p.height);
+            addParamIf(offer, 'Діаметр', p.diameter);
+
+            if (p.weightKg != null) addParamIf(offer, 'Вага', `${p.weightKg} кг`);
+            addParamIf(offer, 'Країна-виробник товару', p.country || 'Україна');
+            addParamIf(offer, 'Колір',    p.color);
+            addParamIf(offer, 'Матеріал', p.material);
+
+            offer.up();
         }
 
-        offers.up(); // </offers>
+        offers.up();
 
-        const xml = doc.end({prettyPrint: true});
+        const xml = doc.end({ prettyPrint: true });
 
-        // кешуємо
         cachedXml = xml;
         cachedAt = now();
 
         res.set('Content-Type', 'application/xml; charset=utf-8');
+        res.set('Cache-Control', 'public, max-age=600');
         return res.send(xml);
     } catch (err) {
         return next(err);

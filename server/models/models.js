@@ -32,6 +32,14 @@ const Product = sequelize.define('product', {
     description: {type: DataTypes.TEXT, allowNull: true},
     img: {type: DataTypes.STRING},
     code: {type: DataTypes.STRING, allowNull: false, unique: true},
+    width:     { type: DataTypes.TEXT, allowNull: true },
+    length:    { type: DataTypes.TEXT, allowNull: true },
+    height:    { type: DataTypes.TEXT, allowNull: true },
+    diameter:  { type: DataTypes.TEXT, allowNull: true },
+    weightKg:  { type: DataTypes.DECIMAL(10,3), allowNull: true },
+    country:   { type: DataTypes.TEXT, allowNull: true },
+    color:     { type: DataTypes.TEXT, allowNull: true },
+    material:  { type: DataTypes.TEXT, allowNull: true },
     availability: {
         type: DataTypes.STRING, // було ENUM
         allowNull: false,
