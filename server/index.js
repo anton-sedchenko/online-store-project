@@ -38,6 +38,7 @@ app.use(cors({
 
 // відповідь на preflight
 app.options('*', cors());
+app.use(express.json());
 app.use((req, res, next) => {res.setHeader('Vary', 'Origin'); next();});
 
 app.use(express.urlencoded({extended: true}))  // для formData
