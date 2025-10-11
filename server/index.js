@@ -29,17 +29,16 @@ const allowedOrigins = [
 
 app.use(cors({
     origin(origin, cb) {
-        if (!origin) return cb(null, true); // Postman/сервер-до-сервера
+        if (!origin) return cb(null, true); // напряму в браузері / Postman
         const ok = allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin);
         cb(ok ? null : new Error('CORS not allowed from: ' + origin), ok);
     },
-    credentials: true, // ок, якщо колись будуть cookies
+    credentials: true,
 }));
 
 // відповідь на preflight
-app.options('*', cors(), (req, res) => res.sendStatus(204));
-
-app.use(express.json());
+app.options('*', cors());
+app.use((req, res, next) => {res.setHeader('Vary', 'Origin'); next();});
 
 app.use(express.urlencoded({extended: true}))  // для formData
 
