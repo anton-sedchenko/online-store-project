@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const sequelize = require('./db');
-const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const router = require('./routes/index');
 const errorHandler = require('./middleware/ErrorHandlingMiddleware');
@@ -16,18 +15,6 @@ app.set('trust proxy', 1);
 const rateLimit = require('express-rate-limit');
 const {ProductImage} = require("./models/models");
 
-// // --- CORS Setup ---
-// const allowedOrigins = [
-//     'http://localhost:3000',
-//     'http://localhost:5173',
-//     'https://charivna-craft.com.ua',
-//     'https://www.charivna-craft.com.ua',
-//     'https://charivna-craft-staging.vercel.app',
-//     'https://online-store-project-git-staging-antonsedchenkos-projects.vercel.app',
-//     'https://online-store-project.vercel.app'
-// ];
-
-// === HARD CORS (ручний, без пакетів) ===
 const ALLOWED_ORIGINS = new Set([
     'http://localhost:3000',
     'http://localhost:5173',
@@ -76,13 +63,13 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}))  // для formData
 
 app.use(fileUpload({
-    useTempFiles: true,               // Cloudinary читає з тимчасового файлу
-    tempFileDir: '/tmp/',            // тимчасова директорія (на Railway вона існує)
-    limits: {fileSize: 5e6},
+    useTempFiles: true,      // Cloudinary читає з тимчасового файлу
+    tempFileDir: '/tmp/',    // тимчасова директорія (на Railway вона існує)
+    limits: {fileSize: 5e6}
 }));
 
 app.use(helmet({
-    crossOriginResourcePolicy: false,                 // важливо для крос-оригін ресурсів
+    crossOriginResourcePolicy: false,  // важливо для крос-оригін ресурсів
     crossOriginOpenerPolicy: {policy: 'same-origin-allow-popups'}
 }));
 
@@ -156,12 +143,11 @@ app.get('/sitemap.xml', async (req, res) => {
     }
 });
 
+app.get('/__health', (req, res) => res.status(200).send('ok'));
+app.get('/api/ping',  (req, res) => res.json({ ok: true, ts: Date.now() }));
 
 // Замикаючий middleware - опрацювання помилок та передача відповіді клієнту
 app.use(errorHandler);
-
-app.get('/__health', (req, res) => res.status(200).send('ok'));
-app.get('/api/ping',  (req, res) => res.json({ ok: true, ts: Date.now() }));
 
 const start = async () => {
     try {
@@ -178,9 +164,8 @@ const start = async () => {
             await sequelize.authenticate();
             console.log('DB connection OK');
 
-            // УВАГА: alter може бути довгий і важкий
             if (process.env.NODE_ENV === 'staging' || process.env.NODE_ENV === 'production') {
-                await sequelize.sync({ alter: true });
+                await sequelize.sync(); // лише створення відсутніх таблиць, без зміни колонок
                 console.log(`Tables synced (${process.env.NODE_ENV})`);
             }
 
