@@ -13,6 +13,7 @@ const CreateProduct = observer(({show, onHide}) => {
     const [file, setFile] = useState(null);
     const [code, setCode] = useState('');
     const [availability, setAvailability] = useState('IN_STOCK');
+    const [rozetkaCategoryId, setRozetkaCategoryId] = useState('');
 
     // Підгружаємо перелік типів
     useEffect(() => {
@@ -42,6 +43,8 @@ const CreateProduct = observer(({show, onHide}) => {
             formData.append("typeId", productStore.selectedType.id);
             formData.append("code", code);
             formData.append('availability', availability);
+            formData.append('rozetkaCategoryId', (rozetkaCategoryId ?? '').trim());
+
             await createProduct(formData).then(() => onHide());
         } catch (e) {
             alert(e.response?.data?.message || e.message);
@@ -83,13 +86,27 @@ const CreateProduct = observer(({show, onHide}) => {
                         onChange={e => setCode(e.target.value)}
                     />
                     <Form.Group className="mb-2">
+                        <Form.Label>ID категорії Rozetka (необов’язково)</Form.Label>
+                        <Form.Control
+                            type="number"
+                            inputMode="numeric"
+                            placeholder="Наприклад: 4632208"
+                            value={rozetkaCategoryId}
+                            onChange={e => setRozetkaCategoryId(e.target.value)}
+                        />
+                        <Form.Text muted>
+                            Якщо залишити порожнім — товар не потрапить до фіду Rozetka.
+                        </Form.Text>
+                    </Form.Group>
+                    <Form.Group className="mb-2">
                         <Form.Select
                             placeholder="Наявність товару"
                             value={availability}
                             onChange={e => setAvailability(e.target.value)}
                         >
                             <option value="IN_STOCK">В наявності</option>
-                            <option value="PRE_ORDER">Під замовлення (2–3 дні)</option>
+                            <option value="MADE_TO_ORDER">Під замовлення (2–3 дні)</option>
+                            <option value="OUT_OF_STOCK">Немає в наявності</option>
                         </Form.Select>
                     </Form.Group>
                     <Form.Control

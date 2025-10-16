@@ -16,6 +16,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
     const [mainImageFile, setMainImageFile] = useState(null);
     const [mainImageUrl, setMainImageUrl] = useState('');
     const [availability, setAvailability] = useState('IN_STOCK');
+    const [rozetkaCategoryId, setRozetkaCategoryId] = useState('');
 
     useEffect(() => {
         if (productToEdit) {
@@ -26,6 +27,8 @@ const EditProduct = ({show, onHide, productToEdit}) => {
             setDescription(productToEdit.description || '');
             setExistingImages(Array.isArray(productToEdit.images) ? productToEdit.images : []);
             setMainImageUrl(productToEdit.img || '');
+            setRozetkaCategoryId(productToEdit.rozetkaCategoryId ? String(productToEdit.rozetkaCategoryId) : '');
+            setAvailability(productToEdit.availability || 'IN_STOCK');
         }
         fetchTypes().then(setTypes);
     }, [productToEdit]);
@@ -44,7 +47,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
         imgFiles.forEach((file) => {
             formData.append('images', file); // саме цей рядок додає кілька файлів
         });
-
+        formData.append('rozetkaCategoryId', (rozetkaCategoryId ?? '').trim());
 
         await updateProduct(productToEdit.id, formData);
         onHide();
@@ -82,7 +85,8 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             onChange={e => setAvailability(e.target.value)}
                         >
                             <option value="IN_STOCK">В наявності</option>
-                            <option value="PRE_ORDER">Під замовлення (2–3 дні)</option>
+                            <option value="MADE_TO_ORDER">Під замовлення (2–3 дні)</option>
+                            <option value="OUT_OF_STOCK">Немає в наявності</option>
                         </Form.Select>
                     </Form.Group>
                     <Form.Group className="mb-2">
@@ -91,6 +95,19 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             <option value="">Select type</option>
                             {types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                         </Form.Select>
+                    </Form.Group>
+                    <Form.Group className="mb-2">
+                        <Form.Label>ID Категорії Rozetka (необов’язково)</Form.Label>
+                        <Form.Control
+                            type="number"
+                            inputMode="numeric"
+                            placeholder="Напр.: 4632208"
+                            value={rozetkaCategoryId}
+                            onChange={e => setRozetkaCategoryId(e.target.value)}
+                        />
+                        <Form.Text muted>
+                            Якщо залишити порожнім — товар не потрапить до фіду Rozetka.
+                        </Form.Text>
                     </Form.Group>
                     <Form.Group className="mb-2">
                         <Form.Label>Опис товару</Form.Label>

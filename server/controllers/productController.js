@@ -21,17 +21,26 @@ class ProductController {
                 return res.status(400).json({message: 'Файл не завантажений'});
             }
 
-            let {name, price, typeId, description, code, availability} = req.body;
+            let {name, price, typeId, description, code, availability, rozetkaCategoryId} = req.body;
 
-            const typeIdNum = Number(typeId);
-            const priceNum  = Number(price);
+            // нормалізація статусу (щоб "Під замовлення" не ламало ENUM)
+            const availabilityNorm = availability === 'PRE_ORDER' ? 'MADE_TO_ORDER' : availability;
+
+            // парсимо числа
+            const typeIdNum  = Number(typeId);
+            const priceNum   = Number(price);
+
+            // Rozetka ID може бути порожнім - тоді null
+            const rzIdNum = rozetkaCategoryId && String(rozetkaCategoryId).trim() !== ''
+                ? Number(rozetkaCategoryId)
+                : null;
 
             if (!name || !code || !typeId || Number.isNaN(typeIdNum) || Number.isNaN(priceNum)) {
                 return next(ApiError.badRequest('Заповніть назву, артикул, коректну ціну та категорію'));
             }
 
             const {img} = req.files;
-            const result = await cloudinary.uploader.upload(img.tempFilePath, {
+            const result = await cloudinary.uploader.upload(img.tempFilePath || img.path, {
                 folder: 'products',
             });
 
@@ -43,7 +52,8 @@ class ProductController {
                 typeId: typeIdNum,
                 description,
                 code,
-                availability,
+                availability: availabilityNorm,
+                rozetkaCategoryId: rzIdNum,
                 img: result.secure_url,
             });
 
@@ -58,9 +68,26 @@ class ProductController {
         try {
             const {id} = req.params;
             let {name, price, typeId, description, code} = req.body;
+
+            // приймаємо можливі поля
+            const {availability, rozetkaCategoryId} = req.body;
+            // нормалізація
+            const availabilityNorm = availability === 'PRE_ORDER' ? 'MADE_TO_ORDER' : availability;
+            // обробка Rozetka ID
+            let rzIdNum = null;
+
+            if (rozetkaCategoryId !== undefined) {
+                rzIdNum = String(rozetkaCategoryId).trim() === '' ? null : Number(rozetkaCategoryId);
+                if (Number.isNaN(rzIdNum)) rzIdNum = null;
+            }
+
             const product = await Product.findByPk(id);
+
             if (!product) return next(ApiError.badRequest(`Товар ${id} не знайдений`));
-            if (req.body.availability) product.availability = req.body.availability;
+
+            if (availability !== undefined) {
+                product.availability = availabilityNorm;
+            }
 
             // якщо прийшов файл - оновлюємо головне зображення
             if (req.files?.img) {
@@ -71,7 +98,7 @@ class ProductController {
                 product.img = result.secure_url;
             }
 
-            // 🆕 якщо прийшли додаткові фото — зберігаємо їх
+            // якщо прийшли додаткові фото — зберігаємо їх
             const images = req.files?.images;
             if (images) {
                 const filesArray = Array.isArray(images) ? images : [images];
@@ -92,9 +119,19 @@ class ProductController {
             if (name || code) {
                 product.slug = slugify(product.name, {lower: true, strict: true}) + '-' + product.code;
             }
-            if (price) product.price = price;
-            if (typeId) product.typeId = typeId;
+            if (price !== undefined) {
+                const priceNum = Number(price);
+                if (!Number.isNaN(priceNum)) product.price = priceNum;
+            }
+            if (typeId !== undefined) {
+                const typeIdNum = Number(typeId);
+                if (!Number.isNaN(typeIdNum)) product.typeId = typeIdNum;
+            }
             if (description !== undefined) product.description = description;
+
+            if (rozetkaCategoryId !== undefined) {
+                product.rozetkaCategoryId = rzIdNum; // дозволяємо і ставити null, і число
+            }
 
             await product.save();
             return res.json(product);

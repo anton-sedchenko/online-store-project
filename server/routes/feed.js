@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { create } = require('xmlbuilder2');
 const { Product, ProductImage, Type } = require('../models/models');
+const { Op } = require('sequelize');
 
 const router = Router();
 
@@ -41,6 +42,7 @@ router.get('/rozetka.xml', async (req, res, next) => {
         const baseUrl = process.env.BASE_URL || 'https://charivna-craft.com.ua';
 
         const products = await Product.findAll({
+            where: { rozetkaCategoryId: { [Op.ne]: null } },
             include: [
                 { model: ProductImage, as: 'images' },
                 { model: Type },
@@ -75,7 +77,7 @@ router.get('/rozetka.xml', async (req, res, next) => {
 
         for (const p of products) {
             const { available, stock, madeToOrder } = mapAvailability(p.availability);
-            const categoryId = p.type?.rozetkaCategoryId || p.type?.id || 1;
+            const categoryId = String(p.rozetkaCategoryId);
 
             const offer = offers.ele('offer', { id: String(p.id), available });
 

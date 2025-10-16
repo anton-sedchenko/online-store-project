@@ -49,6 +49,7 @@ const Product = sequelize.define('product', {
         }
     },
     slug: {type: DataTypes.STRING, unique: true},
+    rozetkaCategoryId: {type: DataTypes.BIGINT, allowNull: true},
 });
 
 const Type = sequelize.define('type', {
