@@ -33,7 +33,7 @@ function addParamIf(offer, name, val) {
 router.get('/rozetka.xml', async (req, res, next) => {
     try {
         // кеш
-        if (cachedXml && (now() - cachedAt) < CACHE_TTL_MS) {
+        if (!('nocache' in req.query) && cachedXml && (now() - cachedAt) < CACHE_TTL_MS) {
             res.set('Content-Type', 'application/xml; charset=utf-8');
             res.set('Cache-Control', 'public, max-age=600');
             return res.send(cachedXml);
