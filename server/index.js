@@ -7,6 +7,7 @@ const errorHandler = require('./middleware/ErrorHandlingMiddleware');
 const helmet = require('helmet');
 const {create } = require('xmlbuilder2');
 const {Article, Product} = require('./models/models');
+const feedRouter = require('./routes/feed');
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -80,6 +81,7 @@ const apiLimiter = rateLimit({
 app.use('/api', apiLimiter);
 app.use('/callback', apiLimiter);
 app.use('/api', router);
+app.use(feedRouter);
 
 // Генеруємо sitemap.xml динамічно
 app.get('/sitemap.xml', async (req, res) => {

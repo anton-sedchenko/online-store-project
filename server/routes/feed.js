@@ -39,7 +39,7 @@ router.get('/rozetka.xml', async (req, res, next) => {
             return res.send(cachedXml);
         }
 
-        const baseUrl = process.env.BASE_URL || 'https://charivna-craft.com.ua';
+        const baseUrl = process.env.BASE_URL || process.env.CLIENT_URL || 'https://charivna-craft.com.ua';
 
         const products = await Product.findAll({
             where: { rozetkaCategoryId: { [Op.ne]: null } },
@@ -63,12 +63,13 @@ router.get('/rozetka.xml', async (req, res, next) => {
         currencies.up();
 
         const categories = doc.ele('categories');
-        const seen = new Set();
+        const seenRozetka = new Set();
+
         for (const p of products) {
-            if (p.type && !seen.has(p.type.id)) {
-                const cid = p.type.rozetkaCategoryId || p.type.id;
-                categories.ele('category', { id: String(cid) }).txt(p.type.name).up();
-                seen.add(p.type.id);
+            const rzId = p.rozetkaCategoryId;
+            if (rzId != null && !seenRozetka.has(rzId)) {
+                categories.ele('category', { id: String(rzId) }).txt(String(rzId)).up();
+                seenRozetka.add(rzId);
             }
         }
         categories.up();
