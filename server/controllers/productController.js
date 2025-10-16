@@ -3,6 +3,7 @@ const ApiError = require('../error/ApiError');
 const {cloudinary, extractPublicId} = require('../utils/cloudinary');
 const slugify = require('slugify');
 const {ProductImage} = require('../models/models');
+const {invalidateFeedCache} = require('../routes/feed');
 
 class ProductController {
     async getBySlug(req, res, next) {
@@ -56,6 +57,8 @@ class ProductController {
                 rozetkaCategoryId: rzIdNum,
                 img: result.secure_url,
             });
+
+            invalidateFeedCache();
 
             return res.json(newProduct);
         } catch (e) {
@@ -134,6 +137,7 @@ class ProductController {
             }
 
             await product.save();
+            invalidateFeedCache();
             return res.json(product);
         } catch (e) {
             next(ApiError.internal(e.message));

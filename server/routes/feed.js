@@ -5,11 +5,17 @@ const { Op } = require('sequelize');
 
 const router = Router();
 
-// ===== helpers =====
-const CACHE_TTL_MS = 10 * 60 * 1000; // 10 хв
+// 10 хв у проді, вимкнено в інших середовищах
+const CACHE_TTL_MS = process.env.NODE_ENV === 'production' ? 10 * 60 * 1000 : 0;
+
 let cachedXml = null;
 let cachedAt = 0;
 const now = () => Date.now();
+
+function invalidateFeedCache() {
+    cachedXml = null;
+    cachedAt = 0;
+}
 
 function mapAvailability(av) {
     if (av === 'IN_STOCK')      return { available: 'true', stock: '1', madeToOrder: false };
@@ -33,7 +39,7 @@ function addParamIf(offer, name, val) {
 router.get('/rozetka.xml', async (req, res, next) => {
     try {
         // кеш
-        if (!('nocache' in req.query) && cachedXml && (now() - cachedAt) < CACHE_TTL_MS) {
+        if (CACHE_TTL_MS > 0 && !('nocache' in req.query) && cachedXml && (now() - cachedAt) < CACHE_TTL_MS) {
             res.set('Content-Type', 'application/xml; charset=utf-8');
             res.set('Cache-Control', 'public, max-age=600');
             return res.send(cachedXml);
@@ -131,8 +137,10 @@ router.get('/rozetka.xml', async (req, res, next) => {
 
         const xml = doc.end({ prettyPrint: true });
 
-        cachedXml = xml;
-        cachedAt = now();
+        if (CACHE_TTL_MS > 0) {
+            cachedXml = xml;
+            cachedAt = now();
+        }
 
         res.set('Content-Type', 'application/xml; charset=utf-8');
         res.set('Cache-Control', 'public, max-age=600');
@@ -142,4 +150,6 @@ router.get('/rozetka.xml', async (req, res, next) => {
     }
 });
 
+// додаємо метод інвалідації як властивість роутера
+router.invalidateFeedCache = invalidateFeedCache;
 module.exports = router;
