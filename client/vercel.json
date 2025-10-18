@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/rozetka.xml",
+      "destination": "https://online-store-project-production.up.railway.app/rozetka.xml"
+    },
+    {
       "source": "/reset-password/:token",
       "destination": "/index.html"
     },
