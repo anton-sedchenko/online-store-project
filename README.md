@@ -1,6 +1,8 @@
-# Magic Workshop
+# Charivna Craft
 
-An online store of handmade figurines “Magic Workshop”
+An online store of handmade figurines “Charivna Craft”
+Here is the link on it: https://charivna-craft.com.ua/
+
 
 ---
 
