@@ -5,15 +5,14 @@ let slugify; try { slugify = require('slugify'); } catch { slugify = s => String
 
 const router = Router();
 
-// === Константи ===
+// --- Константи ---
 const SITE = 'https://charivna-craft.com.ua';
 const CURRENCY = 'UAH';
-const LANG = 'uk';
 
-// Вимкнені категорії (не віддаємо у фід)
+// Вимкнуті з фіда типи
 const EXCLUDE_TYPES = new Set(['Фарби']);
 
-// Базові GPC для головних груп
+// Google Product Categories (офіційні рядки)
 const GPC = {
     FIGURINES: 'Home & Garden > Decor > Figurines',
     JEWELRY: 'Apparel & Accessories > Jewelry',
@@ -22,22 +21,17 @@ const GPC = {
     TRIVETS: 'Home & Garden > Kitchen & Dining > Kitchen Tools & Utensils > Trivets',
 };
 
-// Підтипи для “Вироби зі шнура …” шукаємо в назві/описі
+// ключові слова (укр/рос/англійські варіанти)
 const KW = {
-    BASKET: /\b(кошик|кошики|корзин\w*|basket)\b/i,
-    PLACEMAT: /\b(підтарі[л|ль]ник\w*|підтарі[л|ль]ники|серветк\w*|placemat\w*)\b/i,
-    TRIVET: /\b(підставк\w*\s*під\s*гаряч\w*|trivet\w*)\b/i,
+    FIGURINE: /(фігурк|статует|figurine|статуэт)/i,
+    JEWELRY: /(гердан|браслет|чокер|намист|ожерел|necklace|bracelet|choker)/i,
+    BASKET: /(кошик|кошики|корзин|basket)/i,
+    PLACEMAT: /(підтарі?льник|серветк|placemat|подтарелочник)/i,
+    TRIVET: /(підставк[^ ]*\s*під\s*гаряч|trivet|подставк[^ ]*\s*под\s*горяч)/i,
 };
 
-// Тести/чернетки в назвах типів — не додаємо g:google_product_category
-const isTestType = (name = '') => /(^|\s)(test|тест|чернетк)/i.test(String(name));
-
-// === Хелпери ===
-function mapAvailability(av) {
-    if (av === 'IN_STOCK') return 'in stock';
-    if (av === 'MADE_TO_ORDER') return 'preorder';
-    return 'out of stock';
-}
+// --- Хелпери ---
+const norm = (s) => String(s || '').trim();
 function sanitizeText(v, max = 5000) {
     const s = String(v == null ? '' : v);
     return s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').slice(0, max);
@@ -47,38 +41,49 @@ function absUrl(u) {
     const s = String(u);
     return /^https?:\/\//i.test(s) ? s : `${SITE}/${s.replace(/^\/+/, '')}`;
 }
-function norm(s) { return String(s || '').trim(); }
+function mapAvailability(av) {
+    if (av === 'IN_STOCK') return 'in stock';
+    if (av === 'MADE_TO_ORDER') return 'preorder';
+    return 'out of stock';
+}
+function isTestType(name = '') {
+    return /(^|\s)(test|тест|чернетк)/i.test(String(name));
+}
 
-// Визначаємо офіційну категорію Google з урахуванням типу та ключових слів
+// Визначаємо офіційну GPC за типом і/або ключовими словами
 function resolveGoogleCategory(typeName, product) {
     const t = norm(typeName);
-
-    // 1) Фільтрація вимкнених/тестових
     if (!t || EXCLUDE_TYPES.has(t) || isTestType(t)) return null;
 
-    // 2) Прості відповідності типів
+    const hay = `${product?.name || ''} ${product?.description || ''}`;
+
+    // точні відповідності за типом
     if (t === 'Гіпсові фігурки') return GPC.FIGURINES;
     if (t === 'Вироби з бісеру: гердани, браслети, чокери...') return GPC.JEWELRY;
 
-    // 3) Вироби зі шнура — уточнюємо за ключовими словами
+    // «Вироби зі шнура …» — уточнюємо за назвою/описом
     if (t === 'Вироби зі шнура: серветки підтарільники, кошики, підставки під гаряче...') {
-        const hay = `${product?.name || ''} ${product?.description || ''}`;
         if (KW.BASKET.test(hay)) return GPC.BASKETS;
         if (KW.PLACEMAT.test(hay)) return GPC.PLACEMATS;
         if (KW.TRIVET.test(hay)) return GPC.TRIVETS;
-        // якщо точно не визначили — краще нічого не ставити, Google сам класифікує
         return null;
     }
 
-    // 4) Інші/невідомі — не задаємо, це не помилка
-    return null;
+    // fallback: спроба за ключовими словами (на випадок нових/інших типів)
+    if (KW.FIGURINE.test(hay)) return GPC.FIGURINES;
+    if (KW.JEWELRY.test(hay)) return GPC.JEWELRY;
+    if (KW.BASKET.test(hay)) return GPC.BASKETS;
+    if (KW.PLACEMAT.test(hay)) return GPC.PLACEMATS;
+    if (KW.TRIVET.test(hay)) return GPC.TRIVETS;
+
+    return null; // якщо невідомо — нічого не ставимо (це не помилка)
 }
 
 router.get('/gmc.xml', async (req, res, next) => {
     try {
         const products = await Product.findAll({
             include: [
-                { model: Type, required: false },                    // без alias
+                { model: Type, required: false },                     // без alias
                 { model: ProductImage, as: 'images', required: false } // alias 'images'
             ],
             order: [['id', 'ASC']],
@@ -92,12 +97,11 @@ router.get('/gmc.xml', async (req, res, next) => {
         root.ele('link').txt(SITE);
         root.ele('description').txt('Файловий фід для Google Merchant');
 
-        let skipped = 0;
-
         for (const p of products) {
             try {
-                // Вимикаємо “Фарби” та пусті типи
                 const typeName = norm(p.Type && p.Type.name);
+
+                // виключаємо тільки «Фарби»
                 if (typeName && EXCLUDE_TYPES.has(typeName)) continue;
 
                 const title = sanitizeText(p.name, 150);
@@ -120,40 +124,44 @@ router.get('/gmc.xml', async (req, res, next) => {
                 for (const u of additional) item.ele('g:additional_image_link').txt(u);
 
                 item.ele('g:availability').txt(mapAvailability(p.availability));
-
                 const priceNum = Number(p.price ?? 0);
                 item.ele('g:price').txt(`${isFinite(priceNum) ? priceNum.toFixed(2) : '0.00'} ${CURRENCY}`);
                 item.ele('g:condition').txt('new');
 
-                // product_type — наша власна ієрархія (допомагає в кампаніях)
-                if (typeName) {
-                    item.ele('g:product_type').txt(`Handmade > ${sanitizeText(typeName, 200)}`);
-                    } else {
-                        item.ele('g:product_type').txt('Handmade');
-                    }
+                // product_type — твоя ієрархія
+                if (typeName) item.ele('g:product_type').txt(`Handmade > ${sanitizeText(typeName, 200)}`);
+                else {
+                    // простий автопідбір для відсутнього Type
+                    const hay = `${p.name || ''} ${p.description || ''}`;
+                    let pt = 'Handmade';
+                    if (KW.JEWELRY.test(hay)) pt = 'Handmade > Прикраси';
+                    else if (KW.FIGURINE.test(hay)) pt = 'Handmade > Фігурки';
+                    else if (KW.BASKET.test(hay)) pt = 'Handmade > Кошики';
+                    else if (KW.PLACEMAT.test(hay)) pt = 'Handmade > Підтарільники';
+                    else if (KW.TRIVET.test(hay)) pt = 'Handmade > Підставки під гаряче';
+                    item.ele('g:product_type').txt(pt);
+                }
 
-                // google_product_category — лише для відомих комбінацій
-                const gpc = typeName ? resolveGoogleCategory(typeName, p) : null;
+                // google_product_category — офіційна таксономія (ставимо лише якщо визначили)
+                const gpc = resolveGoogleCategory(typeName, p);
                 if (gpc) item.ele('g:google_product_category').txt(gpc);
 
                 // Ідентифікатори для handmade
                 item.ele('g:brand').txt('Charivna Craft');
                 item.ele('g:identifier_exists').txt('no');
 
-                // За потреби: availability_date для preorder, якщо є очікувана дата
+                // Якщо коли-небудь з’явиться очікувана дата для preorder:
                 // if (p.availability === 'MADE_TO_ORDER' && p.expectedAt) {
                 //   item.ele('g:availability_date').txt(new Date(p.expectedAt).toISOString());
                 // }
-
             } catch (e) {
-                skipped++;
                 console.error('[GMC FEED] skipped id=', p?.id, e?.message);
             }
         }
 
         const xml = root.end({ prettyPrint: true });
         res.set('Content-Type', 'application/rss+xml; charset=UTF-8');
-        res.send(xml /* + `\n<!-- skipped: ${skipped} -->` */);
+        res.send(xml);
     } catch (err) {
         console.error('[GMC FEED] fatal:', err);
         next(err);
