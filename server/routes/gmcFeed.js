@@ -53,30 +53,30 @@ function isTestType(name = '') {
 // Визначаємо офіційну GPC за типом і/або ключовими словами
 function resolveGoogleCategory(typeName, product) {
     const t = norm(typeName);
-    if (!t || EXCLUDE_TYPES.has(t) || isTestType(t)) return null;
-
     const hay = `${product?.name || ''} ${product?.description || ''}`;
 
-    // точні відповідності за типом
+    // Вимикаємо лише явно заборонені/тестові
+    if (EXCLUDE_TYPES.has(t) || isTestType(t)) return null;
+
+    // Якщо тип відомий — спершу правила по типу
     if (t === 'Гіпсові фігурки') return GPC.FIGURINES;
     if (t === 'Вироби з бісеру: гердани, браслети, чокери...') return GPC.JEWELRY;
-
-    // «Вироби зі шнура …» — уточнюємо за назвою/описом
     if (t === 'Вироби зі шнура: серветки підтарільники, кошики, підставки під гаряче...') {
-        if (KW.BASKET.test(hay)) return GPC.BASKETS;
+        if (KW.BASKET.test(hay))   return GPC.BASKETS;
         if (KW.PLACEMAT.test(hay)) return GPC.PLACEMATS;
-        if (KW.TRIVET.test(hay)) return GPC.TRIVETS;
+        if (KW.TRIVET.test(hay))   return GPC.TRIVETS;
+        // якщо не визначили підтип — не ставимо GPC, це ок
         return null;
     }
 
-    // fallback: спроба за ключовими словами (на випадок нових/інших типів)
-    if (KW.FIGURINE.test(hay)) return GPC.FIGURINES;
-    if (KW.JEWELRY.test(hay)) return GPC.JEWELRY;
-    if (KW.BASKET.test(hay)) return GPC.BASKETS;
-    if (KW.PLACEMAT.test(hay)) return GPC.PLACEMATS;
-    if (KW.TRIVET.test(hay)) return GPC.TRIVETS;
+    // Fallback: навіть якщо типу НЕМає — підбираємо по ключових словах
+    if (KW.FIGURINE.test(hay))  return GPC.FIGURINES;
+    if (KW.JEWELRY.test(hay))   return GPC.JEWELRY;
+    if (KW.BASKET.test(hay))    return GPC.BASKETS;
+    if (KW.PLACEMAT.test(hay))  return GPC.PLACEMATS;
+    if (KW.TRIVET.test(hay))    return GPC.TRIVETS;
 
-    return null; // якщо невідомо — нічого не ставимо (це не помилка)
+    return null;
 }
 
 router.get('/gmc.xml', async (req, res, next) => {
