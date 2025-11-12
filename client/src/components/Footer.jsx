@@ -48,12 +48,12 @@ const Footer = () => {
                                    aria-hidden="true"></i>
                             </a>
                             <a
-                                href="https://www.pinterest.com/charivnacraft"
+                                href="https://www.instagram.com/charivnacraft/"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="footer__social-link"
                             >
-                                <i className="fa fa-pinterest-square" aria-hidden="true"></i>
+                                <i className="fa fa-instagram" aria-hidden="true"></i>
                             </a>
                         </div>
                         <div className="footer__contact__container">
