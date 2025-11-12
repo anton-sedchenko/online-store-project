@@ -8,7 +8,7 @@ const helmet = require('helmet');
 const {create } = require('xmlbuilder2');
 const {Article, Product} = require('./models/models');
 const feedRouter = require('./routes/feed');
-import gmcFeed from './routes/gmcFeed.js';
+const gmcFeed = require('./routes/gmcFeed');
 
 const PORT = process.env.PORT || 8080;
 const app = express();

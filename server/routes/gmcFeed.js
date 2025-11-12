@@ -1,7 +1,7 @@
-import { Router } from 'express';
-import { create } from 'xmlbuilder2';
-import { Product, Type, ProductImage } from '../models/models.js';
-import slugify from 'slugify';
+const { Router } = require('express');
+const { create } = require('xmlbuilder2');
+const { Product, Type, ProductImage } = require('../models/models');
+const slugify = require('slugify');
 
 const router = Router();
 
@@ -17,7 +17,7 @@ function mapAvailability(av) {
 
 function absUrl(u) {
     if (!u) return '';
-    return /^https?:\/\//i.test(u) ? u : `${SITE}/${u.replace(/^\/+/, '')}`;
+    return /^https?:\/\//i.test(u) ? u : `${SITE}/${String(u).replace(/^\/+/, '')}`;
 }
 
 router.get('/gmc.xml', async (req, res, next) => {
@@ -31,10 +31,7 @@ router.get('/gmc.xml', async (req, res, next) => {
         });
 
         const root = create({ version: '1.0', encoding: 'UTF-8' })
-            .ele('rss', {
-                version: '2.0',
-                'xmlns:g': 'http://base.google.com/ns/1.0',
-            })
+            .ele('rss', { version: '2.0', 'xmlns:g': 'http://base.google.com/ns/1.0' })
             .ele('channel');
 
         root.ele('title').txt('Charivna Craft — Каталог');
@@ -51,7 +48,6 @@ router.get('/gmc.xml', async (req, res, next) => {
             const item = root.ele('item');
             item.ele('g:id').txt(String(p.id));
             item.ele('title').txt((p.name || '').slice(0, 150));
-            // CDATA для опису
             item.ele('description').dat((p.description || p.name || '').slice(0, 5000));
             item.ele('link').txt(link);
 
@@ -62,20 +58,13 @@ router.get('/gmc.xml', async (req, res, next) => {
             item.ele('g:price').txt(`${Number(p.price || 0).toFixed(2)} ${CURRENCY}`);
             item.ele('g:condition').txt('new');
 
-            // handmade: без GTIN → або brand + identifier_exists=false
             item.ele('g:brand').txt('Charivna Craft');
             item.ele('g:identifier_exists').txt('false');
 
-            // Категоризація (не обов’язково, але корисно)
             if (p.Type?.name) item.ele('g:product_type').txt(`Handmade > ${p.Type.name}`);
 
-            // Мова/країна (для багатьох акаунтів не обов’язково в item, але хай буде)
             item.ele('g:content_language').txt(LANG);
             item.ele('g:target_country').txt('UA');
-
-            // Якщо бувають акції:
-            // if (p.salePrice) item.ele('g:sale_price').txt(`${Number(p.salePrice).toFixed(2)} ${CURRENCY}`);
-            // if (p.saleFrom && p.saleTo) item.ele('g:sale_price_effective_date').txt(`${p.saleFrom}/${p.saleTo}`);
         }
 
         const xml = root.end({ prettyPrint: true });
@@ -86,4 +75,4 @@ router.get('/gmc.xml', async (req, res, next) => {
     }
 });
 
-export default router;
+module.exports = router;
