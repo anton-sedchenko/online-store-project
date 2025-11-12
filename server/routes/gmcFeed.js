@@ -71,14 +71,11 @@ router.get('/gmc.xml', async (req, res, next) => {
                 item.ele('g:condition').txt('new');
 
                 item.ele('g:brand').txt('Charivna Craft');
-                item.ele('g:identifier_exists').txt('false');
+                item.ele('g:identifier_exists').txt('no');
 
                 if (p.Type && p.Type.name) {
                     item.ele('g:product_type').txt(`Handmade > ${sanitizeText(p.Type.name, 200)}`);
                 }
-
-                item.ele('g:content_language').txt(LANG);
-                item.ele('g:target_country').txt('UA');
             } catch (e) {
                 skipped++;
                 console.error('[GMC FEED] skipped id=', p?.id, e?.message);
