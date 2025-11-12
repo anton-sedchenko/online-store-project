@@ -96,10 +96,9 @@ router.get('/gmc.xml', async (req, res, next) => {
 
         for (const p of products) {
             try {
-                const typeName = norm(p.Type && p.Type.name);
-
                 // Вимикаємо “Фарби” та пусті типи
-                if (!typeName || EXCLUDE_TYPES.has(typeName)) continue;
+                const typeName = norm(p.Type && p.Type.name);
+                if (typeName && EXCLUDE_TYPES.has(typeName)) continue;
 
                 const title = sanitizeText(p.name, 150);
                 const description = sanitizeText(p.description || p.name, 5000);
@@ -127,10 +126,14 @@ router.get('/gmc.xml', async (req, res, next) => {
                 item.ele('g:condition').txt('new');
 
                 // product_type — наша власна ієрархія (допомагає в кампаніях)
-                item.ele('g:product_type').txt(`Handmade > ${sanitizeText(typeName, 200)}`);
+                if (typeName) {
+                    item.ele('g:product_type').txt(`Handmade > ${sanitizeText(typeName, 200)}`);
+                    } else {
+                        item.ele('g:product_type').txt('Handmade');
+                    }
 
                 // google_product_category — лише для відомих комбінацій
-                const gpc = resolveGoogleCategory(typeName, p);
+                const gpc = typeName ? resolveGoogleCategory(typeName, p) : null;
                 if (gpc) item.ele('g:google_product_category').txt(gpc);
 
                 // Ідентифікатори для handmade
