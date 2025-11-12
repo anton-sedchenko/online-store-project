@@ -1,8 +1,7 @@
 const { Router } = require('express');
 const { create } = require('xmlbuilder2');
 const { Product, Type, ProductImage } = require('../models/models');
-let slugify;
-try { slugify = require('slugify'); } catch (e) { slugify = (s)=>String(s||''); }
+let slugify; try { slugify = require('slugify'); } catch { slugify = s => String(s || ''); }
 
 const router = Router();
 
@@ -15,12 +14,9 @@ function mapAvailability(av) {
     if (av === 'MADE_TO_ORDER') return 'preorder';
     return 'out of stock';
 }
-
-// видаляємо заборонені для XML control chars (0x00–0x08,0x0B,0x0C,0x0E–0x1F)
 function sanitizeText(v, max = 5000) {
     const s = String(v == null ? '' : v);
-    const cleaned = s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '');
-    return cleaned.slice(0, max);
+    return s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').slice(0, max);
 }
 function absUrl(u) {
     if (!u) return '';
@@ -32,8 +28,8 @@ router.get('/gmc.xml', async (req, res, next) => {
     try {
         const products = await Product.findAll({
             include: [
-                { model: Type, required: false },
-                { model: ProductImage, required: false },
+                { model: Type, required: false },                    // без as
+                { model: ProductImage, as: 'images', required: false } // <-- alias
             ],
             order: [['id', 'ASC']],
         });
@@ -50,19 +46,19 @@ router.get('/gmc.xml', async (req, res, next) => {
 
         for (const p of products) {
             try {
-                const name = sanitizeText(p.name, 150);
+                const title = sanitizeText(p.name, 150);
                 const description = sanitizeText(p.description || p.name, 5000);
-                const slug = sanitizeText(p.slug) || slugify(name, { lower: true, strict: true });
+                const slug = sanitizeText(p.slug) || slugify(title, { lower: true, strict: true });
                 const link = `${SITE}/product/${slug}`;
 
                 const mainImg = absUrl(p.img);
-                const additional = Array.isArray(p.ProductImages)
-                    ? p.ProductImages.map(pi => absUrl(pi.url)).filter(Boolean).slice(0, 10)
+                const additional = Array.isArray(p.images)
+                    ? p.images.map(pi => absUrl(pi.url)).filter(Boolean).slice(0, 10)
                     : [];
 
                 const item = root.ele('item');
                 item.ele('g:id').txt(String(p.id));
-                item.ele('title').txt(name);
+                item.ele('title').txt(title);
                 item.ele('description').dat(description);
                 item.ele('link').txt(link);
 
@@ -77,20 +73,21 @@ router.get('/gmc.xml', async (req, res, next) => {
                 item.ele('g:brand').txt('Charivna Craft');
                 item.ele('g:identifier_exists').txt('false');
 
-                if (p.Type && p.Type.name) item.ele('g:product_type').txt(`Handmade > ${sanitizeText(p.Type.name, 200)}`);
+                if (p.Type && p.Type.name) {
+                    item.ele('g:product_type').txt(`Handmade > ${sanitizeText(p.Type.name, 200)}`);
+                }
 
                 item.ele('g:content_language').txt(LANG);
                 item.ele('g:target_country').txt('UA');
             } catch (e) {
                 skipped++;
-                console.error('[GMC FEED] skipped product id=', p?.id, 'reason=', e?.message);
+                console.error('[GMC FEED] skipped id=', p?.id, e?.message);
             }
         }
 
         const xml = root.end({ prettyPrint: true });
         res.set('Content-Type', 'application/rss+xml; charset=UTF-8');
-        // можна підглядати у відповідь, скільки скіпнули (коментарем)
-        res.send(xml /* + `\n<!-- skipped: ${skipped} -->` */);
+        res.send(xml);
     } catch (err) {
         console.error('[GMC FEED] fatal:', err);
         next(err);
