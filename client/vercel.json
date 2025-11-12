@@ -5,6 +5,10 @@
       "destination": "https://online-store-project-production.up.railway.app/rozetka.xml"
     },
     {
+      "source": "/gmc.xml",
+      "destination": "https://online-store-project-production.up.railway.app/gmc.xml"
+    },
+    {
       "source": "/reset-password/:token",
       "destination": "/index.html"
     },
