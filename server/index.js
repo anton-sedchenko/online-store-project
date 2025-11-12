@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const {create } = require('xmlbuilder2');
 const {Article, Product} = require('./models/models');
 const feedRouter = require('./routes/feed');
+import gmcFeed from './routes/gmcFeed.js';
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -144,6 +145,8 @@ app.get('/sitemap.xml', async (req, res) => {
         res.sendStatus(500);
     }
 });
+
+app.use(gmcFeed); // генеруємо xml з товарами для гугл мерчант
 
 app.get('/__health', (req, res) => res.status(200).send('ok'));
 app.get('/api/ping',  (req, res) => res.json({ ok: true, ts: Date.now() }));
