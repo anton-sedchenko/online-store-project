@@ -1,14 +1,14 @@
 # Charivna Craft
 
-An online store of handmade figurines “Charivna Craft”
-Here is the link on it: https://charivna-craft.com.ua/
+An online store of handmade goods “Charivna Craft”
+https://charivna-craft.com.ua/
 
 
 ---
 
 ## Description
 
-A small shop of custom plaster figurines with features for:
+A small shop of custom goods with features for:
 - browsing products by category;
 - filtering and searching;
 - guest and registered user carts;
@@ -20,7 +20,7 @@ A small shop of custom plaster figurines with features for:
 
 ## Features
 
-- **Home**: choose category, reset filter.  
+- **Home**: choose category.  
 - **Product Page**: description, price, SKU code, image.  
 - **Cart**:  
   - Guest: stored in `localStorage`.  
@@ -28,7 +28,7 @@ A small shop of custom plaster figurines with features for:
   - Ability to change quantities and remove items.  
 - **Registration/Authentication**: JWT tokens.  
 - **Order Checkout**: forms, validation, Telegram notifications.  
-- **Admin Panel**: CRUD for figurines, view all orders.
+- **Admin Panel**: CRUD for goods, view all orders.
 
 ---
 
@@ -37,9 +37,9 @@ A small shop of custom plaster figurines with features for:
 - **Front-end**: React + Vite, MobX, React-Bootstrap, React-Router  
 - **Back-end**: Node.js, Express, Sequelize (Postgres)  
 - **Authentication**: JWT  
-- **Image Storage**: locally in the `/static` folder  
+- **Image Storage**: Cloudinary 
 - **Notifications**: Telegram Bot API  
-- **Hosting** (suggested): Render.com (Static Site + Web Service + Postgres)
+- **Hosting**: Railway
 
 ## Setup & Run
 
