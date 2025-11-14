@@ -28,12 +28,7 @@ const Contacts = () => {
                                     </p>
                                     <div>
                                         <a href="tel:+380680361597">+38 (068) 036 15 97</a>
-                                    </div>
-                                    <div>
-                                        <a href="tel:+380937442511">+38 (093) 744 25 11</a>
-                                    </div>
-                                    <div>
-                                        <a href="tel:+380506086230">+38 (050) 608 62 30</a>
+                                        <p>Менеджер Viber/Telegram</p>
                                     </div>
                                 </Col>
                                 <Col md={6}>
@@ -76,14 +71,7 @@ const Contacts = () => {
                                 <p>
                                     <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
                                     <a href="tel:+380680361597">+38 (068) 036 15 97</a>
-                                </p>
-                                <p>
-                                    <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
-                                    <a href="tel:+380937442511">+38 (093) 744 25 11</a>
-                                </p>
-                                <p>
-                                    <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
-                                    <a href="tel:+380506086230">+38 (050) 608 62 30</a>
+                                    <p>Менеджер Viber/Telegram</p>
                                 </p>
                                 <p>
                                     <i className="fa fa-envelope-o contacts__icon" aria-hidden="true"></i>

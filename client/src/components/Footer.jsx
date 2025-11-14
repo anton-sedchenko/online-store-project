@@ -58,12 +58,7 @@ const Footer = () => {
                         </div>
                         <div className="footer__contact__container">
                             <a href="tel:+380680361597">+38 (068) 036 15 97</a>
-                        </div>
-                        <div className="footer__contact__container">
-                            <a href="tel:+380937442511">+38 (093) 744 25 11</a>
-                        </div>
-                        <div className="footer__contact__container">
-                            <a href="tel:+380506086230">+38 (050) 608 62 30</a>
+                            <p>Менеджер Viber/Telegram</p>
                         </div>
                         <div className="footer__contact__container">
                             <a href="mailto:charivna.craft@gmail.com">charivna.craft@gmail.com</a>
