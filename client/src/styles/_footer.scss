@@ -71,6 +71,7 @@ footer {
 .footer__contact__container {
   margin-bottom: 5px;
   display: flex;
+  justify-content: right;
 
   @include respond-to(sm) {
     margin-bottom: 10px;
