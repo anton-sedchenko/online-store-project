@@ -119,7 +119,6 @@ const Header = observer(() => {
                     <div>
                         <a href="tel:+380680361597">+38 (068) 036 15 97</a>
                     </div>
-                    </div>
                 </div>
             </div>
 
