@@ -59,7 +59,7 @@ const Footer = () => {
                         <div className="footer__contact__container">
                             <a href="tel:+380680361597">+38 (068) 036 15 97</a>
                         </div>
-                        <div>
+                        <div className="footer__contact__container">
                             <p>Менеджер Viber/Telegram</p>
                         </div>
                         <div className="footer__contact__container">
