@@ -102,18 +102,65 @@ const ProductPage = () => {
 
     const sum = product.price * qty;
     const activeImage = product.images?.[currentImageIndex]?.url || product.img;
+    // SEO-оптимізований опис: беремо description, але не довший за ~150 символів
+    const metaDescription =
+        product.description && product.description.length > 150
+            ? product.description.slice(0, 147) + "…"
+            : product.description;
 
     return (
         <div className="component__container">
-            {product?.name && (
+            {product?.id && (
                 <Helmet>
                     <title>{product.name} | Charivna Craft</title>
-                    <meta name="description" content={product.description || 'Опис товару'} />
+
+                    <link
+                        rel="canonical"
+                        href={`https://charivna-craft.com.ua/product/${product.slug}`}
+                    />
+
+                    <meta name="description" content={metaDescription} />
                     <meta property="og:title" content={product.name} />
-                    <meta property="og:description" content={product.description} />
+                    <meta property="og:description" content={metaDescription} />
                     <meta property="og:image" content={activeImage} />
-                    <meta property="og:url" content={`https://charivna-craft.com.ua/product/${product.slug}`} />
+                    <meta
+                        property="og:url"
+                        content={`https://charivna-craft.com.ua/product/${product.slug}`}
+                    />
                     <meta property="og:type" content="product" />
+
+                    <script type="application/ld+json">
+                        {JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "Product",
+                            name: product.name,
+                            image: [activeImage],
+                            description: product.description,
+                            sku: product.code,
+                            brand: {
+                                "@type": "Brand",
+                                name: "Charivna Craft",
+                            },
+                            offers: {
+                                "@type": "Offer",
+                                url: `https://charivna-craft.com.ua/product/${product.slug}`,
+                                priceCurrency: "UAH",
+                                price: product.price,
+                                availability:
+                                    product.availability === "IN_STOCK"
+                                        ? "https://schema.org/InStock"
+                                        : "https://schema.org/PreOrder",
+                            },
+                            aggregateRating:
+                                ratingCount > 0
+                                    ? {
+                                        "@type": "AggregateRating",
+                                        ratingValue: ratingAvg,
+                                        reviewCount: ratingCount,
+                                    }
+                                    : undefined,
+                        })}
+                    </script>
                 </Helmet>
             )}
 
@@ -167,7 +214,7 @@ const ProductPage = () => {
                                     : 'Під замовлення (2-3 дні)'}
                             </span>
                         </p>
-                        <h3 className="product__title">{product.name}</h3>
+                        <h1 className="product__title">{product.name}</h1>
                         <div className="product__count__container">
                             <p className="product__count">Кількість:</p>
                             <input
@@ -175,7 +222,10 @@ const ProductPage = () => {
                                 type="number"
                                 min={1}
                                 value={qty}
-                                onChange={(e) => setQty(Number(e.target.value))}
+                                onChange={(e) => {
+                                    const value = Number(e.target.value);
+                                    setQty(Number.isNaN(value) || value < 1 ? 1 : value);
+                                }}
                             />
                         </div>
                         <p className="product__page__total__sum">Сума: {sum} грн.</p>
