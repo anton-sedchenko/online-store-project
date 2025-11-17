@@ -5,6 +5,7 @@
 }
 
 .profile__tab {
+  @include sidebar-item-style;
   @include btn-style;
   @include respond-to(xs) {
     margin-bottom: 10px;

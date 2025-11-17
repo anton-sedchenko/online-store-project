@@ -18,12 +18,7 @@
 }
 
 .sidebar__nav__item {
-  height: 40px;
-  font-size: 16px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
+  @include sidebar-item-style;
   @include btn-style;
 }
 
