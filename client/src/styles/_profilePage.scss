@@ -7,9 +7,22 @@
 .profile__tab {
   @include sidebar-item-style;
   @include btn-style;
+
+  padding: 0;
+
   @include respond-to(xs) {
     margin-bottom: 10px;
   }
+}
+
+.profile__tab .nav-link {
+  display: block;
+  width: 100%;
+  padding: 0 15px;
+  line-height: 40px;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
 }
 
 .profile__tab:last-child {
