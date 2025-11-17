@@ -1,3 +1,5 @@
+@import "mixins";
+
 .profile__tabs__container {
   margin-bottom: 15px;
 }
@@ -12,6 +14,10 @@
   @include respond-to(xs) {
     margin-bottom: 0;
   }
+}
+
+.profile__input {
+  @include input-style;
 }
 
 @media (max-width: 440px) {

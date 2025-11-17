@@ -111,7 +111,7 @@ const Profile = observer(() => {
                                         <Form.Group className="mb-3" controlId="name">
                                             <Form.Label>Ім’я</Form.Label>
                                             <input
-                                                className="neu-input"
+                                                className="profile__input"
                                                 type="text"
                                                 value={form.name}
                                                 onChange={e => setForm({ ...form, name: e.target.value })}
@@ -120,7 +120,7 @@ const Profile = observer(() => {
                                         <Form.Group className="mb-3" controlId="email">
                                             <Form.Label>Email</Form.Label>
                                             <input
-                                                className="neu-input"
+                                                className="profile__input"
                                                 type="email"
                                                 value={form.email}
                                                 onChange={e => setForm({...form, email: e.target.value})}
@@ -129,7 +129,7 @@ const Profile = observer(() => {
                                         <Form.Group className="mb-3" controlId="phone">
                                             <Form.Label>Телефон</Form.Label>
                                             <input
-                                                className="neu-input"
+                                                className="profile__input"
                                                 type="tel"
                                                 value={form.phone}
                                                 onChange={e => setForm({...form, phone: e.target.value})}
@@ -143,7 +143,7 @@ const Profile = observer(() => {
                                         <Form.Group className="mb-3" controlId="currentPassword">
                                             <Form.Label>Старий пароль</Form.Label>
                                             <input
-                                                className="neu-input"
+                                                className="profile__input"
                                                 type="password"
                                                 value={passwords.current}
                                                 onChange={e => setPasswords({...passwords, current: e.target.value})}
@@ -152,7 +152,7 @@ const Profile = observer(() => {
                                         <Form.Group className="mb-3" controlId="newPassword">
                                             <Form.Label>Новий пароль</Form.Label>
                                             <input
-                                                className="neu-input"
+                                                className="profile__input"
                                                 type="password"
                                                 value={passwords.new}
                                                 onChange={e => setPasswords({...passwords, new: e.target.value})}
@@ -161,7 +161,7 @@ const Profile = observer(() => {
                                         <Form.Group className="mb-3" controlId="confirmPassword">
                                             <Form.Label>Підтвердження паролю</Form.Label>
                                             <input
-                                                className="neu-input"
+                                                className="profile__input"
                                                 type="password"
                                                 value={passwords.confirm}
                                                 onChange={e => setPasswords({...passwords, confirm: e.target.value})}
