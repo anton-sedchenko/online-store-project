@@ -4,6 +4,10 @@
   margin-bottom: 15px;
 }
 
+.profile__tab__content {
+  margin-bottom: 15px;
+}
+
 .profile__tab {
   @include sidebar-item-style;
   @include btn-style;

@@ -6,10 +6,11 @@ import {fetchMyOrders} from '../http/orderAPI.js';
 import {changePassword, updateProfile} from "../http/userAPI.js";
 import {Helmet} from "react-helmet-async";
 import {LOGIN_ROUTE} from "../utils/consts.js";
-import {Navigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 
 const Profile = observer(() => {
     const {userStore} = useContext(Context);
+    const navigate = useNavigate();
 
     if (!userStore.isAuth) {
         return <Navigate to={LOGIN_ROUTE} replace/>;
@@ -111,84 +112,92 @@ const Profile = observer(() => {
                                 </Nav.Item>
                             </Nav>
                         </Col>
-                        <Col md={9} lg={10}>
+                        <Col md={9} lg={10} className="profile__tab__content">
                             <Tab.Content>
 
                                 {/* Персональні дані */}
                                 <Tab.Pane eventKey="personal">
-                                    <h1>Персональні дані</h1>
-                                    <Form onSubmit={handlePersonalSave} className="mb-4">
-                                        <Form.Group className="mb-3" controlId="name">
-                                            <Form.Label>Ім’я</Form.Label>
-                                            <div>
-                                                <input
-                                                    className="profile__input"
-                                                    type="text"
-                                                    value={form.name}
-                                                    onChange={e => setForm({ ...form, name: e.target.value })}
-                                                />
-                                            </div>
-                                        </Form.Group>
-                                        <Form.Group className="mb-3" controlId="email">
-                                            <Form.Label>Email</Form.Label>
-                                            <div>
-                                                <input
-                                                    className="profile__input"
-                                                    type="email"
-                                                    value={form.email}
-                                                    onChange={e => setForm({...form, email: e.target.value})}
-                                                />
-                                            </div>
-                                        </Form.Group>
-                                        <Form.Group className="mb-3" controlId="phone">
-                                            <Form.Label>Телефон</Form.Label>
-                                            <div>
-                                                <input
-                                                    className="profile__input"
-                                                    type="tel"
-                                                    value={form.phone}
-                                                    onChange={e => setForm({...form, phone: e.target.value})}
-                                                />
-                                            </div>
-                                        </Form.Group>
-                                        <button className="action-btn" type="submit">Зберегти зміни</button>
-                                    </Form>
+                                    <Row>
+                                        <Col md={6}>
+                                            <h1>Персональні дані</h1>
+                                            <Form onSubmit={handlePersonalSave} className="mb-4">
+                                                <Form.Group className="mb-3" controlId="name">
+                                                    <Form.Label>Ім’я</Form.Label>
+                                                    <div>
+                                                        <input
+                                                            className="profile__input"
+                                                            type="text"
+                                                            value={form.name}
+                                                            onChange={e => setForm({ ...form, name: e.target.value })}
+                                                        />
+                                                    </div>
+                                                </Form.Group>
+                                                <Form.Group className="mb-3" controlId="email">
+                                                    <Form.Label>Email</Form.Label>
+                                                    <div>
+                                                        <input
+                                                            className="profile__input"
+                                                            type="email"
+                                                            value={form.email}
+                                                            onChange={e => setForm({...form, email: e.target.value})}
+                                                        />
+                                                    </div>
+                                                </Form.Group>
+                                                <Form.Group className="mb-3" controlId="phone">
+                                                    <Form.Label>Телефон</Form.Label>
+                                                    <div>
+                                                        <input
+                                                            className="profile__input"
+                                                            type="tel"
+                                                            value={form.phone}
+                                                            onChange={e => setForm({...form, phone: e.target.value})}
+                                                        />
+                                                    </div>
+                                                </Form.Group>
+                                                <button className="action-btn" type="submit">Зберегти зміни</button>
+                                            </Form>
+                                        </Col>
 
-                                    <h4>Зміна паролю</h4>
-                                    <Form onSubmit={handlePasswordSave}>
-                                        <Form.Group className="mb-3" controlId="currentPassword">
-                                            <Form.Label>Старий пароль</Form.Label>
-                                            <input
-                                                className="profile__input"
-                                                type="password"
-                                                value={passwords.current}
-                                                onChange={e => setPasswords({...passwords, current: e.target.value})}
-                                            />
-                                        </Form.Group>
-                                        <Form.Group className="mb-3" controlId="newPassword">
-                                            <Form.Label>Новий пароль</Form.Label>
-                                            <div>
-                                                <input
-                                                    className="profile__input"
-                                                    type="password"
-                                                    value={passwords.new}
-                                                    onChange={e => setPasswords({...passwords, new: e.target.value})}
-                                                />
-                                            </div>
-                                        </Form.Group>
-                                        <Form.Group className="mb-3" controlId="confirmPassword">
-                                            <Form.Label>Підтвердження паролю</Form.Label>
-                                            <div>
-                                                <input
-                                                    className="profile__input"
-                                                    type="password"
-                                                    value={passwords.confirm}
-                                                    onChange={e => setPasswords({...passwords, confirm: e.target.value})}
-                                                />
-                                            </div>
-                                        </Form.Group>
-                                        <button className="action-btn" type="submit">Змінити пароль</button>
-                                    </Form>
+                                        <Col md={6}>
+                                            <h4>Зміна паролю</h4>
+                                            <Form onSubmit={handlePasswordSave}>
+                                            <Form.Group className="mb-3" controlId="currentPassword">
+                                                <Form.Label>Старий пароль</Form.Label>
+                                                <div>
+                                                    <input
+                                                        className="profile__input"
+                                                        type="password"
+                                                        value={passwords.current}
+                                                        onChange={e => setPasswords({...passwords, current: e.target.value})}
+                                                    />
+                                                </div>
+                                            </Form.Group>
+                                            <Form.Group className="mb-3" controlId="newPassword">
+                                                <Form.Label>Новий пароль</Form.Label>
+                                                <div>
+                                                    <input
+                                                        className="profile__input"
+                                                        type="password"
+                                                        value={passwords.new}
+                                                        onChange={e => setPasswords({...passwords, new: e.target.value})}
+                                                    />
+                                                </div>
+                                            </Form.Group>
+                                            <Form.Group className="mb-3" controlId="confirmPassword">
+                                                <Form.Label>Підтвердження паролю</Form.Label>
+                                                <div>
+                                                    <input
+                                                        className="profile__input"
+                                                        type="password"
+                                                        value={passwords.confirm}
+                                                        onChange={e => setPasswords({...passwords, confirm: e.target.value})}
+                                                    />
+                                                </div>
+                                            </Form.Group>
+                                            <button className="action-btn" type="submit">Змінити пароль</button>
+                                        </Form>
+                                        </Col>
+                                    </Row>
                                 </Tab.Pane>
 
                                 {/* Мої замовлення */}
