@@ -1,3 +1,5 @@
+@import "mixins";
+
 .sidebar__aside__wrapper {
   margin-bottom: 15px;
 
@@ -22,6 +24,7 @@
   border-radius: 8px;
   display: flex;
   align-items: center;
+  @include btn-style;
 }
 
 .sidebar__nav__item:last-child {

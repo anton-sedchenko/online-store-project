@@ -12,22 +12,22 @@ const SideBar = observer(() => {
             <aside className="sidebar__aside__wrapper">
                 <div className="sidebar">
                     <ul>
-                        <li className="neu-btn sidebar__nav__item">
-                            <Link to="/">Галерея</Link>
+                        <li className="sidebar__nav__item">
+                            <Link to="/">Каталог</Link>
                         </li>
                         {userStore.isAuth &&
-                            (<li className="neu-btn sidebar__nav__item">
+                            (<li className="sidebar__nav__item">
                                 <Link to="/profile">Мій профіль</Link>
                             </li>)
                         }
-                        <li className="neu-btn sidebar__nav__item">
+                        <li className="sidebar__nav__item">
                             <Link to="/cart">Мій кошик</Link>
                             <ProductsCounter/>
                         </li>
-                        <li className="neu-btn sidebar__nav__item">
+                        <li className="sidebar__nav__item">
                             <Link to="/blog">Блог</Link>
                         </li>
-                        <li className="neu-btn sidebar__nav__item">
+                        <li className="sidebar__nav__item">
                             <Link to="/contacts">Контакти</Link>
                         </li>
                     </ul>
