@@ -113,13 +113,14 @@ const Profile = observer(() => {
                             </Nav>
                         </Col>
                         <Col md={9} lg={10} className="profile__tab__content">
+                            <h1 className="mb-4">Мій профіль</h1>
                             <Tab.Content>
 
                                 {/* Персональні дані */}
                                 <Tab.Pane eventKey="personal">
                                     <Row>
                                         <Col md={6}>
-                                            <h1>Персональні дані</h1>
+                                            <h2>Персональні дані</h2>
                                             <Form onSubmit={handlePersonalSave} className="mb-4">
                                                 <Form.Group className="mb-3" controlId="name">
                                                     <Form.Label>Ім’я</Form.Label>
@@ -159,7 +160,7 @@ const Profile = observer(() => {
                                         </Col>
 
                                         <Col md={6}>
-                                            <h4>Зміна паролю</h4>
+                                            <h2>Зміна паролю</h2>
                                             <Form onSubmit={handlePasswordSave}>
                                             <Form.Group className="mb-3" controlId="currentPassword">
                                                 <Form.Label>Старий пароль</Form.Label>
@@ -202,7 +203,7 @@ const Profile = observer(() => {
 
                                 {/* Мої замовлення */}
                                 <Tab.Pane eventKey="orders">
-                                    <h4>Мої замовлення</h4>
+                                    <h2>Мої замовлення</h2>
                                     <Table
                                         className="orders__history__table"
                                         responsive striped bordered hover
