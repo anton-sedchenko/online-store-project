@@ -106,7 +106,7 @@ const Profile = observer(() => {
 
                                 {/* Персональні дані */}
                                 <Tab.Pane eventKey="personal">
-                                    <h4>Редагування профілю</h4>
+                                    <h1>Мій профіль</h1>
                                     <Form onSubmit={handlePersonalSave} className="mb-4">
                                         <Form.Group className="mb-3" controlId="name">
                                             <Form.Label>Ім’я</Form.Label>
