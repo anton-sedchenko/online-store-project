@@ -188,7 +188,7 @@ export default function Reviews({ productId, isAuth, isAdmin, userId }) {
             </div>
 
             <div style={{ marginTop: 10 }} className="muted">
-                Середня оцінка: <b>{avg.toFixed(1)}</b> із 5 • оцінок: <b>{count}</b>
+                Середня оцінка: {avg.toFixed(1)} із 5 • оцінок: {count}
             </div>
         </section>
     );
@@ -219,7 +219,14 @@ function ReviewItem({ node, isAdmin, onReply, onDelete, userId }) {
                     {isRoot && node.rating ? <StarRating value={node.rating} size={16} readOnly /> : null}
                 </div>
 
-                {node.text && <div style={{ marginTop: 6, whiteSpace: "pre-wrap" }}>{node.text}</div>}
+                {/* відгук користувача */}
+                {node.text && <div
+                    style={{
+                        marginTop: 6,
+                        whiteSpace: "pre-wrap",
+                        fontSize: "14px",
+                    }}
+                >{node.text}</div>}
 
                 {/* лише дата */}
                 <div className="muted" style={{ fontSize: 12, marginTop: 6 }}>
