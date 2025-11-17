@@ -15,13 +15,18 @@
   }
 }
 
-.profile__tab a {
+.profile__tab .nav-link {
   display: block;
   width: 100%;
   padding: 0 15px;
   line-height: 40px;
   border-radius: 8px;
   background: transparent;
+  color: inherit;
+}
+
+.profile__tab .nav-link.active {
+  background-color: #fff;
   color: inherit;
 }
 
