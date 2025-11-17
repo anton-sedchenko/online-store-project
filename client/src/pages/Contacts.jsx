@@ -45,11 +45,11 @@ const Contacts = () => {
                                 <h4>Графік роботи:</h4>
                                 <p>
                                     <i className="fa fa-clock-o contacts__icon" aria-hidden="true"></i>
-                                    <strong>З 10:00 до 19:00.</strong>
+                                    <p>З 10:00 до 19:00.</p>
                                 </p>
                                 <p>
                                     <i className="fa fa-calendar contacts__icon" aria-hidden="true"></i>
-                                    <strong>Неділя - вихідний.</strong>
+                                    <p>Неділя - вихідний.</p>
                                 </p>
                             </div>
                             <div className="contacts__info__block contacts__address__block">
