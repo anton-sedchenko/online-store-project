@@ -40,6 +40,10 @@
   @include input-style;
 }
 
+.action-btn {
+  @include btn-style;
+}
+
 @media (max-width: 440px) {
   .orders__history__table th:nth-child(1),
   .orders__history__table td:nth-child(1),

@@ -87,7 +87,17 @@ const Profile = observer(() => {
             <div className="component__container">
                 <Tab.Container activeKey={tab} onSelect={k => setTab(k)}>
                     <Row>
-                        <Col sm={3} className="profile__tabs__container">
+                        <div>
+                            <button
+                                className="product__back-button"
+                                style={{marginBottom: '1rem'}}
+                                onClick={() => navigate(-1)}
+                            >
+                                ← Назад
+                            </button>
+                        </div>
+
+                        <Col md={3} lg={2} className="profile__tabs__container">
                             <Nav variant="pills" className="flex-column">
                                 <Nav.Item
                                     className="profile__tab"
@@ -101,41 +111,47 @@ const Profile = observer(() => {
                                 </Nav.Item>
                             </Nav>
                         </Col>
-                        <Col sm={9}>
+                        <Col md={9} lg={10}>
                             <Tab.Content>
 
                                 {/* Персональні дані */}
                                 <Tab.Pane eventKey="personal">
-                                    <h1>Мій профіль</h1>
+                                    <h1>Персональні дані</h1>
                                     <Form onSubmit={handlePersonalSave} className="mb-4">
                                         <Form.Group className="mb-3" controlId="name">
                                             <Form.Label>Ім’я</Form.Label>
-                                            <input
-                                                className="profile__input"
-                                                type="text"
-                                                value={form.name}
-                                                onChange={e => setForm({ ...form, name: e.target.value })}
-                                            />
+                                            <div>
+                                                <input
+                                                    className="profile__input"
+                                                    type="text"
+                                                    value={form.name}
+                                                    onChange={e => setForm({ ...form, name: e.target.value })}
+                                                />
+                                            </div>
                                         </Form.Group>
                                         <Form.Group className="mb-3" controlId="email">
                                             <Form.Label>Email</Form.Label>
-                                            <input
-                                                className="profile__input"
-                                                type="email"
-                                                value={form.email}
-                                                onChange={e => setForm({...form, email: e.target.value})}
-                                            />
+                                            <div>
+                                                <input
+                                                    className="profile__input"
+                                                    type="email"
+                                                    value={form.email}
+                                                    onChange={e => setForm({...form, email: e.target.value})}
+                                                />
+                                            </div>
                                         </Form.Group>
                                         <Form.Group className="mb-3" controlId="phone">
                                             <Form.Label>Телефон</Form.Label>
-                                            <input
-                                                className="profile__input"
-                                                type="tel"
-                                                value={form.phone}
-                                                onChange={e => setForm({...form, phone: e.target.value})}
-                                            />
+                                            <div>
+                                                <input
+                                                    className="profile__input"
+                                                    type="tel"
+                                                    value={form.phone}
+                                                    onChange={e => setForm({...form, phone: e.target.value})}
+                                                />
+                                            </div>
                                         </Form.Group>
-                                        <button className="neu-btn" type="submit">Зберегти зміни</button>
+                                        <button className="action-btn" type="submit">Зберегти зміни</button>
                                     </Form>
 
                                     <h4>Зміна паролю</h4>
@@ -151,23 +167,27 @@ const Profile = observer(() => {
                                         </Form.Group>
                                         <Form.Group className="mb-3" controlId="newPassword">
                                             <Form.Label>Новий пароль</Form.Label>
-                                            <input
-                                                className="profile__input"
-                                                type="password"
-                                                value={passwords.new}
-                                                onChange={e => setPasswords({...passwords, new: e.target.value})}
-                                            />
+                                            <div>
+                                                <input
+                                                    className="profile__input"
+                                                    type="password"
+                                                    value={passwords.new}
+                                                    onChange={e => setPasswords({...passwords, new: e.target.value})}
+                                                />
+                                            </div>
                                         </Form.Group>
                                         <Form.Group className="mb-3" controlId="confirmPassword">
                                             <Form.Label>Підтвердження паролю</Form.Label>
-                                            <input
-                                                className="profile__input"
-                                                type="password"
-                                                value={passwords.confirm}
-                                                onChange={e => setPasswords({...passwords, confirm: e.target.value})}
-                                            />
+                                            <div>
+                                                <input
+                                                    className="profile__input"
+                                                    type="password"
+                                                    value={passwords.confirm}
+                                                    onChange={e => setPasswords({...passwords, confirm: e.target.value})}
+                                                />
+                                            </div>
                                         </Form.Group>
-                                        <button className="neu-btn" type="submit">Змінити пароль</button>
+                                        <button className="action-btn" type="submit">Змінити пароль</button>
                                     </Form>
                                 </Tab.Pane>
 
