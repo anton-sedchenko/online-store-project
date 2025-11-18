@@ -12,7 +12,7 @@ async function sendMail({from, to, subject, html}) {
             html,
         });
 
-        console.log('Resend email sent, id:', response?.data?.id || '(no id)');
+        console.log('Resend response:', JSON.stringify(response, null, 2));
         return response;
     } catch (err) {
         console.error('Resend email error:', err?.message || err);
