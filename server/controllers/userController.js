@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const {User, Cart} = require('../models/models');
 const {Op} = require("sequelize");
-const {createTransport} = require("nodemailer");
 const crypto = require('crypto');
+const {sendMail} = require('../mailer.js');
 
 const generateJwt = (id, email, role) => {
     return jwt.sign(
@@ -13,16 +13,6 @@ const generateJwt = (id, email, role) => {
         {expiresIn: '24h'}
     );
 };
-
-const mailer = createTransport({
-    host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT),
-    secure: process.env.EMAIL_SECURE === 'true',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-});
 
 class UserController {
     async registration(req, res, next) {
@@ -143,7 +133,7 @@ class UserController {
 
         const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
-        await mailer.sendMail({
+        sendMail({
             from: process.env.EMAIL_FROM,
             to: email,
             subject: "Відновлення паролю — Чарівна майстерня",
@@ -162,6 +152,8 @@ class UserController {
                     <p style="font-size: 0.9em; color: #777;">Якщо ви не запитували зміну паролю, просто ігноруйте цей лист.</p>
                 </div>
             `
+        }).catch(err => {
+            console.error('reset password email fail:', err?.message || err);
         });
 
         return res.json({message: "Інструкції надіслано на email"});

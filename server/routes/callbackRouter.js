@@ -1,6 +1,6 @@
 const Router = require('express')
 const router = new Router()
-const nodemailer = require('nodemailer')
+const {sendMail} = require('../mailer.js');
 
 /**
  * Відправка Telegram
@@ -18,55 +18,49 @@ async function sendTelegram(text) {
 /**
  * Відправка на пошту через Nodemailer
  */
-async function sendEmail({name, phone, comment}) {
-    const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: Number(process.env.EMAIL_PORT),
-        secure: process.env.EMAIL_SECURE === 'true',
-        auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
-    })
-
+function sendEmail({ name, phone, comment }) {
     const html = `
         <h3>Замовлення зворотного дзвінка</h3>
         <p><strong>Імʼя:</strong> ${name}</p>
         <p><strong>Телефон:</strong> ${phone}</p>
         ${comment ? `<p><strong>Коментар:</strong><br/>${comment}</p>` : ''}
-      `
+    `;
 
-    try {
-        await transporter.sendMail({
-            from: process.env.EMAIL_FROM,
-            to: process.env.NOTIFY_EMAIL,
-            subject: 'Нове замовлення зворотнього дзвінка',
-            html
-        });
-    } catch (smtpError) {
-        console.error('SMTP sendMail error:', smtpError);
-        throw smtpError;
-    }
+    // без try/catch — ми не чекаємо результату
+    sendMail({
+        from: process.env.EMAIL_FROM,
+        to: process.env.NOTIFY_EMAIL,
+        subject: 'Нове замовлення зворотнього дзвінка',
+        html,
+    }).catch(err => {
+        console.error('Callback email error:', err?.message || err);
+    });
 }
 
 router.post('/', async (req, res) => {
     try {
-        const {name, phone, comment = ''} = req.body
+        const {name, phone, comment = ''} = req.body;
+
         if (!name?.trim() || !phone?.trim()) {
-            return res.status(400).json({ message: 'Імʼя і телефон обов’язкові' })
+            return res.status(400).json({ message: 'Імʼя і телефон обов’язкові' });
         }
 
         const text = `🔔 *Замовлення зворотнього дзвінка*\n` +
             `Імʼя: _${name}_\nТелефон: _${phone}_` +
-            (comment ? `\nКоментар: _${comment}_` : '')
+            (comment ? `\nКоментар: _${comment}_` : '');
 
-        await Promise.all([
-            sendTelegram(text),
-            sendEmail({name, phone, comment})
-        ])
+        // ТЕЛЕГРАМ чекаємо (він швидкий)
+        await sendTelegram(text);
 
-        res.json({message: 'OK'})
+        // А ПОШТУ — на фоні
+        sendEmail({name, phone, comment});
+
+        // Відповідь відправляємо одразу
+        res.json({message: 'OK'});
     } catch (e) {
-        console.error('Callback error:', e)
-        res.status(500).json({message: 'Не вдалося відправити'})
+        console.error('Callback error:', e);
+        res.status(500).json({message: 'Не вдалося відправити'});
     }
-})
+});
 
 module.exports = router

@@ -78,8 +78,9 @@ app.use(helmet({
 const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 хвилин
     max: 100, // не більше 100 запитів з одного IP
+    standardHeaders: true, // показує ліміти в заголовках
+    legacyHeaders: false,
 });
-app.use('/api', apiLimiter);
 app.use('/callback', apiLimiter);
 app.use('/api', router);
 app.use(feedRouter);

@@ -1,18 +1,23 @@
-const nodemailer = require('nodemailer');
+const {Resend} = require('resend');
 
-const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT),
-    secure: process.env.EMAIL_SECURE === 'true' || process.env.EMAIL_SECURE === true,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    },
-    logger: true,
-    debug: true,
-    // щоб, якщо таки буде конект, не чекати вічність
-    connectionTimeout: 10000,
-    socketTimeout: 10000,
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-module.exports = transporter;
+// Уніфікована функція відправки листів
+async function sendMail({from, to, subject, html}) {
+    try {
+        const response = await resend.emails.send({
+            from: from || process.env.EMAIL_FROM,
+            to, // може бути string або масив
+            subject,
+            html,
+        });
+
+        console.log('Resend email sent, id:', response?.data?.id || '(no id)');
+        return response;
+    } catch (err) {
+        console.error('Resend email error:', err?.message || err);
+        throw err;
+    }
+}
+
+module.exports = {sendMail};

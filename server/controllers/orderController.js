@@ -1,5 +1,5 @@
 const axios = require('axios');
-const mailer = require('../mailer.js');
+const {sendMail} = require('../mailer.js');
 
 const {
     Order,
@@ -170,30 +170,25 @@ class OrderController {
                 <p>Ми зв’яжемося з вами найближчим часом для підтвердження замовлення.</p>
             `;
 
-            mailer.sendMail({
+            sendMail({
                 from: process.env.EMAIL_FROM,
                 to: [email, process.env.NOTIFY_EMAIL || 'charivna.craft@gmail.com'],
                 subject: 'Ваше замовлення оформлено',
-                attachments: process.env.EMAIL_LOGO_URL ? [{
-                    filename: 'logo.png',
-                    path: process.env.EMAIL_LOGO_URL,
-                    cid: 'brandlogo'
-                }] : [],
                 html: `
                     <div style="text-align:center;margin-bottom:16px">
                         ${process.env.EMAIL_LOGO_URL ?
                                 `<img 
-                                src="cid:brandlogo" 
+                                src="${process.env.EMAIL_LOGO_URL}" 
                                 alt="Charivna Craft" 
                                 style="max-width:180px;height:auto" 
-                            />` :
-                                ''}
+                            />`
+                                : ''}
                     </div>
                     ${mailHtml}
                 `,
             }).catch(err => {
-                console.error('Email send error:', err?.code, err?.message || err);
-                // тут нічого не кидаємо, просто лог
+                console.error('Email send error:', err?.message || err);
+                // НЕ кидаємо далі, щоб не ламати замовлення
             });
 
             return res.status(201).json({

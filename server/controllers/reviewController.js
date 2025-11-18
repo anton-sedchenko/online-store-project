@@ -2,7 +2,7 @@ const { Review, Product, User } = require('../models/models');
 const ApiError = require('../error/ApiError');
 const { Op } = require('sequelize');
 
-const mailer = require('../mailer');
+const { sendMail } = require('../mailer.js');
 
 function avg(arr) {
     if (!arr.length) return 0;
@@ -115,7 +115,7 @@ class ReviewController {
                 if (text?.trim()) parts.push(`Текст: ${text.trim()}`);
                 const body = parts.length ? parts.join('<br>') : 'Без тексту';
 
-                await mailer.sendMail({
+                sendMail({
                     from: process.env.EMAIL_FROM,
                     to: process.env.NOTIFY_EMAIL || 'charivna.craft@gmail.com',
                     subject: 'Новий відгук/оцінка на сайті',
@@ -124,6 +124,8 @@ class ReviewController {
                         <p>${body}</p>
                         <p><a href="${link}">Відкрити товар</a></p>
                     `
+                }).catch(err => {
+                    console.error('review email admin fail:', err?.message || err);
                 });
             } catch (e) {
                 console.error('createRoot email admin fail:', e?.message);
@@ -169,18 +171,20 @@ class ReviewController {
                 const link = parentProduct?.slug
                     ? `${process.env.CLIENT_URL}/product/${parentProduct.slug}`
                     : `${process.env.CLIENT_URL}/product/${parent.productId}`;
-                await mailer.sendMail({
+                sendMail({
                     from: process.env.EMAIL_FROM,
                     to: process.env.NOTIFY_EMAIL || 'charivna.craft@gmail.com',
                     subject: 'Нова відповідь у відгуках',
                     html: `<p>Користувач ${req.user.email} відповів у гілці відгуків.</p><p><a href="${link}">Відкрити товар</a></p>`
+                }).catch(err => {
+                    console.error('review email user fail:', err?.message || err);
                 });
             } catch(e){ console.error('reply email admin fail', e?.message); }
 
             // email автору батьківського комента (якщо є e-mail)
             try {
                 if (parent.user?.email) {
-                    await mailer.sendMail({
+                    sendMail({
                         from: process.env.EMAIL_FROM,
                         to: parent.user.email,
                         subject: 'Вам відповіли у відгуках',
