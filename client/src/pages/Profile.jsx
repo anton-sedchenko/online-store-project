@@ -88,17 +88,17 @@ const Profile = observer(() => {
             <div className="component__container">
                 <Tab.Container activeKey={tab} onSelect={k => setTab(k)}>
                     <Row>
-                        <div>
-                            <button
-                                className="product__back-button"
-                                style={{marginBottom: '1rem'}}
-                                onClick={() => navigate(-1)}
-                            >
-                                ← Назад
-                            </button>
-                        </div>
-
                         <Col md={3} lg={2} className="profile__tabs__container">
+                            <div>
+                                <button
+                                    className="product__back-button"
+                                    style={{marginBottom: '1rem'}}
+                                    onClick={() => navigate(-1)}
+                                >
+                                    ← Назад
+                                </button>
+                            </div>
+
                             <Nav variant="pills" className="flex-column">
                                 <Nav.Item
                                     className="profile__tab"
