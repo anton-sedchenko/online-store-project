@@ -170,36 +170,31 @@ class OrderController {
                 <p>Ми зв’яжемося з вами найближчим часом для підтвердження замовлення.</p>
             `;
 
-            try {
-                // просто перевірка з’єднання
-                await mailer.verify();
-
-                await mailer.sendMail({
-                    from: process.env.EMAIL_FROM,
-                    to: [email, 'charivna.craft@gmail.com'],
-                    subject: 'Ваше замовлення оформлено',
-                    attachments: process.env.EMAIL_LOGO_URL ? [{
-                        filename: 'logo.png',
-                        path: process.env.EMAIL_LOGO_URL,
-                        cid: 'brandlogo' // <img src="cid:brandlogo">
-                    }] : [],
-                    html: `
-                        <div style="text-align:center;margin-bottom:16px">
-                            ${process.env.EMAIL_LOGO_URL ? 
-                            `<img 
+            mailer.sendMail({
+                from: process.env.EMAIL_FROM,
+                to: [email, process.env.NOTIFY_EMAIL || 'charivna.craft@gmail.com'],
+                subject: 'Ваше замовлення оформлено',
+                attachments: process.env.EMAIL_LOGO_URL ? [{
+                    filename: 'logo.png',
+                    path: process.env.EMAIL_LOGO_URL,
+                    cid: 'brandlogo'
+                }] : [],
+                html: `
+                    <div style="text-align:center;margin-bottom:16px">
+                        ${process.env.EMAIL_LOGO_URL ?
+                                `<img 
                                 src="cid:brandlogo" 
                                 alt="Charivna Craft" 
                                 style="max-width:180px;height:auto" 
                             />` :
-                            ''}
-                        </div>
-                        ${mailHtml}
-                      `,
-                });
-            } catch (mailErr) {
-                console.error('Email send error:', mailErr?.message || mailErr);
-                // не кидаємо помилку – замовлення вже створене, просто лог.
-            }
+                                ''}
+                    </div>
+                    ${mailHtml}
+                `,
+            }).catch(err => {
+                console.error('Email send error:', err?.code, err?.message || err);
+                // тут нічого не кидаємо, просто лог
+            });
 
             return res.status(201).json({
                 message: 'Замовлення оформлено, лист відправлено',
