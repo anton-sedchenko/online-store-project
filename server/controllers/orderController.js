@@ -142,11 +142,11 @@ class OrderController {
                     {
                         chat_id: TELEGRAM_CHAT_ID,
                         text: text,
-                        parse_mode: 'HTML'
+                        parse_mode: 'Markdown'
                     }
                 );
             } catch (tgErr) {
-                console.error('Telegram send error:', tgErr.message);
+                console.error('Telegram send error:', tgErr?.response?.data || tgErr?.message || tgErr);
             }
 
             const htmlItems = orderItems.map((oi, idx) => {
