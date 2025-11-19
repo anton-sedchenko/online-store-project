@@ -168,7 +168,7 @@ function renderOrderEmail({
                             <tr>
                                 <td style="padding:8px 24px 16px;">
                                     <p style="margin:0 0 6px;font-size:13px;color:#555;">
-                                        Якщо ви помітили неточність у даних замовлення – просто відповідайте на цей лист або напишіть нам у Viber / Telegram.
+                                        Якщо ви помітили неточність у даних замовлення - зв'яжіться з нами зручним для Вас способом.
                                     </p>
                                     <p style="margin:0;font-size:13px;color:#555;">
                                         Контакти:<br/>
