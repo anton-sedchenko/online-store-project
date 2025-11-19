@@ -74,36 +74,33 @@ function renderOrderEmail({
                         <table cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.06);">
                             <!-- Шапка -->
                             <tr>
-                                <td style="background:#6a1b9a;padding:16px 24px;text-align:center;">
+                                <td style="background:#ffffff;padding:16px 24px;text-align:center;border-bottom:4px solid #6a1b9a;">
                                     ${LOGO_URL ? `
-                                        <img src="${LOGO_URL}" alt="Charivna Craft" style="max-width:180px;height:auto;display:block;margin:0 auto 8px;" />
+                                        <img src="${LOGO_URL}" alt="Charivna Craft" style="max-width:180px;height:auto;display:block;margin:0 auto;" />
                                     ` : `
-                                        <h1 style="margin:0;font-size:22px;color:#fff;font-weight:600;">Charivna Craft</h1>
+                                        <h1 style="margin:0;font-size:22px;color:#6a1b9a;font-weight:600;">Charivna Craft</h1>
                                     `}
-                                    <p style="margin:4px 0 0;font-size:13px;color:#f3e9ff;letter-spacing:0.04em;text-transform:uppercase;">
-                                        Вироби ручної роботи & гіпсові фігурки
-                                    </p>
                                 </td>
                             </tr>
-        
+
                             <!-- Привітання -->
                             <tr>
                                 <td style="padding:24px 24px 8px;">
                                     <p style="margin:0 0 8px;font-size:16px;color:#333;">
-                                        Вітаємо, <strong>${fullName}</strong>!
+                                        Вітаємо, ${fullName}!
                                     </p>
                                     <p style="margin:0 0 4px;font-size:14px;color:#555;">
-                                        Дякуємо за замовлення в інтернет-магазині <strong>Charivna Craft</strong>.
+                                        Дякуємо за замовлення в інтернет-магазині Charivna Craft.
                                     </p>
                                     <p style="margin:0 0 4px;font-size:14px;color:#555;">
-                                        Номер вашого замовлення: <strong>№${orderId}</strong>.
+                                        Номер вашого замовлення: №${orderId}.
                                     </p>
                                     <p style="margin:0 0 12px;font-size:13px;color:#777;">
                                         Ми зв’яжемося з вами найближчим часом для підтвердження деталей та відправлення посилки.
                                     </p>
                                 </td>
                             </tr>
-        
+
                             <!-- Дані покупця -->
                             <tr>
                                 <td style="padding:8px 24px 8px;">
@@ -121,7 +118,7 @@ function renderOrderEmail({
                                     </table>
                                 </td>
                             </tr>
-        
+
                             <!-- Доставка -->
                             <tr>
                                 <td style="padding:4px 24px 16px;">
@@ -131,7 +128,7 @@ function renderOrderEmail({
                                     </div>
                                 </td>
                             </tr>
-        
+
                             <!-- Товари -->
                             <tr>
                                 <td style="padding:8px 24px 0;">
@@ -166,7 +163,7 @@ function renderOrderEmail({
                                     </table>
                                 </td>
                             </tr>
-        
+
                             <!-- Інфо / нагадування -->
                             <tr>
                                 <td style="padding:8px 24px 16px;">
@@ -180,7 +177,7 @@ function renderOrderEmail({
                                     </p>
                                 </td>
                             </tr>
-        
+
                             <!-- Футер -->
                             <tr>
                                 <td style="background:#faf5ff;padding:12px 24px;text-align:center;">
@@ -193,7 +190,7 @@ function renderOrderEmail({
                                     </p>
                                 </td>
                             </tr>
-        
+
                         </table>
                     </td>
                 </tr>
@@ -202,7 +199,6 @@ function renderOrderEmail({
         </html>
     `;
 }
-//
 
 class OrderController {
     async createOrder(req, res, next) {
