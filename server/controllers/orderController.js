@@ -19,6 +19,191 @@ async function getCartIdForUser(userId) {
     return cart?.id || null;
 }
 
+// HTML-шаблон листа про замовлення
+function renderOrderEmail({
+                              orderId,
+                              fullName,
+                              tel,
+                              email,
+                              total,
+                              shippingHtml,
+                              items
+                          }) {
+    const LOGO_URL = process.env.EMAIL_LOGO_URL || 'https://charivna-craft.com.ua/logo-email.png';
+
+    const itemsRows = items.map((oi, idx) => {
+        const name = oi.product.name;
+        const code = oi.product.code;
+        const qty = oi.quantity;
+        const price = oi.product.price;
+        const sum= qty * price;
+
+        return `
+            <tr>
+                <td style="padding:8px 12px;font-size:14px;color:#333;border-bottom:1px solid #eee;">
+                    ${idx + 1}.
+                </td>
+                <td style="padding:8px 12px;font-size:14px;color:#333;border-bottom:1px solid #eee;">
+                    <strong>${name}</strong><br/>
+                    <span style="font-size:12px;color:#777;">Артикул: ${code}</span>
+                </td>
+                <td style="padding:8px 12px;font-size:14px;color:#333;text-align:center;border-bottom:1px solid #eee;">
+                    ${qty}
+                </td>
+                <td style="padding:8px 12px;font-size:14px;color:#333;text-align:right;border-bottom:1px solid #eee;">
+                    ${price.toFixed(2)}&nbsp;₴
+                </td>
+                <td style="padding:8px 12px;font-size:14px;color:#333;text-align:right;border-bottom:1px solid #eee;">
+                    <strong>${sum.toFixed(2)}&nbsp;₴</strong>
+                </td>
+            </tr>
+        `;
+    }).join('');
+
+    return `
+        <!DOCTYPE html>
+        <html lang="uk">
+        <head>
+            <meta charset="UTF-8" />
+            <title>Замовлення №${orderId} – Charivna Craft</title>
+        </head>
+        <body style="margin:0;padding:0;background:#f3f0f8;">
+            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#f3f0f8;padding:20px 0;">
+                <tr>
+                    <td align="center">
+                        <table cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.06);">
+                            <!-- Шапка -->
+                            <tr>
+                                <td style="background:#6a1b9a;padding:16px 24px;text-align:center;">
+                                    ${LOGO_URL ? `
+                                        <img src="${LOGO_URL}" alt="Charivna Craft" style="max-width:180px;height:auto;display:block;margin:0 auto 8px;" />
+                                    ` : `
+                                        <h1 style="margin:0;font-size:22px;color:#fff;font-weight:600;">Charivna Craft</h1>
+                                    `}
+                                    <p style="margin:4px 0 0;font-size:13px;color:#f3e9ff;letter-spacing:0.04em;text-transform:uppercase;">
+                                        Вироби ручної роботи & гіпсові фігурки
+                                    </p>
+                                </td>
+                            </tr>
+        
+                            <!-- Привітання -->
+                            <tr>
+                                <td style="padding:24px 24px 8px;">
+                                    <p style="margin:0 0 8px;font-size:16px;color:#333;">
+                                        Вітаємо, <strong>${fullName}</strong>!
+                                    </p>
+                                    <p style="margin:0 0 4px;font-size:14px;color:#555;">
+                                        Дякуємо за замовлення в інтернет-магазині <strong>Charivna Craft</strong>.
+                                    </p>
+                                    <p style="margin:0 0 4px;font-size:14px;color:#555;">
+                                        Номер вашого замовлення: <strong>№${orderId}</strong>.
+                                    </p>
+                                    <p style="margin:0 0 12px;font-size:13px;color:#777;">
+                                        Ми зв’яжемося з вами найближчим часом для підтвердження деталей та відправлення посилки.
+                                    </p>
+                                </td>
+                            </tr>
+        
+                            <!-- Дані покупця -->
+                            <tr>
+                                <td style="padding:8px 24px 8px;">
+                                    <table cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+                                        <tr>
+                                            <td style="vertical-align:top;padding:12px 0;">
+                                                <h3 style="margin:0 0 6px;font-size:15px;color:#333;">Покупець</h3>
+                                                <p style="margin:0;font-size:13px;color:#555;line-height:1.5;">
+                                                    <strong>Імʼя:</strong> ${fullName}<br/>
+                                                    <strong>Телефон:</strong> ${tel}<br/>
+                                                    <strong>Email:</strong> ${email}
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+        
+                            <!-- Доставка -->
+                            <tr>
+                                <td style="padding:4px 24px 16px;">
+                                    <h3 style="margin:0 0 6px;font-size:15px;color:#333;">Доставка</h3>
+                                    <div style="font-size:13px;color:#555;line-height:1.5;">
+                                        ${shippingHtml}
+                                    </div>
+                                </td>
+                            </tr>
+        
+                            <!-- Товари -->
+                            <tr>
+                                <td style="padding:8px 24px 0;">
+                                    <h3 style="margin:0 0 8px;font-size:15px;color:#333;">Ваші товари</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0 16px 16px;">
+                                    <table cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;border-radius:8px;overflow:hidden;border:1px solid #eee;">
+                                        <thead>
+                                            <tr style="background:#faf5ff;">
+                                                <th align="left" style="padding:10px 12px;font-size:12px;color:#666;font-weight:600;width:40px;">№</th>
+                                                <th align="left" style="padding:10px 12px;font-size:12px;color:#666;font-weight:600;">Товар</th>
+                                                <th align="center" style="padding:10px 12px;font-size:12px;color:#666;font-weight:600;width:60px;">К-сть</th>
+                                                <th align="right" style="padding:10px 12px;font-size:12px;color:#666;font-weight:600;width:80px;">Ціна</th>
+                                                <th align="right" style="padding:10px 12px;font-size:12px;color:#666;font-weight:600;width:90px;">Сума</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${itemsRows}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr style="background:#faf5ff;">
+                                                <td colspan="4" style="padding:10px 12px;font-size:14px;color:#333;text-align:right;border-top:1px solid #eee;">
+                                                    <strong>Загальна сума:</strong>
+                                                </td>
+                                                <td style="padding:10px 12px;font-size:16px;color:#6a1b9a;text-align:right;border-top:1px solid #eee;">
+                                                    <strong>${total.toFixed(2)}&nbsp;₴</strong>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </td>
+                            </tr>
+        
+                            <!-- Інфо / нагадування -->
+                            <tr>
+                                <td style="padding:8px 24px 16px;">
+                                    <p style="margin:0 0 6px;font-size:13px;color:#555;">
+                                        Якщо ви помітили неточність у даних замовлення – просто відповідайте на цей лист або напишіть нам у Viber / Telegram.
+                                    </p>
+                                    <p style="margin:0;font-size:13px;color:#555;">
+                                        Контакти:<br/>
+                                        <strong>Телефон:</strong> +38 (068) 036 15 97, +38 (093) 744 25 11, +38 (050) 608 62 30<br/>
+                                        <strong>Email:</strong> charivna.craft@gmail.com
+                                    </p>
+                                </td>
+                            </tr>
+        
+                            <!-- Футер -->
+                            <tr>
+                                <td style="background:#faf5ff;padding:12px 24px;text-align:center;">
+                                    <p style="margin:0 0 4px;font-size:11px;color:#999;">
+                                        Ви отримали цей лист, тому що оформили замовлення на сайті 
+                                        <a href="https://charivna-craft.com.ua" style="color:#6a1b9a;text-decoration:none;">charivna-craft.com.ua</a>.
+                                    </p>
+                                    <p style="margin:0;font-size:11px;color:#bbb;">
+                                        © ${new Date().getFullYear()} Charivna Craft. Усі права захищено.
+                                    </p>
+                                </td>
+                            </tr>
+        
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        </html>
+    `;
+}
+//
+
 class OrderController {
     async createOrder(req, res, next) {
         try {
@@ -149,46 +334,29 @@ class OrderController {
                 console.error('Telegram send error:', tgErr?.response?.data || tgErr?.message || tgErr);
             }
 
-            const htmlItems = orderItems.map((oi, idx) => {
-                return `<li>${idx + 1}. ${oi.product.name} (артикул ${oi.product.code}) — ${oi.quantity}×${oi.product.price}₴ = ${oi.quantity * oi.product.price}₴</li>`;
-            }).join('');
+            const total = orderItems.reduce(
+                (sum, oi) => sum + oi.quantity * oi.product.price,
+                0
+            );
 
-            const mailHtml = `
-                <h2>Дякуємо за замовлення в інтернет-магазині Charivna Craft!</h2>
-                <p>Покупець:</p>
-                <p><strong>Імʼя:</strong> ${fullName}<br>
-                   <strong>Телефон:</strong> ${tel}<br>
-                   <strong>Email:</strong> ${email}
-                </p>
-                
-                <h3>Доставка</h3>
-                ${shippingHtml}
-                
-                <h3>Ваші товари:</h3>
-                <ul>${htmlItems}</ul>
-                <p><strong>Загальна сума:</strong> ${orderItems.reduce((sum, oi) => sum + oi.quantity * oi.product.price, 0)}₴</p>
-                <p>Ми зв’яжемося з вами найближчим часом для підтвердження замовлення.</p>
-            `;
+            // ВАЖЛИВО: shippingHtml ми вже побудували вище
+            const mailHtml = renderOrderEmail({
+                orderId: newOrder.id,
+                fullName,
+                tel,
+                email,
+                total,
+                shippingHtml,
+                items: orderItems
+            });
 
             sendMail({
                 from: process.env.EMAIL_FROM,
                 to: [email, process.env.NOTIFY_EMAIL || 'charivna.craft@gmail.com'],
-                subject: 'Ваше замовлення оформлено',
-                html: `
-                    <div style="text-align:center;margin-bottom:16px">
-                        ${process.env.EMAIL_LOGO_URL ?
-                                `<img 
-                                src="${process.env.EMAIL_LOGO_URL}" 
-                                alt="Charivna Craft" 
-                                style="max-width:180px;height:auto" 
-                            />`
-                                : ''}
-                    </div>
-                    ${mailHtml}
-                `,
+                subject: `Ваше замовлення №${newOrder.id} оформлено`,
+                html: mailHtml,
             }).catch(err => {
                 console.error('Email send error:', err?.message || err);
-                // НЕ кидаємо далі, щоб не ламати замовлення
             });
 
             return res.status(201).json({
