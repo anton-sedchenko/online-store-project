@@ -177,11 +177,17 @@ const Order = () => {
         }
 
         try {
+            const form = e.target;
+
+            const firstName = form.elements.firstName.value.trim();
+            const lastName  = form.elements.lastName.value.trim();
+            const fullName  = `${firstName} ${lastName}`.trim();
+
             await createOrder({
-                fullName: e.target.fullName.value,
-                tel: e.target.tel.value,
-                email: e.target.email.value,
-                comments: e.target.comments.value,
+                fullName,
+                tel: form.tel.value,
+                email: form.email.value,
+                comments: form.comments.value,
                 order: cartStore.items,
                 shipping,
             }, userStore.isAuth);
@@ -212,8 +218,17 @@ const Order = () => {
                     <h3 className="order__page__title">Оформлення замовлення</h3>
 
                     <form className="buyer__contacts__form" onSubmit={handleOrderConfirm}>
-                        <p>Прізвище ім'я по-батькові<span className="input__label__required__marker">*</span></p>
-                        <input required name="fullName" type="text" className="buyer__contacts__form-input" maxLength="50" />
+                        <div className="buyer__name__info__container">
+                            <div className="buyer__firstname__container">
+                                <p>Ім'я<span className="input__label__required__marker">*</span></p>
+                                <input required name="firstName" type="text" className="buyer__contacts__form-input" maxLength="50" />
+                            </div>
+                            <div className="buyer__lastname__container">
+                                <p>Прізвище<span className="input__label__required__marker">*</span></p>
+                                <input required name="lastName" type="text" className="buyer__contacts__form-input" maxLength="50" />
+                            </div>
+                        </div>
+
 
                         <p>Телефон<span className="input__label__required__marker">*</span></p>
                         <input required name="tel" type="tel" className="buyer__contacts__form-input" maxLength="20" />
