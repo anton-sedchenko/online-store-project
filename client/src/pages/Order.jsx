@@ -282,85 +282,91 @@ const Order = () => {
                                 {(deliveryMethod === "NP_BRANCH" || deliveryMethod === "NP_POSTOMAT") && selectedCity && (
                                     <>
                                         <p style={{ marginTop: 12 }}>Відділення / Поштомат</p>
-                                        <div style={{ display: "flex", gap: 8, position: "relative", flexDirection: "column" }}>
-                                            {/* 🔎 Інпут пошуку по відділеннях */}
-                                            <input
-                                                ref={warehouseInputRef}
-                                                type="text"
-                                                className="buyer__contacts__form-input"
-                                                placeholder="Почніть вводити номер або адресу відділення…"
-                                                autoComplete="off"              // 🔹 вимикаємо автозаповнення браузера
-                                                value={warehouseInputValue}
-                                                onChange={(e) => {
-                                                    setWarehouseSearch(e.target.value);
-                                                    setWarehouseRef("");
-                                                    setShowWarehouseDropdown(true);  // 🔹 одразу відкриваємо список
-                                                }}
-                                                onFocus={() => {
-                                                    // 🔹 при першому фокусі, якщо вже є відділення — показуємо список
-                                                    if (warehouses.length) setShowWarehouseDropdown(true);
-                                                }}
-                                                onClick={() => {
-                                                    // 🔹 клік по полю теж відкриває список
-                                                    if (warehouses.length) setShowWarehouseDropdown(true);
-                                                }}
-                                                onBlur={() => {
-                                                    // даємо час клікнути по елементу списку
-                                                    setTimeout(() => setShowWarehouseDropdown(false), 150);
-                                                }}
-                                            />
-
-                                            {/* 🔽 Список відділень з пошуком */}
-                                            {showWarehouseDropdown && filteredWarehouses.length > 0 && (
-                                                <div
-                                                    className="dropdown-list"
-                                                    style={{
-                                                        position: "absolute",
-                                                        top: "100%",       // прямо під інпутом
-                                                        left: 0,
-                                                        right: 0,
-                                                        marginTop: 4,      // маленький відступ
-                                                        maxHeight: "260px",
-                                                        overflowY: "auto",
-                                                        zIndex: 20
+                                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                                            {/* Блок тільки для інпута + списку */}
+                                            <div style={{ position: "relative" }}>
+                                                <input
+                                                    ref={warehouseInputRef}
+                                                    type="search"
+                                                    name="npWarehouseSearch"
+                                                    className="buyer__contacts__form-input"
+                                                    placeholder="Почніть вводити номер або адресу відділення…"
+                                                    autoComplete="off"
+                                                    autoCorrect="off"
+                                                    autoCapitalize="off"
+                                                    value={warehouseInputValue}
+                                                    onChange={(e) => {
+                                                        setWarehouseSearch(e.target.value);
+                                                        setWarehouseRef("");
+                                                        setShowWarehouseDropdown(true);
                                                     }}
-                                                >
-                                                    {filteredWarehouses.map(w => {
-                                                        const label = `${w.Number ? `№${w.Number} — ` : ""}${w.Description}`;
-                                                        return (
-                                                            <div
-                                                                key={w.Ref}
-                                                                className="dropdown-item"
-                                                                onMouseDown={() => {
-                                                                    setWarehouseRef(w.Ref);
-                                                                    setWarehouseSearch("");
-                                                                    setShowWarehouseDropdown(false);
-                                                                }}
-                                                            >
-                                                                {label}
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            )}
-
-                                            {showWarehouseDropdown && filteredWarehouses.length === 0 && (
-                                                <div
-                                                    className="dropdown-list"
-                                                    style={{
-                                                        maxHeight: "200px",
-                                                        overflowY: "auto",
-                                                        zIndex: 20
+                                                    onFocus={() => {
+                                                        if (warehouses.length) setShowWarehouseDropdown(true);
                                                     }}
-                                                >
-                                                    <div className="dropdown-item muted">
-                                                        Нічого не знайдено
+                                                    onClick={() => {
+                                                        if (warehouses.length) setShowWarehouseDropdown(true);
+                                                    }}
+                                                    onBlur={() => {
+                                                        setTimeout(() => setShowWarehouseDropdown(false), 150);
+                                                    }}
+                                                />
+
+                                                {showWarehouseDropdown && filteredWarehouses.length > 0 && (
+                                                    <div
+                                                        className="dropdown-list"
+                                                        style={{
+                                                            position: "absolute",
+                                                            top: "100%",      // тепер це низ саме інпута
+                                                            left: 0,
+                                                            right: 0,
+                                                            marginTop: 4,
+                                                            maxHeight: "260px",
+                                                            overflowY: "auto",
+                                                            zIndex: 20
+                                                        }}
+                                                    >
+                                                        {filteredWarehouses.map(w => {
+                                                            const label = `${w.Number ? `№${w.Number} — ` : ""}${w.Description}`;
+                                                            return (
+                                                                <div
+                                                                    key={w.Ref}
+                                                                    className="dropdown-item"
+                                                                    onMouseDown={() => {
+                                                                        setWarehouseRef(w.Ref);
+                                                                        setWarehouseSearch("");
+                                                                        setShowWarehouseDropdown(false);
+                                                                    }}
+                                                                >
+                                                                    {label}
+                                                                </div>
+                                                            );
+                                                        })}
                                                     </div>
-                                                </div>
-                                            )}
+                                                )}
+
+                                                {showWarehouseDropdown && filteredWarehouses.length === 0 && (
+                                                    <div
+                                                        className="dropdown-list"
+                                                        style={{
+                                                            position: "absolute",
+                                                            top: "100%",
+                                                            left: 0,
+                                                            right: 0,
+                                                            marginTop: 4,
+                                                            maxHeight: "200px",
+                                                            overflowY: "auto",
+                                                            zIndex: 20
+                                                        }}
+                                                    >
+                                                        <div className="dropdown-item muted">
+                                                            Нічого не знайдено
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
 
                                             {/* Кнопка карти */}
-                                            <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                                            <div style={{ display: "flex", gap: 8 }}>
                                                 <button
                                                     type="button"
                                                     className="neu-btn"
