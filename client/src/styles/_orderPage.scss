@@ -26,13 +26,25 @@
 
 .buyer__name__info__container {
   display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
-.buyer__firstname__container {
-  margin-right: 20px;
+.buyer__name__info__container {
+  @include respond-to(sm) {
+    justify-content: center;
+  }
+}
 
-  @include respond-to(md) {
-    margin-right: 0;
+.buyer__contacts__info__container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.buyer__contacts__info__container {
+  @include respond-to(sm) {
+    justify-content: center;
   }
 }
 

@@ -219,22 +219,26 @@ const Order = () => {
 
                     <form className="buyer__contacts__form" onSubmit={handleOrderConfirm}>
                         <div className="buyer__name__info__container">
-                            <div className="buyer__firstname__container">
+                            <div>
                                 <p>Ім'я<span className="input__label__required__marker">*</span></p>
                                 <input required name="firstName" type="text" className="buyer__contacts__form-input" maxLength="50" />
                             </div>
-                            <div className="buyer__lastname__container">
+                            <div>
                                 <p>Прізвище<span className="input__label__required__marker">*</span></p>
                                 <input required name="lastName" type="text" className="buyer__contacts__form-input" maxLength="50" />
                             </div>
                         </div>
 
-
-                        <p>Телефон<span className="input__label__required__marker">*</span></p>
-                        <input required name="tel" type="tel" className="buyer__contacts__form-input" maxLength="20" />
-
-                        <p>E-mail<span className="input__label__required__marker">*</span></p>
-                        <input required name="email" type="email" className="buyer__contacts__form-input" maxLength="50" />
+                        <div className="buyer__contacts__info__container">
+                            <div>
+                                <p>Телефон<span className="input__label__required__marker">*</span></p>
+                                <input required name="tel" type="tel" className="buyer__contacts__form-input" maxLength="20" />
+                            </div>
+                            <div>
+                                <p>E-mail<span className="input__label__required__marker">*</span></p>
+                                <input required name="email" type="email" className="buyer__contacts__form-input" maxLength="50" />
+                            </div>
+                        </div>
 
                         <h4 style={{ marginTop: 20 }}>Доставка</h4>
                         <div className="shipping__methods">
