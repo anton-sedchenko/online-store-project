@@ -24,6 +24,11 @@ const Order = () => {
     // Відділення/поштомати НП
     const [warehouses, setWarehouses] = useState([]);
     const [warehouseRef, setWarehouseRef] = useState("");
+
+    // 🔎 нові стейти для пошуку по відділенням
+    const [warehouseSearch, setWarehouseSearch] = useState("");
+    const [showWarehouseDropdown, setShowWarehouseDropdown] = useState(false);
+
     const [showMap, setShowMap] = useState(false);
 
     // Кур’єр НП – одна текстова адреса
@@ -54,6 +59,9 @@ const Order = () => {
         (async () => {
             setWarehouses([]);
             setWarehouseRef("");
+            setWarehouseSearch("");
+            setShowWarehouseDropdown(false);
+
             if (!deliveryMethod.startsWith("NP_")) return;
             if (!cityRef) return;
             try {
@@ -62,6 +70,7 @@ const Order = () => {
                 setWarehouses(list);
             } catch {}
         })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCity, deliveryMethod]); // cityRef усередині з замикання
 
     const methodLabel = useMemo(() => ({
@@ -70,6 +79,29 @@ const Order = () => {
         NP_COURIER: "Курʼєр Нова Пошта",
         UKR_BRANCH: "Самовивіз з відділення Укрпошти",
     }), []);
+
+    // 🧠 знайдене/обране відділення
+    const selectedWarehouse = useMemo(
+        () => warehouses.find(w => w.Ref === warehouseRef) || null,
+        [warehouses, warehouseRef]
+    );
+
+    // 🧠 відфільтрований список відділень за пошуком
+    const filteredWarehouses = useMemo(() => {
+        if (!warehouseSearch.trim()) return warehouses;
+        const q = warehouseSearch.trim().toLowerCase();
+        return warehouses.filter(w => {
+            const label = `${w.Number ? `№${w.Number} — ` : ""}${w.Description}`;
+            return label.toLowerCase().includes(q);
+        });
+    }, [warehouseSearch, warehouses]);
+
+    // Значення для інпуту відділення:
+    const warehouseInputValue = warehouseSearch !== ""
+        ? warehouseSearch
+        : (selectedWarehouse
+            ? `${selectedWarehouse.Number ? `№${selectedWarehouse.Number} — ` : ""}${selectedWarehouse.Description}`
+            : "");
 
     // ---- Підтвердження замовлення
     const handleOrderConfirm = async (e) => {
@@ -159,7 +191,10 @@ const Order = () => {
         <>
             <Helmet>
                 <title>Оформлення замовлення – Charivna Craft</title>
-                <meta name="description" content="Вкажіть дані для доставки й завершення замовлення виробів ручної роботи." />
+                <meta
+                    name="description"
+                    content="Вкажіть дані для доставки й завершення замовлення виробів ручної роботи."
+                />
             </Helmet>
 
             <div className="component__container">
@@ -237,23 +272,81 @@ const Order = () => {
                                 {(deliveryMethod === "NP_BRANCH" || deliveryMethod === "NP_POSTOMAT") && selectedCity && (
                                     <>
                                         <p style={{ marginTop: 12 }}>Відділення / Поштомат</p>
-                                        <div style={{ display: "flex", gap: 8 }}>
-                                            <select
+                                        <div style={{ display: "flex", gap: 8, position: "relative", flexDirection: "column" }}>
+                                            {/* 🔎 Інпут пошуку по відділеннях */}
+                                            <input
+                                                type="text"
                                                 className="buyer__contacts__form-input"
-                                                style={{ flex: 1 }}
-                                                value={warehouseRef}
-                                                onChange={e => setWarehouseRef(e.target.value)}
-                                            >
-                                                <option value="">Оберіть відділення…</option>
-                                                {warehouses.map(w => (
-                                                    <option key={w.Ref} value={w.Ref}>
-                                                        {w.Number ? `№${w.Number} — ` : ""}{w.Description}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            <button type="button" className="neu-btn" onClick={() => setShowMap(true)}>
-                                                Обрати на мапі
-                                            </button>
+                                                placeholder="Почніть вводити номер або адресу відділення…"
+                                                value={warehouseInputValue}
+                                                onChange={(e) => {
+                                                    setWarehouseSearch(e.target.value);
+                                                    setWarehouseRef("");
+                                                    setShowWarehouseDropdown(true);
+                                                }}
+                                                onFocus={() => {
+                                                    if (warehouses.length) setShowWarehouseDropdown(true);
+                                                }}
+                                                onBlur={() => {
+                                                    setTimeout(() => setShowWarehouseDropdown(false), 150);
+                                                }}
+                                            />
+
+                                            {/* 🔽 Список відділень з пошуком */}
+                                            {showWarehouseDropdown && filteredWarehouses.length > 0 && (
+                                                <div
+                                                    className="dropdown-list"
+                                                    style={{
+                                                        maxHeight: "260px",
+                                                        overflowY: "auto",
+                                                        zIndex: 20
+                                                    }}
+                                                >
+                                                    {filteredWarehouses.map(w => {
+                                                        const label = `${w.Number ? `№${w.Number} — ` : ""}${w.Description}`;
+                                                        return (
+                                                            <div
+                                                                key={w.Ref}
+                                                                className="dropdown-item"
+                                                                onMouseDown={() => {
+                                                                    setWarehouseRef(w.Ref);
+                                                                    setWarehouseSearch("");
+                                                                    setShowWarehouseDropdown(false);
+                                                                }}
+                                                            >
+                                                                {label}
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            )}
+
+                                            {showWarehouseDropdown && filteredWarehouses.length === 0 && (
+                                                <div
+                                                    className="dropdown-list"
+                                                    style={{
+                                                        maxHeight: "200px",
+                                                        overflowY: "auto",
+                                                        zIndex: 20
+                                                    }}
+                                                >
+                                                    <div className="dropdown-item muted">
+                                                        Нічого не знайдено
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Кнопка карти */}
+                                            <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                                                <button
+                                                    type="button"
+                                                    className="neu-btn"
+                                                    onClick={() => setShowMap(true)}
+                                                    disabled={!cityRef}
+                                                >
+                                                    Обрати на мапі
+                                                </button>
+                                            </div>
                                         </div>
                                     </>
                                 )}
