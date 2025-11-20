@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useMemo, useState} from "react";
+import React, {useContext, useEffect, useMemo, useState, useRef} from "react";
 import {HOME_ROUTE} from "../utils/consts.js";
 import {useNavigate} from "react-router-dom";
 import {createOrder} from "../http/orderAPI.js";
@@ -28,6 +28,7 @@ const Order = () => {
     // 🔎 нові стейти для пошуку по відділенням
     const [warehouseSearch, setWarehouseSearch] = useState("");
     const [showWarehouseDropdown, setShowWarehouseDropdown] = useState(false);
+    const warehouseInputRef = useRef(null);
 
     const [showMap, setShowMap] = useState(false);
 
@@ -72,6 +73,15 @@ const Order = () => {
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCity, deliveryMethod]); // cityRef усередині з замикання
+
+    useEffect(() => {
+        if (
+            warehouses.length > 0 &&
+            document.activeElement === warehouseInputRef.current
+        ) {
+            setShowWarehouseDropdown(true);
+        }
+    }, [warehouses]);
 
     const methodLabel = useMemo(() => ({
         NP_BRANCH: "Самовивіз з відділення Нової Пошти",
@@ -275,19 +285,27 @@ const Order = () => {
                                         <div style={{ display: "flex", gap: 8, position: "relative", flexDirection: "column" }}>
                                             {/* 🔎 Інпут пошуку по відділеннях */}
                                             <input
+                                                ref={warehouseInputRef}
                                                 type="text"
                                                 className="buyer__contacts__form-input"
                                                 placeholder="Почніть вводити номер або адресу відділення…"
+                                                autoComplete="off"              // 🔹 вимикаємо автозаповнення браузера
                                                 value={warehouseInputValue}
                                                 onChange={(e) => {
                                                     setWarehouseSearch(e.target.value);
                                                     setWarehouseRef("");
-                                                    setShowWarehouseDropdown(true);
+                                                    setShowWarehouseDropdown(true);  // 🔹 одразу відкриваємо список
                                                 }}
                                                 onFocus={() => {
+                                                    // 🔹 при першому фокусі, якщо вже є відділення — показуємо список
+                                                    if (warehouses.length) setShowWarehouseDropdown(true);
+                                                }}
+                                                onClick={() => {
+                                                    // 🔹 клік по полю теж відкриває список
                                                     if (warehouses.length) setShowWarehouseDropdown(true);
                                                 }}
                                                 onBlur={() => {
+                                                    // даємо час клікнути по елементу списку
                                                     setTimeout(() => setShowWarehouseDropdown(false), 150);
                                                 }}
                                             />
@@ -297,6 +315,11 @@ const Order = () => {
                                                 <div
                                                     className="dropdown-list"
                                                     style={{
+                                                        position: "absolute",
+                                                        top: "100%",       // прямо під інпутом
+                                                        left: 0,
+                                                        right: 0,
+                                                        marginTop: 4,      // маленький відступ
                                                         maxHeight: "260px",
                                                         overflowY: "auto",
                                                         zIndex: 20
