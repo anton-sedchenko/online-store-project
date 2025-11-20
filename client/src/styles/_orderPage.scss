@@ -53,10 +53,14 @@
   @include btn-style;
 }
 
-.postWarHousePickContainer {
+.post__warhouse__pick__container {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.post__warhouse__list__container {
+  position: relative;
 }
 
 .dropdown-list {

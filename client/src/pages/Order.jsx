@@ -282,9 +282,9 @@ const Order = () => {
                                 {(deliveryMethod === "NP_BRANCH" || deliveryMethod === "NP_POSTOMAT") && selectedCity && (
                                     <>
                                         <p style={{ marginTop: 12 }}>Відділення / Поштомат</p>
-                                        <div className="postWarHousePickContainer">
+                                        <div className="post__warhouse__pick__container">
                                             {/* Блок тільки для інпута + списку */}
-                                            <div style={{ position: "relative" }}>
+                                            <div className="post__warhouse__list__container">
                                                 <input
                                                     ref={warehouseInputRef}
                                                     type="text"
@@ -302,7 +302,11 @@ const Order = () => {
                                                         setWarehouseRef("");
                                                         setShowWarehouseDropdown(true);
                                                     }}
-                                                    onFocus={() => {
+                                                    onFocus={(e) => {
+                                                        e.target.readOnly = true;
+                                                        setTimeout(() => {
+                                                            e.target.readOnly = false;
+                                                        }, 100);
                                                         if (warehouses.length) setShowWarehouseDropdown(true);
                                                     }}
                                                     onClick={() => {
