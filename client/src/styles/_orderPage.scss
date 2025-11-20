@@ -53,6 +53,12 @@
   @include btn-style;
 }
 
+.postWarHousePickContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .dropdown-list {
   border: 1px solid #ddd;
   border-radius: 8px;

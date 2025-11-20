@@ -282,16 +282,18 @@ const Order = () => {
                                 {(deliveryMethod === "NP_BRANCH" || deliveryMethod === "NP_POSTOMAT") && selectedCity && (
                                     <>
                                         <p style={{ marginTop: 12 }}>Відділення / Поштомат</p>
-                                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                                        <div className="postWarHousePickContainer">
                                             {/* Блок тільки для інпута + списку */}
                                             <div style={{ position: "relative" }}>
                                                 <input
                                                     ref={warehouseInputRef}
-                                                    type="search"
-                                                    name="npWarehouseSearch"
+                                                    type="text"
+                                                    name="fake-warehouse"
                                                     className="buyer__contacts__form-input"
+                                                    inputMode="none"
                                                     placeholder="Почніть вводити номер або адресу відділення…"
-                                                    autoComplete="off"
+                                                    autoComplete="new-password"
+                                                    spellCheck="false"
                                                     autoCorrect="off"
                                                     autoCapitalize="off"
                                                     value={warehouseInputValue}
