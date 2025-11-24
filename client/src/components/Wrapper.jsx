@@ -3,17 +3,18 @@ import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 // import Banner from "./Banner.jsx";
 import {useLocation} from "react-router-dom";
-import {
-    BLOG_ROUTE,
-    DELIVERY_PAYMENT_ROUTE,
-    HOME_ROUTE,
-    OFERTA_ROUTE,
-    PRIVACY_ROUTE,
-    RETURN_POLICY_ROUTE,
-    CONTACTS_ROUTE,
-    CART_ROUTE
-} from "../utils/consts.js";
+// import {
+//     BLOG_ROUTE,
+//     DELIVERY_PAYMENT_ROUTE,
+//     HOME_ROUTE,
+//     OFERTA_ROUTE,
+//     PRIVACY_ROUTE,
+//     RETURN_POLICY_ROUTE,
+//     CONTACTS_ROUTE,
+//     CART_ROUTE
+// } from "../utils/consts.js";
 import ScrollToTop from "./ScrollToTop.js";
+import SeoBlock from "./SeoBlock.jsx";
 
 const Wrapper = ({children}) => {
     const location = useLocation();
@@ -39,6 +40,7 @@ const Wrapper = ({children}) => {
                 {/*{(isBannerShow) && <Banner />}*/}
                 {children}
             </div>
+            <SeoBlock />
             <Footer />
         </div>
     );
