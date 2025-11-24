@@ -39,8 +39,8 @@ const Wrapper = ({children}) => {
             <div className="page__content">
                 {/*{(isBannerShow) && <Banner />}*/}
                 {children}
+                <SeoBlock />
             </div>
-            <SeoBlock />
             <Footer />
         </div>
     );
