@@ -29,13 +29,15 @@
     padding: 0;
     font-weight: 600;
     cursor: pointer;
-
-    @include respond-to(md) {
-      display: none;
-    }
   }
 
   h3 {
     font-size: 20px;
+  }
+}
+
+@media (min-width: $bp-md) {
+  .seo__block .seo-toggle {
+    display: none;
   }
 }
