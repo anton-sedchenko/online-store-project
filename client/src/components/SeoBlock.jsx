@@ -2,7 +2,7 @@ import React from "react";
 
 const SeoBlock = () => {
     return (
-        <section className="seo-block container mt-5">
+        <section className="seo__block">
             <h2>Charivna Craft - вироби ручної роботи для дому, декору та творчості</h2>
             <p>
                 Charivna Craft - це місце, де створюється затишок. Ми поєднуємо натуральні матеріали,
