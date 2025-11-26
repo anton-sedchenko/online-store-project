@@ -42,6 +42,7 @@
   border-radius: 5px;
   max-width: 200px;
   height: 200px;
+  object-fit: contain;
 }
 
 .fa-heart {
@@ -80,7 +81,7 @@
 }
 
 .gallery__card__product__name {
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: 5px;
 }
 
