@@ -11,7 +11,6 @@ const EditProduct = ({show, onHide, productToEdit}) => {
     const [typeId, setTypeId] = useState('');
     const [color, setColor] = useState('');
     const [kind, setKind] = useState('');
-    const [isSet, setIsSet] = useState(false);
     const [description, setDescription] = useState('');
     const [imgFiles, setImgFiles] = useState([]);
     const [types, setTypes] = useState([]);
@@ -29,7 +28,6 @@ const EditProduct = ({show, onHide, productToEdit}) => {
             setTypeId(productToEdit.typeId || '');
             setColor(productToEdit.color || '');
             setKind(productToEdit.kind || '');
-            setIsSet(!!productToEdit.isSet);
             setDescription(productToEdit.description || '');
             setExistingImages(Array.isArray(productToEdit.images) ? productToEdit.images : []);
             setMainImageUrl(productToEdit.img || '');
@@ -47,7 +45,6 @@ const EditProduct = ({show, onHide, productToEdit}) => {
         formData.append('typeId', typeId);
         formData.append('color', (color ?? '').trim());
         formData.append('kind', (kind ?? '').trim());
-        formData.append('isSet', isSet ? 'true' : 'false');
         formData.append('description', description);
         formData.append('availability', availability);
         if (mainImageFile) {
@@ -139,15 +136,6 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             placeholder="Напр.: кошик, плейсмат, тваринка, браслет"
                             value={kind}
                             onChange={e => setKind(e.target.value)}
-                        />
-                    </Form.Group>
-
-                    <Form.Group className="mb-2">
-                        <Form.Check
-                            type="checkbox"
-                            label="Це набір (комплект кількох виробів)"
-                            checked={isSet}
-                            onChange={e => setIsSet(e.target.checked)}
                         />
                     </Form.Group>
 

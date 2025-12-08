@@ -32,18 +32,10 @@ class ProductController {
                 rozetkaCategoryId,
                 color,
                 kind,
-                isSet,
             } = req.body;
 
             // нормалізація статусу (щоб "Під замовлення" не ламало ENUM)
             const availabilityNorm = availability === 'PRE_ORDER' ? 'MADE_TO_ORDER' : availability;
-
-            // boolean для isSet
-            const isSetBool =
-                isSet === true ||
-                isSet === 'true' ||
-                isSet === '1' ||
-                isSet === 1;
 
             // парсимо числа
             const typeIdNum  = Number(typeId);
@@ -76,7 +68,6 @@ class ProductController {
                 img: result.secure_url,
                 color: color && color.trim() ? color.trim() : null,
                 kind: kind && kind.trim() ? kind.trim() : null,
-                isSet: isSetBool,
             });
 
             invalidateFeedCache();
@@ -99,7 +90,6 @@ class ProductController {
                 code,
                 color,
                 kind,
-                isSet,
             } = req.body;
 
             // приймаємо можливі поля
@@ -172,14 +162,6 @@ class ProductController {
 
             if (kind !== undefined) {
                 product.kind = kind && kind.trim() ? kind.trim() : null;
-            }
-
-            if (isSet !== undefined) {
-                product.isSet =
-                    isSet === true ||
-                    isSet === 'true' ||
-                    isSet === '1' ||
-                    isSet === 1;
             }
 
             await product.save();

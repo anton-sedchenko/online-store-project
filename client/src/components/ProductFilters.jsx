@@ -9,7 +9,7 @@ const CATEGORY_FILTERS = {
     'Вироби з бісеру': { color: false, kind: true, isSet: true },
 };
 
-const CategoryFilters = ({
+const ProductFilters = ({
                              products,
                              categoryName,
                              selectedKinds,
@@ -28,7 +28,6 @@ const CategoryFilters = ({
 
     const kinds = [...new Set(safeProducts.map(p => p?.kind).filter(Boolean))];
     const colors = [...new Set(safeProducts.map(p => p?.color).filter(Boolean))];
-    const hasSets = safeProducts.some(p => p?.isSet);
 
     const toggleKind = (k) => {
         if (selectedKinds.includes(k)) {
@@ -47,7 +46,7 @@ const CategoryFilters = ({
     };
 
     // якщо для цієї категорії нічого не показуємо – не рендеримо блок
-    if (!showColor && !showKind && !(showIsSet && hasSets)) {
+    if (!showColor && !showKind) {
         return null;
     }
 
@@ -60,6 +59,7 @@ const CategoryFilters = ({
                     <div className="fw-semibold mb-1">Тип виробу</div>
                     {kinds.map(k => (
                         <Form.Check
+                            className="sidebar__filter__option__container"
                             key={k}
                             type="checkbox"
                             id={`kind-${k}`}
@@ -76,6 +76,7 @@ const CategoryFilters = ({
                     <div className="fw-semibold mb-1">Колір</div>
                     {colors.map(c => (
                         <Form.Check
+                            className="sidebar__filter__option__container"
                             key={c}
                             type="checkbox"
                             id={`color-${c}`}
@@ -87,19 +88,8 @@ const CategoryFilters = ({
                 </div>
             )}
 
-            {showIsSet && hasSets && (
-                <div className="mb-2">
-                    <Form.Check
-                        type="checkbox"
-                        id="only-sets"
-                        label="Показати лише набори"
-                        checked={onlySets}
-                        onChange={e => setOnlySets(e.target.checked)}
-                    />
-                </div>
-            )}
         </div>
     );
 };
 
-export default CategoryFilters;
+export default ProductFilters;
