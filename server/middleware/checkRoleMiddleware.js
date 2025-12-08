@@ -15,14 +15,14 @@ module.exports = function(role) {
             const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
             if (decoded.role !== role) {
-                console.log("🚫 Недостатньо прав. Роль:", decoded.role);
+                console.log("Недостатньо прав. Роль:", decoded.role);
                 return res.status(403).json({ message: 'Недостатньо прав' });
             }
 
             req.user = decoded;
             next();
         } catch (e) {
-            console.log("❌ Помилка токена:", e.message);
+            console.log("Помилка токена:", e.message);
             return res.status(401).json({ message: 'Користувач не авторизований' });
         }
     }

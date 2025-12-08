@@ -9,6 +9,9 @@ const EditProduct = ({show, onHide, productToEdit}) => {
     const [price, setPrice] = useState('');
     const [code, setCode] = useState('');
     const [typeId, setTypeId] = useState('');
+    const [color, setColor] = useState('');
+    const [kind, setKind] = useState('');
+    const [isSet, setIsSet] = useState(false);
     const [description, setDescription] = useState('');
     const [imgFiles, setImgFiles] = useState([]);
     const [types, setTypes] = useState([]);
@@ -24,6 +27,9 @@ const EditProduct = ({show, onHide, productToEdit}) => {
             setPrice(productToEdit.price || '');
             setCode(productToEdit.code || '');
             setTypeId(productToEdit.typeId || '');
+            setColor(productToEdit.color || '');
+            setKind(productToEdit.kind || '');
+            setIsSet(!!productToEdit.isSet);
             setDescription(productToEdit.description || '');
             setExistingImages(Array.isArray(productToEdit.images) ? productToEdit.images : []);
             setMainImageUrl(productToEdit.img || '');
@@ -39,6 +45,9 @@ const EditProduct = ({show, onHide, productToEdit}) => {
         formData.append('price', price);
         formData.append('code', code);
         formData.append('typeId', typeId);
+        formData.append('color', (color ?? '').trim());
+        formData.append('kind', (kind ?? '').trim());
+        formData.append('isSet', isSet ? 'true' : 'false');
         formData.append('description', description);
         formData.append('availability', availability);
         if (mainImageFile) {
@@ -70,14 +79,17 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                         <Form.Label>Назва</Form.Label>
                         <Form.Control value={name} onChange={e => setName(e.target.value)} />
                     </Form.Group>
+
                     <Form.Group className="mb-2">
                         <Form.Label>Ціна</Form.Label>
                         <Form.Control type="number" value={price} onChange={e => setPrice(e.target.value)} />
                     </Form.Group>
+
                     <Form.Group className="mb-2">
                         <Form.Label>Код товару</Form.Label>
                         <Form.Control value={code} onChange={e => setCode(e.target.value)} />
                     </Form.Group>
+
                     <Form.Group className="mb-2">
                         <Form.Label>Наявність</Form.Label>
                         <Form.Select
@@ -89,6 +101,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             <option value="OUT_OF_STOCK">Немає в наявності</option>
                         </Form.Select>
                     </Form.Group>
+
                     <Form.Group className="mb-2">
                         <Form.Label>Тип</Form.Label>
                         <Form.Select value={typeId} onChange={e => setTypeId(e.target.value)}>
@@ -96,6 +109,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             {types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                         </Form.Select>
                     </Form.Group>
+
                     <Form.Group className="mb-2">
                         <Form.Label>ID Категорії Rozetka (необов’язково)</Form.Label>
                         <Form.Control
@@ -109,6 +123,34 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             Якщо залишити порожнім — товар не потрапить до фіду Rozetka.
                         </Form.Text>
                     </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Колір</Form.Label>
+                        <Form.Control
+                            placeholder="Напр.: айворі, світло-сірий"
+                            value={color}
+                            onChange={e => setColor(e.target.value)}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Тип виробу</Form.Label>
+                        <Form.Control
+                            placeholder="Напр.: кошик, плейсмат, тваринка, браслет"
+                            value={kind}
+                            onChange={e => setKind(e.target.value)}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Check
+                            type="checkbox"
+                            label="Це набір (комплект кількох виробів)"
+                            checked={isSet}
+                            onChange={e => setIsSet(e.target.checked)}
+                        />
+                    </Form.Group>
+
                     <Form.Group className="mb-2">
                         <Form.Label>Опис товару</Form.Label>
                         <Form.Control
@@ -116,6 +158,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             value={description}
                             onChange={e => setDescription(e.target.value)} />
                     </Form.Group>
+
                     <Form.Group className="mb-2">
                         <Form.Label>Головне зображення</Form.Label>
                         {mainImageUrl && (

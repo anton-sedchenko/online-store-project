@@ -22,10 +22,28 @@ class ProductController {
                 return res.status(400).json({message: 'Файл не завантажений'});
             }
 
-            let {name, price, typeId, description, code, availability, rozetkaCategoryId} = req.body;
+            let {
+                name,
+                price,
+                typeId,
+                description,
+                code,
+                availability,
+                rozetkaCategoryId,
+                color,
+                kind,
+                isSet,
+            } = req.body;
 
             // нормалізація статусу (щоб "Під замовлення" не ламало ENUM)
             const availabilityNorm = availability === 'PRE_ORDER' ? 'MADE_TO_ORDER' : availability;
+
+            // boolean для isSet
+            const isSetBool =
+                isSet === true ||
+                isSet === 'true' ||
+                isSet === '1' ||
+                isSet === 1;
 
             // парсимо числа
             const typeIdNum  = Number(typeId);
@@ -56,6 +74,9 @@ class ProductController {
                 availability: availabilityNorm,
                 rozetkaCategoryId: rzIdNum,
                 img: result.secure_url,
+                color: color && color.trim() ? color.trim() : null,
+                kind: kind && kind.trim() ? kind.trim() : null,
+                isSet: isSetBool,
             });
 
             invalidateFeedCache();
@@ -70,7 +91,16 @@ class ProductController {
     async update(req, res, next) {
         try {
             const {id} = req.params;
-            let {name, price, typeId, description, code} = req.body;
+            let {
+                name,
+                price,
+                typeId,
+                description,
+                code,
+                color,
+                kind,
+                isSet,
+            } = req.body;
 
             // приймаємо можливі поля
             const {availability, rozetkaCategoryId} = req.body;
@@ -134,6 +164,22 @@ class ProductController {
 
             if (rozetkaCategoryId !== undefined) {
                 product.rozetkaCategoryId = rzIdNum; // дозволяємо і ставити null, і число
+            }
+
+            if (color !== undefined) {
+                product.color = color && color.trim() ? color.trim() : null;
+            }
+
+            if (kind !== undefined) {
+                product.kind = kind && kind.trim() ? kind.trim() : null;
+            }
+
+            if (isSet !== undefined) {
+                product.isSet =
+                    isSet === true ||
+                    isSet === 'true' ||
+                    isSet === '1' ||
+                    isSet === 1;
             }
 
             await product.save();

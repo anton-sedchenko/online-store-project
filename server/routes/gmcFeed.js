@@ -28,13 +28,13 @@ const GPC = {
 // ключові слова для автодетекту дозволених груп
 const KW = {
     // групи
-    FIGURINE: /(фігурк|статует|figurine|статуэт)/i,
-    JEWELRY: /(гердан|браслет|чокер|намист|ожерел|necklace|bracelet|choker)/i,
-    CORD_ANY: /(кошик|кошики|корзин|basket|підтарі?льник|серветк|placemat|подтарелочник|підставк[^ ]*\s*під\s*гаряч|trivet|подставк[^ ]*\s*под\s*горяч)/i,
+    FIGURINE: /(фігурк|статует|статуэт)/i,
+    JEWELRY: /(гердан|браслет|чокер|намист|ожерел)/i,
+    CORD_ANY: /(кошик|кошики|корзин|підтарі?льник|серветк|подтарелочник|підставк[^ ]*\s*під\s*гаряч|подставк[^ ]*\s*под\s*горяч)/i,
     // підтипи "зі шнура"
-    BASKET: /(кошик|кошики|корзин|basket)/i,
-    PLACEMAT: /(підтарі?льник|серветк|placemat|подтарелочник)/i,
-    TRIVET: /(підставк[^ ]*\s*під\s*гаряч|trivet|подставк[^ ]*\s*под\s*горяч)/i,
+    BASKET: /(кошик|кошики|корзин)/i,
+    PLACEMAT: /(підтарі?льник|серветк|подтарелочник)/i,
+    TRIVET: /(підставк[^ ]*\s*під\s*гаряч|подставк[^ ]*\s*под\s*горяч)/i,
 };
 
 const norm = (s) => String(s || '').trim();
@@ -140,7 +140,7 @@ router.get('/gmc.xml', async (req, res, next) => {
                 item.ele('g:price').txt(`${isFinite(priceNum) ? priceNum.toFixed(2) : '0.00'} ${CURRENCY}`);
                 item.ele('g:condition').txt('new');
 
-                // product_type — твоя ієрархія
+                // product_type — ієрархія
                 if (typeName) {
                     item.ele('g:product_type').txt(`Handmade > ${sanitizeText(typeName, 200)}`);
                 } else {

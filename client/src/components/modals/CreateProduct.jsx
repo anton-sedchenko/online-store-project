@@ -10,6 +10,9 @@ const CreateProduct = observer(({show, onHide}) => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState(0);
     const [descr, setDescr] = useState('');
+    const [color, setColor] = useState('');
+    const [kind, setKind] = useState('');
+    const [isSet, setIsSet] = useState(false);
     const [file, setFile] = useState(null);
     const [code, setCode] = useState('');
     const [availability, setAvailability] = useState('IN_STOCK');
@@ -43,6 +46,9 @@ const CreateProduct = observer(({show, onHide}) => {
             formData.append("typeId", productStore.selectedType.id);
             formData.append("code", code);
             formData.append('availability', availability);
+            formData.append('color', (color ?? '').trim());
+            formData.append('kind', (kind ?? '').trim());
+            formData.append('isSet', isSet ? 'true' : 'false');
             formData.append('rozetkaCategoryId', (rozetkaCategoryId ?? '').trim());
 
             await createProduct(formData).then(() => onHide());
@@ -109,6 +115,29 @@ const CreateProduct = observer(({show, onHide}) => {
                             <option value="OUT_OF_STOCK">Немає в наявності</option>
                         </Form.Select>
                     </Form.Group>
+
+                    <Form.Control
+                        placeholder="Колір (наприклад: айворі або світло-сірий)"
+                        className="modal__input"
+                        value={color}
+                        onChange={e => setColor(e.target.value)}
+                    />
+
+                    <Form.Control
+                        placeholder="Тип виробу (наприклад: кошик, плейсмат, тваринка, браслет)"
+                        className="modal__input"
+                        value={kind}
+                        onChange={e => setKind(e.target.value)}
+                    />
+
+                    <Form.Check
+                        type="checkbox"
+                        className="mt-2"
+                        label="Це набір (декілька виробів у комплекті)"
+                        checked={isSet}
+                        onChange={e => setIsSet(e.target.checked)}
+                    />
+
                     <Form.Control
                         placeholder="Ціна товару"
                         type="number"

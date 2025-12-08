@@ -129,6 +129,10 @@ router.get('/rozetka.xml', async (req, res, next) => {
             addParamIf(offer, 'Країна-виробник товару', p.country || 'Україна');
             addParamIf(offer, 'Колір',    p.color);
             addParamIf(offer, 'Матеріал', p.material);
+            addParamIf(offer, 'Тип виробу', p.kind);
+            if (p.isSet === true) {
+                addParamIf(offer, 'Набір', 'Так');
+            }
 
             offer.up();
         }

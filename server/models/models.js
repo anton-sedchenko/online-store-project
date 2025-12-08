@@ -40,6 +40,8 @@ const Product = sequelize.define('product', {
     country:   { type: DataTypes.TEXT, allowNull: true },
     color:     { type: DataTypes.TEXT, allowNull: true },
     material:  { type: DataTypes.TEXT, allowNull: true },
+    kind:      { type: DataTypes.TEXT, allowNull: true },  // тип виробу
+    isSet:     { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false }, // набір / не набір
     availability: {
         type: DataTypes.STRING, // було ENUM
         allowNull: false,
