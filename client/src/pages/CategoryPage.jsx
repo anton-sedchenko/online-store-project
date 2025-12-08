@@ -1,13 +1,15 @@
-import React, {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
-import {Row, Col} from 'react-bootstrap';
-import {Helmet} from 'react-helmet-async';
+import React, { useEffect, useState, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
+import { Row, Col, Spinner } from 'react-bootstrap';
+import { Helmet } from 'react-helmet-async';
+
 import SideBar from '../components/SideBar.jsx';
-import {fetchProducts} from '../http/productAPI.js';
-import {fetchOneType} from '../http/typeAPI.js';
+import { fetchProducts } from '../http/productAPI.js';
+import { fetchOneType } from '../http/typeAPI.js';
 import Breadcrumbs from '../components/Breadcrumbs.jsx';
 import PaginationLocal from '../components/PaginationLocal.jsx';
 import ProductList from '../components/ProductList.jsx';
+import CategoryFilters from '../components/CategoryFilters.jsx';
 
 const CATEGORY_SEO = {
     'Гіпсові фігурки': {
@@ -16,21 +18,18 @@ const CATEGORY_SEO = {
         ogDescription:
             'Гіпсові фігурки ручної роботи для розмальовування та декору. Якісний гіпс, чіткі деталі, великий вибір моделей.',
     },
-
     'Фарби': {
         description:
             'Акрилові фарби для розмальовки гіпсових фігурок. Яскраві, стійкі й безпечні — з пензликом у наборі.',
         ogDescription:
-            'Набори акрилових фарб для творчості та розмальовки гіпсових фігурок. Насичені кольори, які швидко сохнуть.',
+            'Набори акрилових фарб для творчості та розмальовки гіпсових фігурок.',
     },
-
     'Вироби зі шнура': {
         description:
             'Кошики, підставки, серветки та інші вироби з бавовняного шнура ручної роботи. Стильний декор у мінімалістичному стилі.',
         ogDescription:
             'Вироби зі шнура для дому: кошики, серветки, підставки. Ручна робота, натуральні матеріали, можливе виготовлення під замовлення.',
     },
-
     'Вироби з бісеру': {
         description:
             'Прикраси з бісеру ручної роботи: гердани, браслети та аксесуари. Етнічні й сучасні дизайни.',
@@ -40,26 +39,38 @@ const CATEGORY_SEO = {
 };
 
 const CategoryPage = () => {
-    const {id} = useParams();
-    const [products, setProducts] = useState([]);
+    const { id } = useParams();
+    const typeId = Number(id);
+
     const [type, setType] = useState(null);
 
-    //  Локальна пагінація
-    const [currentPage, setCurrentPage] = useState(1);
-    const limit = 12; // скільки товарів на сторінці
-    const [totalCount, setTotalCount] = useState(0);
+    const [allProducts, setAllProducts] = useState([]); // всі товари категорії
+    const [loading, setLoading] = useState(true);
 
+    // фільтри
+    const [selectedKinds, setSelectedKinds] = useState([]);
+    const [selectedColors, setSelectedColors] = useState([]);
+    const [onlySets, setOnlySets] = useState(false);
+
+    // локальна пагінація
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 12;
+
+    // завантажуємо інформацію про категорію
     useEffect(() => {
         fetchOneType(id).then(setType);
-        fetchProducts(id, 1, 100).then(data => setProducts(data.rows));
     }, [id]);
 
+    // тягнемо всі товари цієї категорії (до 500)
     useEffect(() => {
-        fetchProducts(id, currentPage, limit).then(data => {
-            setProducts(data.rows);
-            setTotalCount(data.count);
+        if (!typeId) return;
+        setLoading(true);
+        fetchProducts(id, 1, 500).then(data => {
+            setAllProducts(data.rows || []);
+            setLoading(false);
+            setCurrentPage(1); // при зміні категорії скидаємо на 1 сторінку
         });
-    }, [id, currentPage]);
+    }, [id, typeId]);
 
     if (!type) return null;
 
@@ -67,6 +78,21 @@ const CategoryPage = () => {
         description: `Товари категорії ${type.name} ручної роботи від Charivna Craft.`,
         ogDescription: `Всі товари категорії ${type.name} у магазині Charivna Craft.`,
     };
+
+    // застосовуємо фільтри до всіх товарів
+    const filteredProducts = useMemo(() => {
+        return allProducts.filter(p => {
+            if (selectedKinds.length && !selectedKinds.includes(p.kind)) return false;
+            if (selectedColors.length && !selectedColors.includes(p.color)) return false;
+            if (onlySets && !p.isSet) return false;
+            return true;
+        });
+    }, [allProducts, selectedKinds, selectedColors, onlySets]);
+
+    // локальна пагінація по відфільтрованих
+    const totalCount = filteredProducts.length;
+    const startIdx = (currentPage - 1) * limit;
+    const pageProducts = filteredProducts.slice(startIdx, startIdx + limit);
 
     return (
         <>
@@ -96,27 +122,36 @@ const CategoryPage = () => {
                     content={`https://charivna-craft.com.ua/category/${id}`}
                 />
                 <meta property="og:type" content="website" />
-
-                <script type="application/ld+json">
-                    {JSON.stringify({
-                        '@context': 'https://schema.org',
-                        '@type': 'CollectionPage',
-                        name: `${type.name} – Charivna Craft`,
-                        description: seo.description,
-                        url: `https://charivna-craft.com.ua/category/${id}`,
-                    })}
-                </script>
             </Helmet>
 
             <div className="component__container">
                 <Row>
                     <Col md={3} lg={2}>
-                        <SideBar/>
+                        <SideBar />
+
+                        <CategoryFilters
+                            products={allProducts}
+                            categoryName={type.name}
+                            selectedKinds={selectedKinds}
+                            setSelectedKinds={setSelectedKinds}
+                            selectedColors={selectedColors}
+                            setSelectedColors={setSelectedColors}
+                            onlySets={onlySets}
+                            setOnlySets={setOnlySets}
+                        />
                     </Col>
+
                     <Col md={9} lg={10}>
                         <Breadcrumbs typeId={type.parentId ? type.parentId : type.id} />
                         <h2 className="mb-4">{type.name}</h2>
-                        <ProductList products={products} />
+
+                        {loading ? (
+                            <div className="d-flex justify-content-center py-5">
+                                <Spinner animation="border" />
+                            </div>
+                        ) : (
+                            <ProductList products={pageProducts} />
+                        )}
                     </Col>
                 </Row>
 
