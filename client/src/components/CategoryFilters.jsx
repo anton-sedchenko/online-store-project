@@ -4,6 +4,7 @@ import { Form } from 'react-bootstrap';
 // які фільтри вмикаємо для кожної категорії (по імені type.name)
 const CATEGORY_FILTERS = {
     'Гіпсові фігурки': { color: false, kind: true, isSet: true },
+    'Фарби':           { color: false, kind: false, isSet: false },
     'Вироби зі шнура': { color: true,  kind: true, isSet: true },
     'Вироби з бісеру': { color: false, kind: true, isSet: true },
 };
@@ -18,11 +19,8 @@ const CategoryFilters = ({
                              onlySets,
                              setOnlySets,
                          }) => {
-
-    // якщо products ще не завантажені або це не масив → не рендеримо фільтри
-    if (!Array.isArray(products)) {
-        return null;
-    }
+    // 🔹 завжди маємо масив, навіть якщо дані ще не прийшли
+    const safeProducts = Array.isArray(products) ? products : [];
 
     const config = CATEGORY_FILTERS[categoryName] || {};
     const showColor = config.color;
@@ -30,18 +28,18 @@ const CategoryFilters = ({
     const showIsSet = config.isSet;
 
     const kinds = useMemo(
-        () => [...new Set(products.map(p => p?.kind).filter(Boolean))],
-        [products]
+        () => [...new Set(safeProducts.map(p => p?.kind).filter(Boolean))],
+        [safeProducts]
     );
 
     const colors = useMemo(
-        () => [...new Set(products.map(p => p?.color).filter(Boolean))],
-        [products]
+        () => [...new Set(safeProducts.map(p => p?.color).filter(Boolean))],
+        [safeProducts]
     );
 
     const hasSets = useMemo(
-        () => products.some(p => p?.isSet),
-        [products]
+        () => safeProducts.some(p => p?.isSet),
+        [safeProducts]
     );
 
     const toggleKind = (k) => {
@@ -60,13 +58,15 @@ const CategoryFilters = ({
         }
     };
 
-    // якщо для цієї категорії нема активних фільтрів — взагалі нічого не рендеримо
+    // якщо для цієї категорії по конфігурації нічого не показуємо — просто не рендеримо блок
     if (!showColor && !showKind && !(showIsSet && hasSets)) {
         return null;
     }
 
     return (
         <div className="mt-4">
+            <h5 className="mb-3">Фільтри</h5>
+
             {showKind && kinds.length > 0 && (
                 <div className="mb-3">
                     <div className="fw-semibold mb-1">Тип виробу</div>
