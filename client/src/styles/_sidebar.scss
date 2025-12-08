@@ -32,16 +32,14 @@
   width: 100%;
 }
 
-.sidebar__filter__option__container.form-check {
-  display: inline-flex;
+.sidebar__filter__option__container {
+  display: flex;
   align-items: center;
-  margin-right: 10px;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
 }
 
 @include respond-to(md) {
-  .sidebar__filter__option__container.form-check {
+  .sidebar__filter__option__container {
     display: block;
-    margin-right: 0;
   }
 }

@@ -57,34 +57,36 @@ const ProductFilter = ({
             {showKind && kinds.length > 0 && (
                 <div className="mb-3">
                     <div className="fw-semibold mb-1">Тип виробу</div>
-                    {kinds.map(k => (
-                        <Form.Check
-                            className="sidebar__filter__option__container"
-                            key={k}
-                            type="checkbox"
-                            id={`kind-${k}`}
-                            label={k}
-                            checked={selectedKinds.includes(k)}
-                            onChange={() => toggleKind(k)}
-                        />
-                    ))}
+                    <div className="sidebar__filter__option__container">
+                        {kinds.map(k => (
+                            <Form.Check
+                                key={k}
+                                type="checkbox"
+                                id={`kind-${k}`}
+                                label={k}
+                                checked={selectedKinds.includes(k)}
+                                onChange={() => toggleKind(k)}
+                            />
+                        ))}
+                    </div>
                 </div>
             )}
 
             {showColor && colors.length > 0 && (
                 <div className="mb-3">
                     <div className="fw-semibold mb-1">Колір</div>
-                    {colors.map(c => (
-                        <Form.Check
-                            className="sidebar__filter__option__container"
-                            key={c}
-                            type="checkbox"
-                            id={`color-${c}`}
-                            label={c}
-                            checked={selectedColors.includes(c)}
-                            onChange={() => toggleColor(c)}
-                        />
-                    ))}
+                    <div className="sidebar__filter__option__container">
+                        {colors.map(c => (
+                            <Form.Check
+                                key={c}
+                                type="checkbox"
+                                id={`color-${c}`}
+                                label={c}
+                                checked={selectedColors.includes(c)}
+                                onChange={() => toggleColor(c)}
+                            />
+                        ))}
+                    </div>
                 </div>
             )}
 
