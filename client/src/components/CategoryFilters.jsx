@@ -18,23 +18,29 @@ const CategoryFilters = ({
                              onlySets,
                              setOnlySets,
                          }) => {
+
+    // якщо products ще не завантажені або це не масив → не рендеримо фільтри
+    if (!Array.isArray(products)) {
+        return null;
+    }
+
     const config = CATEGORY_FILTERS[categoryName] || {};
     const showColor = config.color;
     const showKind  = config.kind;
     const showIsSet = config.isSet;
 
     const kinds = useMemo(
-        () => [...new Set((products || []).map(p => p.kind).filter(Boolean))],
+        () => [...new Set(products.map(p => p?.kind).filter(Boolean))],
         [products]
     );
 
     const colors = useMemo(
-        () => [...new Set((products || []).map(p => p.color).filter(Boolean))],
+        () => [...new Set(products.map(p => p?.color).filter(Boolean))],
         [products]
     );
 
     const hasSets = useMemo(
-        () => (products || []).some(p => p.isSet),
+        () => products.some(p => p?.isSet),
         [products]
     );
 
