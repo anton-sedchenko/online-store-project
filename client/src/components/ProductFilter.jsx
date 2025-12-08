@@ -9,7 +9,7 @@ const CATEGORY_FILTERS = {
     'Вироби з бісеру': { color: false, kind: true, isSet: true },
 };
 
-const ProductFilters = ({
+const ProductFilter = ({
                              products,
                              categoryName,
                              selectedKinds,
@@ -92,4 +92,4 @@ const ProductFilters = ({
     );
 };
 
-export default ProductFilters;
+export default ProductFilter;

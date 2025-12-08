@@ -9,7 +9,7 @@ import { fetchOneType } from '../http/typeAPI.js';
 import Breadcrumbs from '../components/Breadcrumbs.jsx';
 import PaginationLocal from '../components/PaginationLocal.jsx';
 import ProductList from '../components/ProductList.jsx';
-import ProductFilters from '../components/ProductFilters.jsx';
+import ProductFilter from '../components/ProductFilter.jsx';
 
 const CATEGORY_SEO = {
     'Гіпсові фігурки': {
@@ -127,7 +127,7 @@ const CategoryPage = () => {
                     <Col md={3} lg={2}>
                         <SideBar />
 
-                        <ProductFilters
+                        <ProductFilter
                             products={allProducts}
                             categoryName={type.name}
                             selectedKinds={selectedKinds}
