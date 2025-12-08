@@ -34,7 +34,15 @@
 
 .sidebar__filter__option__container {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.sidebar__filter__option__container .form-check {
+  margin-right: 20px;
+}
+
+.sidebar__filter__option__container .form-check:last-child {
+  margin: 0;
 }
 
 @include respond-to(md) {
