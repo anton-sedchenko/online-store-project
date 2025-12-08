@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Row, Col, Spinner } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
@@ -79,15 +79,13 @@ const CategoryPage = () => {
         ogDescription: `Всі товари категорії ${type.name} у магазині Charivna Craft.`,
     };
 
-    // застосовуємо фільтри до всіх товарів
-    const filteredProducts = useMemo(() => {
-        return allProducts.filter(p => {
-            if (selectedKinds.length && !selectedKinds.includes(p.kind)) return false;
-            if (selectedColors.length && !selectedColors.includes(p.color)) return false;
-            if (onlySets && !p.isSet) return false;
-            return true;
-        });
-    }, [allProducts, selectedKinds, selectedColors, onlySets]);
+    // застосовуємо фільтри до всіх товарів (без useMemo)
+    const filteredProducts = allProducts.filter(p => {
+        if (selectedKinds.length && !selectedKinds.includes(p?.kind)) return false;
+        if (selectedColors.length && !selectedColors.includes(p?.color)) return false;
+        if (onlySets && !p?.isSet) return false;
+        return true;
+    });
 
     // локальна пагінація по відфільтрованих
     const totalCount = filteredProducts.length;

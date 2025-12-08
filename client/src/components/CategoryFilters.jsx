@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Form } from 'react-bootstrap';
 
 // які фільтри вмикаємо для кожної категорії (по імені type.name)
@@ -19,7 +19,6 @@ const CategoryFilters = ({
                              onlySets,
                              setOnlySets,
                          }) => {
-    // 🔹 завжди маємо масив, навіть якщо дані ще не прийшли
     const safeProducts = Array.isArray(products) ? products : [];
 
     const config = CATEGORY_FILTERS[categoryName] || {};
@@ -27,20 +26,9 @@ const CategoryFilters = ({
     const showKind  = config.kind;
     const showIsSet = config.isSet;
 
-    const kinds = useMemo(
-        () => [...new Set(safeProducts.map(p => p?.kind).filter(Boolean))],
-        [safeProducts]
-    );
-
-    const colors = useMemo(
-        () => [...new Set(safeProducts.map(p => p?.color).filter(Boolean))],
-        [safeProducts]
-    );
-
-    const hasSets = useMemo(
-        () => safeProducts.some(p => p?.isSet),
-        [safeProducts]
-    );
+    const kinds = [...new Set(safeProducts.map(p => p?.kind).filter(Boolean))];
+    const colors = [...new Set(safeProducts.map(p => p?.color).filter(Boolean))];
+    const hasSets = safeProducts.some(p => p?.isSet);
 
     const toggleKind = (k) => {
         if (selectedKinds.includes(k)) {
@@ -58,7 +46,7 @@ const CategoryFilters = ({
         }
     };
 
-    // якщо для цієї категорії по конфігурації нічого не показуємо — просто не рендеримо блок
+    // якщо для цієї категорії нічого не показуємо – не рендеримо блок
     if (!showColor && !showKind && !(showIsSet && hasSets)) {
         return null;
     }
