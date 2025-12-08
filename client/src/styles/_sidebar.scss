@@ -33,13 +33,13 @@
 }
 
 .sidebar__filter__option__container {
-  display: flex;
-  align-items: center;
+  display: block;
   margin-bottom: 10px;
 }
 
 @include respond-to(md) {
   .sidebar__filter__option__container {
-    display: block;
+    display: flex;
+    align-items: center;
   }
 }
