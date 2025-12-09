@@ -181,9 +181,18 @@ class ProductController {
             let products;
 
             if (typeId) {
-                products = await Product.findAndCountAll({where: {typeId}, limit, offset});
+                products = await Product.findAndCountAll({
+                    where: { typeId },
+                    limit,
+                    offset,
+                    order: [['code', 'ASC']], // Сортування по коду товару
+                });
             } else {
-                products = await Product.findAndCountAll({limit, offset});
+                products = await Product.findAndCountAll({
+                    limit,
+                    offset,
+                    order: [['code', 'ASC']],
+                });
             }
 
             return res.json(products);

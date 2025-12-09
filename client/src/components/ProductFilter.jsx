@@ -16,15 +16,12 @@ const ProductFilter = ({
                              setSelectedKinds,
                              selectedColors,
                              setSelectedColors,
-                             onlySets,
-                             setOnlySets,
                          }) => {
     const safeProducts = Array.isArray(products) ? products : [];
 
     const config = CATEGORY_FILTERS[categoryName] || {};
     const showColor = config.color;
     const showKind  = config.kind;
-    const showIsSet = config.isSet;
 
     const kinds = [...new Set(safeProducts.map(p => p?.kind).filter(Boolean))];
     const colors = [...new Set(safeProducts.map(p => p?.color).filter(Boolean))];
@@ -45,8 +42,11 @@ const ProductFilter = ({
         }
     };
 
-    // якщо для цієї категорії нічого не показуємо – не рендеримо блок
-    if (!showColor && !showKind) {
+    const hasKindFilters  = showKind && kinds.length > 0;
+    const hasColorFilters = showColor && colors.length > 0;
+
+    // якщо немає жодної реальної опції — не показуємо блок взагалі
+    if (!hasKindFilters && !hasColorFilters) {
         return null;
     }
 
