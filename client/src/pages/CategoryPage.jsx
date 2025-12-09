@@ -56,6 +56,11 @@ const CategoryPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 12;
 
+    useEffect(() => {
+        // при зміні фільтрів завжди переходимо на першу сторінку пагінації
+        setCurrentPage(1);
+    }, [selectedKinds, selectedColors]);
+
     // завантажуємо інформацію про категорію
     useEffect(() => {
         fetchOneType(id).then(setType);
