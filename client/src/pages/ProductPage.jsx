@@ -228,7 +228,9 @@ const ProductPage = () => {
                                 }}
                             />
                         </div>
-                        <p className="product__page__total__sum">Сума: {sum} грн.</p>
+                        <p className="product__page__total__sum">
+                            <strong>{sum}</strong> грн.
+                        </p>
                         <div className="product__page__btn__container">
                             <button className="product__page__btn" onClick={handleAddToCart}>
                                 Додати в кошик
@@ -287,13 +289,6 @@ const ProductPage = () => {
                             isAdmin={userStore.isAuth && userStore.user?.role === 'ADMIN'}
                             userId={userStore.user?.id}
                         />
-                    )}
-                </Col>
-                <Col md={4}>
-                    {userStore.isAuth && userStore.user.role === 'ADMIN' && (
-                        <button className="neu-btn" onClick={handleDelete}>
-                            Видалити фігурку
-                        </button>
                     )}
                 </Col>
             </Row>
