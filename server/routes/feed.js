@@ -18,9 +18,18 @@ function invalidateFeedCache() {
 }
 
 function mapAvailability(av) {
-    if (av === 'IN_STOCK')      return { available: 'true', stock: '1', madeToOrder: false };
-    if (av === 'MADE_TO_ORDER') return { available: 'true', stock: '1', madeToOrder: true  };
-    return { available: 'false', stock: '0', madeToOrder: false };
+    // Товар відсутній
+    if (av === 'OUT_OF_STOCK') {
+        return { available: 'false', stock: 0, madeToOrder: false };
+    }
+
+    // Під замовлення – формально доступний, але виготовляється
+    if (av === 'MADE_TO_ORDER') {
+        return { available: 'true', stock: 9999, madeToOrder: true };
+    }
+
+    // За замовчуванням: в наявності
+    return { available: 'true', stock: 9999, madeToOrder: false };
 }
 
 const safe = (v) => (v == null ? '' : String(v));
