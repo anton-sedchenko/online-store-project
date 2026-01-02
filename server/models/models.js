@@ -49,6 +49,12 @@ const Product = sequelize.define('product', {
             isIn: [['IN_STOCK', 'MADE_TO_ORDER', 'OUT_OF_STOCK']]
         }
     },
+    rating: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        validate: { min: 1, max: 10 }
+    },
     slug: {type: DataTypes.STRING, unique: true},
     rozetkaCategoryId: {type: DataTypes.BIGINT, allowNull: true},
 });

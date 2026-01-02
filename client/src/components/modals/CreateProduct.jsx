@@ -16,6 +16,7 @@ const CreateProduct = observer(({show, onHide}) => {
     const [code, setCode] = useState('');
     const [availability, setAvailability] = useState('IN_STOCK');
     const [rozetkaCategoryId, setRozetkaCategoryId] = useState('');
+    const [rating, setRating] = useState(1);
 
     // Підгружаємо перелік типів
     useEffect(() => {
@@ -48,6 +49,7 @@ const CreateProduct = observer(({show, onHide}) => {
             formData.append('color', (color ?? '').trim());
             formData.append('kind', (kind ?? '').trim());
             formData.append('rozetkaCategoryId', (rozetkaCategoryId ?? '').trim());
+            formData.append('rating', String(rating ?? 1));
 
             await createProduct(formData).then(() => onHide());
         } catch (e) {
@@ -100,6 +102,19 @@ const CreateProduct = observer(({show, onHide}) => {
                         />
                         <Form.Text muted>
                             Якщо залишити порожнім — товар не потрапить до фіду Rozetka.
+                        </Form.Text>
+                    </Form.Group>
+                    <Form.Group className="mb-2">
+                        <Form.Label>Рейтинг (1–10)</Form.Label>
+                        <Form.Control
+                            type="number"
+                            min={1}
+                            max={10}
+                            value={rating}
+                            onChange={e => setRating(Number(e.target.value))}
+                        />
+                        <Form.Text muted>
+                            Рейтинг від 1 до 10, де 10 максимум і товар буде на 1 сторінці.
                         </Form.Text>
                     </Form.Group>
                     <Form.Group className="mb-2">

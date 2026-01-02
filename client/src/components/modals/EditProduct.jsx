@@ -19,6 +19,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
     const [mainImageUrl, setMainImageUrl] = useState('');
     const [availability, setAvailability] = useState('IN_STOCK');
     const [rozetkaCategoryId, setRozetkaCategoryId] = useState('');
+    const [rating, setRating] = useState(1);
 
     useEffect(() => {
         if (productToEdit) {
@@ -33,6 +34,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
             setMainImageUrl(productToEdit.img || '');
             setRozetkaCategoryId(productToEdit.rozetkaCategoryId ? String(productToEdit.rozetkaCategoryId) : '');
             setAvailability(productToEdit.availability || 'IN_STOCK');
+            setRating(productToEdit.rating ?? 1);
         }
         fetchTypes().then(setTypes);
     }, [productToEdit]);
@@ -47,6 +49,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
         formData.append('kind', (kind ?? '').trim());
         formData.append('description', description);
         formData.append('availability', availability);
+        
         if (mainImageFile) {
             formData.append('img', mainImageFile);
         }
@@ -54,7 +57,8 @@ const EditProduct = ({show, onHide, productToEdit}) => {
             formData.append('images', file); // саме цей рядок додає кілька файлів
         });
         formData.append('rozetkaCategoryId', (rozetkaCategoryId ?? '').trim());
-
+        formData.append('rating', String(rating ?? 1));
+        
         await updateProduct(productToEdit.id, formData);
         onHide();
         fetchProducts(null, 1, 8).then(() => {});
@@ -118,6 +122,20 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                         />
                         <Form.Text muted>
                             Якщо залишити порожнім — товар не потрапить до фіду Rozetka.
+                        </Form.Text>
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Рейтинг (1–10)</Form.Label>
+                        <Form.Control
+                            type="number"
+                            min={1}
+                            max={10}
+                            value={rating}
+                            onChange={e => setRating(Number(e.target.value))}
+                        />
+                        <Form.Text muted>
+                            Рейтинг товару від 1 до 10, де 10 максимум і товар буде на 1 сторінці.
                         </Form.Text>
                     </Form.Group>
 

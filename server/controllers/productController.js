@@ -30,6 +30,7 @@ class ProductController {
                 code,
                 availability,
                 rozetkaCategoryId,
+                rating,
                 color,
                 kind,
             } = req.body;
@@ -38,8 +39,10 @@ class ProductController {
             const availabilityNorm = availability === 'PRE_ORDER' ? 'MADE_TO_ORDER' : availability;
 
             // парсимо числа
-            const typeIdNum  = Number(typeId);
-            const priceNum   = Number(price);
+            const typeIdNum = Number(typeId);
+            const priceNum = Number(price);
+
+            const ratingNum = Math.min(10, Math.max(1, Number(rating ?? 1)));
 
             // Rozetka ID може бути порожнім - тоді null
             const rzIdNum = rozetkaCategoryId && String(rozetkaCategoryId).trim() !== ''
@@ -68,6 +71,7 @@ class ProductController {
                 img: result.secure_url,
                 color: color && color.trim() ? color.trim() : null,
                 kind: kind && kind.trim() ? kind.trim() : null,
+                rating: Number.isNaN(ratingNum) ? 1 : ratingNum,
             });
 
             invalidateFeedCache();
@@ -93,7 +97,7 @@ class ProductController {
             } = req.body;
 
             // приймаємо можливі поля
-            const {availability, rozetkaCategoryId} = req.body;
+            const {availability, rozetkaCategoryId, rating} = req.body;
             // нормалізація
             const availabilityNorm = availability === 'PRE_ORDER' ? 'MADE_TO_ORDER' : availability;
             // обробка Rozetka ID
@@ -164,6 +168,11 @@ class ProductController {
                 product.kind = kind && kind.trim() ? kind.trim() : null;
             }
 
+            if (rating !== undefined) {
+                const ratingNum = Math.min(10, Math.max(1, Number(rating ?? 1)));
+                if (!Number.isNaN(ratingNum)) product.rating = ratingNum;
+            }
+
             await product.save();
             invalidateFeedCache();
             return res.json(product);
@@ -191,7 +200,10 @@ class ProductController {
                 products = await Product.findAndCountAll({
                     limit,
                     offset,
-                    order: [['code', 'ASC']],
+                    order: [
+                        ['rating', 'DESC'],
+                        ['code', 'ASC'],
+                    ],
                 });
             }
 
