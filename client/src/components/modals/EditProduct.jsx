@@ -133,6 +133,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             max={10}
                             value={rating}
                             onChange={e => setRating(Number(e.target.value))}
+                            onWheel={(e) => e.currentTarget.blur()}
                         />
                         <Form.Text muted>
                             Рейтинг товару від 1 до 10, де 10 максимум і товар буде на 1 сторінці.

@@ -170,12 +170,9 @@ const start = async () => {
             await sequelize.authenticate();
             console.log('DB connection OK');
 
-            if (process.env.NODE_ENV === 'staging' || process.env.NODE_ENV === 'production') {
-                await sequelize.sync(); // лише створення відсутніх таблиць, без зміни колонок
-                console.log(`Tables synced (${process.env.NODE_ENV})`);
+            if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'staging') {
+            await sequelize.sync();
             }
-
-            await ProductImage.sync();
             console.log('ProductImage synced');
         } catch (dbErr) {
             console.error('DB init failed:', dbErr.message);
