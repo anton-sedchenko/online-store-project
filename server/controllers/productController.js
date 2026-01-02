@@ -194,16 +194,19 @@ class ProductController {
                     where: { typeId },
                     limit,
                     offset,
-                    order: [['code', 'ASC']], // Сортування по коду товару
+                    // Сортування по коду товару
+                    // для покупця в категорії — спочатку рейтинг, потім артикул
+                    order: [
+                        ['rating', 'DESC'],
+                        ['code', 'ASC'],
+                    ],
                 });
             } else {
                 products = await Product.findAndCountAll({
                     limit,
                     offset,
-                    order: [
-                        ['rating', 'DESC'],
-                        ['code', 'ASC'],
-                    ],
+                    // для адмінки (усі товари) — просто по артикулу
+                    order: [['code', 'ASC']],
                 });
             }
 
