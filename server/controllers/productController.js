@@ -33,6 +33,13 @@ class ProductController {
                 rating,
                 color,
                 kind,
+                width,
+                length,
+                height,
+                diameter,
+                weightKg,
+                country,
+                material,
             } = req.body;
 
             // нормалізація статусу (щоб "Під замовлення" не ламало ENUM)
@@ -48,6 +55,21 @@ class ProductController {
             const rzIdNum = rozetkaCategoryId && String(rozetkaCategoryId).trim() !== ''
                 ? Number(rozetkaCategoryId)
                 : null;
+
+            const widthVal = width && String(width).trim() ? String(width).trim() : null;
+            const lengthVal = length && String(length).trim() ? String(length).trim() : null;
+            const heightVal = height && String(height).trim() ? String(height).trim() : null;
+            const diameterVal = diameter && String(diameter).trim() ? String(diameter).trim() : null;
+
+            const materialVal = material && String(material).trim() ? String(material).trim() : null;
+
+            // країна: якщо порожньо — ставимо Україна
+            const countryVal = country && String(country).trim() ? String(country).trim() : 'Україна';
+
+            // вага: якщо порожньо — null; інакше число
+            const weightRaw = weightKg !== undefined ? String(weightKg).trim() : '';
+            const weightNum = weightRaw === '' ? null : Number(weightRaw.replace(',', '.'));
+            const weightVal = Number.isNaN(weightNum) ? null : weightNum;
 
             if (!name || !code || !typeId || Number.isNaN(typeIdNum) || Number.isNaN(priceNum)) {
                 return next(ApiError.badRequest('Заповніть назву, артикул, коректну ціну та категорію'));
@@ -72,6 +94,13 @@ class ProductController {
                 color: color && color.trim() ? color.trim() : null,
                 kind: kind && kind.trim() ? kind.trim() : null,
                 rating: Number.isNaN(ratingNum) ? 1 : ratingNum,
+                width: widthVal,
+                length: lengthVal,
+                height: heightVal,
+                diameter: diameterVal,
+                weightKg: weightVal,
+                country: countryVal,
+                material: materialVal,
             });
 
             invalidateFeedCache();
@@ -94,6 +123,13 @@ class ProductController {
                 code,
                 color,
                 kind,
+                width,
+                length,
+                height,
+                diameter,
+                weightKg,
+                country,
+                material,
             } = req.body;
 
             // приймаємо можливі поля
@@ -171,6 +207,41 @@ class ProductController {
             if (rating !== undefined) {
                 const ratingNum = Math.min(10, Math.max(1, Number(rating ?? 1)));
                 if (!Number.isNaN(ratingNum)) product.rating = ratingNum;
+            }
+
+            if (width !== undefined) {
+                product.width = String(width).trim() === '' ? null : String(width).trim();
+            }
+
+            if (length !== undefined) {
+                product.length = String(length).trim() === '' ? null : String(length).trim();
+            }
+
+            if (height !== undefined) {
+                product.height = String(height).trim() === '' ? null : String(height).trim();
+            }
+
+            if (diameter !== undefined) {
+                product.diameter = String(diameter).trim() === '' ? null : String(diameter).trim();
+            }
+
+            if (material !== undefined) {
+                product.material = String(material).trim() === '' ? null : String(material).trim();
+            }
+
+            if (country !== undefined) {
+                const c = String(country).trim();
+                product.country = c === '' ? 'Україна' : c;
+            }
+
+            if (weightKg !== undefined) {
+                const wRaw = String(weightKg).trim();
+                if (wRaw === '') {
+                    product.weightKg = null;
+                } else {
+                    const wNum = Number(wRaw.replace(',', '.'));
+                    product.weightKg = Number.isNaN(wNum) ? null : wNum;
+                }
             }
 
             await product.save();

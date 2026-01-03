@@ -20,6 +20,13 @@ const EditProduct = ({show, onHide, productToEdit}) => {
     const [availability, setAvailability] = useState('IN_STOCK');
     const [rozetkaCategoryId, setRozetkaCategoryId] = useState('');
     const [rating, setRating] = useState(1);
+    const [width, setWidth] = useState('');
+    const [length, setLength] = useState('');
+    const [height, setHeight] = useState('');
+    const [diameter, setDiameter] = useState('');
+    const [weightKg, setWeightKg] = useState('');
+    const [country, setCountry] = useState('Україна');
+    const [material, setMaterial] = useState('');
 
     useEffect(() => {
         if (productToEdit) {
@@ -35,6 +42,13 @@ const EditProduct = ({show, onHide, productToEdit}) => {
             setRozetkaCategoryId(productToEdit.rozetkaCategoryId ? String(productToEdit.rozetkaCategoryId) : '');
             setAvailability(productToEdit.availability || 'IN_STOCK');
             setRating(productToEdit.rating ?? 1);
+            setWidth(productToEdit.width || '');
+            setLength(productToEdit.length || '');
+            setHeight(productToEdit.height || '');
+            setDiameter(productToEdit.diameter || '');
+            setWeightKg(productToEdit.weightKg || '');
+            setCountry(productToEdit.country || 'Україна');
+            setMaterial(productToEdit.material || '');
         }
         fetchTypes().then(setTypes);
     }, [productToEdit]);
@@ -49,6 +63,13 @@ const EditProduct = ({show, onHide, productToEdit}) => {
         formData.append('kind', (kind ?? '').trim());
         formData.append('description', description);
         formData.append('availability', availability);
+        formData.append('width', (width ?? '').trim());
+        formData.append('length', (length ?? '').trim());
+        formData.append('height', (height ?? '').trim());
+        formData.append('diameter', (diameter ?? '').trim());
+        formData.append('weightKg', (weightKg ?? '').trim());
+        formData.append('country', (country ?? 'Україна').trim());
+        formData.append('material', (material ?? '').trim());
         
         if (mainImageFile) {
             formData.append('img', mainImageFile);
@@ -155,6 +176,61 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             placeholder="Напр.: кошик, плейсмат, тваринка, браслет"
                             value={kind}
                             onChange={e => setKind(e.target.value)}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Розміри (см)</Form.Label>
+                        <div className="d-flex gap-2">
+                            <Form.Control
+                                placeholder="Ширина"
+                                value={width}
+                                onChange={(e) => setWidth(e.target.value)}
+                            />
+                            <Form.Control
+                                placeholder="Довжина"
+                                value={length}
+                                onChange={(e) => setLength(e.target.value)}
+                            />
+                            <Form.Control
+                                placeholder="Висота"
+                                value={height}
+                                onChange={(e) => setHeight(e.target.value)}
+                            />
+                        </div>
+                        <Form.Text muted>Заповнюй тільки те, що актуально для виробу.</Form.Text>
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <div className="d-flex gap-2">
+                            <Form.Control
+                                placeholder="Діаметр (см)"
+                                value={diameter}
+                                onChange={(e) => setDiameter(e.target.value)}
+                            />
+                            <Form.Control
+                                placeholder="Вага (кг)"
+                                value={weightKg}
+                                onChange={(e) => setWeightKg(e.target.value)}
+                            />
+                        </div>
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Країна виробник</Form.Label>
+                        <Form.Control
+                            placeholder="Україна"
+                            value={country}
+                            onChange={(e) => setCountry(e.target.value)}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Матеріал</Form.Label>
+                        <Form.Control
+                            placeholder="Напр.: бавовняний шнур / гіпс / бісер"
+                            value={material}
+                            onChange={(e) => setMaterial(e.target.value)}
                         />
                     </Form.Group>
 
