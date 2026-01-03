@@ -10,6 +10,7 @@ import Breadcrumbs from '../components/Breadcrumbs.jsx';
 import PaginationLocal from '../components/PaginationLocal.jsx';
 import ProductList from '../components/ProductList.jsx';
 import ProductFilter from '../components/ProductFilter.jsx';
+import ScrollToTop from '../components/ScrollToTop.js';
 
 const CATEGORY_SEO = {
     'Гіпсові фігурки': {
@@ -17,12 +18,6 @@ const CATEGORY_SEO = {
             'Гіпсові фігурки для розмальовки — творчість для дітей і дорослих. Безпечні, деталізовані, ідеальні для подарунків та декору.',
         ogDescription:
             'Гіпсові фігурки ручної роботи для розмальовування та декору. Якісний гіпс, чіткі деталі, великий вибір моделей.',
-    },
-    'Фарби': {
-        description:
-            'Акрилові фарби для розмальовки гіпсових фігурок. Яскраві, стійкі й безпечні — з пензликом у наборі.',
-        ogDescription:
-            'Набори акрилових фарб для творчості та розмальовки гіпсових фігурок.',
     },
     'Вироби зі шнура': {
         description:
@@ -128,6 +123,7 @@ const CategoryPage = () => {
             </Helmet>
 
             <div className="component__container">
+                <ScrollToTop />
                 <Row>
                     <Col md={3} lg={2}>
                         <SideBar />
