@@ -10,7 +10,6 @@ import Breadcrumbs from '../components/Breadcrumbs.jsx';
 import PaginationLocal from '../components/PaginationLocal.jsx';
 import ProductList from '../components/ProductList.jsx';
 import ProductFilter from '../components/ProductFilter.jsx';
-import ScrollToTop from '../components/ScrollToTop.js';
 
 const CATEGORY_SEO = {
     'Гіпсові фігурки': {
@@ -92,6 +91,12 @@ const CategoryPage = () => {
     const startIdx = (currentPage - 1) * limit;
     const pageProducts = filteredProducts.slice(startIdx, startIdx + limit);
 
+    // при кліку по пагінації перемикнути сторінку та прокрутити вгору
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    };
+
     return (
         <>
             <Helmet>
@@ -123,7 +128,6 @@ const CategoryPage = () => {
             </Helmet>
 
             <div className="component__container">
-                <ScrollToTop />
                 <Row>
                     <Col md={3} lg={2}>
                         <SideBar />
@@ -158,7 +162,7 @@ const CategoryPage = () => {
                     totalCount={totalCount}
                     limit={limit}
                     currentPage={currentPage}
-                    onPageChange={setCurrentPage}
+                    onPageChange={handlePageChange}
                 />
             </div>
         </>
