@@ -8,6 +8,17 @@ export default function CallbackModal({ show, onClose }) {
     const [error, setError] = useState("");
     const [submitted, setSubmitted] = useState(false);
 
+    // Якщо на кнопку не закрили, то закрити через три секунди
+    useEffect(() => {
+        if (!submitted) return;
+
+        const timer = setTimeout(() => {
+            onClose();
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [submitted, onClose]);
+
     // Якщо модалка відкрилась заново — очищаємо все
     useEffect(() => {
         if (show) {
