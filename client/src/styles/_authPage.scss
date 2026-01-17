@@ -44,3 +44,27 @@
 .auth__action__btn {
   @include btn-style;
 }
+
+.password-field {
+  position: relative;
+}
+
+.password-field .neu-input {
+  padding-right: 46px; /* місце під кнопку-око */
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px;
+  color: #888;
+}
+
+.password-toggle:hover {
+  color: #000;
+}
