@@ -6,54 +6,71 @@
   margin-bottom: 15px;
   display: flex;
   justify-content: center;
+
+  @include respond-to(md) {
+    padding: 0 15px;
+  }
 }
 
 .header__content__wrapper {
   width: 100%;
   max-width: 1200px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 32px;
   border-bottom: 1px solid lightgrey;
+  position: relative;
+  overflow: hidden;
+  padding: 20px 20px 15px;
+  min-height: 220px;
 
   @include respond-to(md) {
-    flex-direction: column;
+    padding: 15px 10px;
+    min-height: auto;
     text-align: center;
-    gap: 20px;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.55);
+    z-index: 1;
   }
 }
 
+.header__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.header__bg__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+
+  @include respond-to(md) {
+    object-position: center;
+  }
+}
+
+.header__content,
+.header__minsum__container,
+.header__tel__container {
+  position: relative;
+  z-index: 2;
+}
+
 .header__content {
-  flex: 1 1 50%;
+  width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 
   @include respond-to(md) {
     flex-direction: column;
     align-items: center;
-  }
-}
-
-.header__hero {
-  flex: 1 1 50%;
-  display: flex;
-  justify-content: flex-end;
-
-  @include respond-to(md) {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
-.header__hero__image {
-  display: block;
-  width: 100%;
-  max-width: 500px;
-  height: auto;
-
-  @include respond-to(md) {
-    max-width: 320px;
   }
 }
 
@@ -67,6 +84,12 @@
   @include respond-to(md) {
     margin: 0 0 10px;
   }
+}
+
+.header__logo {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 .header__nav {
@@ -95,6 +118,11 @@
   flex-wrap: wrap;
   margin-bottom: 15px;
   font-size: 14px;
+
+  @include respond-to(md) {
+    justify-content: center;
+    margin-bottom: 10px;
+  }
 }
 
 .header__nav__menu {
@@ -105,8 +133,9 @@
 
   @include respond-to(md) {
     width: 100%;
-    justify-content: space-between;
+    justify-content: center;
     flex-wrap: wrap;
+    gap: 10px;
   }
 }
 
@@ -118,6 +147,7 @@
 
   @include respond-to(md) {
     margin-right: 0;
+    margin-bottom: 0;
   }
 }
 

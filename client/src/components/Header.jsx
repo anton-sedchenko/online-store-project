@@ -40,14 +40,14 @@ const Header = observer(() => {
     return (
         <header className="header">
             <div className="header__content__wrapper">
-                <picture className="header__hero">
-                    <source srcSet="/images/header-basket-mobile.webp" media="(max-width: 767px)" />
+                <picture className="header__bg">
+                    <source srcSet="/header-basket-mobile.webp" media="(max-width: 767px)" />
                     <img
-                    src="/images/header-basket.webp"
-                    alt="Кошик ручної роботи з бавовняного шнура"
-                    className="header__hero__image"
-                    loading="eager"
-                    fetchPriority="high"
+                        src="/header-basket.webp"
+                        alt=""
+                        className="header__bg__image"
+                        loading="eager"
+                        fetchPriority="high"
                     />
                 </picture>
 
