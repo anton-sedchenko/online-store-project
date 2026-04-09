@@ -55,8 +55,7 @@
   }
 }
 
-.header__content,
-.header__tel__container {
+.header__content {
   position: relative;
   z-index: 2;
 }
@@ -100,20 +99,6 @@
   @include respond-to(md) {
     align-items: center;
     width: 100%;
-  }
-}
-
-.header__tel__container {
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  margin-bottom: 15px;
-  font-size: 14px;
-
-  @include respond-to(md) {
-    justify-content: center;
-    margin-bottom: 10px;
   }
 }
 
