@@ -146,4 +146,7 @@
   flex-direction: column;
   @include btn-style;
   color: $text-color;
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(6px);
 }
