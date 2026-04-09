@@ -11,17 +11,49 @@
 .header__content__wrapper {
   width: 100%;
   max-width: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
   border-bottom: 1px solid lightgrey;
+
+  @include respond-to(md) {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
 }
 
 .header__content {
-  width: 100%;
+  flex: 1 1 50%;
   display: flex;
   justify-content: space-between;
 
   @include respond-to(md) {
     flex-direction: column;
     align-items: center;
+  }
+}
+
+.header__hero {
+  flex: 1 1 50%;
+  display: flex;
+  justify-content: flex-end;
+
+  @include respond-to(md) {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.header__hero__image {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+
+  @include respond-to(md) {
+    max-width: 320px;
   }
 }
 

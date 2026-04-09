@@ -40,6 +40,17 @@ const Header = observer(() => {
     return (
         <header className="header">
             <div className="header__content__wrapper">
+                <picture className="header__hero">
+                    <source srcSet="/images/header-basket-mobile.webp" media="(max-width: 767px)" />
+                    <img
+                    src="/images/header-basket.webp"
+                    alt="Кошик ручної роботи з бавовняного шнура"
+                    className="header__hero__image"
+                    loading="eager"
+                    fetchPriority="high"
+                    />
+                </picture>
+
                 <div className="header__content">
                     <div className="header__logo-container">
                         <Link to="/">
