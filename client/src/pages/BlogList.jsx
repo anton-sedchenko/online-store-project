@@ -29,7 +29,7 @@ const BlogList = observer(() => {
                         md={9}
                         lg={10}
                     >
-                        <h1 className="mb-4">Блог</h1>
+                        <h1 className="mb-4">Блог Charivna Craft</h1>
                         <Row className="gallery">
                             {articleStore.articles.map(a => (
                                 <Col

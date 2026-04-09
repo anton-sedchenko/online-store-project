@@ -20,7 +20,7 @@ const Contacts = () => {
                     <Container className="contacts__container">
                         <div className="contacts__content">
                             <Row className="contacts__info__block contacts__tel__block">
-                                <h1>Наші контакти</h1>
+                                <h1>Контакти інтернет-магазину Charivna Craft</h1>
                                 <Col md={6}>
                                     <p>
                                         <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
