@@ -3,7 +3,6 @@
 .header {
   width: 100%;
   padding: 0 40px;
-  margin-bottom: 15px;
   display: flex;
   justify-content: center;
 
@@ -145,7 +144,6 @@
   display: flex;
   flex-direction: column;
   @include btn-style;
-  color: $text-color;
   background: transparent;
   border: 1px solid rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(6px);

@@ -38,7 +38,7 @@ const Header = observer(() => {
     }
 
     return (
-        <header className="header">
+        <header className="header mb-4">
             <div className="header__content__wrapper">
                 <picture className="header__bg">
                     <source srcSet="/header-basket-mobile.webp" media="(max-width: 767px)" />
