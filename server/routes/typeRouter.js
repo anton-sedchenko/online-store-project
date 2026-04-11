@@ -4,19 +4,41 @@ const typeController = require('../controllers/typeController');
 const checkRole = require('../middleware/checkRoleMiddleware');
 const authMiddleware = require('../middleware/authMiddleware');
 
-router.post('/', checkRole('ADMIN'), typeController.create);
-router.get('/', typeController.getAll);
-router.get('/:id', typeController.getOne);  // для однієї категорії
+router.post(
+    '/',
+    authMiddleware,
+    checkRole('ADMIN'),
+    typeController.create
+);
+
+router.get(
+    '/',
+    authMiddleware,
+    checkRole('ADMIN'),
+    typeController.getAll
+);
+
+router.get(
+    '/:id',
+    authMiddleware,
+    checkRole('ADMIN'),
+    typeController.getOne
+);
+
 router.put(
     '/:id',
-    authMiddleware, checkRole('ADMIN'),
+    authMiddleware,
+    checkRole('ADMIN'),
     typeController.update
 );
-router.put('/:id/image',
+
+router.put(
+    '/:id/image',
     authMiddleware,
     checkRole('ADMIN'),
     typeController.updateImage
 );
+
 router.delete(
     '/:id',
     authMiddleware,

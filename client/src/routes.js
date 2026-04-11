@@ -30,7 +30,6 @@ import ResetPassword from "./pages/ResetPassword.jsx";
 import ReturnPolicy from "./pages/ReturnPolicy.jsx";
 import Oferta from "./pages/Oferta.jsx";
 import DeliveryPayment from "./pages/DeliveryPayment.jsx";
-import CategoryPage from "./pages/CategoryPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import Privacy from "./pages/Privacy.jsx";
 import ArticlePage from "./pages/ArticlePage.jsx";
@@ -51,10 +50,6 @@ export const publicRoutes = [
     {
         path: HOME_ROUTE,
         Component: HomePage
-    },
-    {
-        path: CATEGORY_ROUTE,
-        Component: CategoryPage
     },
     {
         path: LOGIN_ROUTE,

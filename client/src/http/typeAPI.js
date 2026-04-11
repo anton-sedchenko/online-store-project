@@ -1,6 +1,6 @@
-import {$authHost, $host} from "./index.js";
+import {$authHost} from "./index.js";
 
-export const createCategory = async formData => {
+export const createCategory = async (formData) => {
     const {data} = await $authHost.post(
         '/type',
         formData,
@@ -9,8 +9,8 @@ export const createCategory = async formData => {
     return data;
 };
 
-export const fetchOneType = async id => {
-    const {data} = await $host.get(`/type/${id}`);
+export const fetchOneType = async (id) => {
+    const {data} = await $authHost.get(`/type/${id}`);
     return data;
 };
 
@@ -21,24 +21,22 @@ export const updateType = async (id, body) => {
 
 export const updateTypeImage = async (id, formData) => {
     const {data} = await $authHost.put(`/type/${id}/image`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: {'Content-Type': 'multipart/form-data'}
     });
     return data;
 };
 
-//
-
 export const createType = async (type) => {
     const {data} = await $authHost.post("/type", type);
     return data;
-}
+};
 
 export const fetchTypes = async () => {
-    const {data} = await $host.get("/type");
+    const {data} = await $authHost.get("/type");
     return data;
-}
+};
 
 export const deleteType = async (id) => {
     const {data} = await $authHost.delete(`/type/${id}`);
     return data;
-}
+};

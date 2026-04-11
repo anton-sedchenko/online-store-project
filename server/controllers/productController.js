@@ -42,19 +42,22 @@ class ProductController {
                 material,
             } = req.body;
 
-            // нормалізація статусу (щоб "Під замовлення" не ламало ENUM)
             const availabilityNorm = availability === 'PRE_ORDER' ? 'MADE_TO_ORDER' : availability;
 
-            // парсимо числа
-            const typeIdNum = Number(typeId);
-            const priceNum = Number(price);
+            const defaultTypeId = Number(process.env.DEFAULT_TYPE_ID);
 
+            const typeIdNum =
+                typeId !== undefined && String(typeId).trim() !== ''
+                    ? Number(typeId)
+                    : defaultTypeId;
+
+            const priceNum = Number(price);
             const ratingNum = Math.min(10, Math.max(1, Number(rating ?? 1)));
 
-            // Rozetka ID може бути порожнім - тоді null
-            const rzIdNum = rozetkaCategoryId && String(rozetkaCategoryId).trim() !== ''
-                ? Number(rozetkaCategoryId)
-                : null;
+            const rzIdNum =
+                rozetkaCategoryId && String(rozetkaCategoryId).trim() !== ''
+                    ? Number(rozetkaCategoryId)
+                    : null;
 
             const widthVal = width && String(width).trim() ? String(width).trim() : null;
             const lengthVal = length && String(length).trim() ? String(length).trim() : null;
@@ -63,16 +66,14 @@ class ProductController {
 
             const materialVal = material && String(material).trim() ? String(material).trim() : null;
 
-            // країна: якщо порожньо — ставимо Україна
             const countryVal = country && String(country).trim() ? String(country).trim() : 'Україна';
 
-            // вага: якщо порожньо — null; інакше число
             const weightRaw = weightKg !== undefined ? String(weightKg).trim() : '';
             const weightNum = weightRaw === '' ? null : Number(weightRaw.replace(',', '.'));
             const weightVal = Number.isNaN(weightNum) ? null : weightNum;
 
-            if (!name || !code || !typeId || Number.isNaN(typeIdNum) || Number.isNaN(priceNum)) {
-                return next(ApiError.badRequest('Заповніть назву, артикул, коректну ціну та категорію'));
+            if (!name || !code || Number.isNaN(typeIdNum) || Number.isNaN(priceNum)) {
+                return next(ApiError.badRequest('Заповніть назву, артикул і коректну ціну'));
             }
 
             const {img} = req.files;
@@ -81,6 +82,7 @@ class ProductController {
             });
 
             const slug = slugify(name, {lower: true, strict: true}) + '-' + code;
+
             const newProduct = await Product.create({
                 name,
                 slug,
@@ -115,6 +117,7 @@ class ProductController {
     async update(req, res, next) {
         try {
             const {id} = req.params;
+
             let {
                 name,
                 price,
@@ -132,11 +135,9 @@ class ProductController {
                 material,
             } = req.body;
 
-            // приймаємо можливі поля
             const {availability, rozetkaCategoryId, rating} = req.body;
-            // нормалізація
             const availabilityNorm = availability === 'PRE_ORDER' ? 'MADE_TO_ORDER' : availability;
-            // обробка Rozetka ID
+
             let rzIdNum = null;
 
             if (rozetkaCategoryId !== undefined) {
@@ -152,7 +153,6 @@ class ProductController {
                 product.availability = availabilityNorm;
             }
 
-            // якщо прийшов файл - оновлюємо головне зображення
             if (req.files?.img) {
                 const {img} = req.files;
                 const result = await cloudinary.uploader.upload(img.tempFilePath || img.path, {
@@ -161,7 +161,6 @@ class ProductController {
                 product.img = result.secure_url;
             }
 
-            // якщо прийшли додаткові фото — зберігаємо їх
             const images = req.files?.images;
             if (images) {
                 const filesArray = Array.isArray(images) ? images : [images];
@@ -176,24 +175,29 @@ class ProductController {
                 }
             }
 
-            // оновлюємо інші поля
             if (name) product.name = name;
             if (code) product.code = code;
+
             if (name || code) {
                 product.slug = slugify(product.name, {lower: true, strict: true}) + '-' + product.code;
             }
+
             if (price !== undefined) {
                 const priceNum = Number(price);
                 if (!Number.isNaN(priceNum)) product.price = priceNum;
             }
+
             if (typeId !== undefined) {
                 const typeIdNum = Number(typeId);
-                if (!Number.isNaN(typeIdNum)) product.typeId = typeIdNum;
+                if (!Number.isNaN(typeIdNum)) {
+                    product.typeId = typeIdNum;
+                }
             }
+
             if (description !== undefined) product.description = description;
 
             if (rozetkaCategoryId !== undefined) {
-                product.rozetkaCategoryId = rzIdNum; // дозволяємо і ставити null, і число
+                product.rozetkaCategoryId = rzIdNum;
             }
 
             if (color !== undefined) {
@@ -246,6 +250,7 @@ class ProductController {
 
             await product.save();
             invalidateFeedCache();
+
             return res.json(product);
         } catch (e) {
             next(ApiError.internal(e.message));
@@ -262,11 +267,9 @@ class ProductController {
 
             if (typeId) {
                 products = await Product.findAndCountAll({
-                    where: { typeId },
+                    where: {typeId},
                     limit,
                     offset,
-                    // Сортування по коду товару
-                    // для покупця в категорії — спочатку рейтинг, потім артикул
                     order: [
                         ['rating', 'DESC'],
                         ['code', 'ASC'],
@@ -276,7 +279,6 @@ class ProductController {
                 products = await Product.findAndCountAll({
                     limit,
                     offset,
-                    // для адмінки (усі товари) — просто по артикулу
                     order: [['code', 'ASC']],
                 });
             }
@@ -308,7 +310,6 @@ class ProductController {
                 return next(ApiError.badRequest(`Товар з id=${id} не знайдений`));
             }
 
-            // Видаляємо додаткові зображення з Cloudinary
             for (const image of product.images) {
                 const publicId = extractPublicId(image.url);
                 if (publicId) {
@@ -316,17 +317,15 @@ class ProductController {
                 }
             }
 
-            // Видаляємо головне зображення, якщо є
             const mainPublicId = extractPublicId(product.img);
             if (mainPublicId) {
                 await cloudinary.uploader.destroy(mainPublicId);
             }
 
-            // Видаляємо всі записи
             await ProductImage.destroy({where: {productId: id}});
             await Product.destroy({where: {id}});
 
-            return res.json({ message: `Товар id=${id} та всі зображення видалені` });
+            return res.json({message: `Товар id=${id} та всі зображення видалені`});
         } catch (e) {
             next(ApiError.internal(e.message));
         }
@@ -344,8 +343,8 @@ class ProductController {
             if (!files) return next(ApiError.badRequest('Файли не передані'));
 
             const uploaded = [];
+            const filesArray = Array.isArray(files) ? files : [files];
 
-            const filesArray = Array.isArray(files) ? files : [files]; // якщо одне зображення
             for (const file of filesArray) {
                 const result = await cloudinary.uploader.upload(file.tempFilePath || file.path, {
                     folder: 'products',
@@ -370,13 +369,11 @@ class ProductController {
             const image = await ProductImage.findByPk(id);
             if (!image) return next(ApiError.notFound('Зображення не знайдено'));
 
-            // Отримуємо public_id з URL та видаляємо з клаудінарі
             const publicId = extractPublicId(image.url);
             if (publicId) {
                 await cloudinary.uploader.destroy(publicId);
             }
 
-            // Видаляємо запис з БД
             await ProductImage.destroy({where: {id}});
 
             return res.json({message: 'Зображення видалено'});
