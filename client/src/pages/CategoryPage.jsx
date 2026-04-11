@@ -12,23 +12,11 @@ import ProductList from '../components/ProductList.jsx';
 import ProductFilter from '../components/ProductFilter.jsx';
 
 const CATEGORY_SEO = {
-    'Гіпсові фігурки': {
-        description:
-            'Гіпсові фігурки для розмальовки — творчість для дітей і дорослих. Безпечні, деталізовані, ідеальні для подарунків та декору.',
-        ogDescription:
-            'Гіпсові фігурки ручної роботи для розмальовування та декору. Якісний гіпс, чіткі деталі, великий вибір моделей.',
-    },
     'Вироби зі шнура': {
         description:
-            'Кошики, підставки, серветки та інші вироби з бавовняного шнура ручної роботи. Стильний декор у мінімалістичному стилі.',
+            'Кошики, корзинки, підставки, серветки та інші вироби з бавовняного шнура ручної роботи. Стильний декор для столу та комфорт у зберіганні речей.',
         ogDescription:
-            'Вироби зі шнура для дому: кошики, серветки, підставки. Ручна робота, натуральні матеріали, можливе виготовлення під замовлення.',
-    },
-    'Вироби з бісеру': {
-        description:
-            'Прикраси з бісеру ручної роботи: гердани, браслети та аксесуари. Етнічні й сучасні дизайни.',
-        ogDescription:
-            'Гердани, браслети та прикраси з бісеру. Ручна робота, стильні аксесуари для подарунків та особливих образів.',
+            'Вироби зі шнура для дому: кошики, корзинки, серветки, підставки. Ручна робота, натуральні матеріали, можливе виготовлення під замовлення.',
     },
 };
 
@@ -44,7 +32,6 @@ const CategoryPage = () => {
     // фільтри
     const [selectedKinds, setSelectedKinds] = useState([]);
     const [selectedColors, setSelectedColors] = useState([]);
-    const [onlySets, setOnlySets] = useState(false);
 
     // локальна пагінація
     const [currentPage, setCurrentPage] = useState(1);
@@ -82,7 +69,6 @@ const CategoryPage = () => {
     const filteredProducts = allProducts.filter(p => {
         if (selectedKinds.length && !selectedKinds.includes(p?.kind)) return false;
         if (selectedColors.length && !selectedColors.includes(p?.color)) return false;
-        if (onlySets && !p?.isSet) return false;
         return true;
     });
 
@@ -139,8 +125,6 @@ const CategoryPage = () => {
                             setSelectedKinds={setSelectedKinds}
                             selectedColors={selectedColors}
                             setSelectedColors={setSelectedColors}
-                            onlySets={onlySets}
-                            setOnlySets={setOnlySets}
                         />
                     </Col>
 
