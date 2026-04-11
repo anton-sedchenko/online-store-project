@@ -72,12 +72,6 @@ class ProductController {
             const weightNum = weightRaw === '' ? null : Number(weightRaw.replace(',', '.'));
             const weightVal = Number.isNaN(weightNum) ? null : weightNum;
 
-console.log('DEFAULT_TYPE_ID =', process.env.DEFAULT_TYPE_ID);
-console.log('typeId from body =', typeId);
-console.log('typeIdNum =', typeIdNum);
-console.log('price =', price, 'priceNum =', priceNum);
-console.log('name =', name, 'code =', code);
-
             if (!name || !code || Number.isNaN(typeIdNum) || Number.isNaN(priceNum)) {
                 return next(ApiError.badRequest('Заповніть назву, артикул і коректну ціну'));
             }
