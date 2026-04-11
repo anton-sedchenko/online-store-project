@@ -5,8 +5,9 @@ import { Helmet } from 'react-helmet-async';
 import SideBar from '../components/SideBar.jsx';
 import ProductList from '../components/ProductList.jsx';
 import PaginationLocal from '../components/PaginationLocal.jsx';
-import { fetchTypes } from '../http/typeAPI.js';
 import { fetchProducts } from '../http/productAPI.js';
+
+const CORD_TYPE_ID = Number(import.meta.env.VITE_CORD_TYPE_ID);
 
 const HomePage = () => {
     const [loading, setLoading] = useState(true);
@@ -19,20 +20,16 @@ const HomePage = () => {
             try {
                 setLoading(true);
 
-                const types = await fetchTypes();
-                const cordCategory = types.find(
-                    type => type.name?.trim() === 'Вироби зі шнура'
-                );
-
-                if (!cordCategory) {
+                if (!CORD_TYPE_ID) {
+                    console.error('CORD_TYPE_ID не заданий');
                     setAllProducts([]);
                     return;
                 }
 
-                const data = await fetchProducts(cordCategory.id, 1, 500);
+                const data = await fetchProducts(CORD_TYPE_ID, 1, 500);
                 setAllProducts(data.rows || []);
             } catch (e) {
-                console.error('Помилка при завантаженні товарів для головної:', e);
+                console.error('Помилка при завантаженні товарів:', e);
                 setAllProducts([]);
             } finally {
                 setLoading(false);
@@ -57,25 +54,9 @@ const HomePage = () => {
                 <title>Вироби зі шнура – Charivna Craft</title>
                 <meta
                     name="description"
-                    content="Кошики, серветки, підставки та інші вироби зі шнура ручної роботи від Charivna Craft. Стильний декор для дому та затишку."
+                    content="Кошики, серветки, підставки та інші вироби зі шнура ручної роботи від Charivna Craft."
                 />
-                <link
-                    rel="canonical"
-                    href="https://charivna-craft.com.ua/"
-                />
-                <meta
-                    property="og:title"
-                    content="Вироби зі шнура – Charivna Craft"
-                />
-                <meta
-                    property="og:description"
-                    content="Ручна робота для дому: кошики, підставки, серветки та інші вироби зі шнура від Charivna Craft."
-                />
-                <meta
-                    property="og:url"
-                    content="https://charivna-craft.com.ua/"
-                />
-                <meta property="og:type" content="website" />
+                <link rel="canonical" href="https://charivna-craft.com.ua/" />
             </Helmet>
 
             <div className="component__container">
@@ -85,7 +66,9 @@ const HomePage = () => {
                     </Col>
 
                     <Col md={9} lg={10}>
-                        <h1 className="mb-4">Вироби ручної роботи зі шнура – каталог Charivna Craft</h1>
+                        <h1 className="mb-4">
+                            Вироби ручної роботи зі шнура – каталог Charivna Craft
+                        </h1>
 
                         {loading ? (
                             <div className="d-flex justify-content-center py-5">
@@ -103,7 +86,7 @@ const HomePage = () => {
                                 />
                             </>
                         ) : (
-                            <p>Товари цієї категорії поки що відсутні.</p>
+                            <p>Товари поки що відсутні.</p>
                         )}
                     </Col>
                 </Row>
