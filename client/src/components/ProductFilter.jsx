@@ -1,27 +1,14 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
 
-// які фільтри вмикаємо для кожної категорії (по імені type.name)
-const CATEGORY_FILTERS = {
-    'Гіпсові фігурки': { color: false, kind: true, isSet: true },
-    'Фарби':           { color: false, kind: false, isSet: false },
-    'Вироби зі шнура': { color: true,  kind: true, isSet: true },
-    'Вироби з бісеру': { color: false, kind: true, isSet: true },
-};
-
 const ProductFilter = ({
-                             products,
-                             categoryName,
-                             selectedKinds,
-                             setSelectedKinds,
-                             selectedColors,
-                             setSelectedColors,
-                         }) => {
+    products,
+    selectedKinds,
+    setSelectedKinds,
+    selectedColors,
+    setSelectedColors,
+}) => {
     const safeProducts = Array.isArray(products) ? products : [];
-
-    const config = CATEGORY_FILTERS[categoryName] || {};
-    const showColor = config.color;
-    const showKind  = config.kind;
 
     const kinds = [...new Set(safeProducts.map(p => p?.kind).filter(Boolean))];
     const colors = [...new Set(safeProducts.map(p => p?.color).filter(Boolean))];
@@ -42,11 +29,7 @@ const ProductFilter = ({
         }
     };
 
-    const hasKindFilters  = showKind && kinds.length > 0;
-    const hasColorFilters = showColor && colors.length > 0;
-
-    // якщо немає жодної реальної опції — не показуємо блок взагалі
-    if (!hasKindFilters && !hasColorFilters) {
+    if (!kinds.length && !colors.length) {
         return null;
     }
 
@@ -54,7 +37,7 @@ const ProductFilter = ({
         <div className="mt-4">
             <h5 className="mb-3">Фільтри</h5>
 
-            {showKind && kinds.length > 0 && (
+            {kinds.length > 0 && (
                 <div className="mb-3">
                     <div className="fw-semibold mb-1">Тип виробу</div>
                     <div className="sidebar__filter__option__container">
@@ -62,7 +45,6 @@ const ProductFilter = ({
                             <Form.Check
                                 key={k}
                                 type="checkbox"
-                                id={`kind-${k}`}
                                 label={k}
                                 checked={selectedKinds.includes(k)}
                                 onChange={() => toggleKind(k)}
@@ -72,7 +54,7 @@ const ProductFilter = ({
                 </div>
             )}
 
-            {showColor && colors.length > 0 && (
+            {colors.length > 0 && (
                 <div className="mb-3">
                     <div className="fw-semibold mb-1">Колір</div>
                     <div className="sidebar__filter__option__container">
@@ -80,7 +62,6 @@ const ProductFilter = ({
                             <Form.Check
                                 key={c}
                                 type="checkbox"
-                                id={`color-${c}`}
                                 label={c}
                                 checked={selectedColors.includes(c)}
                                 onChange={() => toggleColor(c)}
@@ -89,7 +70,6 @@ const ProductFilter = ({
                     </div>
                 </div>
             )}
-
         </div>
     );
 };
