@@ -1,12 +1,9 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Button, Dropdown, Form, Modal} from "react-bootstrap";
-import {Context} from "../../main.jsx";
+import React, {useState} from 'react';
+import {Button, Form, Modal} from "react-bootstrap";
 import {createProduct} from "../../http/productAPI.js";
-import {fetchTypes} from "../../http/typeAPI.js";
 import {observer} from "mobx-react-lite";
 
 const CreateProduct = observer(({show, onHide}) => {
-    const {productStore} = useContext(Context);
     const [name, setName] = useState('');
     const [price, setPrice] = useState(0);
     const [descr, setDescr] = useState('');
@@ -25,20 +22,31 @@ const CreateProduct = observer(({show, onHide}) => {
     const [country, setCountry] = useState('Україна');
     const [material, setMaterial] = useState('');
 
-    // Підгружаємо перелік типів
-    useEffect(() => {
-        fetchTypes().then(data => productStore.setTypes(data));
-    }, []);
+    const resetForm = () => {
+        setName('');
+        setPrice(0);
+        setDescr('');
+        setColor('');
+        setKind('');
+        setFile(null);
+        setCode('');
+        setAvailability('IN_STOCK');
+        setRozetkaCategoryId('');
+        setRating(1);
+        setWidth('');
+        setLength('');
+        setHeight('');
+        setDiameter('');
+        setWeightKg('');
+        setCountry('Україна');
+        setMaterial('');
+    };
 
-    const selectFile = e => {
+    const selectFile = (e) => {
         setFile(e.target.files[0]);
-    }
+    };
 
     const addProduct = async () => {
-        if (!productStore.selectedType.id) {
-            alert("Будь ласка, оберіть категорію (тип) товару");
-            return;
-        }
         if (!file) {
             alert("Додайте зображення товару");
             return;
@@ -50,22 +58,23 @@ const CreateProduct = observer(({show, onHide}) => {
             formData.append("price", `${price}`);
             formData.append("description", descr || "");
             formData.append("img", file);
-            formData.append("typeId", productStore.selectedType.id);
             formData.append("code", code);
-            formData.append('availability', availability);
-            formData.append('color', (color ?? '').trim());
-            formData.append('kind', (kind ?? '').trim());
-            formData.append('rozetkaCategoryId', (rozetkaCategoryId ?? '').trim());
-            formData.append('rating', String(rating ?? 1));
-            formData.append('width', (width ?? '').trim());
-            formData.append('length', (length ?? '').trim());
-            formData.append('height', (height ?? '').trim());
-            formData.append('diameter', (diameter ?? '').trim());
-            formData.append('weightKg', (weightKg ?? '').trim());
-            formData.append('country', (country ?? 'Україна').trim());
-            formData.append('material', (material ?? '').trim());
+            formData.append("availability", availability);
+            formData.append("color", (color ?? '').trim());
+            formData.append("kind", (kind ?? '').trim());
+            formData.append("rozetkaCategoryId", (rozetkaCategoryId ?? '').trim());
+            formData.append("rating", String(rating ?? 1));
+            formData.append("width", (width ?? '').trim());
+            formData.append("length", (length ?? '').trim());
+            formData.append("height", (height ?? '').trim());
+            formData.append("diameter", (diameter ?? '').trim());
+            formData.append("weightKg", (weightKg ?? '').trim());
+            formData.append("country", (country ?? 'Україна').trim());
+            formData.append("material", (material ?? '').trim());
 
-            await createProduct(formData).then(() => onHide());
+            await createProduct(formData);
+            resetForm();
+            onHide();
         } catch (e) {
             alert(e.response?.data?.message || e.message);
         }
@@ -74,37 +83,24 @@ const CreateProduct = observer(({show, onHide}) => {
     return (
         <Modal show={show} onHide={onHide}>
             <Modal.Header closeButton>
-                <Modal.Title>Вкажіть опис фігурки</Modal.Title>
+                <Modal.Title>Додати товар</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                    <Dropdown className="modal__dropdown">
-                        <Dropdown.Toggle>{productStore.selectedType.name || "Обрати тип"}</Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            {Array.isArray(productStore.types) &&
-                                productStore.types
-                                    .filter(t => t && t.name)
-                                    .map((type) =>
-                                        <Dropdown.Item
-                                            onClick={() => productStore.setSelectedType(type)}
-                                            key={type.id}
-                                        >
-                                            {type.name}
-                                        </Dropdown.Item>
-                            )}
-                        </Dropdown.Menu>
-                    </Dropdown>
                     <Form.Control
                         placeholder="Назва товару"
                         className="modal__input"
                         value={name}
                         onChange={e => setName(e.target.value)}
                     />
+
                     <Form.Control
                         placeholder="Код товару"
+                        className="modal__input"
                         value={code}
                         onChange={e => setCode(e.target.value)}
                     />
+
                     <Form.Group className="mb-2">
                         <Form.Label>ID категорії Rozetka (необов’язково)</Form.Label>
                         <Form.Control
@@ -118,6 +114,7 @@ const CreateProduct = observer(({show, onHide}) => {
                             Якщо залишити порожнім — товар не потрапить до фіду Rozetka.
                         </Form.Text>
                     </Form.Group>
+
                     <Form.Group className="mb-2">
                         <Form.Label>Рейтинг (1–10)</Form.Label>
                         <Form.Control
@@ -132,9 +129,9 @@ const CreateProduct = observer(({show, onHide}) => {
                             Рейтинг від 1 до 10, де 10 максимум і товар буде на 1 сторінці.
                         </Form.Text>
                     </Form.Group>
+
                     <Form.Group className="mb-2">
                         <Form.Select
-                            placeholder="Наявність товару"
                             value={availability}
                             onChange={e => setAvailability(e.target.value)}
                         >
@@ -152,7 +149,7 @@ const CreateProduct = observer(({show, onHide}) => {
                     />
 
                     <Form.Control
-                        placeholder="Тип виробу (наприклад: Кошики, Плейсмати, Браслети)"
+                        placeholder="Тип виробу (наприклад: Кошики, Плейсмати)"
                         className="modal__input"
                         value={kind}
                         onChange={e => setKind(e.target.value)}
@@ -207,7 +204,7 @@ const CreateProduct = observer(({show, onHide}) => {
                     <Form.Group className="mb-2">
                         <Form.Label>Матеріал</Form.Label>
                         <Form.Control
-                            placeholder="Напр.: бавовняний шнур / гіпс / бісер"
+                            placeholder="Напр.: бавовняний шнур"
                             value={material}
                             onChange={(e) => setMaterial(e.target.value)}
                         />
@@ -220,6 +217,7 @@ const CreateProduct = observer(({show, onHide}) => {
                         value={price}
                         onChange={e => setPrice(Number(e.target.value))}
                     />
+
                     <Form.Control
                         as="textarea"
                         rows={4}
@@ -228,6 +226,7 @@ const CreateProduct = observer(({show, onHide}) => {
                         value={descr}
                         onChange={e => setDescr(e.target.value)}
                     />
+
                     <Form.Control
                         type="file"
                         className="modal__input"
@@ -239,10 +238,7 @@ const CreateProduct = observer(({show, onHide}) => {
                 <Button variant="outline-danger" onClick={onHide}>
                     Закрити
                 </Button>
-                <Button
-                    variant="outline-success"
-                    onClick={addProduct}
-                >
+                <Button variant="outline-success" onClick={addProduct}>
                     Додати
                 </Button>
             </Modal.Footer>
