@@ -99,7 +99,8 @@ footer {
 
 .footer__social-link {
   font-size: 27px;
-  transition: all 1s ease;
+  transition: transform 0.5s ease;
+  transform: rotate(0deg);
   margin-right: 10px;
 }
 
@@ -108,5 +109,5 @@ footer {
 }
 
 .footer__social-link:hover {
-  transform: scale(125%);
+  transform: rotate(360deg);
 }
