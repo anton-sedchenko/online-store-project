@@ -1,7 +1,13 @@
 @import "mixins";
 
-.sidebar__aside__wrapper {
+.sidebar__wrapper {
   margin-bottom: 15px;
+  padding: 24px 20px;
+  width: 100%;
+  background: #fbf8f3;
+  border: 1px solid #e7ddd1;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(84, 59, 35, 0.06);
 
   @include respond-to(md) {
     padding: 0 25px;
@@ -10,12 +16,6 @@
 
 .sidebar {
   width: 100%;
-  padding: 24px 20px;
-  width: 100%;
-  background: #fbf8f3;
-  border: 1px solid #e7ddd1;
-  border-radius: 18px;
-  box-shadow: 0 4px 14px rgba(84, 59, 35, 0.06);
 
   @include respond-to(md) {
     display: none;
