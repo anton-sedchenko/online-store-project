@@ -1,45 +1,49 @@
-import React, {useContext, useState} from 'react';
-import {Link} from "react-router-dom";
+import React, { useContext } from 'react';
+import { Link } from "react-router-dom";
 import ProductsCounter from "./UI/ProductsCounter.jsx";
-import {Context} from "../main.jsx";
-import {observer} from "mobx-react-lite";
+import { Context } from "../main.jsx";
+import { observer } from "mobx-react-lite";
 
-const SideBar = observer(() => {
-    const {userStore} = useContext(Context);
+const SideBar = observer((props) => {
+    const { userStore } = useContext(Context);
 
     return (
-        <>
-            <aside className="sidebar__aside__wrapper">
-                <div className="sidebar">
-                    <ul>
+        <aside className="sidebar__aside__wrapper">
+            <div className="sidebar">
+                <div className="sidebar__section">
+                    <ul className="sidebar__nav">
                         <li className="sidebar__nav__item">
                             <Link to="/">Каталог</Link>
                         </li>
-                        {userStore.isAuth &&
-                            (<li className="sidebar__nav__item">
+
+                        {userStore.isAuth && (
+                            <li className="sidebar__nav__item">
                                 <Link to="/profile">Мій профіль</Link>
-                            </li>)
-                        }
+                            </li>
+                        )}
+
                         <li className="sidebar__nav__item">
                             <Link to="/cart">Мій кошик</Link>
-                            <ProductsCounter/>
+                            <ProductsCounter />
                         </li>
+
                         <li className="sidebar__nav__item">
                             <Link to="/blog">Блог</Link>
                         </li>
+
                         <li className="sidebar__nav__item">
                             <Link to="/contacts">Контакти</Link>
                         </li>
                     </ul>
                 </div>
 
-                {children && (
+                {props.children && (
                     <div className="sidebar__section sidebar__section--filters">
-                        {children}
+                        {props.children}
                     </div>
                 )}
-            </aside>
-        </>
+            </div>
+        </aside>
     );
 });
 
