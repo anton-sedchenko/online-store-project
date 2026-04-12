@@ -43,15 +43,19 @@ const Footer = () => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="footer__social-link"
+                                aria-label="Facebook Charivna Craft"
+                                title="Facebook Charivna Craft"
                             >
-                                <i className="fa fa-facebook-square"
-                                   aria-hidden="true"></i>
+                                <i className="fa fa-facebook-square" aria-hidden="true"></i>
                             </a>
+
                             <a
                                 href="https://www.instagram.com/charivnacraft/"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="footer__social-link"
+                                aria-label="Instagram Charivna Craft"
+                                title="Instagram Charivna Craft"
                             >
                                 <i className="fa fa-instagram" aria-hidden="true"></i>
                             </a>
