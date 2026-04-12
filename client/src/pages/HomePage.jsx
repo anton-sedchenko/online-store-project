@@ -83,15 +83,15 @@ const HomePage = () => {
             <div className="component__container">
                 <Row>
                     <Col md={3} lg={2}>
-                        <SideBar />
-
-                        <ProductFilter
-                            products={allProducts}
-                            selectedKinds={selectedKinds}
-                            setSelectedKinds={setSelectedKinds}
-                            selectedColors={selectedColors}
-                            setSelectedColors={setSelectedColors}
-                        />
+                        <SideBar>
+                            <ProductFilter
+                                products={allProducts}
+                                selectedKinds={selectedKinds}
+                                setSelectedKinds={setSelectedKinds}
+                                selectedColors={selectedColors}
+                                setSelectedColors={setSelectedColors}
+                            />
+                        </SideBar>
                     </Col>
 
                     <Col md={9} lg={10}>

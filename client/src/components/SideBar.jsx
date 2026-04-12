@@ -32,6 +32,12 @@ const SideBar = observer(() => {
                         </li>
                     </ul>
                 </div>
+
+                {children && (
+                    <div className="sidebar__section sidebar__section--filters">
+                        {children}
+                    </div>
+                )}
             </aside>
         </>
     );

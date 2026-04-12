@@ -34,7 +34,7 @@ const ProductFilter = ({
     }
 
     return (
-        <div className="mt-4">
+        <div className="sidebar__filters">
             <h5 className="mb-3">Фільтри</h5>
 
             {kinds.length > 0 && (
@@ -55,8 +55,8 @@ const ProductFilter = ({
             )}
 
             {colors.length > 0 && (
-                <div className="mb-3">
-                    <div className="fw-semibold mb-1">Колір</div>
+                <div className="sidebar__filter__group">
+                    <div className="sidebar__filter__group__title">Колір</div>
                     <div className="sidebar__filter__option__container">
                         {colors.map(c => (
                             <Form.Check
