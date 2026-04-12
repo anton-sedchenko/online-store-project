@@ -9,27 +9,29 @@ const SideBar = observer(() => {
 
     return (
         <>
-            <aside className="sidebar">
-                <ul>
-                    <li className="sidebar__nav__item">
-                        <Link to="/">Каталог</Link>
-                    </li>
-                    {userStore.isAuth &&
-                        (<li className="sidebar__nav__item">
-                            <Link to="/profile">Мій профіль</Link>
-                        </li>)
-                    }
-                    <li className="sidebar__nav__item">
-                        <Link to="/cart">Мій кошик</Link>
-                        <ProductsCounter/>
-                    </li>
-                    <li className="sidebar__nav__item">
-                        <Link to="/blog">Блог</Link>
-                    </li>
-                    <li className="sidebar__nav__item">
-                        <Link to="/contacts">Контакти</Link>
-                    </li>
-                </ul>
+            <aside className="sidebar__aside__wrapper">
+                <div className="sidebar">
+                    <ul>
+                        <li className="sidebar__nav__item">
+                            <Link to="/">Каталог</Link>
+                        </li>
+                        {userStore.isAuth &&
+                            (<li className="sidebar__nav__item">
+                                <Link to="/profile">Мій профіль</Link>
+                            </li>)
+                        }
+                        <li className="sidebar__nav__item">
+                            <Link to="/cart">Мій кошик</Link>
+                            <ProductsCounter/>
+                        </li>
+                        <li className="sidebar__nav__item">
+                            <Link to="/blog">Блог</Link>
+                        </li>
+                        <li className="sidebar__nav__item">
+                            <Link to="/contacts">Контакти</Link>
+                        </li>
+                    </ul>
+                </div>
             </aside>
         </>
     );

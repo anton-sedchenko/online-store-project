@@ -82,7 +82,7 @@ const HomePage = () => {
 
             <div className="component__container">
                 <Row>
-                    <Col md={3} lg={2} className="sidebar__wrapper">
+                    <Col md={3} lg={2}>
                         <SideBar />
 
                         <ProductFilter
