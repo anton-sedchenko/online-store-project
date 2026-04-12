@@ -40,7 +40,7 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.gallery-card:hover {
+.gallery__card:hover {
   transform: translateY(-3px);
   box-shadow: 0 10px 26px rgba(60, 40, 20, 0.12);
 }
