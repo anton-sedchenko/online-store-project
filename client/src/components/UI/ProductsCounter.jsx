@@ -7,13 +7,15 @@ const ProductsCounter = observer(() => {
     // кількість товарів з серверного кошика або гостьового із localStorage
     const count = cartStore.totalCount;
 
+    if (count <= 0) {
+        return null;
+    }
+
     return (
         <div className="goods__counter__container">
-            {count > 0 && (
-                <span className="goods__counter">
-                    {count > 99 ? '99+' : count}
-                </span>
-            )}
+            <span className="goods__counter">
+                {count > 99 ? '99+' : count}
+            </span>
         </div>
     );
 });
