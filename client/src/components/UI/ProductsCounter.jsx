@@ -10,10 +10,8 @@ const ProductsCounter = observer(() => {
     return (
         <div className="goods__counter__container">
             {count > 0 && (
-                <span
-                    className="badge goods__counter"
-                >
-                    {count}
+                <span className="goods__counter">
+                    {count > 99 ? '99+' : count}
                 </span>
             )}
         </div>
