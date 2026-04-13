@@ -96,14 +96,19 @@
 }
 
 @mixin input-style {
-  border: none;
+  border: 1px solid #e2d6c8;
   outline: none;
-  border-radius: 10px;
-  padding: 10px;
-  background-color: white;
-  box-shadow: rgba(50, 30, 66, 0.25) 0px 1px 1px, rgba(50, 30, 66, 0.13) 0px 0px 1px 1px;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background-color: #fffdf9;
+  color: #3e3126;
+  box-shadow: 0 2px 8px rgba(84, 59, 35, 0.08);
+  transition: all 0.2s ease;
 
   &:focus {
-    box-shadow: rgba(128, 0, 128, 0.4) 0px 4px 8px, rgba(128, 0, 128, 0.2) 0px 2px 4px;
+    border-color: #8b5e3c;
+    box-shadow:
+      0 0 0 3px rgba(139, 94, 60, 0.14),
+      0 4px 12px rgba(84, 59, 35, 0.12);
   }
 }

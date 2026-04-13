@@ -36,7 +36,7 @@ const Wrapper = ({children}) => {
         <div className="wrapper">
             <Header />
             <ScrollToTop />
-            <div className="page__content">
+            <div className="page__content pt-1">
                 {/*{(isBannerShow) && <Banner />}*/}
                 {children}
                 <SeoBlock />
