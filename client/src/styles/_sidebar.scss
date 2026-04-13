@@ -54,6 +54,12 @@
   font-weight: 600;
 }
 
+.sidebar__filters {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #eadfd2;
+}
+
 .sidebar__filter__group {
   margin-bottom: 22px;
 }
@@ -72,8 +78,42 @@
   margin-bottom: 0;
 }
 
-.sidebar__filter__option__container .form-check {
-  margin-bottom: 8px;
+.sidebar__filter__check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar__filter__check:hover {
+  background: rgba(132, 98, 63, 0.06);
+}
+
+.sidebar__filter__check .form-check-input {
+  margin-top: 0.2rem;
+  cursor: pointer;
+  border-color: #cbb9a6;
+  box-shadow: none;
+}
+
+.sidebar__filter__check .form-check-input:checked {
+  background-color: #8b5e3c;
+  border-color: #8b5e3c;
+}
+
+.sidebar__filter__check .form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(139, 94, 60, 0.15);
+  border-color: #8b5e3c;
+}
+
+.sidebar__filter__check .form-check-label {
+  cursor: pointer;
+  line-height: 1.35;
+  color: #3e3126;
+  user-select: none;
 }
 
 .sidebar__filter__option__container .form-check:last-child {
@@ -88,7 +128,7 @@
     gap: 8px 16px;
   }
 
-  .sidebar__filter__option__container .form-check {
+  .sidebar__filter__check {
     margin-bottom: 0;
   }
 }

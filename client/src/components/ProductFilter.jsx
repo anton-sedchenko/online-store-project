@@ -38,18 +38,24 @@ const ProductFilter = ({
             <h5 className="mb-3">Фільтри</h5>
 
             {kinds.length > 0 && (
-                <div className="mb-3">
-                    <div className="fw-semibold mb-1">Тип виробу</div>
+                <div className="sidebar__filter__group">
+                    <div className="sidebar__filter__group__title">Тип виробу</div>
                     <div className="sidebar__filter__option__container">
-                        {kinds.map(k => (
-                            <Form.Check
-                                key={k}
-                                type="checkbox"
-                                label={k}
-                                checked={selectedKinds.includes(k)}
-                                onChange={() => toggleKind(k)}
-                            />
-                        ))}
+                        {kinds.map((k) => {
+                            const inputId = `kind-${k.replace(/\s+/g, '-').toLowerCase()}`;
+
+                            return (
+                                <Form.Check
+                                    key={k}
+                                    id={inputId}
+                                    type="checkbox"
+                                    label={k}
+                                    className="sidebar__filter__check"
+                                    checked={selectedKinds.includes(k)}
+                                    onChange={() => toggleKind(k)}
+                                />
+                            );
+                        })}
                     </div>
                 </div>
             )}
@@ -58,15 +64,21 @@ const ProductFilter = ({
                 <div className="sidebar__filter__group">
                     <div className="sidebar__filter__group__title">Колір</div>
                     <div className="sidebar__filter__option__container">
-                        {colors.map(c => (
-                            <Form.Check
-                                key={c}
-                                type="checkbox"
-                                label={c}
-                                checked={selectedColors.includes(c)}
-                                onChange={() => toggleColor(c)}
-                            />
-                        ))}
+                        {colors.map((c) => {
+                            const inputId = `color-${c.replace(/\s+/g, '-').toLowerCase()}`;
+
+                            return (
+                                <Form.Check
+                                    key={c}
+                                    id={inputId}
+                                    type="checkbox"
+                                    label={c}
+                                    className="sidebar__filter__check"
+                                    checked={selectedColors.includes(c)}
+                                    onChange={() => toggleColor(c)}
+                                />
+                            );
+                        })}
                     </div>
                 </div>
             )}
