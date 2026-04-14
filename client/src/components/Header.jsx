@@ -1,8 +1,15 @@
-import React, {useContext, useState} from 'react';
-import {Context} from "../main.jsx";
-import {Link, useNavigate} from "react-router-dom";
-import {observer} from "mobx-react-lite";
-import {ADMIN_ROUTE, CART_ROUTE, HOME_ROUTE, PROFILE_ROUTE, REGISTRATION_ROUTE} from "../utils/consts.js";
+import React, { useContext, useState } from 'react';
+import { Context } from "../main.jsx";
+import { Link, useNavigate } from "react-router-dom";
+import { observer } from "mobx-react-lite";
+import {
+    ADMIN_ROUTE,
+    CART_ROUTE,
+    HOME_ROUTE,
+    PROFILE_ROUTE,
+    REGISTRATION_ROUTE
+} from "../utils/consts.js";
+
 import CartIcon from "./UI/CartIcon.jsx";
 import LoginIcon from "./UI/LoginIcon.jsx";
 import UserIcon from "./UI/UserIcon.jsx";
@@ -10,32 +17,28 @@ import AdminPanelLogo from "./UI/AdminPanelLogo.jsx";
 import MobileMenuModal from "./modals/MobileMenuModal.jsx";
 
 const Header = observer(() => {
-    const {userStore, cartStore} = useContext(Context);
+    const { userStore, cartStore } = useContext(Context);
     const navigate = useNavigate();
     const [menuVisible, setMenuVisible] = useState(false);
 
     const logOut = async () => {
-        // Якщо ми ще авторизовані очищаємо серверний кошик
         if (userStore.isAuth) {
             try {
                 await cartStore.clearCart();
             } catch (_) {
-                // ігноруємо помилку, якщо щось піде не так
+                // ignore
             }
         }
 
-        // Видаляємо токен і чистимо профіль
         localStorage.removeItem("token");
         userStore.setUser({});
         userStore.setIsAuth(false);
 
-        // Очищаємо guest кошик
         localStorage.removeItem("guestCart");
-
-        // Переключаємося на гостьовий режим із порожнім кошиком
         cartStore.switchToGuest();
+
         navigate(HOME_ROUTE);
-    }
+    };
 
     return (
         <header className="header mb-4">
@@ -54,70 +57,68 @@ const Header = observer(() => {
                 <div className="header__content">
                     <div className="header__logo-container">
                         <Link to="/">
-                            <img src="/logo.png" className="header__logo" alt="logo"/>
+                            <img src="/logo.png" className="header__logo" alt="Charivna Craft" />
                         </Link>
                     </div>
+
                     <nav className="header__nav">
                         <div className="header__nav__menu">
                             {userStore.isAuth ? (
                                 <>
-                                    <div className="header__btn__container">
-                                        <Link to={PROFILE_ROUTE} className="header__link">
-                                            <button className="header__btn">
-                                                <UserIcon />
-                                                <p>Кабінет</p>
-                                            </button>
+                                    <div className="header__btn__container header__btn__container--desktop-only">
+                                        <Link to={PROFILE_ROUTE} className="header__btn header__link-btn">
+                                            <UserIcon />
+                                            <span>Кабінет</span>
                                         </Link>
                                     </div>
 
-                                    {userStore.isAuth && userStore.user?.role === "ADMIN" && (
-                                        <div className="header__btn__container">
+                                    {userStore.user?.role === "ADMIN" && (
+                                        <div className="header__btn__container header__btn__container--desktop-only">
                                             <button
+                                                type="button"
                                                 className="header__btn"
                                                 onClick={() => navigate(ADMIN_ROUTE)}
                                             >
                                                 <AdminPanelLogo />
-                                                <p>Адмін панель</p>
+                                                <span>Адмін панель</span>
                                             </button>
                                         </div>
                                     )}
 
-                                    <div className="header__btn__container">
+                                    <div className="header__btn__container header__btn__container--desktop-only">
                                         <button
+                                            type="button"
                                             className="header__btn"
-                                            onClick={() => logOut()}
+                                            onClick={logOut}
                                         >
                                             <LoginIcon />
-                                            <p>Вийти</p>
+                                            <span>Вийти</span>
                                         </button>
                                     </div>
                                 </>
                             ) : (
-                                <div className="header__btn__container">
-                                    <Link to={REGISTRATION_ROUTE} className="header__link">
-                                        <button className="header__btn">
-                                            <LoginIcon />
-                                            <p>Увійти</p>
-                                        </button>
+                                <div className="header__btn__container header__btn__container--desktop-only">
+                                    <Link to={REGISTRATION_ROUTE} className="header__btn header__link-btn">
+                                        <LoginIcon />
+                                        <span>Увійти</span>
                                     </Link>
                                 </div>
                             )}
 
-                            <div className="header__btn__container header__menu__btn__container">
+                            <div className="header__btn__container header__btn__container--mobile-priority">
                                 <button
+                                    type="button"
                                     className="header__btn"
                                     onClick={() => setMenuVisible(true)}
                                 >
-                                    Меню
+                                    <span>Меню</span>
                                 </button>
                             </div>
 
-                            <div className="header__btn__container">
-                                <Link to={CART_ROUTE} className="header__link">
-                                    <button className="header__btn">
-                                        <CartIcon/>
-                                        <p>Кошик</p>
-                                    </button>
+                            <div className="header__btn__container header__btn__container--mobile-priority">
+                                <Link to={CART_ROUTE} className="header__btn header__link-btn">
+                                    <CartIcon />
+                                    <span>Кошик</span>
                                 </Link>
                             </div>
                         </div>
