@@ -59,6 +59,17 @@ const Footer = () => {
                             >
                                 <i className="fa fa-instagram" aria-hidden="true"></i>
                             </a>
+
+                            <a
+                                href="https://www.youtube.com/channel/UC54z3BkuywyRP3NH-J6iDZA"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="footer__social-link"
+                                aria-label="YouTube Charivna Craft"
+                                title="YouTube Charivna Craft"
+                            >
+                                <i className="fa fa-youtube-play" aria-hidden="true"></i>
+                            </a>
                         </div>
                         <div className="footer__contact__container">
                             <a href="tel:+380680361597">+38 (068) 036 15 97</a>
