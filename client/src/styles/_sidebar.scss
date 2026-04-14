@@ -173,6 +173,8 @@
   margin-bottom: 0;
 }
 
-@include respond-to(md) {
-  display: none;
+.sidebar {
+  @include respond-to(md) {
+    display: none;
+  }
 }
