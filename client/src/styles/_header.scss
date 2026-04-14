@@ -124,6 +124,14 @@
   display: flex;
 }
 
+.header__btn__container--mobile-only {
+  display: none;
+
+  @include respond-to(md) {
+    display: flex;
+  }
+}
+
 .header__link-btn {
   text-decoration: none;
 }

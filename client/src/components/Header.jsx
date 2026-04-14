@@ -105,7 +105,7 @@ const Header = observer(() => {
                                 </div>
                             )}
 
-                            <div className="header__btn__container header__btn__container--mobile-priority">
+                            <div className="header__btn__container header__btn__container--mobile-only">
                                 <button
                                     type="button"
                                     className="header__btn"
