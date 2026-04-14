@@ -35,7 +35,7 @@ const ProductFilter = ({
 
     return (
         <div className="sidebar__filters">
-            <h5 className="mb-3">Фільтри</h5>
+            <h5 className="sidebar__section__title">Фільтри</h5>
 
             {kinds.length > 0 && (
                 <div className="sidebar__filter__group">

@@ -7,6 +7,7 @@ import ProductList from '../components/ProductList.jsx';
 import PaginationLocal from '../components/PaginationLocal.jsx';
 import ProductFilter from '../components/ProductFilter.jsx';
 import { fetchProducts } from '../http/productAPI.js';
+import MobileFilterModal from '../components/modals/MobileFilterModal';
 
 const CORD_TYPE_ID = Number(import.meta.env.VITE_CORD_TYPE_ID);
 
@@ -18,6 +19,9 @@ const HomePage = () => {
     const [selectedKinds, setSelectedKinds] = useState([]);
     const [selectedColors, setSelectedColors] = useState([]);
 
+    const [showMobileFilters, setShowMobileFilters] = useState(false);
+
+    const activeFiltersCount = selectedKinds.length + selectedColors.length;
     const limit = 12;
 
     useEffect(() => {
@@ -103,23 +107,52 @@ const HomePage = () => {
                             <div className="d-flex justify-content-center py-5">
                                 <Spinner animation="border" />
                             </div>
-                        ) : pageProducts.length > 0 ? (
-                            <>
-                                <ProductList products={pageProducts} />
-
-                                <PaginationLocal
-                                    totalCount={totalCount}
-                                    limit={limit}
-                                    currentPage={currentPage}
-                                    onPageChange={handlePageChange}
-                                />
-                            </>
                         ) : (
-                            <p>За обраними фільтрами товари не знайдено.</p>
+                            <>
+                                <div className="mobile-filter-bar d-md-none">
+                                    <button
+                                        type="button"
+                                        className="mobile-filter-bar__button"
+                                        onClick={() => setShowMobileFilters(true)}
+                                    >
+                                        Фільтри
+                                        {activeFiltersCount > 0 && (
+                                            <span className="mobile-filter-bar__count">
+                                                {activeFiltersCount}
+                                            </span>
+                                        )}
+                                    </button>
+                                </div>
+
+                                {pageProducts.length > 0 ? (
+                                    <>
+                                        <ProductList products={pageProducts} />
+
+                                        <PaginationLocal
+                                            totalCount={totalCount}
+                                            limit={limit}
+                                            currentPage={currentPage}
+                                            onPageChange={handlePageChange}
+                                        />
+                                    </>
+                                ) : (
+                                    <p>За обраними фільтрами товари не знайдено.</p>
+                                )}
+                            </>
                         )}
                     </Col>
                 </Row>
             </div>
+
+            <MobileFilterModal
+                show={showMobileFilters}
+                onHide={() => setShowMobileFilters(false)}
+                products={allProducts}
+                selectedKinds={selectedKinds}
+                setSelectedKinds={setSelectedKinds}
+                selectedColors={selectedColors}
+                setSelectedColors={setSelectedColors}
+            />
         </>
     );
 };
