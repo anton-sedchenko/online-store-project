@@ -174,31 +174,5 @@
 }
 
 @include respond-to(md) {
-@include respond-to(md) {
-  .sidebar__aside__wrapper {
-    padding: 0 15px;
-  }
-
-  .sidebar {
-    display: block;
-    padding: 18px 14px;
-    border-radius: 14px;
-  }
-
-  .sidebar__filters {
-    margin-top: 18px;
-    padding-top: 18px;
-  }
-
-  .sidebar__filter__option__container {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .sidebar__filter__check {
-    margin-bottom: 0;
-    padding: 8px 10px;
-  }
-}
+  display: none;
 }
