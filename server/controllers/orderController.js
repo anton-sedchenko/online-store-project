@@ -172,7 +172,7 @@ function renderOrderEmail({
                                     </p>
                                     <p style="margin:0;font-size:13px;color:#555;">
                                         Контакти:<br/>
-                                        <strong>Телефон:</strong> +38 (068) 036 15 97, +38 (093) 744 25 11, +38 (050) 608 62 30<br/>
+                                        <strong>Телефон:</strong> +38 (068) 036 15 97<br/>
                                         <strong>Email:</strong> charivna.craft@gmail.com
                                     </p>
                                 </td>

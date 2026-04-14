@@ -6,14 +6,13 @@ import {
     ADMIN_ROUTE,
     CART_ROUTE,
     HOME_ROUTE,
-    PROFILE_ROUTE,
     REGISTRATION_ROUTE
 } from "../utils/consts.js";
 
 import CartIcon from "./UI/CartIcon.jsx";
 import LoginIcon from "./UI/LoginIcon.jsx";
-import UserIcon from "./UI/UserIcon.jsx";
 import AdminPanelLogo from "./UI/AdminPanelLogo.jsx";
+import MenuIcon from "./UI/MenuIcon.jsx";
 import MobileMenuModal from "./modals/MobileMenuModal.jsx";
 
 const Header = observer(() => {
@@ -65,13 +64,6 @@ const Header = observer(() => {
                         <div className="header__nav__menu">
                             {userStore.isAuth ? (
                                 <>
-                                    <div className="header__btn__container header__btn__container--desktop-only">
-                                        <Link to={PROFILE_ROUTE} className="header__btn header__link-btn">
-                                            <UserIcon />
-                                            <span>Кабінет</span>
-                                        </Link>
-                                    </div>
-
                                     {userStore.user?.role === "ADMIN" && (
                                         <div className="header__btn__container header__btn__container--desktop-only">
                                             <button
@@ -111,6 +103,7 @@ const Header = observer(() => {
                                     className="header__btn"
                                     onClick={() => setMenuVisible(true)}
                                 >
+                                    <MenuIcon />
                                     <span>Меню</span>
                                 </button>
                             </div>
