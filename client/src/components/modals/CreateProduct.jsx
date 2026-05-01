@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Form, Modal} from "react-bootstrap";
 import {createProduct} from "../../http/productAPI.js";
+import {fetchTypes} from "../../http/typeAPI.js";
 import {observer} from "mobx-react-lite";
 
 const CreateProduct = observer(({show, onHide}) => {
@@ -21,6 +22,16 @@ const CreateProduct = observer(({show, onHide}) => {
     const [weightKg, setWeightKg] = useState('');
     const [country, setCountry] = useState('Україна');
     const [material, setMaterial] = useState('');
+    const [types, setTypes] = useState([]);
+    const [typeId, setTypeId] = useState('');
+
+    useEffect(() => {
+        if (show) {
+            fetchTypes()
+                .then(data => setTypes(Array.isArray(data) ? data : []))
+                .catch(() => setTypes([]));
+        }
+    }, [show]);
 
     const resetForm = () => {
         setName('');
@@ -40,6 +51,7 @@ const CreateProduct = observer(({show, onHide}) => {
         setWeightKg('');
         setCountry('Україна');
         setMaterial('');
+        setTypeId('');
     };
 
     const selectFile = (e) => {
@@ -52,10 +64,16 @@ const CreateProduct = observer(({show, onHide}) => {
             return;
         }
 
+        if (!typeId) {
+            alert("Оберіть категорію товару");
+            return;
+        }
+
         try {
             const formData = new FormData();
             formData.append("name", name);
             formData.append("price", `${price}`);
+            formData.append("typeId", typeId);
             formData.append("description", descr || "");
             formData.append("img", file);
             formData.append("code", code);
@@ -100,6 +118,21 @@ const CreateProduct = observer(({show, onHide}) => {
                         value={code}
                         onChange={e => setCode(e.target.value)}
                     />
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Категорія товару</Form.Label>
+                        <Form.Select
+                            value={typeId}
+                            onChange={e => setTypeId(e.target.value)}
+                        >
+                            <option value="">Оберіть категорію</option>
+                            {types.map(type => (
+                                <option key={type.id} value={type.id}>
+                                    {type.name}
+                                </option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
 
                     <Form.Group className="mb-2">
                         <Form.Label>ID категорії Rozetka (необов’язково)</Form.Label>
@@ -149,7 +182,7 @@ const CreateProduct = observer(({show, onHide}) => {
                     />
 
                     <Form.Control
-                        placeholder="Тип виробу (наприклад: Кошики, Плейсмати)"
+                        placeholder="Тип виробу (наприклад: Кошик, Плейсмат, Набір)"
                         className="modal__input"
                         value={kind}
                         onChange={e => setKind(e.target.value)}

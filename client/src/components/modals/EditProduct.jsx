@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Modal, Button, Form} from 'react-bootstrap';
 import {updateProduct, fetchProducts, deleteProductImage} from '../../http/productAPI.js';
+import {fetchTypes} from '../../http/typeAPI.js';
 
 const EditProduct = ({show, onHide, productToEdit}) => {
     const [name, setName] = useState('');
@@ -23,6 +24,16 @@ const EditProduct = ({show, onHide, productToEdit}) => {
     const [weightKg, setWeightKg] = useState('');
     const [country, setCountry] = useState('Україна');
     const [material, setMaterial] = useState('');
+    const [types, setTypes] = useState([]);
+    const [typeId, setTypeId] = useState('');
+
+    useEffect(() => {
+        if (show) {
+            fetchTypes()
+                .then(data => setTypes(Array.isArray(data) ? data : []))
+                .catch(() => setTypes([]));
+        }
+    }, [show]);
 
     useEffect(() => {
         if (productToEdit) {
@@ -44,46 +55,61 @@ const EditProduct = ({show, onHide, productToEdit}) => {
             setWeightKg(productToEdit.weightKg || '');
             setCountry(productToEdit.country || 'Україна');
             setMaterial(productToEdit.material || '');
+            setTypeId(productToEdit.typeId ? String(productToEdit.typeId) : '');
             setImgFiles([]);
             setMainImageFile(null);
         }
     }, [productToEdit]);
 
     const handleSave = async () => {
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('price', price);
-        formData.append('code', code);
-        formData.append('color', (color ?? '').trim());
-        formData.append('kind', (kind ?? '').trim());
-        formData.append('description', description);
-        formData.append('availability', availability);
-        formData.append('width', (width ?? '').trim());
-        formData.append('length', (length ?? '').trim());
-        formData.append('height', (height ?? '').trim());
-        formData.append('diameter', (diameter ?? '').trim());
-        formData.append('weightKg', (weightKg ?? '').trim());
-        formData.append('country', (country ?? 'Україна').trim());
-        formData.append('material', (material ?? '').trim());
-        formData.append('rozetkaCategoryId', (rozetkaCategoryId ?? '').trim());
-        formData.append('rating', String(rating ?? 1));
-
-        if (mainImageFile) {
-            formData.append('img', mainImageFile);
+        if (!typeId) {
+            alert('Оберіть категорію товару');
+            return;
         }
 
-        imgFiles.forEach((file) => {
-            formData.append('images', file);
-        });
+        try {
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('price', price);
+            formData.append('code', code);
+            formData.append('typeId', typeId);
+            formData.append('color', (color ?? '').trim());
+            formData.append('kind', (kind ?? '').trim());
+            formData.append('description', description);
+            formData.append('availability', availability);
+            formData.append('width', (width ?? '').trim());
+            formData.append('length', (length ?? '').trim());
+            formData.append('height', (height ?? '').trim());
+            formData.append('diameter', (diameter ?? '').trim());
+            formData.append('weightKg', (weightKg ?? '').trim());
+            formData.append('country', (country ?? 'Україна').trim());
+            formData.append('material', (material ?? '').trim());
+            formData.append('rozetkaCategoryId', (rozetkaCategoryId ?? '').trim());
+            formData.append('rating', String(rating ?? 1));
 
-        await updateProduct(productToEdit.id, formData);
-        onHide();
-        fetchProducts(null, 1, 8).then(() => {});
+            if (mainImageFile) {
+                formData.append('img', mainImageFile);
+            }
+
+            imgFiles.forEach((file) => {
+                formData.append('images', file);
+            });
+
+            await updateProduct(productToEdit.id, formData);
+            onHide();
+            fetchProducts(null, 1, 8).then(() => {});
+        } catch (e) {
+            alert(e.response?.data?.message || e.message);
+        }
     };
 
     const handleDeleteImage = async (imageId) => {
-        await deleteProductImage(imageId);
-        setExistingImages(prev => prev.filter(img => img.id !== imageId));
+        try {
+            await deleteProductImage(imageId);
+            setExistingImages(prev => prev.filter(img => img.id !== imageId));
+        } catch (e) {
+            alert(e.response?.data?.message || e.message);
+        }
     };
 
     return (
@@ -116,6 +142,21 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             value={code}
                             onChange={e => setCode(e.target.value)}
                         />
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Категорія товару</Form.Label>
+                        <Form.Select
+                            value={typeId}
+                            onChange={e => setTypeId(e.target.value)}
+                        >
+                            <option value="">Оберіть категорію</option>
+                            {types.map(type => (
+                                <option key={type.id} value={type.id}>
+                                    {type.name}
+                                </option>
+                            ))}
+                        </Form.Select>
                     </Form.Group>
 
                     <Form.Group className="mb-2">
@@ -171,7 +212,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                     <Form.Group className="mb-2">
                         <Form.Label>Тип виробу</Form.Label>
                         <Form.Control
-                            placeholder="Напр.: кошик, плейсмат"
+                            placeholder="Напр.: кошик, плейсмат, набір"
                             value={kind}
                             onChange={e => setKind(e.target.value)}
                         />
