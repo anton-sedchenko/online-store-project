@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 const SeoBlock = () => {
     const [open, setOpen] = useState(false);
@@ -7,7 +7,7 @@ const SeoBlock = () => {
         <section className={`seo__block ${open ? "open" : ""}`}>
             <h2>Charivna Craft — кошики, корзини та вироби зі шнура ручної роботи для дому</h2>
 
-            <div className="seo-content">
+            <div className={`seo-content ${open ? "open" : ""}`}>
                 <p>
                     Charivna Craft — це український виробник виробів зі шнура ручної роботи.
                     Ми створюємо стильні та практичні кошики, корзини, органайзери, плейсмати,
@@ -74,6 +74,7 @@ const SeoBlock = () => {
                 type="button"
                 className="seo-toggle"
                 onClick={() => setOpen(v => !v)}
+                aria-expanded={open}
             >
                 {open ? "Згорнути" : "Показати більше"}
             </button>
