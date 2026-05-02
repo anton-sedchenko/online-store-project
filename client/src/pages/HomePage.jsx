@@ -133,10 +133,10 @@ const HomePage = () => {
                                 )}
                             </>
                         )}
-
-                        <SeoBlock />
                     </Col>
                 </Row>
+                
+                <SeoBlock />
             </div>
 
             <MobileFilterModal
