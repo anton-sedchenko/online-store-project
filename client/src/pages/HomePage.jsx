@@ -6,7 +6,6 @@ import SideBar from '../components/SideBar.jsx';
 import ProductList from '../components/ProductList.jsx';
 import PaginationLocal from '../components/PaginationLocal.jsx';
 import ProductFilter from '../components/ProductFilter.jsx';
-import SeoBlock from '../components/SeoBlock.jsx';
 import { fetchProducts } from '../http/productAPI.js';
 import MobileFilterModal from '../components/modals/MobileFilterModal';
 
@@ -135,8 +134,6 @@ const HomePage = () => {
                         )}
                     </Col>
                 </Row>
-                
-                <SeoBlock />
             </div>
 
             <MobileFilterModal
