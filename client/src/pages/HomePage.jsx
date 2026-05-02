@@ -9,8 +9,6 @@ import ProductFilter from '../components/ProductFilter.jsx';
 import { fetchProducts } from '../http/productAPI.js';
 import MobileFilterModal from '../components/modals/MobileFilterModal';
 
-const CORD_TYPE_ID = Number(import.meta.env.VITE_CORD_TYPE_ID);
-
 const HomePage = () => {
     const [loading, setLoading] = useState(true);
     const [allProducts, setAllProducts] = useState([]);
@@ -29,13 +27,8 @@ const HomePage = () => {
             try {
                 setLoading(true);
 
-                if (!CORD_TYPE_ID) {
-                    console.error('CORD_TYPE_ID не заданий');
-                    setAllProducts([]);
-                    return;
-                }
-
-                const data = await fetchProducts(CORD_TYPE_ID, 1, 500);
+                // null => без фільтра по категорії, тобто беремо всі товари
+                const data = await fetchProducts(null, 1, 500);
                 setAllProducts(data.rows || []);
             } catch (e) {
                 console.error('Помилка при завантаженні товарів:', e);
@@ -79,7 +72,7 @@ const HomePage = () => {
                 <title>Вироби зі шнура – Charivna Craft</title>
                 <meta
                     name="description"
-                    content="Кошики, серветки, підставки та інші вироби зі шнура ручної роботи від Charivna Craft."
+                    content="Кошики, корзини, плейсмати, костери та інші вироби зі шнура ручної роботи від Charivna Craft."
                 />
                 <link rel="canonical" href="https://charivna-craft.com.ua/" />
             </Helmet>
