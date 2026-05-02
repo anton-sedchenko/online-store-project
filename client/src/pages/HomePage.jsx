@@ -6,6 +6,7 @@ import SideBar from '../components/SideBar.jsx';
 import ProductList from '../components/ProductList.jsx';
 import PaginationLocal from '../components/PaginationLocal.jsx';
 import ProductFilter from '../components/ProductFilter.jsx';
+import SeoBlock from '../components/SeoBlock.jsx';
 import { fetchProducts } from '../http/productAPI.js';
 import MobileFilterModal from '../components/modals/MobileFilterModal';
 
@@ -27,7 +28,6 @@ const HomePage = () => {
             try {
                 setLoading(true);
 
-                // null => без фільтра по категорії, тобто беремо всі товари
                 const data = await fetchProducts(null, 1, 500);
                 setAllProducts(data.rows || []);
             } catch (e) {
@@ -69,10 +69,10 @@ const HomePage = () => {
     return (
         <>
             <Helmet>
-                <title>Вироби зі шнура – Charivna Craft</title>
+                <title>Кошики, корзини та вироби зі шнура ручної роботи – Charivna Craft</title>
                 <meta
                     name="description"
-                    content="Кошики, корзини, плейсмати, костери та інші вироби зі шнура ручної роботи від Charivna Craft."
+                    content="Charivna Craft — кошики, корзини, органайзери, плейсмати, костери, набори та кашпо зі шнура ручної роботи. Виробник стильних виробів для дому з доставкою по Україні."
                 />
                 <link rel="canonical" href="https://charivna-craft.com.ua/" />
             </Helmet>
@@ -93,7 +93,7 @@ const HomePage = () => {
 
                     <Col md={9} lg={10}>
                         <h1 className="mb-4">
-                            Вироби ручної роботи зі шнура – каталог Charivna Craft
+                            Кошики, корзини та вироби зі шнура ручної роботи – Charivna Craft
                         </h1>
 
                         {loading ? (
@@ -133,6 +133,8 @@ const HomePage = () => {
                                 )}
                             </>
                         )}
+
+                        <SeoBlock />
                     </Col>
                 </Row>
             </div>
