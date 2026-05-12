@@ -26,7 +26,6 @@ const HomePage = () => {
         const loadHomeProducts = async () => {
             try {
                 setLoading(true);
-
                 const data = await fetchProducts(null, 1, 500);
                 setAllProducts(data.rows || []);
             } catch (e) {
@@ -68,10 +67,10 @@ const HomePage = () => {
     return (
         <>
             <Helmet>
-                <title>Кошики, корзини та вироби зі шнура ручної роботи – Charivna Craft</title>
+                <title>Кошики, корзини та вироби зі шнура на замовлення – Charivna Craft</title>
                 <meta
                     name="description"
-                    content="Charivna Craft — кошики, корзини, органайзери, плейсмати, костери, набори та кашпо зі шнура ручної роботи. Виробник стильних виробів для дому з доставкою по Україні."
+                    content="Charivna Craft — український бренд кошиків, корзин, органайзерів, плейсматів, костерів, наборів і кашпо зі шнура ручної роботи. Шиємо за вашими розмірами, працюємо в роздріб і гурт, доставляємо по Україні."
                 />
                 <link rel="canonical" href="https://charivna-craft.com.ua/" />
             </Helmet>

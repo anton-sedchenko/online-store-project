@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {Col, Image, Row} from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import {useNavigate, useParams} from "react-router-dom";
@@ -22,26 +22,26 @@ const ProductPage = () => {
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
 
-    // агрегований рейтинг для зірочок нагорі
     const [ratingAvg, setRatingAvg] = useState(0);
     const [ratingCount, setRatingCount] = useState(0);
     const {slug} = useParams();
 
-    // перший useEffect — тільки завантаження товару
     useEffect(() => {
         (async () => {
             const data = await fetchProductBySlug(slug);
-            setProduct(data);
+            setProduct({
+                ...data,
+                images: Array.isArray(data?.images) ? data.images : []
+            });
             setCurrentImageIndex(0);
         })();
     }, [slug]);
 
-// другий useEffect — вантажимо лише зведення рейтингу для зірочок
     useEffect(() => {
         if (!product?.id) return;
         (async () => {
             try {
-                const data = await getReviews(product.id); // { items, rating }
+                const data = await getReviews(product.id);
                 setRatingAvg(data?.rating?.avg || 0);
                 setRatingCount(data?.rating?.count || 0);
             } catch (e) {
@@ -58,7 +58,8 @@ const ProductPage = () => {
                 price: product.price,
                 img: product.img,
                 slug: product.slug
-            }, qty
+            },
+            qty
         );
         navigate(CART_ROUTE);
     };
@@ -72,47 +73,161 @@ const ProductPage = () => {
     };
 
     const handlePrev = () => {
-        setCurrentImageIndex((prev) =>
-            prev === 0 ? product.images.length - 1 : prev - 1
-        );
+        const imagesCount = product.images?.length || 0;
+        if (imagesCount <= 1) return;
+        setCurrentImageIndex((prev) => (prev === 0 ? imagesCount - 1 : prev - 1));
     };
 
     const handleNext = () => {
-        setCurrentImageIndex((prev) =>
-            prev === product.images.length - 1 ? 0 : prev + 1
-        );
+        const imagesCount = product.images?.length || 0;
+        if (imagesCount <= 1) return;
+        setCurrentImageIndex((prev) => (prev === imagesCount - 1 ? 0 : prev + 1));
     };
 
-    const openLightbox = (i) => { setLightboxIndex(i); setLightboxOpen(true); };
+    const openLightbox = (i) => {
+        setLightboxIndex(i);
+        setLightboxOpen(true);
+    };
+
     const closeLightbox = () => setLightboxOpen(false);
 
-    const lbPrev = () => setLightboxIndex(i => (i === 0 ? product.images.length - 1 : i - 1));
-    const lbNext = () => setLightboxIndex(i => (i === product.images.length - 1 ? 0 : i + 1));
+    const lbPrev = () => {
+        const imagesCount = product.images?.length || 0;
+        if (imagesCount <= 1) return;
+        setLightboxIndex(i => (i === 0 ? imagesCount - 1 : i - 1));
+    };
+
+    const lbNext = () => {
+        const imagesCount = product.images?.length || 0;
+        if (imagesCount <= 1) return;
+        setLightboxIndex(i => (i === imagesCount - 1 ? 0 : i + 1));
+    };
 
     useEffect(() => {
         if (!lightboxOpen) return;
+
         const onKey = (e) => {
             if (e.key === 'Escape') closeLightbox();
             if (e.key === 'ArrowLeft') lbPrev();
             if (e.key === 'ArrowRight') lbNext();
         };
+
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
     }, [lightboxOpen, product.images?.length]);
 
-    const sum = product.price * qty;
+    const sum = Number(product.price || 0) * qty;
     const activeImage = product.images?.[currentImageIndex]?.url || product.img;
-    // SEO-оптимізований опис: беремо description, але не довший за ~150 символів
-    const metaDescription =
-        product.description && product.description.length > 150
-            ? product.description.slice(0, 147) + "…"
-            : product.description;
+
+    const availabilityLabel = useMemo(() => {
+        if (product.availability === 'IN_STOCK') return 'В наявності';
+        if (product.availability === 'OUT_OF_STOCK') return 'Немає в наявності';
+        return 'Під замовлення (2–3 дні)';
+    }, [product.availability]);
+
+    const availabilityClass = useMemo(() => {
+        if (product.availability === 'IN_STOCK') return 'availability-value in-stock';
+        if (product.availability === 'OUT_OF_STOCK') return 'availability-value out-of-stock';
+        return 'availability-value pre-order';
+    }, [product.availability]);
+
+    const dimensionsText = useMemo(() => {
+        const parts = [];
+
+        if (product.diameter) {
+            parts.push(`діаметр ${product.diameter} см`);
+        }
+
+        if (product.height) {
+            parts.push(`висота ${product.height} см`);
+        }
+
+        if (product.width && product.length) {
+            parts.push(`розмір ${product.length}×${product.width} см`);
+        } else if (product.width) {
+            parts.push(`ширина ${product.width} см`);
+        } else if (product.length) {
+            parts.push(`довжина ${product.length} см`);
+        }
+
+        return parts.join(', ');
+    }, [product.diameter, product.height, product.width, product.length]);
+
+    const productColor = product.color?.trim();
+    const productMaterial = product.material?.trim();
+    const productKind = product.kind?.trim();
+
+    const seoTitle = useMemo(() => {
+        const parts = [product.name];
+
+        if (productColor && !product.name?.toLowerCase().includes(productColor.toLowerCase())) {
+            parts.push(productColor);
+        }
+
+        parts.push('Charivna Craft');
+
+        const raw = parts.filter(Boolean).join(' – ');
+        return raw.length > 70 ? `${raw.slice(0, 67)}…` : raw;
+    }, [product.name, productColor]);
+
+    const metaDescription = useMemo(() => {
+        const parts = [];
+
+        if (product.name) parts.push(product.name);
+        if (dimensionsText) parts.push(dimensionsText);
+        if (productColor) parts.push(`колір: ${productColor}`);
+        if (productMaterial) parts.push(`матеріал: ${productMaterial}`);
+        parts.push('Ручна робота від Charivna Craft. Доставка по Україні.');
+
+        const text = parts.join('. ');
+        return text.length > 160 ? `${text.slice(0, 157)}…` : text;
+    }, [product.name, dimensionsText, productColor, productMaterial]);
+
+    const imageAlt = useMemo(() => {
+        const altParts = [product.name];
+
+        if (dimensionsText) altParts.push(dimensionsText);
+        if (productColor) altParts.push(productColor);
+
+        return altParts.filter(Boolean).join(', ');
+    }, [product.name, dimensionsText, productColor]);
+
+    const characteristics = useMemo(() => {
+        const rows = [];
+
+        if (productKind) rows.push({label: 'Тип виробу', value: productKind});
+        if (productColor) rows.push({label: 'Колір', value: productColor});
+        if (productMaterial) rows.push({label: 'Матеріал', value: productMaterial});
+        if (product.country) rows.push({label: 'Країна виробництва', value: product.country});
+        if (product.diameter) rows.push({label: 'Діаметр', value: `${product.diameter} см`});
+        if (product.height) rows.push({label: 'Висота', value: `${product.height} см`});
+        if (product.width) rows.push({label: 'Ширина', value: `${product.width} см`});
+        if (product.length) rows.push({label: 'Довжина', value: `${product.length} см`});
+        if (product.weightKg) rows.push({label: 'Вага', value: `${product.weightKg} кг`});
+
+        return rows;
+    }, [productKind, productColor, productMaterial, product.country, product.diameter, product.height, product.width, product.length, product.weightKg]);
+
+    const schemaImages = useMemo(() => {
+        const imgs = [
+            product.img,
+            ...(Array.isArray(product.images) ? product.images.map(i => i?.url) : [])
+        ].filter(Boolean);
+
+        return [...new Set(imgs)];
+    }, [product.img, product.images]);
+
+    const schemaAvailability = useMemo(() => {
+        if (product.availability === 'IN_STOCK') return 'https://schema.org/InStock';
+        if (product.availability === 'OUT_OF_STOCK') return 'https://schema.org/OutOfStock';
+        return 'https://schema.org/PreOrder';
+    }, [product.availability]);
 
     return (
         <div className="component__container">
             {product?.id && (
                 <Helmet>
-                    <title>{product.name} | Charivna Craft</title>
+                    <title>{seoTitle}</title>
 
                     <link
                         rel="canonical"
@@ -120,7 +235,7 @@ const ProductPage = () => {
                     />
 
                     <meta name="description" content={metaDescription} />
-                    <meta property="og:title" content={product.name} />
+                    <meta property="og:title" content={seoTitle} />
                     <meta property="og:description" content={metaDescription} />
                     <meta property="og:image" content={activeImage} />
                     <meta
@@ -134,30 +249,32 @@ const ProductPage = () => {
                             "@context": "https://schema.org",
                             "@type": "Product",
                             name: product.name,
-                            image: [activeImage],
-                            description: product.description,
+                            image: schemaImages,
+                            description: product.description || metaDescription,
                             sku: product.code,
+                            mpn: product.code,
                             brand: {
                                 "@type": "Brand",
                                 name: "Charivna Craft",
                             },
+                            material: product.material || undefined,
+                            color: product.color || undefined,
+                            countryOfOrigin: product.country || undefined,
                             offers: {
                                 "@type": "Offer",
                                 url: `https://charivna-craft.com.ua/product/${product.slug}`,
                                 priceCurrency: "UAH",
                                 price: product.price,
-                                availability:
-                                    product.availability === "IN_STOCK"
-                                        ? "https://schema.org/InStock"
-                                        : "https://schema.org/PreOrder",
+                                availability: schemaAvailability,
+                                itemCondition: "https://schema.org/NewCondition",
                             },
                             aggregateRating:
                                 ratingCount > 0
                                     ? {
-                                        "@type": "AggregateRating",
-                                        ratingValue: ratingAvg,
-                                        reviewCount: ratingCount,
-                                    }
+                                          "@type": "AggregateRating",
+                                          ratingValue: Number(ratingAvg).toFixed(1),
+                                          reviewCount: ratingCount,
+                                      }
                                     : undefined,
                         })}
                     </script>
@@ -181,18 +298,19 @@ const ProductPage = () => {
                             width={300}
                             height={300}
                             src={activeImage}
-                            alt={product.name}
+                            alt={imageAlt}
                             onClick={() => openLightbox(currentImageIndex)}
                             style={{cursor: 'zoom-in'}}
                         />
                         {product.images?.length > 1 && (
                             <>
-                                <button onClick={handlePrev} className="slider-btn prev">‹</button>
-                                <button onClick={handleNext} className="slider-btn next">›</button>
+                                <button onClick={handlePrev} className="slider-btn prev" aria-label="Попереднє фото">‹</button>
+                                <button onClick={handleNext} className="slider-btn next" aria-label="Наступне фото">›</button>
                             </>
                         )}
                     </div>
                 </Col>
+
                 <Col xs={12} md={6}>
                     <div className="product__info__container">
                         <div style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 8 }}>
@@ -201,20 +319,18 @@ const ProductPage = () => {
                                 {ratingCount > 0 ? `(${ratingCount})` : "(оцінок ще немає)"}
                             </span>
                         </div>
+
                         <p className="product__code">Код: {product.code || '---'}</p>
+
                         <p className="product__availability">
                             <span className="availability-label">Наявність:</span>{' '}
-                            <span className={
-                                product.availability === 'IN_STOCK'
-                                    ? 'availability-value in-stock'
-                                    : 'availability-value pre-order'
-                            }>
-                                {product.availability === 'IN_STOCK'
-                                    ? 'В наявності'
-                                    : 'Під замовлення (2-3 дні)'}
+                            <span className={availabilityClass}>
+                                {availabilityLabel}
                             </span>
                         </p>
+
                         <h1 className="product__title">{product.name}</h1>
+
                         <div className="product__count__container">
                             <p className="product__count">Кількість:</p>
                             <input
@@ -228,9 +344,11 @@ const ProductPage = () => {
                                 }}
                             />
                         </div>
+
                         <p className="product__page__total__sum">
                             <strong>{sum}</strong> грн.
                         </p>
+
                         <div className="product__page__btn__container">
                             <button className="product__page__btn" onClick={handleAddToCart}>
                                 Додати в кошик
@@ -238,6 +356,7 @@ const ProductPage = () => {
                         </div>
                     </div>
                 </Col>
+
                 <Col xs={12} md={2} className="purchase__conditions__container">
                     <div className="purchase__conditions__section">
                         <h6>
@@ -250,6 +369,7 @@ const ProductPage = () => {
                             <li>Безкоштовна доставка при замовленні від 1500 грн.</li>
                         </ul>
                     </div>
+
                     <div className="purchase__conditions__section">
                         <h6>
                             <i className="fa fa-credit-card" aria-hidden="true"></i>
@@ -261,27 +381,30 @@ const ProductPage = () => {
                             <li>Приват 24</li>
                         </ul>
                     </div>
+
                     <div className="purchase__conditions__section">
                         <h6>
                             <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
                             Замовити по телефону
                         </h6>
-                        <a
+                        <button
+                            type="button"
                             className="purchase__conditions__callback__link"
                             onClick={() => setShowCallback(true)}
                         >
                             Замовити дзвінок
-                        </a>
+                        </button>
                     </div>
                 </Col>
             </Row>
 
             <Row>
-                <Col xs={12}>
+                <Col xs={12} md={8}>
                     <div>
-                        <h4>Опис товару:</h4>
+                        <h4>Опис товару</h4>
                         <p className="product__description">{product.description || 'Немає опису'}</p>
                     </div>
+
                     {product.id && (
                         <Reviews
                             productId={product.id}
@@ -291,13 +414,46 @@ const ProductPage = () => {
                         />
                     )}
                 </Col>
+
+                <Col xs={12} md={4}>
+                    {characteristics.length > 0 && (
+                        <div className="product__characteristics">
+                            <h4>Характеристики</h4>
+                            <div className="product__characteristics__table">
+                                {characteristics.map((item) => (
+                                    <div
+                                        key={item.label}
+                                        className="product__characteristics__row"
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            gap: '16px',
+                                            padding: '8px 0',
+                                            borderBottom: '1px solid #e8dfd4'
+                                        }}
+                                    >
+                                        <span style={{color: '#7b7268'}}>{item.label}</span>
+                                        <span style={{textAlign: 'right'}}>{item.value}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </Col>
             </Row>
+
             <CallbackModal
                 show={showCallback}
                 onClose={() => setShowCallback(false)}
             />
 
-            <Modal show={lightboxOpen} onHide={closeLightbox} centered size="lg" contentClassName="bg-transparent border-0">
+            <Modal
+                show={lightboxOpen}
+                onHide={closeLightbox}
+                centered
+                size="lg"
+                contentClassName="bg-transparent border-0"
+            >
                 <div
                     style={{
                         position: 'relative',
@@ -314,11 +470,13 @@ const ProductPage = () => {
                         aria-label="Попереднє"
                         className="btn btn-light"
                         style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }}
-                    >‹</button>
+                    >
+                        ‹
+                    </button>
 
                     <img
                         src={(product.images?.[lightboxIndex]?.url) || product.img}
-                        alt={product.name}
+                        alt={imageAlt}
                         style={{ maxWidth: '90vw', maxHeight: '80vh', objectFit: 'contain' }}
                     />
 
@@ -327,10 +485,11 @@ const ProductPage = () => {
                         aria-label="Наступне"
                         className="btn btn-light"
                         style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }}
-                    >›</button>
+                    >
+                        ›
+                    </button>
                 </div>
 
-                {/* Мініатюри під фото */}
                 {product.images?.length > 1 && (
                     <div className="mt-2 d-flex flex-wrap justify-content-center gap-2">
                         {product.images.map((im, i) => (
@@ -340,7 +499,10 @@ const ProductPage = () => {
                                 alt=""
                                 onClick={() => setLightboxIndex(i)}
                                 style={{
-                                    width: 64, height: 64, objectFit: 'cover', cursor: 'pointer',
+                                    width: 64,
+                                    height: 64,
+                                    objectFit: 'cover',
+                                    cursor: 'pointer',
                                     border: i === lightboxIndex ? '2px solid #fff' : '2px solid transparent',
                                     borderRadius: 6
                                 }}
