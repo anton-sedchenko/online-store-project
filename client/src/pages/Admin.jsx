@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {Button} from "react-bootstrap";
 import CreateProduct from "../components/modals/CreateProduct.jsx";
 import CreateType from "../components/modals/CreateType.jsx";
@@ -28,6 +28,27 @@ const Admin = observer(() => {
         adminStore.loadProducts();
         fetchArticles(1, 100).then(data => setArticles(data.rows));
     }, [adminStore]);
+
+    const sortedProducts = useMemo(() => {
+        if (!Array.isArray(adminStore.products)) return [];
+
+        return [...adminStore.products].sort((a, b) => {
+            const aCode = String(a?.code ?? '').trim();
+            const bCode = String(b?.code ?? '').trim();
+
+            const aNum = Number(aCode);
+            const bNum = Number(bCode);
+
+            const aIsNum = !Number.isNaN(aNum);
+            const bIsNum = !Number.isNaN(bNum);
+
+            if (aIsNum && bIsNum) {
+                return aNum - bNum;
+            }
+
+            return aCode.localeCompare(bCode, 'uk', {numeric: true, sensitivity: 'base'});
+        });
+    }, [adminStore.products]);
 
     const openEditModal = async (productId) => {
         try {
@@ -161,8 +182,8 @@ const Admin = observer(() => {
                     </tr>
                     </thead>
                     <tbody>
-                    {Array.isArray(adminStore.products) && adminStore.products.length > 0 ? (
-                        adminStore.products.map(prod => (
+                    {sortedProducts.length > 0 ? (
+                        sortedProducts.map(prod => (
                             <tr key={prod.id}>
                                 <td>{prod.name}</td>
                                 <td>{prod.price}</td>
