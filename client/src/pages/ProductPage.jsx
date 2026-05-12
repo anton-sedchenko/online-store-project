@@ -405,6 +405,8 @@ const ProductPage = () => {
                         <p className="product__description">{product.description || 'Немає опису'}</p>
                     </div>
 
+{/* Тимчасово виключено до переробки та оновлення, потім опустити нижче характеристик */}
+{/* 
                     {product.id && (
                         <Reviews
                             productId={product.id}
@@ -412,7 +414,7 @@ const ProductPage = () => {
                             isAdmin={userStore.isAuth && userStore.user?.role === 'ADMIN'}
                             userId={userStore.user?.id}
                         />
-                    )}
+                    )} */}
                 </Col>
 
                 <Col xs={12} md={4}>
