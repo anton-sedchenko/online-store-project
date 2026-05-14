@@ -134,13 +134,8 @@ const ProductPage = () => {
     const dimensionsText = useMemo(() => {
         const parts = [];
 
-        if (product.diameter) {
-            parts.push(`діаметр ${product.diameter} см`);
-        }
-
-        if (product.height) {
-            parts.push(`висота ${product.height} см`);
-        }
+        if (product.diameter) parts.push(`діаметр ${product.diameter} см`);
+        if (product.height) parts.push(`висота ${product.height} см`);
 
         if (product.width && product.length) {
             parts.push(`розмір ${product.length}×${product.width} см`);
@@ -185,10 +180,8 @@ const ProductPage = () => {
 
     const imageAlt = useMemo(() => {
         const altParts = [product.name];
-
         if (dimensionsText) altParts.push(dimensionsText);
         if (productColor) altParts.push(productColor);
-
         return altParts.filter(Boolean).join(', ');
     }, [product.name, dimensionsText, productColor]);
 
@@ -206,7 +199,17 @@ const ProductPage = () => {
         if (product.weightKg) rows.push({label: 'Вага', value: `${product.weightKg} кг`});
 
         return rows;
-    }, [productKind, productColor, productMaterial, product.country, product.diameter, product.height, product.width, product.length, product.weightKg]);
+    }, [
+        productKind,
+        productColor,
+        productMaterial,
+        product.country,
+        product.diameter,
+        product.height,
+        product.width,
+        product.length,
+        product.weightKg
+    ]);
 
     const schemaImages = useMemo(() => {
         const imgs = [
@@ -228,12 +231,10 @@ const ProductPage = () => {
             {product?.id && (
                 <Helmet>
                     <title>{seoTitle}</title>
-
                     <link
                         rel="canonical"
                         href={`https://charivna-craft.com.ua/product/${product.slug}`}
                     />
-
                     <meta name="description" content={metaDescription} />
                     <meta property="og:title" content={seoTitle} />
                     <meta property="og:description" content={metaDescription} />
@@ -293,7 +294,7 @@ const ProductPage = () => {
                 </div>
 
                 <Col xs={12} md={4} className="product__img__container text-center">
-                    <div style={{position: 'relative'}}>
+                    <div className="product__gallery">
                         <Image
                             width={300}
                             height={300}
@@ -311,11 +312,11 @@ const ProductPage = () => {
                     </div>
                 </Col>
 
-                <Col xs={12} md={6}>
+                <Col xs={12} md={5}>
                     <div className="product__info__container">
-                        <div style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 8 }}>
+                        <div className="product__rating__top">
                             <StarRating value={ratingAvg} size={22} />
-                            <span className="muted" style={{ fontSize: 13 }}>
+                            <span className="muted product__rating__count">
                                 {ratingCount > 0 ? `(${ratingCount})` : "(оцінок ще немає)"}
                             </span>
                         </div>
@@ -357,90 +358,80 @@ const ProductPage = () => {
                     </div>
                 </Col>
 
-                <Col xs={12} md={2} className="purchase__conditions__container">
-                    <div className="purchase__conditions__section">
-                        <h6>
-                            <i className="fa fa-truck" aria-hidden="true"></i>
-                            Доставка
-                        </h6>
-                        <ul>
-                            <li>Нова пошта</li>
-                            <li>Укрпошта</li>
-                            <li>Безкоштовна доставка при замовленні від 1500 грн.</li>
-                        </ul>
-                    </div>
+                <Col xs={12} md={3}>
+                    <div className="purchase__conditions__card">
+                        <div className="purchase__conditions__section">
+                            <h6>Доставка</h6>
+                            <ul>
+                                <li>Нова пошта</li>
+                                <li>Укрпошта</li>
+                                <li>Безкоштовна доставка при замовленні від 1500 грн.</li>
+                            </ul>
+                        </div>
 
-                    <div className="purchase__conditions__section">
-                        <h6>
-                            <i className="fa fa-credit-card" aria-hidden="true"></i>
-                            Оплата
-                        </h6>
-                        <ul>
-                            <li>Готівкою при отриманні</li>
-                            <li>Безготівковий переказ</li>
-                            <li>Приват 24</li>
-                        </ul>
-                    </div>
+                        <div className="purchase__conditions__section">
+                            <h6>Оплата</h6>
+                            <ul>
+                                <li>Готівкою при отриманні</li>
+                                <li>Безготівковий переказ</li>
+                                <li>Приват 24</li>
+                            </ul>
+                        </div>
 
-                    <div className="purchase__conditions__section">
-                        <h6>
-                            <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
-                            Замовити по телефону
-                        </h6>
-                        <button
-                            type="button"
-                            className="purchase__conditions__callback__link"
-                            onClick={() => setShowCallback(true)}
-                        >
-                            Замовити дзвінок
-                        </button>
+                        <div className="purchase__conditions__section">
+                            <h6>Замовити по телефону</h6>
+                            <button
+                                type="button"
+                                className="purchase__conditions__callback__link"
+                                onClick={() => setShowCallback(true)}
+                            >
+                                Замовити дзвінок
+                            </button>
+                        </div>
                     </div>
                 </Col>
             </Row>
 
-            <Row>
-                <Col xs={12} md={8}>
-                    <div>
+            <Row className="product__details__row">
+                <Col xs={12} md={7}>
+                    <div className="product__content__card">
                         <h4>Опис товару</h4>
                         <p className="product__description">{product.description || 'Немає опису'}</p>
                     </div>
-
-{/* Тимчасово виключено до переробки та оновлення, потім опустити нижче характеристик */}
-{/* 
-                    {product.id && (
-                        <Reviews
-                            productId={product.id}
-                            isAuth={userStore.isAuth}
-                            isAdmin={userStore.isAuth && userStore.user?.role === 'ADMIN'}
-                            userId={userStore.user?.id}
-                        />
-                    )} */}
                 </Col>
 
-                <Col xs={12} md={4}>
+                <Col xs={12} md={5}>
                     {characteristics.length > 0 && (
-                        <div className="product__characteristics">
+                        <div className="product__content__card product__characteristics">
                             <h4>Характеристики</h4>
                             <div className="product__characteristics__table">
                                 {characteristics.map((item) => (
                                     <div
                                         key={item.label}
                                         className="product__characteristics__row"
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            gap: '16px',
-                                            padding: '8px 0',
-                                            borderBottom: '1px solid #e8dfd4'
-                                        }}
                                     >
-                                        <span style={{color: '#7b7268'}}>{item.label}</span>
-                                        <span style={{textAlign: 'right'}}>{item.value}</span>
+                                        <span className="product__characteristics__label">{item.label}</span>
+                                        <span className="product__characteristics__value">{item.value}</span>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     )}
+                </Col>
+            </Row>
+
+            <Row className="product__reviews__row">
+                <Col xs={12}>
+                    <div className="product__content__card product__reviews__card">
+                        {product.id && (
+                            <Reviews
+                                productId={product.id}
+                                isAuth={userStore.isAuth}
+                                isAdmin={userStore.isAuth && userStore.user?.role === 'ADMIN'}
+                                userId={userStore.user?.id}
+                            />
+                        )}
+                    </div>
                 </Col>
             </Row>
 
