@@ -243,9 +243,21 @@ const CreateProduct = observer(({show, onHide}) => {
                                 <option key={item} value={item}>{item}</option>
                             ))}
                         </Form.Select>
-                        <Form.Text muted>
-                            Можна обрати кілька значень, утримуючи Ctrl.
-                        </Form.Text>
+
+                        <div className="mt-2 d-flex gap-2 align-items-center">
+                            <Button
+                                variant="outline-secondary"
+                                size="sm"
+                                type="button"
+                                onClick={() => setFeatures([])}
+                            >
+                                Очистити особливості
+                            </Button>
+
+                            <Form.Text muted className="mb-0">
+                                Можна обрати кілька значень, утримуючи Ctrl.
+                            </Form.Text>
+                        </div>
                     </Form.Group>
 
                     <Form.Group className="mb-2">
