@@ -128,9 +128,6 @@ export default function Reviews({ productId, isAuth, isAdmin, userId }) {
         <section style={{ marginTop: 24 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <h4 style={{ margin: 0 }}>Відгуки</h4>
-                <span className="muted">
-          (Щоб лишити коментар або оцінку — увійдіть або зареєструйтесь)
-        </span>
             </div>
 
             {!loading && tree.length === 0 && (
