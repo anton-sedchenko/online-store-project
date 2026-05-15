@@ -1,7 +1,22 @@
-import React, {useState, useEffect} from 'react';
+import React, {useMemo, useState, useEffect} from 'react';
 import {Modal, Button, Form} from 'react-bootstrap';
 import {updateProduct, fetchProducts, deleteProductImage} from '../../http/productAPI.js';
 import {fetchTypes} from '../../http/typeAPI.js';
+
+const KIND_OPTIONS = ['Кошик', 'Плейсмат', 'Костер', 'Кашпо', 'Набір'];
+const MATERIAL_OPTIONS = ['Бавовна'];
+const COLOR_OPTIONS = ['Айворі', 'Світло-сірий', 'Зелений', 'Червоний', 'Коричневий', 'Комбінований'];
+const SHAPE_OPTIONS = ['Кругла', 'Овальна', 'Прямокутна'];
+const PURPOSE_OPTIONS = ['Для ванної', 'Для кухні', 'Для зберігання', 'Універсальне', 'Декоративне'];
+const FEATURE_OPTIONS = ['З кришкою', 'З ручками', 'Плетений', 'Набір'];
+
+const parseFeatures = (value) => {
+    if (!value) return [];
+    return String(value)
+        .split(',')
+        .map(item => item.trim())
+        .filter(Boolean);
+};
 
 const EditProduct = ({show, onHide, productToEdit}) => {
     const [name, setName] = useState('');
@@ -9,6 +24,9 @@ const EditProduct = ({show, onHide, productToEdit}) => {
     const [code, setCode] = useState('');
     const [color, setColor] = useState('');
     const [kind, setKind] = useState('');
+    const [shape, setShape] = useState('');
+    const [purpose, setPurpose] = useState('');
+    const [features, setFeatures] = useState([]);
     const [description, setDescription] = useState('');
     const [imgFiles, setImgFiles] = useState([]);
     const [existingImages, setExistingImages] = useState([]);
@@ -42,6 +60,9 @@ const EditProduct = ({show, onHide, productToEdit}) => {
             setCode(productToEdit.code || '');
             setColor(productToEdit.color || '');
             setKind(productToEdit.kind || '');
+            setShape(productToEdit.shape || '');
+            setPurpose(productToEdit.purpose || '');
+            setFeatures(parseFeatures(productToEdit.features));
             setDescription(productToEdit.description || '');
             setExistingImages(Array.isArray(productToEdit.images) ? productToEdit.images : []);
             setMainImageUrl(productToEdit.img || '');
@@ -61,6 +82,13 @@ const EditProduct = ({show, onHide, productToEdit}) => {
         }
     }, [productToEdit]);
 
+    const normalizedFeatures = useMemo(() => features.filter(Boolean), [features]);
+
+    const handleFeaturesChange = (e) => {
+        const values = Array.from(e.target.selectedOptions).map(option => option.value);
+        setFeatures(values);
+    };
+
     const handleSave = async () => {
         if (!typeId) {
             alert('Оберіть категорію товару');
@@ -75,6 +103,9 @@ const EditProduct = ({show, onHide, productToEdit}) => {
             formData.append('typeId', typeId);
             formData.append('color', (color ?? '').trim());
             formData.append('kind', (kind ?? '').trim());
+            formData.append('shape', (shape ?? '').trim());
+            formData.append('purpose', (purpose ?? '').trim());
+            formData.append('features', normalizedFeatures.join(', '));
             formData.append('description', description);
             formData.append('availability', availability);
             formData.append('width', (width ?? '').trim());
@@ -113,7 +144,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
     };
 
     return (
-        <Modal show={show} onHide={onHide}>
+        <Modal show={show} onHide={onHide} size="lg">
             <Modal.Header closeButton>
                 <Modal.Title>Редагування товару</Modal.Title>
             </Modal.Header>
@@ -121,35 +152,22 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                 <Form>
                     <Form.Group className="mb-2">
                         <Form.Label>Назва</Form.Label>
-                        <Form.Control
-                            value={name}
-                            onChange={e => setName(e.target.value)}
-                        />
+                        <Form.Control value={name} onChange={e => setName(e.target.value)} />
                     </Form.Group>
 
                     <Form.Group className="mb-2">
                         <Form.Label>Ціна</Form.Label>
-                        <Form.Control
-                            type="number"
-                            value={price}
-                            onChange={e => setPrice(e.target.value)}
-                        />
+                        <Form.Control type="number" value={price} onChange={e => setPrice(e.target.value)} />
                     </Form.Group>
 
                     <Form.Group className="mb-2">
                         <Form.Label>Код товару</Form.Label>
-                        <Form.Control
-                            value={code}
-                            onChange={e => setCode(e.target.value)}
-                        />
+                        <Form.Control value={code} onChange={e => setCode(e.target.value)} />
                     </Form.Group>
 
                     <Form.Group className="mb-2">
                         <Form.Label>Категорія товару</Form.Label>
-                        <Form.Select
-                            value={typeId}
-                            onChange={e => setTypeId(e.target.value)}
-                        >
+                        <Form.Select value={typeId} onChange={e => setTypeId(e.target.value)}>
                             <option value="">Оберіть категорію</option>
                             {types.map(type => (
                                 <option key={type.id} value={type.id}>
@@ -161,10 +179,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
 
                     <Form.Group className="mb-2">
                         <Form.Label>Наявність</Form.Label>
-                        <Form.Select
-                            value={availability}
-                            onChange={e => setAvailability(e.target.value)}
-                        >
+                        <Form.Select value={availability} onChange={e => setAvailability(e.target.value)}>
                             <option value="IN_STOCK">В наявності</option>
                             <option value="MADE_TO_ORDER">Під замовлення (2–3 дні)</option>
                             <option value="OUT_OF_STOCK">Немає в наявності</option>
@@ -176,13 +191,10 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                         <Form.Control
                             type="number"
                             inputMode="numeric"
-                            placeholder="Напр.: 4632208"
+                            placeholder="Напр.: 4652688"
                             value={rozetkaCategoryId}
                             onChange={e => setRozetkaCategoryId(e.target.value)}
                         />
-                        <Form.Text muted>
-                            Якщо залишити порожнім — товар не потрапить до фіду Rozetka.
-                        </Form.Text>
                     </Form.Group>
 
                     <Form.Group className="mb-2">
@@ -195,27 +207,68 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             onChange={e => setRating(Number(e.target.value))}
                             onWheel={(e) => e.currentTarget.blur()}
                         />
-                        <Form.Text muted>
-                            Рейтинг товару від 1 до 10, де 10 максимум і товар буде на 1 сторінці.
-                        </Form.Text>
-                    </Form.Group>
-
-                    <Form.Group className="mb-2">
-                        <Form.Label>Колір</Form.Label>
-                        <Form.Control
-                            placeholder="Напр.: айворі, світло-сірий"
-                            value={color}
-                            onChange={e => setColor(e.target.value)}
-                        />
                     </Form.Group>
 
                     <Form.Group className="mb-2">
                         <Form.Label>Тип виробу</Form.Label>
-                        <Form.Control
-                            placeholder="Напр.: кошик, плейсмат, набір"
-                            value={kind}
-                            onChange={e => setKind(e.target.value)}
-                        />
+                        <Form.Select value={kind} onChange={e => setKind(e.target.value)}>
+                            <option value="">Оберіть тип</option>
+                            {KIND_OPTIONS.map(item => (
+                                <option key={item} value={item}>{item}</option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Колір</Form.Label>
+                        <Form.Select value={color} onChange={e => setColor(e.target.value)}>
+                            <option value="">Оберіть колір</option>
+                            {COLOR_OPTIONS.map(item => (
+                                <option key={item} value={item}>{item}</option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Матеріал</Form.Label>
+                        <Form.Select value={material} onChange={e => setMaterial(e.target.value)}>
+                            <option value="">Оберіть матеріал</option>
+                            {MATERIAL_OPTIONS.map(item => (
+                                <option key={item} value={item}>{item}</option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Форма</Form.Label>
+                        <Form.Select value={shape} onChange={e => setShape(e.target.value)}>
+                            <option value="">Оберіть форму</option>
+                            {SHAPE_OPTIONS.map(item => (
+                                <option key={item} value={item}>{item}</option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Призначення</Form.Label>
+                        <Form.Select value={purpose} onChange={e => setPurpose(e.target.value)}>
+                            <option value="">Оберіть призначення</option>
+                            {PURPOSE_OPTIONS.map(item => (
+                                <option key={item} value={item}>{item}</option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Особливості</Form.Label>
+                        <Form.Select multiple value={features} onChange={handleFeaturesChange}>
+                            {FEATURE_OPTIONS.map(item => (
+                                <option key={item} value={item}>{item}</option>
+                            ))}
+                        </Form.Select>
+                        <Form.Text muted>
+                            Можна обрати кілька значень, утримуючи Ctrl.
+                        </Form.Text>
                     </Form.Group>
 
                     <Form.Group className="mb-2">
@@ -237,7 +290,6 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                                 onChange={(e) => setHeight(e.target.value)}
                             />
                         </div>
-                        <Form.Text muted>Заповнюй тільки те, що актуально для виробу.</Form.Text>
                     </Form.Group>
 
                     <Form.Group className="mb-2">
@@ -265,15 +317,6 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                     </Form.Group>
 
                     <Form.Group className="mb-2">
-                        <Form.Label>Матеріал</Form.Label>
-                        <Form.Control
-                            placeholder="Напр.: бавовняний шнур"
-                            value={material}
-                            onChange={(e) => setMaterial(e.target.value)}
-                        />
-                    </Form.Group>
-
-                    <Form.Group className="mb-2">
                         <Form.Label>Опис товару</Form.Label>
                         <Form.Control
                             as="textarea"
@@ -290,7 +333,6 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                                 <img src={mainImageUrl} alt="main" style={{width: '100px'}} />
                             </div>
                         )}
-
                         <Form.Control
                             type="file"
                             accept="image/*"

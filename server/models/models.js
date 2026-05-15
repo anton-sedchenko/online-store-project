@@ -32,29 +32,37 @@ const Product = sequelize.define('product', {
     description: {type: DataTypes.TEXT, allowNull: true},
     img: {type: DataTypes.STRING},
     code: {type: DataTypes.STRING, allowNull: false, unique: true},
-    width:     { type: DataTypes.TEXT, allowNull: true },
-    length:    { type: DataTypes.TEXT, allowNull: true },
-    height:    { type: DataTypes.TEXT, allowNull: true },
-    diameter:  { type: DataTypes.TEXT, allowNull: true },
-    weightKg:  { type: DataTypes.DECIMAL(10,3), allowNull: true },
-    country:   { type: DataTypes.TEXT, allowNull: true },
-    color:     { type: DataTypes.TEXT, allowNull: true },
-    material:  { type: DataTypes.TEXT, allowNull: true },
-    kind:      { type: DataTypes.TEXT, allowNull: true },  // тип виробу
+
+    width: {type: DataTypes.TEXT, allowNull: true},
+    length: {type: DataTypes.TEXT, allowNull: true},
+    height: {type: DataTypes.TEXT, allowNull: true},
+    diameter: {type: DataTypes.TEXT, allowNull: true},
+    weightKg: {type: DataTypes.DECIMAL(10, 3), allowNull: true},
+
+    country: {type: DataTypes.TEXT, allowNull: true},
+    color: {type: DataTypes.TEXT, allowNull: true},
+    material: {type: DataTypes.TEXT, allowNull: true},
+    kind: {type: DataTypes.TEXT, allowNull: true},       // тип виробу
+    shape: {type: DataTypes.TEXT, allowNull: true},      // форма
+    purpose: {type: DataTypes.TEXT, allowNull: true},    // призначення
+    features: {type: DataTypes.TEXT, allowNull: true},   // особливості, через кому
+
     availability: {
-        type: DataTypes.STRING, // було ENUM
+        type: DataTypes.STRING,
         allowNull: false,
         defaultValue: 'MADE_TO_ORDER',
         validate: {
             isIn: [['IN_STOCK', 'MADE_TO_ORDER', 'OUT_OF_STOCK']]
         }
     },
+
     rating: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 1,
-        validate: { min: 1, max: 10 }
+        validate: {min: 1, max: 10}
     },
+
     slug: {type: DataTypes.STRING, unique: true},
     rozetkaCategoryId: {type: DataTypes.BIGINT, allowNull: true},
 });
@@ -95,11 +103,10 @@ const Article = sequelize.define('article', {
 });
 
 const Review = sequelize.define('review', {
-    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    // для верхнього рівня відгуків parentId = null; для відповіді — id батьківського відгуку
-    parentId: { type: DataTypes.INTEGER, allowNull: true },
-    rating: { type: DataTypes.INTEGER, allowNull: true, validate: { min:1, max:5 } }, // тільки для верхнього рівня
-    text: { type: DataTypes.TEXT, allowNull: true },
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    parentId: {type: DataTypes.INTEGER, allowNull: true},
+    rating: {type: DataTypes.INTEGER, allowNull: true, validate: {min: 1, max: 5}},
+    text: {type: DataTypes.TEXT, allowNull: true},
 }, {
     paranoid: false,
 });
@@ -145,4 +152,4 @@ module.exports = {
     ProductImage,
     Article,
     Review,
-}
+};

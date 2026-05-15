@@ -33,6 +33,9 @@ class ProductController {
                 rating,
                 color,
                 kind,
+                shape,
+                purpose,
+                features,
                 width,
                 length,
                 height,
@@ -43,7 +46,6 @@ class ProductController {
             } = req.body;
 
             const availabilityNorm = availability === 'PRE_ORDER' ? 'MADE_TO_ORDER' : availability;
-
             const defaultTypeId = Number(process.env.DEFAULT_TYPE_ID);
 
             const typeIdNum =
@@ -63,9 +65,12 @@ class ProductController {
             const lengthVal = length && String(length).trim() ? String(length).trim() : null;
             const heightVal = height && String(height).trim() ? String(height).trim() : null;
             const diameterVal = diameter && String(diameter).trim() ? String(diameter).trim() : null;
-
             const materialVal = material && String(material).trim() ? String(material).trim() : null;
-
+            const colorVal = color && String(color).trim() ? String(color).trim() : null;
+            const kindVal = kind && String(kind).trim() ? String(kind).trim() : null;
+            const shapeVal = shape && String(shape).trim() ? String(shape).trim() : null;
+            const purposeVal = purpose && String(purpose).trim() ? String(purpose).trim() : null;
+            const featuresVal = features && String(features).trim() ? String(features).trim() : null;
             const countryVal = country && String(country).trim() ? String(country).trim() : 'Україна';
 
             const weightRaw = weightKg !== undefined ? String(weightKg).trim() : '';
@@ -93,8 +98,11 @@ class ProductController {
                 availability: availabilityNorm,
                 rozetkaCategoryId: rzIdNum,
                 img: result.secure_url,
-                color: color && color.trim() ? color.trim() : null,
-                kind: kind && kind.trim() ? kind.trim() : null,
+                color: colorVal,
+                kind: kindVal,
+                shape: shapeVal,
+                purpose: purposeVal,
+                features: featuresVal,
                 rating: Number.isNaN(ratingNum) ? 1 : ratingNum,
                 width: widthVal,
                 length: lengthVal,
@@ -106,7 +114,6 @@ class ProductController {
             });
 
             invalidateFeedCache();
-
             return res.json(newProduct);
         } catch (e) {
             console.error('PRODUCT CREATE ERROR:', e);
@@ -126,6 +133,9 @@ class ProductController {
                 code,
                 color,
                 kind,
+                shape,
+                purpose,
+                features,
                 width,
                 length,
                 height,
@@ -139,14 +149,12 @@ class ProductController {
             const availabilityNorm = availability === 'PRE_ORDER' ? 'MADE_TO_ORDER' : availability;
 
             let rzIdNum = null;
-
             if (rozetkaCategoryId !== undefined) {
                 rzIdNum = String(rozetkaCategoryId).trim() === '' ? null : Number(rozetkaCategoryId);
                 if (Number.isNaN(rzIdNum)) rzIdNum = null;
             }
 
             const product = await Product.findByPk(id);
-
             if (!product) return next(ApiError.badRequest(`Товар ${id} не знайдений`));
 
             if (availability !== undefined) {
@@ -195,17 +203,26 @@ class ProductController {
             }
 
             if (description !== undefined) product.description = description;
-
-            if (rozetkaCategoryId !== undefined) {
-                product.rozetkaCategoryId = rzIdNum;
-            }
+            if (rozetkaCategoryId !== undefined) product.rozetkaCategoryId = rzIdNum;
 
             if (color !== undefined) {
-                product.color = color && color.trim() ? color.trim() : null;
+                product.color = String(color).trim() === '' ? null : String(color).trim();
             }
 
             if (kind !== undefined) {
-                product.kind = kind && kind.trim() ? kind.trim() : null;
+                product.kind = String(kind).trim() === '' ? null : String(kind).trim();
+            }
+
+            if (shape !== undefined) {
+                product.shape = String(shape).trim() === '' ? null : String(shape).trim();
+            }
+
+            if (purpose !== undefined) {
+                product.purpose = String(purpose).trim() === '' ? null : String(purpose).trim();
+            }
+
+            if (features !== undefined) {
+                product.features = String(features).trim() === '' ? null : String(features).trim();
             }
 
             if (rating !== undefined) {

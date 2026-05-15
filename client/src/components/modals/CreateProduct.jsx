@@ -1,8 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Button, Form, Modal} from "react-bootstrap";
 import {createProduct} from "../../http/productAPI.js";
 import {fetchTypes} from "../../http/typeAPI.js";
 import {observer} from "mobx-react-lite";
+
+const KIND_OPTIONS = ['Кошик', 'Плейсмат', 'Костер', 'Кашпо', 'Набір'];
+const MATERIAL_OPTIONS = ['Бавовна'];
+const COLOR_OPTIONS = ['Айворі', 'Світло-сірий', 'Зелений', 'Червоний', 'Коричневий', 'Комбінований'];
+const SHAPE_OPTIONS = ['Кругла', 'Овальна', 'Прямокутна'];
+const PURPOSE_OPTIONS = ['Для ванної', 'Для кухні', 'Для зберігання', 'Універсальне', 'Декоративне'];
+const FEATURE_OPTIONS = ['З кришкою', 'З ручками', 'Плетений', 'Набір'];
 
 const CreateProduct = observer(({show, onHide}) => {
     const [name, setName] = useState('');
@@ -10,6 +17,9 @@ const CreateProduct = observer(({show, onHide}) => {
     const [descr, setDescr] = useState('');
     const [color, setColor] = useState('');
     const [kind, setKind] = useState('');
+    const [shape, setShape] = useState('');
+    const [purpose, setPurpose] = useState('');
+    const [features, setFeatures] = useState([]);
     const [file, setFile] = useState(null);
     const [code, setCode] = useState('');
     const [availability, setAvailability] = useState('IN_STOCK');
@@ -33,12 +43,17 @@ const CreateProduct = observer(({show, onHide}) => {
         }
     }, [show]);
 
+    const normalizedFeatures = useMemo(() => features.filter(Boolean), [features]);
+
     const resetForm = () => {
         setName('');
         setPrice(0);
         setDescr('');
         setColor('');
         setKind('');
+        setShape('');
+        setPurpose('');
+        setFeatures([]);
         setFile(null);
         setCode('');
         setAvailability('IN_STOCK');
@@ -56,6 +71,11 @@ const CreateProduct = observer(({show, onHide}) => {
 
     const selectFile = (e) => {
         setFile(e.target.files[0]);
+    };
+
+    const handleFeaturesChange = (e) => {
+        const values = Array.from(e.target.selectedOptions).map(option => option.value);
+        setFeatures(values);
     };
 
     const addProduct = async () => {
@@ -80,6 +100,9 @@ const CreateProduct = observer(({show, onHide}) => {
             formData.append("availability", availability);
             formData.append("color", (color ?? '').trim());
             formData.append("kind", (kind ?? '').trim());
+            formData.append("shape", (shape ?? '').trim());
+            formData.append("purpose", (purpose ?? '').trim());
+            formData.append("features", normalizedFeatures.join(', '));
             formData.append("rozetkaCategoryId", (rozetkaCategoryId ?? '').trim());
             formData.append("rating", String(rating ?? 1));
             formData.append("width", (width ?? '').trim());
@@ -99,7 +122,7 @@ const CreateProduct = observer(({show, onHide}) => {
     };
 
     return (
-        <Modal show={show} onHide={onHide}>
+        <Modal show={show} onHide={onHide} size="lg">
             <Modal.Header closeButton>
                 <Modal.Title>Додати товар</Modal.Title>
             </Modal.Header>
@@ -121,10 +144,7 @@ const CreateProduct = observer(({show, onHide}) => {
 
                     <Form.Group className="mb-2">
                         <Form.Label>Категорія товару</Form.Label>
-                        <Form.Select
-                            value={typeId}
-                            onChange={e => setTypeId(e.target.value)}
-                        >
+                        <Form.Select value={typeId} onChange={e => setTypeId(e.target.value)}>
                             <option value="">Оберіть категорію</option>
                             {types.map(type => (
                                 <option key={type.id} value={type.id}>
@@ -139,13 +159,10 @@ const CreateProduct = observer(({show, onHide}) => {
                         <Form.Control
                             type="number"
                             inputMode="numeric"
-                            placeholder="Наприклад: 4632208"
+                            placeholder="Наприклад: 4652688"
                             value={rozetkaCategoryId}
                             onChange={e => setRozetkaCategoryId(e.target.value)}
                         />
-                        <Form.Text muted>
-                            Якщо залишити порожнім — товар не потрапить до фіду Rozetka.
-                        </Form.Text>
                     </Form.Group>
 
                     <Form.Group className="mb-2">
@@ -158,35 +175,78 @@ const CreateProduct = observer(({show, onHide}) => {
                             onChange={e => setRating(Number(e.target.value))}
                             onWheel={(e) => e.currentTarget.blur()}
                         />
-                        <Form.Text muted>
-                            Рейтинг від 1 до 10, де 10 максимум і товар буде на 1 сторінці.
-                        </Form.Text>
                     </Form.Group>
 
                     <Form.Group className="mb-2">
-                        <Form.Select
-                            value={availability}
-                            onChange={e => setAvailability(e.target.value)}
-                        >
+                        <Form.Label>Наявність</Form.Label>
+                        <Form.Select value={availability} onChange={e => setAvailability(e.target.value)}>
                             <option value="IN_STOCK">В наявності</option>
                             <option value="MADE_TO_ORDER">Під замовлення (2–3 дні)</option>
                             <option value="OUT_OF_STOCK">Немає в наявності</option>
                         </Form.Select>
                     </Form.Group>
 
-                    <Form.Control
-                        placeholder="Колір (наприклад: Айворі або Світло-сірий)"
-                        className="modal__input"
-                        value={color}
-                        onChange={e => setColor(e.target.value)}
-                    />
+                    <Form.Group className="mb-2">
+                        <Form.Label>Тип виробу</Form.Label>
+                        <Form.Select value={kind} onChange={e => setKind(e.target.value)}>
+                            <option value="">Оберіть тип</option>
+                            {KIND_OPTIONS.map(item => (
+                                <option key={item} value={item}>{item}</option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
 
-                    <Form.Control
-                        placeholder="Тип виробу (наприклад: Кошик, Плейсмат, Набір)"
-                        className="modal__input"
-                        value={kind}
-                        onChange={e => setKind(e.target.value)}
-                    />
+                    <Form.Group className="mb-2">
+                        <Form.Label>Колір</Form.Label>
+                        <Form.Select value={color} onChange={e => setColor(e.target.value)}>
+                            <option value="">Оберіть колір</option>
+                            {COLOR_OPTIONS.map(item => (
+                                <option key={item} value={item}>{item}</option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Матеріал</Form.Label>
+                        <Form.Select value={material} onChange={e => setMaterial(e.target.value)}>
+                            <option value="">Оберіть матеріал</option>
+                            {MATERIAL_OPTIONS.map(item => (
+                                <option key={item} value={item}>{item}</option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Форма</Form.Label>
+                        <Form.Select value={shape} onChange={e => setShape(e.target.value)}>
+                            <option value="">Оберіть форму</option>
+                            {SHAPE_OPTIONS.map(item => (
+                                <option key={item} value={item}>{item}</option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Призначення</Form.Label>
+                        <Form.Select value={purpose} onChange={e => setPurpose(e.target.value)}>
+                            <option value="">Оберіть призначення</option>
+                            {PURPOSE_OPTIONS.map(item => (
+                                <option key={item} value={item}>{item}</option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>Особливості</Form.Label>
+                        <Form.Select multiple value={features} onChange={handleFeaturesChange}>
+                            {FEATURE_OPTIONS.map(item => (
+                                <option key={item} value={item}>{item}</option>
+                            ))}
+                        </Form.Select>
+                        <Form.Text muted>
+                            Можна обрати кілька значень, утримуючи Ctrl.
+                        </Form.Text>
+                    </Form.Group>
 
                     <Form.Group className="mb-2">
                         <Form.Label>Розміри (см)</Form.Label>
@@ -207,7 +267,6 @@ const CreateProduct = observer(({show, onHide}) => {
                                 onChange={(e) => setHeight(e.target.value)}
                             />
                         </div>
-                        <Form.Text muted>Заповнювати тільки те, що актуально для виробу.</Form.Text>
                     </Form.Group>
 
                     <Form.Group className="mb-2">
@@ -231,15 +290,6 @@ const CreateProduct = observer(({show, onHide}) => {
                             placeholder="Україна"
                             value={country}
                             onChange={(e) => setCountry(e.target.value)}
-                        />
-                    </Form.Group>
-
-                    <Form.Group className="mb-2">
-                        <Form.Label>Матеріал</Form.Label>
-                        <Form.Control
-                            placeholder="Напр.: бавовняний шнур"
-                            value={material}
-                            onChange={(e) => setMaterial(e.target.value)}
                         />
                     </Form.Group>
 
