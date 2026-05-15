@@ -281,10 +281,7 @@ class ProductController {
             limit = Number(limit) || 9;
             const offset = page * limit - limit;
 
-            const order = [
-                ['rating', 'DESC'],
-                ['code', 'ASC'],
-            ];
+            const order = [['code', 'ASC']];
 
             let products;
 
