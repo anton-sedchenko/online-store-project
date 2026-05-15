@@ -21,11 +21,17 @@ export const updateProduct = async (id, formData) => {
     return data;
 };
 
-export const fetchProducts = async (typeId, page, limit = 4) => {
+export const fetchProducts = async (typeId, page, limit = 4, sortBy = null) => {
     const params = {page, limit};
+
     if (typeId !== null) {
         params.typeId = typeId;
     }
+
+    if (sortBy) {
+        params.sortBy = sortBy;
+    }
+
     const {data} = await $host.get("/product", {params});
     return data;
 }

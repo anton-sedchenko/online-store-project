@@ -276,12 +276,16 @@ class ProductController {
 
     async getAll(req, res, next) {
         try {
-            let {typeId, limit, page} = req.query;
+            let {typeId, limit, page, sortBy} = req.query;
             page = Number(page) || 1;
             limit = Number(limit) || 9;
             const offset = page * limit - limit;
 
-            const order = [['code', 'ASC']];
+            let order = [['rating', 'DESC'], ['code', 'ASC']];
+
+            if (sortBy === 'code') {
+                order = [['code', 'ASC']];
+            }
 
             let products;
 
