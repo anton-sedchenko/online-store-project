@@ -64,38 +64,103 @@ function normalizeMaterial(material) {
     return safe(material).trim();
 }
 
-function normalizeColor(color) {
+function normalizePlanterMaterial(material) {
+    const value = safe(material).trim().toLowerCase();
+
+    if (!value) return '';
+    if (value.includes('бавов') || value.includes('шнур')) return 'Текстиль';
+
+    return safe(material).trim();
+}
+
+function normalizeColor(color, categoryId = '') {
     const value = safe(color).trim().toLowerCase();
 
     if (!value) return '';
-    if (value.includes('черв') && value.includes('бі')) return 'Червоно-білий';
-    if (value.includes('сіро') && value.includes('чор')) return 'Сіро-чорний';
-    if (value.includes('комб')) return 'Комбінований';
+
+    const hasWhite = value.includes('бі') || value.includes('айвор') || value.includes('ivory');
+    const hasRed = value.includes('черв');
+    const hasGray = value.includes('сір');
+    const hasBlack = value.includes('чор');
+    const hasGreen = value.includes('зел') || value.includes('шавл') || value.includes('олив');
+    const hasBrown = value.includes('шокол') || value.includes('глин') || value.includes('корич') || value.includes('карам');
+
+    if (hasRed && hasWhite) {
+        if (categoryId === '4626843' || categoryId === '4626841') return 'Червоний/Білий';
+        return 'Біло-червоний';
+    }
+
+    if (hasGreen && hasWhite) {
+        if (categoryId === '245547') return 'Зелений + Білий';
+        return 'Біло-зелений';
+    }
+
+    if (hasBrown && hasWhite) {
+        if (categoryId === '4652688') return 'Коричнево-білий';
+        return 'Коричневий';
+    }
+
+    if (hasGray && hasBlack) return 'Сірий';
+    if (value.includes('комб')) return 'Коричневий';
+
     if (value.includes('айвор')) return 'Айворі';
     if (value.includes('світло') && value.includes('сір')) return 'Світло-сірий';
     if (value === 'сірий' || value.includes(' сір')) return 'Сірий';
-    if (value.includes('зел')) return 'Зелений';
-    if (value.includes('черв')) return 'Червоний';
+    if (hasGreen) return 'Зелений';
+    if (hasRed) return 'Червоний';
     if (value.includes('білий')) return 'Білий';
-    if (value.includes('чор')) return 'Чорний';
-    if (value.includes('шокол') || value.includes('глин') || value.includes('корич') || value.includes('карам')) return 'Коричневий';
+    if (hasBlack) return 'Чорний';
+    if (hasBrown) return 'Коричневий';
 
     return safe(color).trim();
 }
 
-function inferShape(product) {
+function getBaseShape(product) {
     const value = safe(product.shape).trim().toLowerCase();
-    if (value.includes('круг')) return 'Кругла';
-    if (value.includes('овал')) return 'Овальна';
-    if (value.includes('прямокут')) return 'Прямокутна';
-    if (value.includes('квадрат')) return 'Квадратна';
-
     const diameter = parseNum(product.diameter);
     const width = parseNum(product.width);
     const length = parseNum(product.length);
 
-    if (diameter && !width && !length) return 'Кругла';
-    if (width && length) return 'Прямокутна';
+    if (value.includes('круг')) return 'round';
+    if (value.includes('овал')) return 'oval';
+    if (value.includes('прямокут')) return 'rectangle';
+    if (value.includes('квадрат')) return 'square';
+
+    if (diameter && !width && !length) return 'round';
+    if (width && length) return 'rectangle';
+
+    return '';
+}
+
+function inferShape(product) {
+    const shape = getBaseShape(product);
+
+    if (shape === 'round') return 'Кругла';
+    if (shape === 'oval') return 'Овальна';
+    if (shape === 'rectangle') return 'Прямокутна';
+    if (shape === 'square') return 'Квадратна';
+
+    return '';
+}
+
+function inferPluralShape(product) {
+    const shape = getBaseShape(product);
+
+    if (shape === 'round') return 'Круглі';
+    if (shape === 'oval') return 'Овальні';
+    if (shape === 'rectangle') return 'Прямокутні';
+    if (shape === 'square') return 'Квадратні';
+
+    return '';
+}
+
+function inferPlanterShape(product) {
+    const shape = getBaseShape(product);
+
+    if (shape === 'round') return 'Круг';
+    if (shape === 'oval') return 'Овал';
+    if (shape === 'rectangle') return 'Прямокутник';
+    if (shape === 'square') return 'Квадрат';
 
     return '';
 }
@@ -114,15 +179,6 @@ function isSetProduct(product) {
     );
 }
 
-function normalizeProductType(product, fallback = 'Кошик') {
-    const kind = safe(product.kind).trim();
-
-    if (kind) return kind;
-    if (isSetProduct(product)) return 'Набір';
-
-    return fallback;
-}
-
 function normalizeStoragePurpose(product) {
     const value = safe(product.purpose).trim().toLowerCase();
 
@@ -133,18 +189,6 @@ function normalizeStoragePurpose(product) {
     if (value.includes('кухн')) return 'Універсальні';
     if (value.includes('зберіган')) return 'Універсальні';
     if (value.includes('універс')) return 'Універсальні';
-
-    return safe(product.purpose).trim();
-}
-
-function normalizeKitchenPurpose(product) {
-    const value = safe(product.purpose).trim().toLowerCase();
-
-    if (!value) return '';
-    if (value.includes('сервіру')) return 'Для сервірування';
-    if (value.includes('зберіган')) return 'Для зберігання';
-    if (value.includes('декоратив')) return 'Декоративне';
-    if (value.includes('кухн')) return 'Для кухні';
 
     return safe(product.purpose).trim();
 }
@@ -160,7 +204,37 @@ function normalizeFeaturesForStorage(product) {
         else if (value.includes('ручк')) normalized.push('З ручками');
         else if (value.includes('плет')) normalized.push('Плетені');
         else if (value.includes('набір')) normalized.push('Набір');
-        else normalized.push(feature);
+    }
+
+    return [...new Set(normalized)];
+}
+
+function normalizeFeaturesForKitchenBasket(product) {
+    const values = splitFeatures(product.features);
+    const normalized = [];
+
+    for (const feature of values) {
+        const value = feature.toLowerCase();
+
+        if (value.includes('криш')) normalized.push('З кришкою');
+        else if (value.includes('ручк')) normalized.push('З ручкою/З ручками');
+    }
+
+    return [...new Set(normalized)];
+}
+
+function normalizeFeaturesForPlanter(product) {
+    const values = splitFeatures(product.features);
+    const normalized = [];
+
+    for (const feature of values) {
+        const value = feature.toLowerCase();
+
+        if (value.includes('декор')) normalized.push('Декоративні');
+    }
+
+    if (!normalized.length) {
+        normalized.push('Декоративні');
     }
 
     return [...new Set(normalized)];
@@ -187,19 +261,17 @@ function getDimensionsForStorage(product) {
     };
 }
 
-function appendStorageParams(offer, product) {
+function appendStorageParams(offer, product, categoryId) {
     const country = safe(product.country).trim() || 'Україна';
     const material = normalizeMaterial(product.material);
-    const color = normalizeColor(product.color);
+    const color = normalizeColor(product.color, categoryId);
     const purpose = normalizeStoragePurpose(product);
     const shape = inferShape(product);
-    const supplyType = isSetProduct(product) ? 'Набір' : 'Один предмет';
-    const productType = normalizeProductType(product, 'Кошик');
+    const type = isSetProduct(product) ? 'Набір' : 'Один предмет';
     const features = normalizeFeaturesForStorage(product);
     const dims = getDimensionsForStorage(product);
 
-    addParamIf(offer, 'Тип виробу', productType);
-    addParamIf(offer, 'Тип поставки', supplyType);
+    addParamIf(offer, 'Тип', type);
     addParamIf(offer, 'Країна-виробник товару', country);
     addParamIf(offer, 'Матеріал', material);
     addParamIf(offer, 'Колір', color);
@@ -214,36 +286,33 @@ function appendStorageParams(offer, product) {
     }
 }
 
-function buildSizeText(product) {
+function buildSizeText(product, separator = '×') {
     const width = parseNum(product.width);
     const length = parseNum(product.length);
     const height = parseNum(product.height);
     const diameter = parseNum(product.diameter);
 
-    if (width && length && height) return `${length}×${width}×${height} см`;
-    if (width && length) return `${length}×${width} см`;
-    if (diameter && height) return `${diameter}×${height} см`;
-    if (diameter) return `${diameter} см`;
+    if (width && length && height) return `${length}${separator}${width}${separator}${height} см`;
+    if (width && length) return `${length}${separator}${width} см`;
+    if (diameter && height) return `${diameter}${separator}${diameter}${separator}${height} см`;
+    if (diameter) return `${diameter}${separator}${diameter} см`;
+
     return '';
 }
 
-function appendKitchenBasketParams(offer, product) {
+function appendKitchenBasketParams(offer, product, categoryId) {
     const country = safe(product.country).trim() || 'Україна';
     const material = normalizeMaterial(product.material);
-    const color = normalizeColor(product.color);
+    const color = normalizeColor(product.color, categoryId);
     const shape = inferShape(product);
-    const size = buildSizeText(product);
-    const features = normalizeFeaturesForStorage(product);
+    const size = buildSizeText(product, '×');
+    const features = normalizeFeaturesForKitchenBasket(product);
     const supplyType = isSetProduct(product) ? 'Набір' : 'Один предмет';
-    const productType = normalizeProductType(product, isSetProduct(product) ? 'Набір' : 'Кошик');
-    const purpose = normalizeKitchenPurpose(product);
 
-    addParamIf(offer, 'Тип виробу', productType);
     addParamIf(offer, 'Тип поставки', supplyType);
     addParamIf(offer, 'Країна-виробник товару', country);
     addParamIf(offer, 'Матеріал', material);
     addParamIf(offer, 'Колір', color);
-    addParamIf(offer, 'Призначення', purpose);
     addParamIf(offer, 'Форма', shape);
 
     if (!isSetProduct(product)) {
@@ -255,102 +324,86 @@ function appendKitchenBasketParams(offer, product) {
     }
 }
 
-function normalizePlacematType(product) {
-    const kind = safe(product.kind).trim().toLowerCase();
-    const name = safe(product.name).trim().toLowerCase();
-
-    if (isSetProduct(product)) return 'Набір';
-    if (kind.includes('костер') || name.includes('під напої')) return 'Підставка';
-    return 'Плейсмат';
+function normalizePlacematType() {
+    return 'Сервірувальні килимки';
 }
 
-function normalizePlacematUsage(product) {
-    const value = safe(product.purpose).trim().toLowerCase();
-
-    if (!value) return 'Для сервірування';
-    if (value.includes('декоратив')) return 'Для декору';
-    return 'Для сервірування';
+function normalizePlacematUsage() {
+    return 'Текстиль для кухні';
 }
 
-function appendPlacematParams(offer, product) {
+function appendPlacematParams(offer, product, categoryId) {
     const country = safe(product.country).trim() || 'Україна';
     const material = normalizeMaterial(product.material);
-    const color = normalizeColor(product.color);
-    const shape = inferShape(product);
-    const features = normalizeFeaturesForStorage(product);
-    const size = buildSizeText(product);
+    const color = normalizeColor(product.color, categoryId);
+    const shape = inferPluralShape(product);
+    const size = buildSizeText(product, ' x ');
 
     addParamIf(offer, 'Тип', normalizePlacematType(product));
-    addParamIf(offer, 'Тип поставки', isSetProduct(product) ? 'Набір' : 'Один предмет');
     addParamIf(offer, 'Країна-виробник товару', country);
     addParamIf(offer, 'Матеріал', material);
     addParamIf(offer, 'Колір', color);
     addParamIf(offer, 'Форма', shape);
-
-    if (!isSetProduct(product)) {
-        addParamIf(offer, 'Розміри', size);
-    }
-
+    addParamIf(offer, 'Розміри', size);
     addParamIf(offer, 'Використання', normalizePlacematUsage(product));
-
-    for (const feature of features) {
-        addParamIf(offer, 'Особливості', feature);
-    }
 }
 
-function normalizeCoasterType(product) {
-    const kind = safe(product.kind).trim().toLowerCase();
-    const name = safe(product.name).trim().toLowerCase();
-
-    if (isSetProduct(product)) return 'Набір підставок';
-    if (kind.includes('костер') || name.includes('під напої')) return 'Підставка під посуд';
-    return 'Підставка під посуд';
+function normalizeCoasterType() {
+    return 'Підставка під чашку';
 }
 
-function appendCoasterParams(offer, product) {
+function appendCoasterParams(offer, product, categoryId) {
     const country = safe(product.country).trim() || 'Україна';
     const material = normalizeMaterial(product.material);
-    const color = normalizeColor(product.color);
-    const shape = inferShape(product);
-    const size = buildSizeText(product);
-    const features = normalizeFeaturesForStorage(product);
+    const color = normalizeColor(product.color, categoryId);
+    const shape = inferPluralShape(product);
+    const size = buildSizeText(product, 'x');
 
     addParamIf(offer, 'Тип', normalizeCoasterType(product));
-    addParamIf(offer, 'Тип поставки', isSetProduct(product) ? 'Набір' : 'Один предмет');
     addParamIf(offer, 'Країна-виробник товару', country);
     addParamIf(offer, 'Матеріал', material);
     addParamIf(offer, 'Колір', color);
     addParamIf(offer, 'Форма', shape);
-
-    if (!isSetProduct(product)) {
-        addParamIf(offer, 'Розміри', size);
-    }
-
-    for (const feature of features) {
-        addParamIf(offer, 'Особливості', feature);
-    }
+    addParamIf(offer, 'Розміри', size);
 }
 
-function normalizePlanterPurpose(product) {
-    const value = safe(product.purpose).trim().toLowerCase();
-
-    if (!value) return 'Для рослин';
-    if (value.includes('декоратив')) return 'Декоративне';
-
-    return 'Для рослин';
+function normalizePlanterPurpose() {
+    return 'Універсальні';
 }
 
 function normalizePlanterPlacement() {
-    return 'Настільне';
+    return 'Настільні';
 }
 
-function appendPlanterParams(offer, product) {
+function normalizePlanterSize(product) {
+    const height = parseNum(product.height);
+    const diameter = parseNum(product.diameter);
+    const width = parseNum(product.width);
+    const length = parseNum(product.length);
+
+    const maxSide = Math.max(
+        height || 0,
+        diameter || 0,
+        width || 0,
+        length || 0,
+    );
+
+    if (!maxSide) return '';
+
+    if (maxSide <= 15) return 'Маленькі';
+    if (maxSide <= 25) return 'Середні';
+
+    return 'Великі';
+}
+
+function appendPlanterParams(offer, product, categoryId) {
     const country = safe(product.country).trim() || 'Україна';
-    const material = normalizeMaterial(product.material);
-    const color = normalizeColor(product.color);
-    const shape = inferShape(product);
-    const size = buildSizeText(product);
-    const features = normalizeFeaturesForStorage(product);
+    const material = normalizePlanterMaterial(product.material);
+    const color = normalizeColor(product.color, categoryId);
+    const shape = inferPlanterShape(product);
+    const externalSize = buildSizeText(product, '×');
+    const size = normalizePlanterSize(product);
+    const features = normalizeFeaturesForPlanter(product);
 
     addParamIf(offer, 'Тип', 'Кашпо');
     addParamIf(offer, 'Країна-виробник', country);
@@ -358,16 +411,16 @@ function appendPlanterParams(offer, product) {
     addParamIf(offer, 'Колір', color);
     addParamIf(offer, 'Форма', shape);
     addParamIf(offer, 'Розмір', size);
-    addParamIf(offer, 'Зовнішні розміри', size);
+    addParamIf(offer, 'Зовнішні розміри', externalSize);
     addParamIf(offer, 'Призначення', normalizePlanterPurpose(product));
-    addParamIf(offer, 'Розміщення', normalizePlanterPlacement());
+    addParamIf(offer, 'Розміщення', normalizePlanterPlacement(product));
 
     for (const feature of features) {
         addParamIf(offer, 'Особливості', feature);
     }
 }
 
-function appendDefaultParams(offer, product) {
+function appendDefaultParams(offer, product, categoryId) {
     addParamIf(offer, 'Ширина', product.width);
     addParamIf(offer, 'Довжина', product.length);
     addParamIf(offer, 'Висота', product.height);
@@ -378,10 +431,9 @@ function appendDefaultParams(offer, product) {
     }
 
     addParamIf(offer, 'Країна-виробник товару', product.country || 'Україна');
-    addParamIf(offer, 'Колір', normalizeColor(product.color));
+    addParamIf(offer, 'Колір', normalizeColor(product.color, categoryId));
     addParamIf(offer, 'Матеріал', normalizeMaterial(product.material));
-    addParamIf(offer, 'Тип виробу', product.kind);
-    addParamIf(offer, 'Тип поставки', isSetProduct(product) ? 'Набір' : 'Один предмет');
+    addParamIf(offer, 'Тип', isSetProduct(product) ? 'Набір' : 'Один предмет');
     addParamIf(offer, 'Форма', inferShape(product));
     addParamIf(offer, 'Призначення', product.purpose);
 
@@ -393,37 +445,37 @@ function appendDefaultParams(offer, product) {
 
 function appendParamsByCategory(offer, product, categoryId) {
     const storageIds = new Set(['4652688', '389782779', '213']);
-    const kitchenBasketIds = new Set(['4626843', '4652687']);
+    const kitchenBasketIds = new Set(['4626843', '4652687', '4626841']);
     const placematIds = new Set(['169828']);
     const coasterIds = new Set(['4674759']);
     const planterIds = new Set(['245547']);
 
     if (storageIds.has(categoryId)) {
-        appendStorageParams(offer, product);
+        appendStorageParams(offer, product, categoryId);
         return;
     }
 
     if (kitchenBasketIds.has(categoryId)) {
-        appendKitchenBasketParams(offer, product);
+        appendKitchenBasketParams(offer, product, categoryId);
         return;
     }
 
     if (placematIds.has(categoryId)) {
-        appendPlacematParams(offer, product);
+        appendPlacematParams(offer, product, categoryId);
         return;
     }
 
     if (coasterIds.has(categoryId)) {
-        appendCoasterParams(offer, product);
+        appendCoasterParams(offer, product, categoryId);
         return;
     }
 
     if (planterIds.has(categoryId)) {
-        appendPlanterParams(offer, product);
+        appendPlanterParams(offer, product, categoryId);
         return;
     }
 
-    appendDefaultParams(offer, product);
+    appendDefaultParams(offer, product, categoryId);
 }
 
 // ===== route =====
