@@ -35,7 +35,7 @@ const toAbsUrl = (base, u) => (isAbsUrl(u) ? u : `${base}${u.startsWith('/') ? '
 
 function addParamIf(offer, name, val) {
     if (val != null && String(val).trim() !== '') {
-        offer.ele('param', { name }).txt(String(val)).up();
+        offer.ele('param', { name }).txt(String(val).trim()).up();
     }
 }
 
@@ -114,18 +114,39 @@ function isSetProduct(product) {
     );
 }
 
+function normalizeProductType(product, fallback = 'Кошик') {
+    const kind = safe(product.kind).trim();
+
+    if (kind) return kind;
+    if (isSetProduct(product)) return 'Набір';
+
+    return fallback;
+}
+
 function normalizeStoragePurpose(product) {
     const value = safe(product.purpose).trim().toLowerCase();
 
     if (!value) return '';
     if (value.includes('декоратив')) return 'Декоративні';
+    if (value.includes('білиз')) return 'Для одягу';
     if (value.includes('ванн')) return 'Універсальні';
     if (value.includes('кухн')) return 'Універсальні';
     if (value.includes('зберіган')) return 'Універсальні';
     if (value.includes('універс')) return 'Універсальні';
-    if (value.includes('білиз')) return 'Для одягу';
 
-    return '';
+    return safe(product.purpose).trim();
+}
+
+function normalizeKitchenPurpose(product) {
+    const value = safe(product.purpose).trim().toLowerCase();
+
+    if (!value) return '';
+    if (value.includes('сервіру')) return 'Для сервірування';
+    if (value.includes('зберіган')) return 'Для зберігання';
+    if (value.includes('декоратив')) return 'Декоративне';
+    if (value.includes('кухн')) return 'Для кухні';
+
+    return safe(product.purpose).trim();
 }
 
 function normalizeFeaturesForStorage(product) {
@@ -139,6 +160,7 @@ function normalizeFeaturesForStorage(product) {
         else if (value.includes('ручк')) normalized.push('З ручками');
         else if (value.includes('плет')) normalized.push('Плетені');
         else if (value.includes('набір')) normalized.push('Набір');
+        else normalized.push(feature);
     }
 
     return [...new Set(normalized)];
@@ -171,11 +193,13 @@ function appendStorageParams(offer, product) {
     const color = normalizeColor(product.color);
     const purpose = normalizeStoragePurpose(product);
     const shape = inferShape(product);
-    const type = isSetProduct(product) ? 'Набір' : 'Один предмет';
+    const supplyType = isSetProduct(product) ? 'Набір' : 'Один предмет';
+    const productType = normalizeProductType(product, 'Кошик');
     const features = normalizeFeaturesForStorage(product);
     const dims = getDimensionsForStorage(product);
 
-    addParamIf(offer, 'Тип', type);
+    addParamIf(offer, 'Тип виробу', productType);
+    addParamIf(offer, 'Тип поставки', supplyType);
     addParamIf(offer, 'Країна-виробник товару', country);
     addParamIf(offer, 'Матеріал', material);
     addParamIf(offer, 'Колір', color);
@@ -210,16 +234,20 @@ function appendKitchenBasketParams(offer, product) {
     const shape = inferShape(product);
     const size = buildSizeText(product);
     const features = normalizeFeaturesForStorage(product);
+    const supplyType = isSetProduct(product) ? 'Набір' : 'Один предмет';
+    const productType = normalizeProductType(product, isSetProduct(product) ? 'Набір' : 'Кошик');
+    const purpose = normalizeKitchenPurpose(product);
 
-    addParamIf(offer, 'Тип поставки', isSetProduct(product) ? 'Набір' : 'Один предмет');
+    addParamIf(offer, 'Тип виробу', productType);
+    addParamIf(offer, 'Тип поставки', supplyType);
     addParamIf(offer, 'Країна-виробник товару', country);
     addParamIf(offer, 'Матеріал', material);
     addParamIf(offer, 'Колір', color);
+    addParamIf(offer, 'Призначення', purpose);
     addParamIf(offer, 'Форма', shape);
-    addParamIf(offer, 'Розміри', size);
 
-    if (isSetProduct(product)) {
-        addParamIf(offer, 'Кількість у наборі', 2);
+    if (!isSetProduct(product)) {
+        addParamIf(offer, 'Розміри', size);
     }
 
     for (const feature of features) {
@@ -253,11 +281,16 @@ function appendPlacematParams(offer, product) {
     const size = buildSizeText(product);
 
     addParamIf(offer, 'Тип', normalizePlacematType(product));
+    addParamIf(offer, 'Тип поставки', isSetProduct(product) ? 'Набір' : 'Один предмет');
     addParamIf(offer, 'Країна-виробник товару', country);
     addParamIf(offer, 'Матеріал', material);
     addParamIf(offer, 'Колір', color);
     addParamIf(offer, 'Форма', shape);
-    addParamIf(offer, 'Розміри', size);
+
+    if (!isSetProduct(product)) {
+        addParamIf(offer, 'Розміри', size);
+    }
+
     addParamIf(offer, 'Використання', normalizePlacematUsage(product));
 
     for (const feature of features) {
@@ -280,23 +313,30 @@ function appendCoasterParams(offer, product) {
     const color = normalizeColor(product.color);
     const shape = inferShape(product);
     const size = buildSizeText(product);
+    const features = normalizeFeaturesForStorage(product);
 
     addParamIf(offer, 'Тип', normalizeCoasterType(product));
+    addParamIf(offer, 'Тип поставки', isSetProduct(product) ? 'Набір' : 'Один предмет');
     addParamIf(offer, 'Країна-виробник товару', country);
     addParamIf(offer, 'Матеріал', material);
     addParamIf(offer, 'Колір', color);
     addParamIf(offer, 'Форма', shape);
-    addParamIf(offer, 'Розміри', size);
 
-    if (isSetProduct(product)) {
-        addParamIf(offer, 'Кількість предметів', 2);
+    if (!isSetProduct(product)) {
+        addParamIf(offer, 'Розміри', size);
+    }
+
+    for (const feature of features) {
+        addParamIf(offer, 'Особливості', feature);
     }
 }
 
 function normalizePlanterPurpose(product) {
     const value = safe(product.purpose).trim().toLowerCase();
+
     if (!value) return 'Для рослин';
     if (value.includes('декоратив')) return 'Декоративне';
+
     return 'Для рослин';
 }
 
@@ -338,10 +378,11 @@ function appendDefaultParams(offer, product) {
     }
 
     addParamIf(offer, 'Країна-виробник товару', product.country || 'Україна');
-    addParamIf(offer, 'Колір', product.color);
-    addParamIf(offer, 'Матеріал', product.material);
+    addParamIf(offer, 'Колір', normalizeColor(product.color));
+    addParamIf(offer, 'Матеріал', normalizeMaterial(product.material));
     addParamIf(offer, 'Тип виробу', product.kind);
-    addParamIf(offer, 'Форма', product.shape);
+    addParamIf(offer, 'Тип поставки', isSetProduct(product) ? 'Набір' : 'Один предмет');
+    addParamIf(offer, 'Форма', inferShape(product));
     addParamIf(offer, 'Призначення', product.purpose);
 
     const features = splitFeatures(product.features);
