@@ -327,50 +327,6 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                     </Form.Group>
 
                     <Form.Group className="mb-2">
-                        <Form.Label>ID Категорії Rozetka (необов’язково)</Form.Label>
-                        <Form.Control
-                            type="number"
-                            inputMode="numeric"
-                            placeholder="Напр.: 4652688"
-                            value={rozetkaCategoryId}
-                            onChange={e => handleRozetkaCategoryChange(e.target.value)}
-                        />
-                    </Form.Group>
-
-                    <div className="border rounded p-3 mb-3 bg-light">
-                        <div className="d-flex justify-content-between align-items-start gap-2 mb-2">
-                            <div>
-                                <strong>Характеристики для Rozetka</strong>
-                                <div className="text-muted small">
-                                    Поля формуються автоматично за ID категорії Rozetka. Назви характеристик не редагуються, щоб не було помилок у XML.
-                                </div>
-                            </div>
-                            <div className="d-flex gap-2 flex-wrap justify-content-end">
-                                <Button
-                                    variant="outline-secondary"
-                                    size="sm"
-                                    type="button"
-                                    disabled={!hasRozetkaTemplate}
-                                    onClick={() => refreshRozetkaParams(true)}
-                                >
-                                    Оновити автозначення
-                                </Button>
-                                <Button
-                                    variant="outline-danger"
-                                    size="sm"
-                                    type="button"
-                                    disabled={!hasRozetkaTemplate}
-                                    onClick={clearRozetkaParams}
-                                >
-                                    Скинути
-                                </Button>
-                            </div>
-                        </div>
-
-                        {renderRozetkaParams()}
-                    </div>
-
-                    <Form.Group className="mb-2">
                         <Form.Label>Рейтинг (1–10)</Form.Label>
                         <Form.Control
                             type="number"
@@ -382,8 +338,13 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                         />
                     </Form.Group>
 
+                    <div className="border rounded p-3 mb-3 bg-white">
+                        <strong>Характеристики для сайту</strong>
+                        <div className="text-muted small">Ці поля показуються на сайті та використовуються для фільтрів. Для Rozetka нижче є окремий блок.</div>
+                    </div>
+
                     <Form.Group className="mb-2">
-                        <Form.Label>Тип виробу</Form.Label>
+                        <Form.Label>Тип виробу для сайту</Form.Label>
                         <Form.Select value={kind} onChange={e => setKind(e.target.value)}>
                             <option value="">Оберіть тип</option>
                             {KIND_OPTIONS.map(item => (
@@ -393,7 +354,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                     </Form.Group>
 
                     <Form.Group className="mb-2">
-                        <Form.Label>Колір</Form.Label>
+                        <Form.Label>Колір для сайту</Form.Label>
                         <Form.Select value={color} onChange={e => setColor(e.target.value)}>
                             <option value="">Оберіть колір</option>
                             {COLOR_OPTIONS.map(item => (
@@ -403,7 +364,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                     </Form.Group>
 
                     <Form.Group className="mb-2">
-                        <Form.Label>Матеріал</Form.Label>
+                        <Form.Label>Матеріал для сайту</Form.Label>
                         <Form.Select value={material} onChange={e => setMaterial(e.target.value)}>
                             <option value="">Оберіть матеріал</option>
                             {MATERIAL_OPTIONS.map(item => (
@@ -413,7 +374,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                     </Form.Group>
 
                     <Form.Group className="mb-2">
-                        <Form.Label>Форма</Form.Label>
+                        <Form.Label>Форма для сайту</Form.Label>
                         <Form.Select value={shape} onChange={e => setShape(e.target.value)}>
                             <option value="">Оберіть форму</option>
                             {SHAPE_OPTIONS.map(item => (
@@ -423,7 +384,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                     </Form.Group>
 
                     <Form.Group className="mb-2">
-                        <Form.Label>Призначення</Form.Label>
+                        <Form.Label>Призначення для сайту</Form.Label>
                         <Form.Select value={purpose} onChange={e => setPurpose(e.target.value)}>
                             <option value="">Оберіть призначення</option>
                             {PURPOSE_OPTIONS.map(item => (
@@ -433,7 +394,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                     </Form.Group>
 
                     <Form.Group className="mb-2">
-                        <Form.Label>Особливості</Form.Label>
+                        <Form.Label>Особливості для сайту</Form.Label>
                         <Form.Select multiple value={features} onChange={handleFeaturesChange}>
                             {FEATURE_OPTIONS.map(item => (
                                 <option key={item} value={item}>{item}</option>
@@ -457,7 +418,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                     </Form.Group>
 
                     <Form.Group className="mb-2">
-                        <Form.Label>Розміри (см)</Form.Label>
+                        <Form.Label>Розміри для сайту (см)</Form.Label>
                         <div className="d-flex gap-2">
                             <Form.Control
                                 placeholder="Ширина"
@@ -500,6 +461,52 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             onChange={(e) => setCountry(e.target.value)}
                         />
                     </Form.Group>
+
+                    <Form.Group className="mb-2">
+                        <Form.Label>ID категорії Rozetka</Form.Label>
+                        <Form.Control
+                            type="number"
+                            inputMode="numeric"
+                            placeholder="Напр.: 4652688"
+                            value={rozetkaCategoryId}
+                            onChange={e => handleRozetkaCategoryChange(e.target.value)}
+                        />
+                    </Form.Group>
+
+                    <div className="border rounded p-3 mb-3 bg-light">
+                        <div className="d-flex justify-content-between align-items-start gap-2 mb-2">
+                            <div>
+                                <strong>Характеристики для Rozetka</strong>
+                                <div className="text-muted small">
+                                    Поля формуються автоматично за ID категорії Rozetka. Назви характеристик не редагуються, щоб не було помилок у XML.
+                                </div>
+                            </div>
+                            <div className="d-flex gap-2 flex-wrap justify-content-end">
+                                <Button
+                                    variant="outline-secondary"
+                                    size="sm"
+                                    type="button"
+                                    disabled={!hasRozetkaTemplate}
+                                    onClick={() => refreshRozetkaParams(true)}
+                                >
+                                    Оновити автозначення
+                                </Button>
+                                <Button
+                                    variant="outline-danger"
+                                    size="sm"
+                                    type="button"
+                                    disabled={!hasRozetkaTemplate}
+                                    onClick={clearRozetkaParams}
+                                >
+                                    Скинути
+                                </Button>
+                            </div>
+                        </div>
+
+                        {renderRozetkaParams()}
+                    </div>
+
+
 
                     <Form.Group className="mb-2">
                         <Form.Label>Опис товару</Form.Label>

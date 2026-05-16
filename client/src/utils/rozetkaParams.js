@@ -2,6 +2,7 @@ const commonColors = [
     'Айворі',
     'Світло-сірий',
     'Зелений',
+    'Синій',
     'Чорний',
     'Червоний',
     'Коричневий',
@@ -72,7 +73,7 @@ export const ROZETKA_PARAMS_BY_CATEGORY = {
         {name: 'Тип', values: ['Кашпо'], auto: 'planterType', required: true},
         {name: 'Країна-виробник', values: ['Україна'], auto: 'country', required: true},
         {name: 'Матеріал', values: ['Текстиль'], auto: 'planterMaterial', required: true},
-        {name: 'Колір', values: ['Білий', 'Світло-сірий', 'Зелений', 'Чорний', 'Червоний', 'Коричневий', 'Зелений + Білий', 'Біло-зелений', 'Біло-червоний', 'Сірий'], auto: 'color', required: true},
+        {name: 'Колір', values: ['Білий', 'Світло-сірий', 'Зелений', 'Синій', 'Чорний', 'Червоний', 'Коричневий', 'Зелений + Білий', 'Біло-зелений', 'Біло-червоний', 'Сірий'], auto: 'color', required: true},
         {name: 'Форма', values: ['Круг', 'Овал', 'Прямокутник', 'Квадрат', 'Фігурна'], auto: 'planterShape', required: true},
         {name: 'Розмір', values: ['Маленькі', 'Середні', 'Великі'], auto: 'planterSize', required: true},
         {name: 'Зовнішні розміри', values: [], auto: 'externalSize'},
@@ -170,6 +171,7 @@ const normalizeColor = (product = {}, categoryId = '') => {
     const hasRed = text.includes('черв') || text.includes('rosso');
     const hasGreen = text.includes('зел') || text.includes('шавл') || text.includes('олив') || text.includes('verde');
     const hasBrown = text.includes('корич') || text.includes('шокол') || text.includes('глин') || text.includes('карам') || text.includes('terra') || text.includes('caramello');
+    const hasBlue = text.includes('син') || text.includes('блак') || text.includes('blue') || text.includes('azzurro');
     const hasGray = text.includes('сір') || text.includes('nebbia');
     const hasBlack = text.includes('чор');
 
@@ -196,6 +198,7 @@ const normalizeColor = (product = {}, categoryId = '') => {
     if (hasGreen) return 'Зелений';
     if (hasRed) return 'Червоний';
     if (hasBlack) return 'Чорний';
+    if (hasBlue) return 'Синій';
     if (hasGray) return 'Світло-сірий';
     if (hasBrown) return 'Коричневий';
     if (color.includes('білий')) return 'Білий';
