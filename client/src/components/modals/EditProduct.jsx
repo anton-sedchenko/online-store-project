@@ -3,9 +3,11 @@ import {Modal, Button, Form} from 'react-bootstrap';
 import {updateProduct, fetchProducts, deleteProductImage} from '../../http/productAPI.js';
 import {fetchTypes} from '../../http/typeAPI.js';
 import {
-    getRozetkaParamNames,
+    buildRozetkaMarketplaceParams,
+    getRozetkaFieldsForCategory,
     getRozetkaParamValues,
-    getRozetkaParamsForCategory,
+    mergeRozetkaParamsWithTemplate,
+    prepareMarketplaceParamsForSubmit,
 } from '../../utils/rozetkaParams.js';
 
 const KIND_OPTIONS = ['Кошик', 'Плейсмат', 'Костер', 'Кашпо', 'Набір'];
@@ -14,8 +16,6 @@ const COLOR_OPTIONS = ['Айворі', 'Світло-сірий', 'Зелени�
 const SHAPE_OPTIONS = ['Кругла', 'Овальна', 'Прямокутна'];
 const PURPOSE_OPTIONS = ['Для ванної', 'Для кухні', 'Для зберігання', 'Універсальне', 'Декоративне'];
 const FEATURE_OPTIONS = ['З кришкою', 'З ручками', 'Плетений', 'Набір'];
-
-const emptyMarketplaceParam = {marketplace: 'rozetka', name: '', value: ''};
 
 const parseFeatures = (value) => {
     if (!value) return [];
@@ -32,9 +32,10 @@ const parseMarketplaceParams = (params) => {
         .filter(item => String(item.marketplace || 'rozetka').trim() === 'rozetka')
         .map(item => ({
             marketplace: 'rozetka',
-            name: item.name || '',
-            value: item.value || '',
-        }));
+            name: String(item.name || '').trim(),
+            value: String(item.value || '').trim(),
+        }))
+        .filter(item => item.name);
 };
 
 const EditProduct = ({show, onHide, productToEdit}) => {
@@ -73,8 +74,51 @@ const EditProduct = ({show, onHide, productToEdit}) => {
         }
     }, [show]);
 
+    const normalizedFeatures = useMemo(() => features.filter(Boolean), [features]);
+
+    const productSnapshot = useMemo(() => ({
+        name,
+        description,
+        color,
+        kind,
+        shape,
+        purpose,
+        features: normalizedFeatures.join(', '),
+        width,
+        length,
+        height,
+        diameter,
+        country,
+        material,
+    }), [name, description, color, kind, shape, purpose, normalizedFeatures, width, length, height, diameter, country, material]);
+
+    const rozetkaFields = useMemo(
+        () => getRozetkaFieldsForCategory(rozetkaCategoryId),
+        [rozetkaCategoryId]
+    );
+
+    const hasRozetkaTemplate = rozetkaCategoryId && rozetkaFields.length > 0;
+
     useEffect(() => {
         if (productToEdit) {
+            const initialFeatures = parseFeatures(productToEdit.features);
+            const initialRozetkaCategoryId = productToEdit.rozetkaCategoryId ? String(productToEdit.rozetkaCategoryId) : '';
+            const initialProductSnapshot = {
+                name: productToEdit.name || '',
+                description: productToEdit.description || '',
+                color: productToEdit.color || '',
+                kind: productToEdit.kind || '',
+                shape: productToEdit.shape || '',
+                purpose: productToEdit.purpose || '',
+                features: initialFeatures.join(', '),
+                width: productToEdit.width || '',
+                length: productToEdit.length || '',
+                height: productToEdit.height || '',
+                diameter: productToEdit.diameter || '',
+                country: productToEdit.country || 'Україна',
+                material: productToEdit.material || '',
+            };
+
             setName(productToEdit.name || '');
             setPrice(productToEdit.price || '');
             setCode(productToEdit.code || '');
@@ -82,11 +126,11 @@ const EditProduct = ({show, onHide, productToEdit}) => {
             setKind(productToEdit.kind || '');
             setShape(productToEdit.shape || '');
             setPurpose(productToEdit.purpose || '');
-            setFeatures(parseFeatures(productToEdit.features));
+            setFeatures(initialFeatures);
             setDescription(productToEdit.description || '');
             setExistingImages(Array.isArray(productToEdit.images) ? productToEdit.images : []);
             setMainImageUrl(productToEdit.img || '');
-            setRozetkaCategoryId(productToEdit.rozetkaCategoryId ? String(productToEdit.rozetkaCategoryId) : '');
+            setRozetkaCategoryId(initialRozetkaCategoryId);
             setAvailability(productToEdit.availability || 'IN_STOCK');
             setRating(productToEdit.rating ?? 1);
             setWidth(productToEdit.width || '');
@@ -97,70 +141,44 @@ const EditProduct = ({show, onHide, productToEdit}) => {
             setCountry(productToEdit.country || 'Україна');
             setMaterial(productToEdit.material || '');
             setTypeId(productToEdit.typeId ? String(productToEdit.typeId) : '');
-            setMarketplaceParams(parseMarketplaceParams(productToEdit.marketplaceParams));
             setImgFiles([]);
             setMainImageFile(null);
+            setMarketplaceParams(mergeRozetkaParamsWithTemplate(
+                initialRozetkaCategoryId,
+                parseMarketplaceParams(productToEdit.marketplaceParams),
+                initialProductSnapshot,
+                {preserveExistingValues: true}
+            ));
         }
     }, [productToEdit]);
-
-    const normalizedFeatures = useMemo(() => features.filter(Boolean), [features]);
-    const rozetkaConfig = useMemo(() => getRozetkaParamsForCategory(rozetkaCategoryId), [rozetkaCategoryId]);
-    const rozetkaParamNames = useMemo(() => getRozetkaParamNames(rozetkaCategoryId), [rozetkaCategoryId]);
 
     const handleFeaturesChange = (e) => {
         const values = Array.from(e.target.selectedOptions).map(option => option.value);
         setFeatures(values);
     };
 
-    const addMarketplaceParam = () => {
-        setMarketplaceParams(prev => [...prev, {...emptyMarketplaceParam}]);
+    const handleRozetkaCategoryChange = (value) => {
+        setRozetkaCategoryId(value);
+        setMarketplaceParams(buildRozetkaMarketplaceParams(value, productSnapshot));
     };
 
-    const removeMarketplaceParam = (index) => {
-        setMarketplaceParams(prev => prev.filter((_, itemIndex) => itemIndex !== index));
+    const updateRozetkaParamValue = (index, value) => {
+        setMarketplaceParams(prev => prev.map((item, itemIndex) => (
+            itemIndex === index ? {...item, value} : item
+        )));
     };
 
-    const updateMarketplaceParam = (index, field, value) => {
-        setMarketplaceParams(prev => prev.map((item, itemIndex) => {
-            if (itemIndex !== index) return item;
-
-            if (field === 'name') {
-                return {
-                    ...item,
-                    name: value,
-                    value: '',
-                };
-            }
-
-            return {
-                ...item,
-                [field]: value,
-            };
-        }));
+    const refreshRozetkaParams = (preserveExistingValues = true) => {
+        setMarketplaceParams(prev => mergeRozetkaParamsWithTemplate(
+            rozetkaCategoryId,
+            prev,
+            productSnapshot,
+            {preserveExistingValues}
+        ));
     };
 
-    const addDefaultRozetkaRows = () => {
-        const names = getRozetkaParamNames(rozetkaCategoryId);
-        const existing = new Set(marketplaceParams.map(item => item.name).filter(Boolean));
-        const newRows = names
-            .filter(paramName => !existing.has(paramName))
-            .map(paramName => ({
-                marketplace: 'rozetka',
-                name: paramName,
-                value: '',
-            }));
-
-        setMarketplaceParams(prev => [...prev, ...newRows]);
-    };
-
-    const getPreparedMarketplaceParams = () => {
-        return marketplaceParams
-            .map(item => ({
-                marketplace: 'rozetka',
-                name: String(item.name || '').trim(),
-                value: String(item.value || '').trim(),
-            }))
-            .filter(item => item.name && item.value);
+    const clearRozetkaParams = () => {
+        setMarketplaceParams(buildRozetkaMarketplaceParams(rozetkaCategoryId, productSnapshot));
     };
 
     const handleSave = async () => {
@@ -191,7 +209,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
             formData.append('material', (material ?? '').trim());
             formData.append('rozetkaCategoryId', (rozetkaCategoryId ?? '').trim());
             formData.append('rating', String(rating ?? 1));
-            formData.append('marketplaceParams', JSON.stringify(getPreparedMarketplaceParams()));
+            formData.append('marketplaceParams', JSON.stringify(prepareMarketplaceParamsForSubmit(marketplaceParams)));
 
             if (mainImageFile) {
                 formData.append('img', mainImageFile);
@@ -216,6 +234,53 @@ const EditProduct = ({show, onHide, productToEdit}) => {
         } catch (e) {
             alert(e.response?.data?.message || e.message);
         }
+    };
+
+    const renderRozetkaParams = () => {
+        if (!rozetkaCategoryId) {
+            return <Form.Text muted>Спочатку вкажіть ID категорії Rozetka.</Form.Text>;
+        }
+
+        if (!hasRozetkaTemplate) {
+            return (
+                <Form.Text className="text-danger">
+                    Для цієї категорії ще немає локального довідника значень.
+                </Form.Text>
+            );
+        }
+
+        return marketplaceParams.map((item, index) => {
+            const values = getRozetkaParamValues(rozetkaCategoryId, item.name);
+            const field = rozetkaFields.find(param => param.name === item.name);
+            const hasPresetValues = values.length > 0;
+            const isRequired = Boolean(field?.required);
+
+            return (
+                <Form.Group key={`${item.name}-${index}`} className="mb-2">
+                    <Form.Label className="mb-1">
+                        {item.name}{isRequired ? ' *' : ''}
+                    </Form.Label>
+
+                    {hasPresetValues ? (
+                        <Form.Select
+                            value={item.value}
+                            onChange={e => updateRozetkaParamValue(index, e.target.value)}
+                        >
+                            <option value="">Оберіть значення</option>
+                            {values.map(value => (
+                                <option key={value} value={value}>{value}</option>
+                            ))}
+                        </Form.Select>
+                    ) : (
+                        <Form.Control
+                            value={item.value}
+                            placeholder="Вкажіть значення"
+                            onChange={e => updateRozetkaParamValue(index, e.target.value)}
+                        />
+                    )}
+                </Form.Group>
+            );
+        });
     };
 
     return (
@@ -268,98 +333,41 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             inputMode="numeric"
                             placeholder="Напр.: 4652688"
                             value={rozetkaCategoryId}
-                            onChange={e => {
-                                setRozetkaCategoryId(e.target.value);
-                                setMarketplaceParams([]);
-                            }}
+                            onChange={e => handleRozetkaCategoryChange(e.target.value)}
                         />
                     </Form.Group>
 
                     <div className="border rounded p-3 mb-3 bg-light">
-                        <div className="d-flex justify-content-between align-items-center mb-2">
+                        <div className="d-flex justify-content-between align-items-start gap-2 mb-2">
                             <div>
                                 <strong>Характеристики для Rozetka</strong>
                                 <div className="text-muted small">
-                                    Ці поля йдуть тільки в rozetka.xml і не впливають на фільтри сайту.
+                                    Поля формуються автоматично за ID категорії Rozetka. Назви характеристик не редагуються, щоб не було помилок у XML.
                                 </div>
                             </div>
-                            <div className="d-flex gap-2">
+                            <div className="d-flex gap-2 flex-wrap justify-content-end">
                                 <Button
                                     variant="outline-secondary"
                                     size="sm"
                                     type="button"
-                                    disabled={!rozetkaConfig}
-                                    onClick={addDefaultRozetkaRows}
+                                    disabled={!hasRozetkaTemplate}
+                                    onClick={() => refreshRozetkaParams(true)}
                                 >
-                                    Додати шаблон
+                                    Оновити автозначення
                                 </Button>
                                 <Button
-                                    variant="outline-primary"
+                                    variant="outline-danger"
                                     size="sm"
                                     type="button"
-                                    disabled={!rozetkaConfig}
-                                    onClick={addMarketplaceParam}
+                                    disabled={!hasRozetkaTemplate}
+                                    onClick={clearRozetkaParams}
                                 >
-                                    + Рядок
+                                    Скинути
                                 </Button>
                             </div>
                         </div>
 
-                        {!rozetkaCategoryId && (
-                            <Form.Text muted>Спочатку вкажіть ID категорії Rozetka.</Form.Text>
-                        )}
-
-                        {rozetkaCategoryId && !rozetkaConfig && (
-                            <Form.Text className="text-danger">
-                                Для цієї категорії ще немає локального довідника значень.
-                            </Form.Text>
-                        )}
-
-                        {marketplaceParams.map((item, index) => {
-                            const values = getRozetkaParamValues(rozetkaCategoryId, item.name);
-                            const hasPresetValues = values.length > 0;
-
-                            return (
-                                <div key={`${index}-${item.name}`} className="d-flex gap-2 mb-2 align-items-start">
-                                    <Form.Select
-                                        value={item.name}
-                                        onChange={e => updateMarketplaceParam(index, 'name', e.target.value)}
-                                    >
-                                        <option value="">Характеристика</option>
-                                        {rozetkaParamNames.map(paramName => (
-                                            <option key={paramName} value={paramName}>{paramName}</option>
-                                        ))}
-                                    </Form.Select>
-
-                                    {hasPresetValues ? (
-                                        <Form.Select
-                                            value={item.value}
-                                            onChange={e => updateMarketplaceParam(index, 'value', e.target.value)}
-                                        >
-                                            <option value="">Значення</option>
-                                            {values.map(value => (
-                                                <option key={value} value={value}>{value}</option>
-                                            ))}
-                                        </Form.Select>
-                                    ) : (
-                                        <Form.Control
-                                            value={item.value}
-                                            placeholder="Значення з довідника Rozetka"
-                                            onChange={e => updateMarketplaceParam(index, 'value', e.target.value)}
-                                        />
-                                    )}
-
-                                    <Button
-                                        variant="outline-danger"
-                                        size="sm"
-                                        type="button"
-                                        onClick={() => removeMarketplaceParam(index)}
-                                    >
-                                        ×
-                                    </Button>
-                                </div>
-                            );
-                        })}
+                        {renderRozetkaParams()}
                     </div>
 
                     <Form.Group className="mb-2">
