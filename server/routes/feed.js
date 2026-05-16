@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { create } = require('xmlbuilder2');
-const { Product, ProductImage, Type } = require('../models/models');
+const { Product, ProductImage, Type, ProductMarketplaceParam } = require('../models/models');
 const { Op } = require('sequelize');
 
 const router = Router();
@@ -37,6 +37,25 @@ function addParamIf(offer, name, val) {
     if (val != null && String(val).trim() !== '') {
         offer.ele('param', { name }).txt(String(val).trim()).up();
     }
+}
+
+function appendManualMarketplaceParams(offer, product, marketplace = 'rozetka') {
+    const params = Array.isArray(product.marketplaceParams) ? product.marketplaceParams : [];
+    const rozetkaParams = params
+        .filter((item) => safe(item.marketplace).trim() === marketplace)
+        .map((item) => ({
+            name: safe(item.name).trim(),
+            value: safe(item.value).trim(),
+        }))
+        .filter((item) => item.name && item.value);
+
+    if (!rozetkaParams.length) return false;
+
+    for (const param of rozetkaParams) {
+        addParamIf(offer, param.name, param.value);
+    }
+
+    return true;
 }
 
 function parseNum(val) {
@@ -77,40 +96,15 @@ function normalizeColor(color, categoryId = '') {
     const value = safe(color).trim().toLowerCase();
 
     if (!value) return '';
-
-    const hasWhite = value.includes('бі') || value.includes('айвор') || value.includes('ivory');
-    const hasRed = value.includes('черв');
-    const hasGray = value.includes('сір');
-    const hasBlack = value.includes('чор');
-    const hasGreen = value.includes('зел') || value.includes('шавл') || value.includes('олив');
-    const hasBrown = value.includes('шокол') || value.includes('глин') || value.includes('корич') || value.includes('карам');
-
-    if (hasRed && hasWhite) {
-        if (categoryId === '4626843' || categoryId === '4626841') return 'Червоний/Білий';
-        return 'Біло-червоний';
-    }
-
-    if (hasGreen && hasWhite) {
-        if (categoryId === '245547') return 'Зелений + Білий';
-        return 'Біло-зелений';
-    }
-
-    if (hasBrown && hasWhite) {
-        if (categoryId === '4652688') return 'Коричнево-білий';
-        return 'Коричневий';
-    }
-
-    if (hasGray && hasBlack) return 'Сірий';
-    if (value.includes('комб')) return 'Коричневий';
-
-    if (value.includes('айвор')) return 'Айворі';
+    if (value.includes('айвор')) return categoryId === '245547' ? 'Білий' : 'Айворі';
     if (value.includes('світло') && value.includes('сір')) return 'Світло-сірий';
     if (value === 'сірий' || value.includes(' сір')) return 'Сірий';
-    if (hasGreen) return 'Зелений';
-    if (hasRed) return 'Червоний';
+    if (value.includes('зел')) return 'Зелений';
+    if (value.includes('черв')) return 'Червоний';
     if (value.includes('білий')) return 'Білий';
-    if (hasBlack) return 'Чорний';
-    if (hasBrown) return 'Коричневий';
+    if (value.includes('чор')) return 'Чорний';
+    if (value.includes('шокол') || value.includes('глин') || value.includes('корич') || value.includes('карам')) return 'Коричневий';
+    if (value.includes('комб')) return 'Комбінований';
 
     return safe(color).trim();
 }
@@ -229,13 +223,10 @@ function normalizeFeaturesForPlanter(product) {
 
     for (const feature of values) {
         const value = feature.toLowerCase();
-
         if (value.includes('декор')) normalized.push('Декоративні');
     }
 
-    if (!normalized.length) {
-        normalized.push('Декоративні');
-    }
+    if (!normalized.length) normalized.push('Декоративні');
 
     return [...new Set(normalized)];
 }
@@ -324,14 +315,6 @@ function appendKitchenBasketParams(offer, product, categoryId) {
     }
 }
 
-function normalizePlacematType() {
-    return 'Сервірувальні килимки';
-}
-
-function normalizePlacematUsage() {
-    return 'Текстиль для кухні';
-}
-
 function appendPlacematParams(offer, product, categoryId) {
     const country = safe(product.country).trim() || 'Україна';
     const material = normalizeMaterial(product.material);
@@ -339,17 +322,13 @@ function appendPlacematParams(offer, product, categoryId) {
     const shape = inferPluralShape(product);
     const size = buildSizeText(product, ' x ');
 
-    addParamIf(offer, 'Тип', normalizePlacematType(product));
+    addParamIf(offer, 'Тип', 'Сервірувальні килимки');
     addParamIf(offer, 'Країна-виробник товару', country);
     addParamIf(offer, 'Матеріал', material);
     addParamIf(offer, 'Колір', color);
     addParamIf(offer, 'Форма', shape);
     addParamIf(offer, 'Розміри', size);
-    addParamIf(offer, 'Використання', normalizePlacematUsage(product));
-}
-
-function normalizeCoasterType() {
-    return 'Підставка під чашку';
+    addParamIf(offer, 'Використання', 'Текстиль для кухні');
 }
 
 function appendCoasterParams(offer, product, categoryId) {
@@ -359,20 +338,12 @@ function appendCoasterParams(offer, product, categoryId) {
     const shape = inferPluralShape(product);
     const size = buildSizeText(product, 'x');
 
-    addParamIf(offer, 'Тип', normalizeCoasterType(product));
+    addParamIf(offer, 'Тип', 'Підставка під чашку');
     addParamIf(offer, 'Країна-виробник товару', country);
     addParamIf(offer, 'Матеріал', material);
     addParamIf(offer, 'Колір', color);
     addParamIf(offer, 'Форма', shape);
     addParamIf(offer, 'Розміри', size);
-}
-
-function normalizePlanterPurpose() {
-    return 'Універсальні';
-}
-
-function normalizePlanterPlacement() {
-    return 'Настільні';
 }
 
 function normalizePlanterSize(product) {
@@ -381,18 +352,11 @@ function normalizePlanterSize(product) {
     const width = parseNum(product.width);
     const length = parseNum(product.length);
 
-    const maxSide = Math.max(
-        height || 0,
-        diameter || 0,
-        width || 0,
-        length || 0,
-    );
+    const maxSide = Math.max(height || 0, diameter || 0, width || 0, length || 0);
 
     if (!maxSide) return '';
-
     if (maxSide <= 15) return 'Маленькі';
     if (maxSide <= 25) return 'Середні';
-
     return 'Великі';
 }
 
@@ -412,8 +376,8 @@ function appendPlanterParams(offer, product, categoryId) {
     addParamIf(offer, 'Форма', shape);
     addParamIf(offer, 'Розмір', size);
     addParamIf(offer, 'Зовнішні розміри', externalSize);
-    addParamIf(offer, 'Призначення', normalizePlanterPurpose(product));
-    addParamIf(offer, 'Розміщення', normalizePlanterPlacement(product));
+    addParamIf(offer, 'Призначення', 'Універсальні');
+    addParamIf(offer, 'Розміщення', 'Настільні');
 
     for (const feature of features) {
         addParamIf(offer, 'Особливості', feature);
@@ -443,7 +407,7 @@ function appendDefaultParams(offer, product, categoryId) {
     }
 }
 
-function appendParamsByCategory(offer, product, categoryId) {
+function appendFallbackParamsByCategory(offer, product, categoryId) {
     const storageIds = new Set(['4652688', '389782779', '213']);
     const kitchenBasketIds = new Set(['4626843', '4652687', '4626841']);
     const placematIds = new Set(['169828']);
@@ -478,6 +442,16 @@ function appendParamsByCategory(offer, product, categoryId) {
     appendDefaultParams(offer, product, categoryId);
 }
 
+function appendParamsByCategory(offer, product, categoryId) {
+    const hasManualParams = appendManualMarketplaceParams(offer, product, 'rozetka');
+
+    if (hasManualParams) {
+        return;
+    }
+
+    appendFallbackParamsByCategory(offer, product, categoryId);
+}
+
 // ===== route =====
 router.get('/rozetka.xml', async (req, res, next) => {
     try {
@@ -494,6 +468,7 @@ router.get('/rozetka.xml', async (req, res, next) => {
             include: [
                 { model: ProductImage, as: 'images' },
                 { model: Type },
+                { model: ProductMarketplaceParam, as: 'marketplaceParams' },
             ],
             order: [['id', 'ASC']],
         });

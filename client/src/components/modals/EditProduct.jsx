@@ -2,6 +2,11 @@ import React, {useMemo, useState, useEffect} from 'react';
 import {Modal, Button, Form} from 'react-bootstrap';
 import {updateProduct, fetchProducts, deleteProductImage} from '../../http/productAPI.js';
 import {fetchTypes} from '../../http/typeAPI.js';
+import {
+    getRozetkaParamNames,
+    getRozetkaParamValues,
+    getRozetkaParamsForCategory,
+} from '../../utils/rozetkaParams.js';
 
 const KIND_OPTIONS = ['Кошик', 'Плейсмат', 'Костер', 'Кашпо', 'Набір'];
 const MATERIAL_OPTIONS = ['Бавовна'];
@@ -10,12 +15,26 @@ const SHAPE_OPTIONS = ['Кругла', 'Овальна', 'Прямокутна']
 const PURPOSE_OPTIONS = ['Для ванної', 'Для кухні', 'Для зберігання', 'Універсальне', 'Декоративне'];
 const FEATURE_OPTIONS = ['З кришкою', 'З ручками', 'Плетений', 'Набір'];
 
+const emptyMarketplaceParam = {marketplace: 'rozetka', name: '', value: ''};
+
 const parseFeatures = (value) => {
     if (!value) return [];
     return String(value)
         .split(',')
         .map(item => item.trim())
         .filter(Boolean);
+};
+
+const parseMarketplaceParams = (params) => {
+    if (!Array.isArray(params)) return [];
+
+    return params
+        .filter(item => String(item.marketplace || 'rozetka').trim() === 'rozetka')
+        .map(item => ({
+            marketplace: 'rozetka',
+            name: item.name || '',
+            value: item.value || '',
+        }));
 };
 
 const EditProduct = ({show, onHide, productToEdit}) => {
@@ -44,6 +63,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
     const [material, setMaterial] = useState('');
     const [types, setTypes] = useState([]);
     const [typeId, setTypeId] = useState('');
+    const [marketplaceParams, setMarketplaceParams] = useState([]);
 
     useEffect(() => {
         if (show) {
@@ -77,16 +97,70 @@ const EditProduct = ({show, onHide, productToEdit}) => {
             setCountry(productToEdit.country || 'Україна');
             setMaterial(productToEdit.material || '');
             setTypeId(productToEdit.typeId ? String(productToEdit.typeId) : '');
+            setMarketplaceParams(parseMarketplaceParams(productToEdit.marketplaceParams));
             setImgFiles([]);
             setMainImageFile(null);
         }
     }, [productToEdit]);
 
     const normalizedFeatures = useMemo(() => features.filter(Boolean), [features]);
+    const rozetkaConfig = useMemo(() => getRozetkaParamsForCategory(rozetkaCategoryId), [rozetkaCategoryId]);
+    const rozetkaParamNames = useMemo(() => getRozetkaParamNames(rozetkaCategoryId), [rozetkaCategoryId]);
 
     const handleFeaturesChange = (e) => {
         const values = Array.from(e.target.selectedOptions).map(option => option.value);
         setFeatures(values);
+    };
+
+    const addMarketplaceParam = () => {
+        setMarketplaceParams(prev => [...prev, {...emptyMarketplaceParam}]);
+    };
+
+    const removeMarketplaceParam = (index) => {
+        setMarketplaceParams(prev => prev.filter((_, itemIndex) => itemIndex !== index));
+    };
+
+    const updateMarketplaceParam = (index, field, value) => {
+        setMarketplaceParams(prev => prev.map((item, itemIndex) => {
+            if (itemIndex !== index) return item;
+
+            if (field === 'name') {
+                return {
+                    ...item,
+                    name: value,
+                    value: '',
+                };
+            }
+
+            return {
+                ...item,
+                [field]: value,
+            };
+        }));
+    };
+
+    const addDefaultRozetkaRows = () => {
+        const names = getRozetkaParamNames(rozetkaCategoryId);
+        const existing = new Set(marketplaceParams.map(item => item.name).filter(Boolean));
+        const newRows = names
+            .filter(paramName => !existing.has(paramName))
+            .map(paramName => ({
+                marketplace: 'rozetka',
+                name: paramName,
+                value: '',
+            }));
+
+        setMarketplaceParams(prev => [...prev, ...newRows]);
+    };
+
+    const getPreparedMarketplaceParams = () => {
+        return marketplaceParams
+            .map(item => ({
+                marketplace: 'rozetka',
+                name: String(item.name || '').trim(),
+                value: String(item.value || '').trim(),
+            }))
+            .filter(item => item.name && item.value);
     };
 
     const handleSave = async () => {
@@ -117,6 +191,7 @@ const EditProduct = ({show, onHide, productToEdit}) => {
             formData.append('material', (material ?? '').trim());
             formData.append('rozetkaCategoryId', (rozetkaCategoryId ?? '').trim());
             formData.append('rating', String(rating ?? 1));
+            formData.append('marketplaceParams', JSON.stringify(getPreparedMarketplaceParams()));
 
             if (mainImageFile) {
                 formData.append('img', mainImageFile);
@@ -193,9 +268,99 @@ const EditProduct = ({show, onHide, productToEdit}) => {
                             inputMode="numeric"
                             placeholder="Напр.: 4652688"
                             value={rozetkaCategoryId}
-                            onChange={e => setRozetkaCategoryId(e.target.value)}
+                            onChange={e => {
+                                setRozetkaCategoryId(e.target.value);
+                                setMarketplaceParams([]);
+                            }}
                         />
                     </Form.Group>
+
+                    <div className="border rounded p-3 mb-3 bg-light">
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <strong>Характеристики для Rozetka</strong>
+                                <div className="text-muted small">
+                                    Ці поля йдуть тільки в rozetka.xml і не впливають на фільтри сайту.
+                                </div>
+                            </div>
+                            <div className="d-flex gap-2">
+                                <Button
+                                    variant="outline-secondary"
+                                    size="sm"
+                                    type="button"
+                                    disabled={!rozetkaConfig}
+                                    onClick={addDefaultRozetkaRows}
+                                >
+                                    Додати шаблон
+                                </Button>
+                                <Button
+                                    variant="outline-primary"
+                                    size="sm"
+                                    type="button"
+                                    disabled={!rozetkaConfig}
+                                    onClick={addMarketplaceParam}
+                                >
+                                    + Рядок
+                                </Button>
+                            </div>
+                        </div>
+
+                        {!rozetkaCategoryId && (
+                            <Form.Text muted>Спочатку вкажіть ID категорії Rozetka.</Form.Text>
+                        )}
+
+                        {rozetkaCategoryId && !rozetkaConfig && (
+                            <Form.Text className="text-danger">
+                                Для цієї категорії ще немає локального довідника значень.
+                            </Form.Text>
+                        )}
+
+                        {marketplaceParams.map((item, index) => {
+                            const values = getRozetkaParamValues(rozetkaCategoryId, item.name);
+                            const hasPresetValues = values.length > 0;
+
+                            return (
+                                <div key={`${index}-${item.name}`} className="d-flex gap-2 mb-2 align-items-start">
+                                    <Form.Select
+                                        value={item.name}
+                                        onChange={e => updateMarketplaceParam(index, 'name', e.target.value)}
+                                    >
+                                        <option value="">Характеристика</option>
+                                        {rozetkaParamNames.map(paramName => (
+                                            <option key={paramName} value={paramName}>{paramName}</option>
+                                        ))}
+                                    </Form.Select>
+
+                                    {hasPresetValues ? (
+                                        <Form.Select
+                                            value={item.value}
+                                            onChange={e => updateMarketplaceParam(index, 'value', e.target.value)}
+                                        >
+                                            <option value="">Значення</option>
+                                            {values.map(value => (
+                                                <option key={value} value={value}>{value}</option>
+                                            ))}
+                                        </Form.Select>
+                                    ) : (
+                                        <Form.Control
+                                            value={item.value}
+                                            placeholder="Значення з довідника Rozetka"
+                                            onChange={e => updateMarketplaceParam(index, 'value', e.target.value)}
+                                        />
+                                    )}
+
+                                    <Button
+                                        variant="outline-danger"
+                                        size="sm"
+                                        type="button"
+                                        onClick={() => removeMarketplaceParam(index)}
+                                    >
+                                        ×
+                                    </Button>
+                                </div>
+                            );
+                        })}
+                    </div>
 
                     <Form.Group className="mb-2">
                         <Form.Label>Рейтинг (1–10)</Form.Label>

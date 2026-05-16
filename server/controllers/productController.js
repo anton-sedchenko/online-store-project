@@ -1,19 +1,75 @@
-const {Product} = require('../models/models');
+const {Product, ProductImage, ProductMarketplaceParam} = require('../models/models');
 const ApiError = require('../error/ApiError');
 const {cloudinary, extractPublicId} = require('../utils/cloudinary');
 const slugify = require('slugify');
-const {ProductImage} = require('../models/models');
 const {invalidateFeedCache} = require('../routes/feed');
+
+const PRODUCT_INCLUDES = [
+    {association: 'images'},
+    {association: 'marketplaceParams'},
+];
+
+function parseMarketplaceParams(raw) {
+    if (!raw) return [];
+
+    let parsed = raw;
+
+    if (typeof raw === 'string') {
+        try {
+            parsed = JSON.parse(raw);
+        } catch (e) {
+            return [];
+        }
+    }
+
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed
+        .map((item) => ({
+            marketplace: String(item.marketplace || 'rozetka').trim() || 'rozetka',
+            name: String(item.name || '').trim(),
+            value: String(item.value || '').trim(),
+        }))
+        .filter((item) => item.name && item.value);
+}
+
+async function syncMarketplaceParams(productId, rawParams) {
+    if (rawParams === undefined) return;
+
+    const params = parseMarketplaceParams(rawParams);
+
+    await ProductMarketplaceParam.destroy({
+        where: {
+            productId,
+            marketplace: 'rozetka',
+        },
+    });
+
+    if (!params.length) return;
+
+    await ProductMarketplaceParam.bulkCreate(
+        params.map((item) => ({
+            productId,
+            marketplace: item.marketplace,
+            name: item.name,
+            value: item.value,
+        }))
+    );
+}
 
 class ProductController {
     async getBySlug(req, res, next) {
-        const {slug} = req.params;
-        const product = await Product.findOne({
-            where: {slug},
-            include: [{association: 'images'}]
-        });
-        if (!product) return next(ApiError.notFound('Товар не знайдено'));
-        return res.json(product);
+        try {
+            const {slug} = req.params;
+            const product = await Product.findOne({
+                where: {slug},
+                include: PRODUCT_INCLUDES,
+            });
+            if (!product) return next(ApiError.notFound('Товар не знайдено'));
+            return res.json(product);
+        } catch (e) {
+            next(ApiError.internal(e.message));
+        }
     }
 
     async create(req, res, next) {
@@ -43,6 +99,7 @@ class ProductController {
                 weightKg,
                 country,
                 material,
+                marketplaceParams,
             } = req.body;
 
             const availabilityNorm = availability === 'PRE_ORDER' ? 'MADE_TO_ORDER' : availability;
@@ -113,11 +170,14 @@ class ProductController {
                 material: materialVal,
             });
 
+            await syncMarketplaceParams(newProduct.id, marketplaceParams);
+            await newProduct.reload({include: PRODUCT_INCLUDES});
+
             invalidateFeedCache();
             return res.json(newProduct);
         } catch (e) {
             console.error('PRODUCT CREATE ERROR:', e);
-            next(ApiError.internal("Помилка при створенні товару"));
+            next(ApiError.internal('Помилка при створенні товару'));
         }
     }
 
@@ -143,6 +203,7 @@ class ProductController {
                 weightKg,
                 country,
                 material,
+                marketplaceParams,
             } = req.body;
 
             const {availability, rozetkaCategoryId, rating} = req.body;
@@ -266,8 +327,10 @@ class ProductController {
             }
 
             await product.save();
-            invalidateFeedCache();
+            await syncMarketplaceParams(product.id, marketplaceParams);
+            await product.reload({include: PRODUCT_INCLUDES});
 
+            invalidateFeedCache();
             return res.json(product);
         } catch (e) {
             next(ApiError.internal(e.message));
@@ -287,19 +350,28 @@ class ProductController {
                 order = [['code', 'ASC']];
             }
 
+            const include = [
+                {association: 'images'},
+                {association: 'marketplaceParams'},
+            ];
+
             let products;
 
             if (typeId) {
                 products = await Product.findAndCountAll({
                     where: {typeId},
+                    include,
                     limit,
                     offset,
+                    distinct: true,
                     order,
                 });
             } else {
                 products = await Product.findAndCountAll({
+                    include,
                     limit,
                     offset,
+                    distinct: true,
                     order,
                 });
             }
@@ -314,9 +386,9 @@ class ProductController {
         try {
             const {id} = req.params;
             const product = await Product.findByPk(id, {
-                include: [{association: 'images'}]
+                include: PRODUCT_INCLUDES,
             });
-            if (!product) return next(ApiError.notFound("Товар не знайдено"));
+            if (!product) return next(ApiError.notFound('Товар не знайдено'));
             return res.json(product);
         } catch (e) {
             next(ApiError.internal(e.message));
@@ -343,9 +415,11 @@ class ProductController {
                 await cloudinary.uploader.destroy(mainPublicId);
             }
 
+            await ProductMarketplaceParam.destroy({where: {productId: id}});
             await ProductImage.destroy({where: {productId: id}});
             await Product.destroy({where: {id}});
 
+            invalidateFeedCache();
             return res.json({message: `Товар id=${id} та всі зображення видалені`});
         } catch (e) {
             next(ApiError.internal(e.message));
@@ -396,6 +470,7 @@ class ProductController {
             }
 
             await ProductImage.destroy({where: {id}});
+            invalidateFeedCache();
 
             return res.json({message: 'Зображення видалено'});
         } catch (e) {

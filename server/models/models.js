@@ -42,10 +42,10 @@ const Product = sequelize.define('product', {
     country: {type: DataTypes.TEXT, allowNull: true},
     color: {type: DataTypes.TEXT, allowNull: true},
     material: {type: DataTypes.TEXT, allowNull: true},
-    kind: {type: DataTypes.TEXT, allowNull: true},       // тип виробу
-    shape: {type: DataTypes.TEXT, allowNull: true},      // форма
-    purpose: {type: DataTypes.TEXT, allowNull: true},    // призначення
-    features: {type: DataTypes.TEXT, allowNull: true},   // особливості, через кому
+    kind: {type: DataTypes.TEXT, allowNull: true},       // тип виробу для сайту
+    shape: {type: DataTypes.TEXT, allowNull: true},      // форма для сайту
+    purpose: {type: DataTypes.TEXT, allowNull: true},    // призначення для сайту
+    features: {type: DataTypes.TEXT, allowNull: true},   // особливості для сайту, через кому
 
     availability: {
         type: DataTypes.STRING,
@@ -65,6 +65,28 @@ const Product = sequelize.define('product', {
 
     slug: {type: DataTypes.STRING, unique: true},
     rozetkaCategoryId: {type: DataTypes.BIGINT, allowNull: true},
+});
+
+const ProductMarketplaceParam = sequelize.define('product_marketplace_param', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    marketplace: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'rozetka',
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    value: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+    },
+}, {
+    indexes: [
+        {fields: ['productId']},
+        {fields: ['marketplace']},
+    ],
 });
 
 const Type = sequelize.define('type', {
@@ -135,6 +157,13 @@ CartProduct.belongsTo(Product);
 Product.hasMany(ProductImage, {as: 'images'});
 ProductImage.belongsTo(Product);
 
+Product.hasMany(ProductMarketplaceParam, {
+    as: 'marketplaceParams',
+    foreignKey: 'productId',
+    onDelete: 'CASCADE',
+});
+ProductMarketplaceParam.belongsTo(Product, {foreignKey: 'productId'});
+
 Product.hasMany(Review, {foreignKey: 'productId'});
 Review.belongsTo(Product, {foreignKey: 'productId'});
 
@@ -150,6 +179,7 @@ module.exports = {
     Order,
     OrderProduct,
     ProductImage,
+    ProductMarketplaceParam,
     Article,
     Review,
 };

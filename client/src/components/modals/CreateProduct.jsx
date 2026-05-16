@@ -3,6 +3,11 @@ import {Button, Form, Modal} from "react-bootstrap";
 import {createProduct} from "../../http/productAPI.js";
 import {fetchTypes} from "../../http/typeAPI.js";
 import {observer} from "mobx-react-lite";
+import {
+    getRozetkaParamNames,
+    getRozetkaParamValues,
+    getRozetkaParamsForCategory,
+} from "../../utils/rozetkaParams.js";
 
 const KIND_OPTIONS = ['Кошик', 'Плейсмат', 'Костер', 'Кашпо', 'Набір'];
 const MATERIAL_OPTIONS = ['Бавовна'];
@@ -10,6 +15,8 @@ const COLOR_OPTIONS = ['Айворі', 'Світло-сірий', 'Зелени�
 const SHAPE_OPTIONS = ['Кругла', 'Овальна', 'Прямокутна'];
 const PURPOSE_OPTIONS = ['Для ванної', 'Для кухні', 'Для зберігання', 'Універсальне', 'Декоративне'];
 const FEATURE_OPTIONS = ['З кришкою', 'З ручками', 'Плетений', 'Набір'];
+
+const emptyMarketplaceParam = {marketplace: 'rozetka', name: '', value: ''};
 
 const CreateProduct = observer(({show, onHide}) => {
     const [name, setName] = useState('');
@@ -34,6 +41,7 @@ const CreateProduct = observer(({show, onHide}) => {
     const [material, setMaterial] = useState('');
     const [types, setTypes] = useState([]);
     const [typeId, setTypeId] = useState('');
+    const [marketplaceParams, setMarketplaceParams] = useState([]);
 
     useEffect(() => {
         if (show) {
@@ -44,6 +52,8 @@ const CreateProduct = observer(({show, onHide}) => {
     }, [show]);
 
     const normalizedFeatures = useMemo(() => features.filter(Boolean), [features]);
+    const rozetkaConfig = useMemo(() => getRozetkaParamsForCategory(rozetkaCategoryId), [rozetkaCategoryId]);
+    const rozetkaParamNames = useMemo(() => getRozetkaParamNames(rozetkaCategoryId), [rozetkaCategoryId]);
 
     const resetForm = () => {
         setName('');
@@ -67,6 +77,7 @@ const CreateProduct = observer(({show, onHide}) => {
         setCountry('Україна');
         setMaterial('');
         setTypeId('');
+        setMarketplaceParams([]);
     };
 
     const selectFile = (e) => {
@@ -76,6 +87,53 @@ const CreateProduct = observer(({show, onHide}) => {
     const handleFeaturesChange = (e) => {
         const values = Array.from(e.target.selectedOptions).map(option => option.value);
         setFeatures(values);
+    };
+
+    const addMarketplaceParam = () => {
+        setMarketplaceParams(prev => [...prev, {...emptyMarketplaceParam}]);
+    };
+
+    const removeMarketplaceParam = (index) => {
+        setMarketplaceParams(prev => prev.filter((_, itemIndex) => itemIndex !== index));
+    };
+
+    const updateMarketplaceParam = (index, field, value) => {
+        setMarketplaceParams(prev => prev.map((item, itemIndex) => {
+            if (itemIndex !== index) return item;
+
+            if (field === 'name') {
+                return {
+                    ...item,
+                    name: value,
+                    value: '',
+                };
+            }
+
+            return {
+                ...item,
+                [field]: value,
+            };
+        }));
+    };
+
+    const addDefaultRozetkaRows = () => {
+        const names = getRozetkaParamNames(rozetkaCategoryId);
+        const defaults = names.map(paramName => ({
+            marketplace: 'rozetka',
+            name: paramName,
+            value: '',
+        }));
+        setMarketplaceParams(defaults);
+    };
+
+    const getPreparedMarketplaceParams = () => {
+        return marketplaceParams
+            .map(item => ({
+                marketplace: 'rozetka',
+                name: String(item.name || '').trim(),
+                value: String(item.value || '').trim(),
+            }))
+            .filter(item => item.name && item.value);
     };
 
     const addProduct = async () => {
@@ -112,6 +170,7 @@ const CreateProduct = observer(({show, onHide}) => {
             formData.append("weightKg", (weightKg ?? '').trim());
             formData.append("country", (country ?? 'Україна').trim());
             formData.append("material", (material ?? '').trim());
+            formData.append("marketplaceParams", JSON.stringify(getPreparedMarketplaceParams()));
 
             await createProduct(formData);
             resetForm();
@@ -161,9 +220,99 @@ const CreateProduct = observer(({show, onHide}) => {
                             inputMode="numeric"
                             placeholder="Наприклад: 4652688"
                             value={rozetkaCategoryId}
-                            onChange={e => setRozetkaCategoryId(e.target.value)}
+                            onChange={e => {
+                                setRozetkaCategoryId(e.target.value);
+                                setMarketplaceParams([]);
+                            }}
                         />
                     </Form.Group>
+
+                    <div className="border rounded p-3 mb-3 bg-light">
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <strong>Характеристики для Rozetka</strong>
+                                <div className="text-muted small">
+                                    Ці поля йдуть тільки в rozetka.xml і не впливають на фільтри сайту.
+                                </div>
+                            </div>
+                            <div className="d-flex gap-2">
+                                <Button
+                                    variant="outline-secondary"
+                                    size="sm"
+                                    type="button"
+                                    disabled={!rozetkaConfig}
+                                    onClick={addDefaultRozetkaRows}
+                                >
+                                    Додати шаблон
+                                </Button>
+                                <Button
+                                    variant="outline-primary"
+                                    size="sm"
+                                    type="button"
+                                    disabled={!rozetkaConfig}
+                                    onClick={addMarketplaceParam}
+                                >
+                                    + Рядок
+                                </Button>
+                            </div>
+                        </div>
+
+                        {!rozetkaCategoryId && (
+                            <Form.Text muted>Спочатку вкажіть ID категорії Rozetka.</Form.Text>
+                        )}
+
+                        {rozetkaCategoryId && !rozetkaConfig && (
+                            <Form.Text className="text-danger">
+                                Для цієї категорії ще немає локального довідника значень.
+                            </Form.Text>
+                        )}
+
+                        {marketplaceParams.map((item, index) => {
+                            const values = getRozetkaParamValues(rozetkaCategoryId, item.name);
+                            const hasPresetValues = values.length > 0;
+
+                            return (
+                                <div key={`${index}-${item.name}`} className="d-flex gap-2 mb-2 align-items-start">
+                                    <Form.Select
+                                        value={item.name}
+                                        onChange={e => updateMarketplaceParam(index, 'name', e.target.value)}
+                                    >
+                                        <option value="">Характеристика</option>
+                                        {rozetkaParamNames.map(paramName => (
+                                            <option key={paramName} value={paramName}>{paramName}</option>
+                                        ))}
+                                    </Form.Select>
+
+                                    {hasPresetValues ? (
+                                        <Form.Select
+                                            value={item.value}
+                                            onChange={e => updateMarketplaceParam(index, 'value', e.target.value)}
+                                        >
+                                            <option value="">Значення</option>
+                                            {values.map(value => (
+                                                <option key={value} value={value}>{value}</option>
+                                            ))}
+                                        </Form.Select>
+                                    ) : (
+                                        <Form.Control
+                                            value={item.value}
+                                            placeholder="Значення з довідника Rozetka"
+                                            onChange={e => updateMarketplaceParam(index, 'value', e.target.value)}
+                                        />
+                                    )}
+
+                                    <Button
+                                        variant="outline-danger"
+                                        size="sm"
+                                        type="button"
+                                        onClick={() => removeMarketplaceParam(index)}
+                                    >
+                                        ×
+                                    </Button>
+                                </div>
+                            );
+                        })}
+                    </div>
 
                     <Form.Group className="mb-2">
                         <Form.Label>Рейтинг (1–10)</Form.Label>
