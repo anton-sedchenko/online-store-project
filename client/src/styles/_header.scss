@@ -5,11 +5,12 @@
   padding: 0;
   display: flex;
   justify-content: center;
+  background: #2f241c;
 }
 
 .header__content__wrapper {
   width: 100%;
-  max-width: none;
+  max-width: 1200px;
   border-bottom: 1px solid lightgrey;
   position: relative;
   overflow: hidden;
@@ -17,6 +18,7 @@
   min-height: 341px;
   display: flex;
   box-sizing: border-box;
+  background: #2f241c;
 
   @include respond-to(md) {
     padding: 12px 10px 10px;
@@ -43,8 +45,6 @@
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
