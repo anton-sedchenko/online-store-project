@@ -19,6 +19,7 @@
   display: flex;
   box-sizing: border-box;
   background: #2f241c;
+  box-shadow: 0 8px 22px rgba(47, 36, 28, 0.16);
 
   @include respond-to(md) {
     padding: 12px 10px 10px;
