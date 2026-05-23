@@ -125,7 +125,7 @@ export default function Reviews({ productId, isAuth, isAdmin, userId }) {
     };
 
     return (
-        <section style={{ marginTop: 24 }}>
+        <section style={{ marginTop: 27 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <h4 style={{ margin: 0 }}>Відгуки</h4>
             </div>
@@ -148,7 +148,7 @@ export default function Reviews({ productId, isAuth, isAdmin, userId }) {
             </div>
 
             {/* ЄДИНА ФОРМА */}
-            <div style={{ marginTop: 16, borderTop: "1px solid #eee", paddingTop: 12 }}>
+            <div style={{ marginTop: 60, borderTop: "1px solid #eee", paddingTop: 12 }}>
                 {!userHasRated && (
                     <>
                         <p style={{ marginBottom: 6 }}>Ваша оцінка товару (опційно):</p>

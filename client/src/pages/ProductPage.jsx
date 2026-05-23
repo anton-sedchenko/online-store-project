@@ -339,7 +339,6 @@ const ProductPage = () => {
                         <div className="product__purchase__note">
                             <span>Пошито зі шнура</span>
                             <span>Відправка по Україні</span>
-                            <span>Підтверджуємо замовлення перед відправкою</span>
                         </div>
 
                         <div className="product__count__container">
@@ -368,11 +367,6 @@ const ProductPage = () => {
                             >
                                 {isOutOfStock ? 'Товар тимчасово недоступний' : 'Додати в кошик'}
                             </button>
-                            {!isOutOfStock && (
-                                <p className="product__page__btn__hint">
-                                    Після додавання ви перейдете до кошика для оформлення замовлення.
-                                </p>
-                            )}
                         </div>
                     </div>
                 </Col>
@@ -445,13 +439,6 @@ const ProductPage = () => {
             <Row className="product__reviews__row">
                 <Col xs={12}>
                     <div className="product__content__card product__reviews__card">
-                        <div className="product__reviews__intro">
-                            <h4>Відгуки</h4>
-                            <p>
-                                Якщо вже замовляли цей товар, поділіться враженням — це допоможе іншим покупцям зробити вибір.
-                            </p>
-                        </div>
-
                         {product.id && (
                             <Reviews
                                 productId={product.id}
