@@ -50,7 +50,11 @@ const ProductPage = () => {
         })();
     }, [product?.id]);
 
+    const isOutOfStock = product.availability === 'OUT_OF_STOCK';
+
     const handleAddToCart = () => {
+        if (isOutOfStock) return;
+
         cartStore.addItem(
             {
                 id: product.id,
@@ -272,10 +276,10 @@ const ProductPage = () => {
                             aggregateRating:
                                 ratingCount > 0
                                     ? {
-                                          "@type": "AggregateRating",
-                                          ratingValue: Number(ratingAvg).toFixed(1),
-                                          reviewCount: ratingCount,
-                                      }
+                                        "@type": "AggregateRating",
+                                        ratingValue: Number(ratingAvg).toFixed(1),
+                                        reviewCount: ratingCount,
+                                    }
                                     : undefined,
                         })}
                     </script>
@@ -332,6 +336,12 @@ const ProductPage = () => {
 
                         <h1 className="product__title">{product.name}</h1>
 
+                        <div className="product__purchase__note">
+                            <span>Пошито зі шнура</span>
+                            <span>Відправка по Україні</span>
+                            <span>Підтверджуємо замовлення перед відправкою</span>
+                        </div>
+
                         <div className="product__count__container">
                             <p className="product__count">Кількість:</p>
                             <input
@@ -351,9 +361,18 @@ const ProductPage = () => {
                         </p>
 
                         <div className="product__page__btn__container">
-                            <button className="product__page__btn" onClick={handleAddToCart}>
-                                Додати в кошик
+                            <button
+                                className="product__page__btn"
+                                onClick={handleAddToCart}
+                                disabled={isOutOfStock}
+                            >
+                                {isOutOfStock ? 'Товар тимчасово недоступний' : 'Додати в кошик'}
                             </button>
+                            {!isOutOfStock && (
+                                <p className="product__page__btn__hint">
+                                    Після додавання ви перейдете до кошика для оформлення замовлення.
+                                </p>
+                            )}
                         </div>
                     </div>
                 </Col>
@@ -363,23 +382,26 @@ const ProductPage = () => {
                         <div className="purchase__conditions__section">
                             <h6>Доставка</h6>
                             <ul>
-                                <li>Нова пошта</li>
-                                <li>Укрпошта</li>
-                                <li>Безкоштовна доставка при замовленні від 1500 грн.</li>
+                                <li>Нова пошта: відділення, поштомат або курʼєр</li>
+                                <li>Укрпошта: відділення</li>
+                                <li>Безкоштовна доставка від 1500 грн</li>
                             </ul>
                         </div>
 
                         <div className="purchase__conditions__section">
                             <h6>Оплата</h6>
                             <ul>
-                                <li>Готівкою при отриманні</li>
+                                <li>Післяплата при отриманні</li>
                                 <li>Безготівковий переказ</li>
-                                <li>Приват 24</li>
+                                <li>Оплата на картку після підтвердження</li>
                             </ul>
                         </div>
 
                         <div className="purchase__conditions__section">
-                            <h6>Замовити по телефону</h6>
+                            <h6>Потрібна консультація?</h6>
+                            <p className="purchase__conditions__text">
+                                Допоможемо з вибором розміру, кольору або оформленням замовлення.
+                            </p>
                             <button
                                 type="button"
                                 className="purchase__conditions__callback__link"
@@ -423,6 +445,13 @@ const ProductPage = () => {
             <Row className="product__reviews__row">
                 <Col xs={12}>
                     <div className="product__content__card product__reviews__card">
+                        <div className="product__reviews__intro">
+                            <h4>Відгуки</h4>
+                            <p>
+                                Якщо вже замовляли цей товар, поділіться враженням — це допоможе іншим покупцям зробити вибір.
+                            </p>
+                        </div>
+
                         {product.id && (
                             <Reviews
                                 productId={product.id}
