@@ -1,7 +1,7 @@
 import React from 'react';
 import CartTable from "../components/CartTable.jsx";
 import SideBar from "../components/SideBar.jsx";
-import {Col, Container, Row} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 import {Helmet} from "react-helmet-async";
 
 const Cart = () => {
@@ -9,14 +9,18 @@ const Cart = () => {
         <div className="component__container">
             <Helmet>
                 <title>Мій кошик – Charivna Craft</title>
-                <meta name="description" content="Перевірте товари у своєму кошику перед оформленням замовлення." />
+                <meta
+                    name="description"
+                    content="Перевірте товари у своєму кошику перед оформленням замовлення."
+                />
             </Helmet>
 
             <Row>
-                <Col md={2}>
+                <Col lg={2}>
                     <SideBar/>
                 </Col>
-                <Col md={9}>
+
+                <Col lg={10}>
                     <CartTable/>
                 </Col>
             </Row>

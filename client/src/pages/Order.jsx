@@ -24,6 +24,12 @@ const Order = () => {
     }, [cartItems]);
 
     const getItemQty = (item) => Number(item.quantity || item.qty || item.count || 1);
+    
+    const totalQty = useMemo(() => {
+    return cartItems.reduce((sum, item) => {
+        return sum + getItemQty(item);
+    }, 0);
+}, [cartItems]);
 
     // Спосіб доставки
     const [deliveryMethod, setDeliveryMethod] = useState("NP_BRANCH");
@@ -233,7 +239,7 @@ const Order = () => {
                     <div className="order__summary__card">
                         <div className="order__summary__header">
                             <h4>Ваше замовлення</h4>
-                            <span>{cartItems.length} товар(и)</span>
+                            <span>{cartItems.length} позиції / {totalQty} од.</span>
                         </div>
 
                         {cartItems.length > 0 ? (

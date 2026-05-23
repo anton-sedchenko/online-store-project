@@ -40,6 +40,13 @@ const CartTable = observer(() => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cartStore.items, draftQty]);
 
+    const totalQty = useMemo(() => {
+        return cartStore.items.reduce((sum, item) => {
+            return sum + getItemQty(item);
+        }, 0);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cartStore.items, draftQty]);
+
     const handleQuantityBlur = (item) => {
         const value = Number(draftQty[item.id]);
         const safe = Number.isFinite(value) && value > 0 ? value : 1;
@@ -144,11 +151,9 @@ const CartTable = observer(() => {
                                         min={1}
                                         value={draftQty[item.id] ?? item.quantity}
                                         onChange={e => {
-                                            const value = e.target.value;
-
                                             setDraftQty(prev => ({
                                                 ...prev,
-                                                [item.id]: value
+                                                [item.id]: e.target.value
                                             }));
                                         }}
                                         onBlur={() => handleQuantityBlur(item)}
@@ -178,8 +183,13 @@ const CartTable = observer(() => {
                     <h3>Підсумок</h3>
 
                     <div className="cart__summary__row">
-                        <span>Товарів у кошику:</span>
+                        <span>Позицій у кошику:</span>
                         <strong>{cartStore.items.length}</strong>
+                    </div>
+
+                    <div className="cart__summary__row">
+                        <span>Усього одиниць:</span>
+                        <strong>{totalQty}</strong>
                     </div>
 
                     <div className="cart__summary__row">
@@ -230,10 +240,13 @@ const CartTable = observer(() => {
                         Закрити
                     </Button>
 
-                    <Button variant="primary" onClick={() => {
-                        setShowMinModal(false);
-                        navigate(HOME_ROUTE);
-                    }}>
+                    <Button
+                        variant="primary"
+                        onClick={() => {
+                            setShowMinModal(false);
+                            navigate(HOME_ROUTE);
+                        }}
+                    >
                         Додати ще товари
                     </Button>
                 </Modal.Footer>
