@@ -416,112 +416,86 @@ const Order = () => {
                                     )}
 
                                     {(deliveryMethod === "NP_BRANCH" || deliveryMethod === "NP_POSTOMAT") && selectedCity && (
-                                        <>
-                                            <p style={{marginTop: 12}}>
-                                                Відділення / Поштомат<span className="input__label__required__marker">*</span>
-                                            </p>
+                                        <div className="post__warhouse__pick__container">
+                                            <div className="order__warehouse__top">
+                                                <label className="order__field__label order__field__label--no-margin">
+                                                    Відділення / Поштомат<span className="input__label__required__marker">*</span>
+                                                </label>
 
-                                            <div className="post__warhouse__pick__container">
-                                                <div className="post__warhouse__list__container">
-                                                    <input
-                                                        ref={warehouseInputRef}
-                                                        type="text"
-                                                        name="fake-warehouse"
-                                                        className="buyer__contacts__form-input"
-                                                        inputMode="none"
-                                                        placeholder="Почніть вводити номер або адресу відділення…"
-                                                        autoComplete="new-password"
-                                                        spellCheck="false"
-                                                        autoCorrect="off"
-                                                        autoCapitalize="off"
-                                                        value={warehouseInputValue}
-                                                        onChange={(e) => {
-                                                            setWarehouseSearch(e.target.value);
-                                                            setWarehouseRef("");
-                                                            setShowWarehouseDropdown(true);
-                                                        }}
-                                                        onFocus={(e) => {
-                                                            e.target.readOnly = true;
-                                                            setTimeout(() => {
-                                                                e.target.readOnly = false;
-                                                            }, 100);
-                                                            if (warehouses.length) setShowWarehouseDropdown(true);
-                                                        }}
-                                                        onClick={() => {
-                                                            if (warehouses.length) setShowWarehouseDropdown(true);
-                                                        }}
-                                                        onBlur={() => {
-                                                            setTimeout(() => setShowWarehouseDropdown(false), 150);
-                                                        }}
-                                                    />
-
-                                                    {showWarehouseDropdown && filteredWarehouses.length > 0 && (
-                                                        <div
-                                                            className="dropdown-list"
-                                                            style={{
-                                                                position: "absolute",
-                                                                top: "100%",
-                                                                left: 0,
-                                                                right: 0,
-                                                                marginTop: 4,
-                                                                maxHeight: "260px",
-                                                                overflowY: "auto",
-                                                                zIndex: 20
-                                                            }}
-                                                        >
-                                                            {filteredWarehouses.map(w => {
-                                                                const label = `${w.Number ? `№${w.Number} — ` : ""}${w.Description}`;
-
-                                                                return (
-                                                                    <div
-                                                                        key={w.Ref}
-                                                                        className="dropdown-item"
-                                                                        onMouseDown={() => {
-                                                                            setWarehouseRef(w.Ref);
-                                                                            setWarehouseSearch("");
-                                                                            setShowWarehouseDropdown(false);
-                                                                        }}
-                                                                    >
-                                                                        {label}
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
-                                                    )}
-
-                                                    {showWarehouseDropdown && filteredWarehouses.length === 0 && (
-                                                        <div
-                                                            className="dropdown-list"
-                                                            style={{
-                                                                position: "absolute",
-                                                                top: "100%",
-                                                                left: 0,
-                                                                right: 0,
-                                                                marginTop: 4,
-                                                                maxHeight: "200px",
-                                                                overflowY: "auto",
-                                                                zIndex: 20
-                                                            }}
-                                                        >
-                                                            <div className="dropdown-item muted">
-                                                                Нічого не знайдено
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                <div style={{display: "flex", gap: 8}}>
-                                                    <button
-                                                        type="button"
-                                                        className="neu-btn"
-                                                        onClick={() => setShowMap(true)}
-                                                        disabled={!cityRef}
-                                                    >
-                                                        Обрати на мапі
-                                                    </button>
-                                                </div>
+                                                <button
+                                                    type="button"
+                                                    className="order__map__btn"
+                                                    onClick={() => setShowMap(true)}
+                                                    disabled={!cityRef}
+                                                >
+                                                    Обрати на мапі
+                                                </button>
                                             </div>
-                                        </>
+
+                                            <div className="post__warhouse__list__container">
+                                                <input
+                                                    ref={warehouseInputRef}
+                                                    type="text"
+                                                    name="fake-warehouse"
+                                                    className="buyer__contacts__form-input order__delivery__input"
+                                                    inputMode="none"
+                                                    placeholder="Почніть вводити номер або адресу відділення…"
+                                                    autoComplete="new-password"
+                                                    spellCheck="false"
+                                                    autoCorrect="off"
+                                                    autoCapitalize="off"
+                                                    value={warehouseInputValue}
+                                                    onChange={(e) => {
+                                                        setWarehouseSearch(e.target.value);
+                                                        setWarehouseRef("");
+                                                        setShowWarehouseDropdown(true);
+                                                    }}
+                                                    onFocus={(e) => {
+                                                        e.target.readOnly = true;
+                                                        setTimeout(() => {
+                                                            e.target.readOnly = false;
+                                                        }, 100);
+                                                        if (warehouses.length) setShowWarehouseDropdown(true);
+                                                    }}
+                                                    onClick={() => {
+                                                        if (warehouses.length) setShowWarehouseDropdown(true);
+                                                    }}
+                                                    onBlur={() => {
+                                                        setTimeout(() => setShowWarehouseDropdown(false), 150);
+                                                    }}
+                                                />
+
+                                                {showWarehouseDropdown && filteredWarehouses.length > 0 && (
+                                                    <div className="dropdown-list order__dropdown-list">
+                                                        {filteredWarehouses.map(w => {
+                                                            const label = `${w.Number ? `№${w.Number} — ` : ""}${w.Description}`;
+
+                                                            return (
+                                                                <div
+                                                                    key={w.Ref}
+                                                                    className="dropdown-item"
+                                                                    onMouseDown={() => {
+                                                                        setWarehouseRef(w.Ref);
+                                                                        setWarehouseSearch("");
+                                                                        setShowWarehouseDropdown(false);
+                                                                    }}
+                                                                >
+                                                                    {label}
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                )}
+
+                                                {showWarehouseDropdown && filteredWarehouses.length === 0 && (
+                                                    <div className="dropdown-list order__dropdown-list order__dropdown-list--empty">
+                                                        <div className="dropdown-item muted">
+                                                            Нічого не знайдено
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
                                     )}
                                 </>
                             )}
@@ -530,7 +504,7 @@ const Order = () => {
                                 <>
                                     <p style={{marginTop: 12}}>Місто</p>
                                     <input
-                                        className="buyer__contacts__form-input"
+                                        className="buyer__contacts__form-input order__delivery__input"
                                         value={ukrCity}
                                         onChange={e => setUkrCity(e.target.value)}
                                         placeholder="Вкажіть місто доставки"
