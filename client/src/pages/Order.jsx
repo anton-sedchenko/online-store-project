@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useMemo, useState, useRef} from "react";
+import React, {useContext, useEffect, useMemo, useRef, useState} from "react";
 import {
     BLOG_ROUTE,
     CART_ROUTE,
@@ -10,7 +10,7 @@ import {createOrder} from "../http/orderAPI.js";
 import {Context} from "../main.jsx";
 import OrderConfirm from "../components/modals/OrderConfirm.jsx";
 import {Helmet} from "react-helmet-async";
-import {searchCities, getWarehouses} from "../http/npAPI.js";
+import {getWarehouses, searchCities} from "../http/npAPI.js";
 import NPMapModal from "../components/modals/NPMapModal.jsx";
 import ProductsCounter from "../components/UI/ProductsCounter.jsx";
 
@@ -21,44 +21,36 @@ const Order = () => {
 
     const cartItems = Array.isArray(cartStore.items) ? cartStore.items : [];
 
+    const getItemQty = (item) => Number(item.quantity || item.qty || item.count || 1);
+
     const orderTotal = useMemo(() => {
         return cartItems.reduce((sum, item) => {
-            const qty = Number(item.quantity || item.qty || item.count || 1);
+            const qty = getItemQty(item);
             const price = Number(item.price || 0);
             return sum + price * qty;
         }, 0);
     }, [cartItems]);
 
-    const getItemQty = (item) => Number(item.quantity || item.qty || item.count || 1);
-    
     const totalQty = useMemo(() => {
-    return cartItems.reduce((sum, item) => {
-        return sum + getItemQty(item);
-    }, 0);
-}, [cartItems]);
+        return cartItems.reduce((sum, item) => sum + getItemQty(item), 0);
+    }, [cartItems]);
 
-    // Спосіб доставки
     const [deliveryMethod, setDeliveryMethod] = useState("NP_BRANCH");
 
-    // Міста НП
     const [cityQuery, setCityQuery] = useState("");
     const [cityOptions, setCityOptions] = useState([]);
     const [selectedCity, setSelectedCity] = useState(null);
 
-    // Відділення/поштомати НП
     const [warehouses, setWarehouses] = useState([]);
     const [warehouseRef, setWarehouseRef] = useState("");
-
     const [warehouseSearch, setWarehouseSearch] = useState("");
     const [showWarehouseDropdown, setShowWarehouseDropdown] = useState(false);
     const warehouseInputRef = useRef(null);
 
     const [showMap, setShowMap] = useState(false);
 
-    // Кур’єр НП
     const [crAddress, setCrAddress] = useState("");
 
-    // Укрпошта
     const [ukrCity, setUkrCity] = useState("");
     const [ukrOffice, setUkrOffice] = useState("");
 
@@ -75,7 +67,9 @@ const Order = () => {
             try {
                 const list = await searchCities(cityQuery.trim());
                 setCityOptions(list);
-            } catch {}
+            } catch {
+                setCityOptions([]);
+            }
         }, 250);
 
         return () => clearTimeout(t);
@@ -95,10 +89,11 @@ const Order = () => {
                 const type = deliveryMethod === "NP_POSTOMAT" ? "Postomat" : "Branch";
                 const list = await getWarehouses({cityRef, type});
                 setWarehouses(list);
-            } catch {}
+            } catch {
+                setWarehouses([]);
+            }
         })();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedCity, deliveryMethod]);
+    }, [selectedCity, deliveryMethod, cityRef]);
 
     useEffect(() => {
         if (
@@ -147,7 +142,7 @@ const Order = () => {
         }
 
         if (deliveryMethod === "NP_COURIER" && (!cityRef || !crAddress.trim())) {
-            return alert("Для курʼєрської доставки вкажіть місто і повну адресу (вулиця, будинок, квартира).");
+            return alert("Для курʼєрської доставки вкажіть місто і повну адресу: вулиця, будинок, квартира.");
         }
 
         if (deliveryMethod === "UKR_BRANCH" && (!ukrCity.trim() || !ukrOffice.trim())) {
@@ -307,24 +302,48 @@ const Order = () => {
                             <div className="buyer__name__info__container">
                                 <div>
                                     <p>Ім'я<span className="input__label__required__marker">*</span></p>
-                                    <input required name="firstName" type="text" className="buyer__contacts__form-input" maxLength="50" />
+                                    <input
+                                        required
+                                        name="firstName"
+                                        type="text"
+                                        className="buyer__contacts__form-input"
+                                        maxLength="50"
+                                    />
                                 </div>
 
                                 <div>
                                     <p>Прізвище<span className="input__label__required__marker">*</span></p>
-                                    <input required name="lastName" type="text" className="buyer__contacts__form-input" maxLength="50" />
+                                    <input
+                                        required
+                                        name="lastName"
+                                        type="text"
+                                        className="buyer__contacts__form-input"
+                                        maxLength="50"
+                                    />
                                 </div>
                             </div>
 
                             <div className="buyer__contacts__info__container">
                                 <div>
                                     <p>Телефон<span className="input__label__required__marker">*</span></p>
-                                    <input required name="tel" type="tel" className="buyer__contacts__form-input" maxLength="20" />
+                                    <input
+                                        required
+                                        name="tel"
+                                        type="tel"
+                                        className="buyer__contacts__form-input"
+                                        maxLength="20"
+                                    />
                                 </div>
 
                                 <div>
                                     <p>E-mail<span className="input__label__required__marker">*</span></p>
-                                    <input required name="email" type="email" className="buyer__contacts__form-input" maxLength="50" />
+                                    <input
+                                        required
+                                        name="email"
+                                        type="email"
+                                        className="buyer__contacts__form-input"
+                                        maxLength="50"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -337,7 +356,11 @@ const Order = () => {
 
                             <div className="shipping__methods">
                                 <label className={`radio shipping__method ${deliveryMethod === "NP_BRANCH" ? "active" : ""}`}>
-                                    <input type="radio" checked={deliveryMethod === "NP_BRANCH"} onChange={() => setDeliveryMethod("NP_BRANCH")} />
+                                    <input
+                                        type="radio"
+                                        checked={deliveryMethod === "NP_BRANCH"}
+                                        onChange={() => setDeliveryMethod("NP_BRANCH")}
+                                    />
                                     <span>
                                         <strong>Нова пошта — відділення</strong>
                                         <small>Самовивіз з обраного відділення</small>
@@ -345,7 +368,11 @@ const Order = () => {
                                 </label>
 
                                 <label className={`radio shipping__method ${deliveryMethod === "NP_POSTOMAT" ? "active" : ""}`}>
-                                    <input type="radio" checked={deliveryMethod === "NP_POSTOMAT"} onChange={() => setDeliveryMethod("NP_POSTOMAT")} />
+                                    <input
+                                        type="radio"
+                                        checked={deliveryMethod === "NP_POSTOMAT"}
+                                        onChange={() => setDeliveryMethod("NP_POSTOMAT")}
+                                    />
                                     <span>
                                         <strong>Нова пошта — поштомат</strong>
                                         <small>Зручно для швидкого отримання</small>
@@ -353,7 +380,11 @@ const Order = () => {
                                 </label>
 
                                 <label className={`radio shipping__method ${deliveryMethod === "NP_COURIER" ? "active" : ""}`}>
-                                    <input type="radio" checked={deliveryMethod === "NP_COURIER"} onChange={() => setDeliveryMethod("NP_COURIER")} />
+                                    <input
+                                        type="radio"
+                                        checked={deliveryMethod === "NP_COURIER"}
+                                        onChange={() => setDeliveryMethod("NP_COURIER")}
+                                    />
                                     <span>
                                         <strong>Курʼєр Нова пошта</strong>
                                         <small>Доставка за адресою</small>
@@ -361,7 +392,11 @@ const Order = () => {
                                 </label>
 
                                 <label className={`radio shipping__method ${deliveryMethod === "UKR_BRANCH" ? "active" : ""}`}>
-                                    <input type="radio" checked={deliveryMethod === "UKR_BRANCH"} onChange={() => setDeliveryMethod("UKR_BRANCH")} />
+                                    <input
+                                        type="radio"
+                                        checked={deliveryMethod === "UKR_BRANCH"}
+                                        onChange={() => setDeliveryMethod("UKR_BRANCH")}
+                                    />
                                     <span>
                                         <strong>Укрпошта — відділення</strong>
                                         <small>Самовивіз з відділення Укрпошти</small>
@@ -371,42 +406,48 @@ const Order = () => {
 
                             {deliveryMethod.startsWith("NP_") && (
                                 <>
-                                    <p style={{marginTop: 12}}>
+                                    <label className="order__field__label order__field__label--spaced">
                                         Місто<span className="input__label__required__marker">*</span>
-                                    </p>
-                                    <input
-                                        type="text"
-                                        className="buyer__contacts__form-input"
-                                        placeholder="Почніть вводити місто…"
-                                        value={cityLabel}
-                                        onChange={(e) => {
-                                            setSelectedCity(null);
-                                            setCityQuery(e.target.value);
-                                        }}
-                                    />
+                                    </label>
 
-                                    {(!selectedCity && cityOptions.length > 0) && (
-                                        <div className="dropdown-list">
-                                            {cityOptions.map(c => (
-                                                <div
-                                                    key={c.DeliveryCity || c.Ref}
-                                                    className="dropdown-item"
-                                                    onClick={() => {
-                                                        setSelectedCity(c);
-                                                        setCityOptions([]);
-                                                    }}
-                                                >
-                                                    {c.Present || c.Description}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
+                                    <div className="post__warhouse__list__container">
+                                        <input
+                                            type="text"
+                                            className="buyer__contacts__form-input order__delivery__input"
+                                            placeholder="Почніть вводити місто…"
+                                            value={cityLabel}
+                                            onChange={(e) => {
+                                                setSelectedCity(null);
+                                                setCityQuery(e.target.value);
+                                            }}
+                                        />
+
+                                        {(!selectedCity && cityOptions.length > 0) && (
+                                            <div className="dropdown-list order__dropdown-list">
+                                                {cityOptions.map(c => (
+                                                    <div
+                                                        key={c.DeliveryCity || c.Ref}
+                                                        className="dropdown-item"
+                                                        onMouseDown={() => {
+                                                            setSelectedCity(c);
+                                                            setCityOptions([]);
+                                                        }}
+                                                    >
+                                                        {c.Present || c.Description}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
 
                                     {deliveryMethod === "NP_COURIER" && selectedCity && (
                                         <>
-                                            <p style={{marginTop: 12}}>Адреса доставки</p>
+                                            <label className="order__field__label order__field__label--spaced">
+                                                Адреса доставки<span className="input__label__required__marker">*</span>
+                                            </label>
+
                                             <input
-                                                className="buyer__contacts__form-input"
+                                                className="buyer__contacts__form-input order__delivery__input"
                                                 value={crAddress}
                                                 onChange={e => setCrAddress(e.target.value)}
                                                 placeholder="Напр.: вул. Шевченка, 10, кв. 25"
@@ -502,7 +543,10 @@ const Order = () => {
 
                             {deliveryMethod === "UKR_BRANCH" && (
                                 <>
-                                    <p style={{marginTop: 12}}>Місто</p>
+                                    <label className="order__field__label order__field__label--spaced">
+                                        Місто<span className="input__label__required__marker">*</span>
+                                    </label>
+
                                     <input
                                         className="buyer__contacts__form-input order__delivery__input"
                                         value={ukrCity}
@@ -510,9 +554,12 @@ const Order = () => {
                                         placeholder="Вкажіть місто доставки"
                                     />
 
-                                    <p style={{marginTop: 12}}>Відділення Укрпошти</p>
+                                    <label className="order__field__label order__field__label--spaced">
+                                        Відділення Укрпошти<span className="input__label__required__marker">*</span>
+                                    </label>
+
                                     <input
-                                        className="buyer__contacts__form-input"
+                                        className="buyer__contacts__form-input order__delivery__input"
                                         value={ukrOffice}
                                         onChange={e => setUkrOffice(e.target.value)}
                                         placeholder="Вкажіть номер або адресу відділення"
