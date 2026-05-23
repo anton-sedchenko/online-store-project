@@ -99,15 +99,9 @@ footer {
 
 .footer__social-link {
   font-size: 27px;
-  transition: transform 0.5s ease;
-  transform: rotate(0deg);
   margin-right: 10px;
 }
 
 .footer__social-link:last-child {
   margin-right: 0;
-}
-
-.footer__social-link:hover {
-  transform: rotate(360deg);
 }
