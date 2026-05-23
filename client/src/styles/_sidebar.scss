@@ -39,7 +39,7 @@
   background-color: #fffdf9;
   box-shadow: 0 2px 8px rgba(84, 59, 35, 0.08);
   transition: all 0.2s ease;
-  padding: 0 42px 0 12px;
+  padding: 0;
   justify-content: space-between;
   position: relative;
   cursor: pointer;
@@ -63,10 +63,12 @@
   flex: 1 1 auto;
   height: 100%;
   line-height: 40px;
-  padding: 0;
+  padding: 0 48px 0 12px;
   color: #3e3126;
   text-decoration: none;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebar__nav__item a:hover {
@@ -76,7 +78,7 @@
 .goods__counter__container {
   position: absolute;
   top: 50%;
-  right: 12px;
+  right: 10px;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
@@ -88,7 +90,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 28px;
+  min-width: 26px;
   height: 22px;
   padding: 0 6px;
   border-radius: 999px;
@@ -172,10 +174,4 @@
 
 .sidebar__filter__option__container .form-check:last-child {
   margin-bottom: 0;
-}
-
-.sidebar {
-  @include respond-to(md) {
-    display: none;
-  }
 }

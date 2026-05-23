@@ -53,7 +53,7 @@ const MobileMenuModal = observer(({ show, onHide }) => {
                 <ul className="modal__menu">
                     <li>
                         <Link to={HOME_ROUTE} onClick={onHide}>
-                            Галерея
+                            Каталог
                         </Link>
                     </li>
 

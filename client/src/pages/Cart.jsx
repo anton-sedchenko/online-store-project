@@ -6,7 +6,7 @@ import {Helmet} from "react-helmet-async";
 
 const Cart = () => {
     return (
-        <div className="component__container">
+        <div className="component__container cart__page">
             <Helmet>
                 <title>Мій кошик – Charivna Craft</title>
                 <meta
@@ -16,11 +16,11 @@ const Cart = () => {
             </Helmet>
 
             <Row>
-                <Col lg={2}>
+                <Col xl={2} className="cart__page__sidebar">
                     <SideBar/>
                 </Col>
 
-                <Col lg={10}>
+                <Col xl={10}>
                     <CartTable/>
                 </Col>
             </Row>

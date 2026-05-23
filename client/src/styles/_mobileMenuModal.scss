@@ -61,3 +61,18 @@
   cursor: pointer;
   font: inherit;
 }
+
+.modal__menu .goods__counter__container {
+  position: static;
+  top: auto;
+  right: auto;
+  transform: none;
+  margin-left: auto;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.modal__menu .goods__counter {
+  min-width: 28px;
+  height: 22px;
+}

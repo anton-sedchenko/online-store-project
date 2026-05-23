@@ -192,21 +192,10 @@ const CartTable = observer(() => {
                         <strong>{totalQty}</strong>
                     </div>
 
-                    <div className="cart__summary__row">
-                        <span>Мінімальна сума:</span>
-                        <strong>{MIN_ORDER} грн</strong>
-                    </div>
-
                     <div className="cart__summary__total">
                         <span>Разом до оплати:</span>
                         <strong>{total} грн</strong>
                     </div>
-
-                    {total < MIN_ORDER && (
-                        <p className="cart__summary__warning">
-                            До мінімальної суми замовлення залишилось {MIN_ORDER - total} грн.
-                        </p>
-                    )}
 
                     <button
                         className="cart__table__confirm__btn"
@@ -232,7 +221,7 @@ const CartTable = observer(() => {
 
                 <Modal.Body>
                     Мінімальна сума замовлення — {MIN_ORDER} грн.
-                    У вашому кошику зараз {total} грн.
+                    У вашому кошику зараз {total} грн. Можна збільшити кількість товару або додати ще один виріб.
                 </Modal.Body>
 
                 <Modal.Footer>
