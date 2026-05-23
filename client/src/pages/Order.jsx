@@ -347,7 +347,9 @@ const Order = () => {
 
                             {deliveryMethod.startsWith("NP_") && (
                                 <>
-                                    <p style={{marginTop: 12}}>Місто</p>
+                                    <p style={{marginTop: 12}}>
+                                        Місто<span className="input__label__required__marker">*</span>
+                                    </p>
                                     <input
                                         type="text"
                                         className="buyer__contacts__form-input"
@@ -391,7 +393,9 @@ const Order = () => {
 
                                     {(deliveryMethod === "NP_BRANCH" || deliveryMethod === "NP_POSTOMAT") && selectedCity && (
                                         <>
-                                            <p style={{marginTop: 12}}>Відділення / Поштомат</p>
+                                            <p style={{marginTop: 12}}>
+                                                Відділення / Поштомат<span className="input__label__required__marker">*</span>
+                                            </p>
 
                                             <div className="post__warhouse__pick__container">
                                                 <div className="post__warhouse__list__container">
