@@ -1,12 +1,18 @@
 import React, {useContext, useEffect, useMemo, useState, useRef} from "react";
-import {HOME_ROUTE} from "../utils/consts.js";
-import {useNavigate} from "react-router-dom";
+import {
+    BLOG_ROUTE,
+    CART_ROUTE,
+    CONTACTS_ROUTE,
+    HOME_ROUTE
+} from "../utils/consts.js";
+import {Link, useNavigate} from "react-router-dom";
 import {createOrder} from "../http/orderAPI.js";
 import {Context} from "../main.jsx";
 import OrderConfirm from "../components/modals/OrderConfirm.jsx";
 import {Helmet} from "react-helmet-async";
 import {searchCities, getWarehouses} from "../http/npAPI.js";
 import NPMapModal from "../components/modals/NPMapModal.jsx";
+import ProductsCounter from "../components/UI/ProductsCounter.jsx";
 
 const Order = () => {
     const navigate = useNavigate();
@@ -232,7 +238,19 @@ const Order = () => {
                 />
             </Helmet>
 
-            <div className="component__container">
+            <div className="component__container order__page">
+                <nav className="order__page__quick-nav" aria-label="Швидка навігація">
+                    <Link to={HOME_ROUTE}>Каталог</Link>
+
+                    <Link to={CART_ROUTE} className="order__page__quick-nav__cart">
+                        <span>Мій кошик</span>
+                        <ProductsCounter />
+                    </Link>
+
+                    <Link to={BLOG_ROUTE}>Блог</Link>
+                    <Link to={CONTACTS_ROUTE}>Контакти</Link>
+                </nav>
+
                 <div className="order__form__container">
                     <h3 className="order__page__title">Оформлення замовлення</h3>
 

@@ -9,10 +9,19 @@
   max-width: 1200px;
   margin: 0 auto;
   box-sizing: border-box;
+  padding: 0 20px;
+
+  @media (max-width: 768px) {
+    padding: 0 10px;
+  }
 }
 
 .cart__page__row {
   --bs-gutter-x: 24px;
+
+  @media (max-width: 768px) {
+    --bs-gutter-x: 0;
+  }
 }
 
 .cart__page__content {

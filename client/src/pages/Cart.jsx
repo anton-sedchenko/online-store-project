@@ -9,8 +9,7 @@ import {
     BLOG_ROUTE,
     CART_ROUTE,
     CONTACTS_ROUTE,
-    HOME_ROUTE,
-    PROFILE_ROUTE
+    HOME_ROUTE
 } from "../utils/consts.js";
 
 const Cart = () => {
