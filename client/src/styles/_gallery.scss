@@ -54,6 +54,21 @@
   object-fit: cover;
 }
 
+.gallery__card__link {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.gallery__card__link:hover,
+.gallery__card__link:focus {
+  color: inherit;
+  text-decoration: none;
+}
+
 .fa-heart {
   color: $color-primary;
 }
