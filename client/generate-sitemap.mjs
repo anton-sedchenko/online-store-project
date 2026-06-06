@@ -1,4 +1,8 @@
+import dotenv from "dotenv";
 import fs from "fs";
+import path from "path";
+
+dotenv.config();
 
 const SITE_URL = "https://charivna-craft.com.ua";
 const API_URL = process.env.VITE_APP_API_URL || "";
