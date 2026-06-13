@@ -314,16 +314,11 @@ const ProductPage = () => {
                 <div className="component__container">
                     <section className="product-not-found">
                         <div className="product-not-found__visual">
-                            <div className="product-not-found__basket">
-                                <div className="product-not-found__basket-lid" />
-                                <div className="product-not-found__basket-body">
-                                    <span>404</span>
-                                </div>
-                            </div>
-
-                            <div className="product-not-found__cord">
-                                <span />
-                            </div>
+                            <img
+                                className="product-not-found__image"
+                                src="/images/cat-tangled-cord.png"
+                                alt="Котик заплутався в бавовняному шнурі"
+                            />
                         </div>
 
                         <div className="product-not-found__content">
