@@ -24,5 +24,12 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/product/koshik-zi-shnura-verde-nido-175-sm-zelenij-00199",
+      "destination": "/product/koshik-organajzer-verde-nido-175-sm-zelenij-00199",
+      "permanent": true
+    }
   ]
 }
