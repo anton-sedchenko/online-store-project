@@ -12,6 +12,7 @@ import {Helmet} from "react-helmet-async";
 import EditArticle from '../components/modals/EditArticle.jsx';
 import CreateArticle from '../components/modals/CreateArticle.jsx';
 import {deleteArticle, fetchArticles} from '../http/articleAPI.js';
+import {deleteType, fetchTypes} from "../http/typeAPI.js";
 
 const Admin = observer(() => {
     const {adminStore} = useContext(Context);
@@ -23,10 +24,17 @@ const Admin = observer(() => {
     const [editArticleVisible, setEditArticleVisible] = useState(false);
     const [articleVisible, setArticleVisible] = useState(false);
     const [articles, setArticles] = useState([]);
+    const [types, setTypes] = useState([]);
 
     useEffect(() => {
         adminStore.loadProducts();
-        fetchArticles(1, 100).then(data => setArticles(data.rows));
+
+        fetchArticles(1, 100)
+            .then(data => setArticles(data.rows));
+
+        fetchTypes()
+            .then(data => setTypes(Array.isArray(data) ? data : []))
+            .catch(() => setTypes([]));
     }, [adminStore]);
 
     const openEditModal = async (productId) => {
@@ -46,6 +54,27 @@ const Admin = observer(() => {
             } catch (e) {
                 alert("Помилка при видаленні товару");
             }
+        }
+    };
+
+    const handleDeleteType = async (id, name) => {
+        const confirmed = window.confirm(
+            `Видалити категорію «${name}»?\n\nПеред видаленням переконайтеся, що в ній немає товарів.`
+        );
+
+        if (!confirmed) return;
+
+        try {
+            await deleteType(id);
+
+            setTypes(prevTypes =>
+                prevTypes.filter(type => type.id !== id)
+            );
+        } catch (e) {
+            alert(
+                e.response?.data?.message ||
+                'Не вдалося видалити категорію'
+            );
         }
     };
 
@@ -105,7 +134,16 @@ const Admin = observer(() => {
 
                     <CreateType
                         show={typeVisible}
-                        onHide={() => setTypeVisible(false)}
+                        onHide={async () => {
+                            setTypeVisible(false);
+
+                            try {
+                                const updatedTypes = await fetchTypes();
+                                setTypes(Array.isArray(updatedTypes) ? updatedTypes : []);
+                            } catch (e) {
+                                console.error('Не вдалося оновити категорії', e);
+                            }
+                        }}
                     />
 
                     <CreateArticle
@@ -114,6 +152,54 @@ const Admin = observer(() => {
                         onCreated={art => setArticles([art, ...articles])}
                     />
                 </div>
+
+                <h2>Категорії товарів</h2>
+
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <td>Назва категорії</td>
+                            <td>Дія</td>
+                        </tr>
+                    </thead>
+
+                ```
+                <tbody>
+                    {types.length > 0 ? (
+                        types.map(type => (
+                            <tr key={type.id}>
+                                <td>{type.name}</td>
+
+                                <td>
+                                    <Button
+                                        size="sm"
+                                        variant="outline-danger"
+                                        onClick={() =>
+                                            handleDeleteType(type.id, type.name)
+                                        }
+                                    >
+                                        Видалити
+                                    </Button>
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td
+                                colSpan={2}
+                                style={{
+                                    textAlign: 'center',
+                                    padding: '2rem 0'
+                                }}
+                            >
+                                Категорії відсутні
+                            </td>
+                        </tr>
+                    )}
+                </tbody>
+                ```
+
+                </Table>
 
                 <h2>Наші статті</h2>
                 <Table striped bordered hover>

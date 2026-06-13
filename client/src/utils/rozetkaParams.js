@@ -8,6 +8,11 @@ const commonColors = [
     'Коричневий',
     'Сірий',
     'Білий',
+    'Біло-чорний',
+    'Біло-червоний',
+    'Біло-червоний',
+    'Біло-зелений',
+    'Коричнево-білий',
 ];
 
 export const ROZETKA_PARAMS_BY_CATEGORY = {
@@ -16,7 +21,7 @@ export const ROZETKA_PARAMS_BY_CATEGORY = {
         {name: 'Тип', values: ['Сервірувальні килимки'], auto: 'placematType', required: true},
         {name: 'Країна-виробник товару', values: ['Україна'], auto: 'country', required: true},
         {name: 'Матеріал', values: ['Бавовна'], auto: 'material', required: true},
-        {name: 'Колір', values: [...commonColors, 'Біло-червоний'], auto: 'color', required: true},
+        {name: 'Колір', values: [...commonColors], auto: 'color', required: true},
         {name: 'Форма', values: ['Круглі', 'Овальні', 'Прямокутні', 'Квадратні', 'Фігурні'], auto: 'pluralShape', required: true},
         {name: 'Розміри', values: ['13 x 13 см', '15 x 15 см', '20 x 20 см', '23 x 23 см', '24 x 24 см', '30 x 30 см', '31 x 31 см', '37 x 27 см'], auto: 'placematSize'},
         {name: 'Використання', values: ['Текстиль для кухні'], auto: 'placematUsage', required: true},
@@ -27,7 +32,7 @@ export const ROZETKA_PARAMS_BY_CATEGORY = {
         {name: 'Тип', values: ['Один предмет', 'Набір'], auto: 'storageType', required: true},
         {name: 'Країна-виробник товару', values: ['Україна'], auto: 'country', required: true},
         {name: 'Матеріал', values: ['Бавовна', 'Текстиль'], auto: 'material', required: true},
-        {name: 'Колір', values: [...commonColors, 'Коричнево-білий', 'Біло-червоний', 'Біло-зелений'], auto: 'color', required: true},
+        {name: 'Колір', values: [...commonColors], auto: 'color', required: true},
         {name: 'Призначення', values: ['Універсальні', 'Декоративні', 'Для одягу'], auto: 'storagePurpose', required: true},
         {name: 'Форма', values: ['Кругла', 'Овальна', 'Прямокутна', 'Квадратна'], auto: 'singleShape', required: true},
         {name: 'Висота', values: [], auto: 'height'},
