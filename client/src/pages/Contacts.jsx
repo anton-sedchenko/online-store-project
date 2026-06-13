@@ -22,15 +22,15 @@ const Contacts = () => {
                             <Row className="contacts__info__block contacts__tel__block">
                                 <h1>Контакти інтернет-магазину Charivna Craft</h1>
                                 <Col md={6}>
-                                    <p>
-                                        <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
-                                        Телефон:
-                                    </p>
                                     <div>
+                                        <p>
+                                            <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
+                                        </p>
+                                        <p>Телефон:</p>
                                         <a href="tel:+380680361597">+38 (068) 036 15 97</a>
                                     </div>
-                                    <p>Viber/Telegram:</p>
                                     <div>
+                                        <p>Viber/Telegram:</p>
                                         <a href="tel:+380967846399">+38 (096) 784 63 99</a>
                                     </div>
                                 </Col>
