@@ -6,219 +6,213 @@ import SideBar from '../components/SideBar.jsx';
 import ProductList from '../components/ProductList.jsx';
 import PaginationLocal from '../components/PaginationLocal.jsx';
 import ProductFilter from '../components/ProductFilter.jsx';
-import {fetchProducts} from '../http/productAPI.js';
-import {fetchTypes} from '../http/typeAPI.js';
 import MobileFilterModal from '../components/modals/MobileFilterModal.jsx';
 
+import {fetchProducts} from '../http/productAPI.js';
+import {fetchTypes} from '../http/typeAPI.js';
+
 const HomePage = () => {
-const [loading, setLoading] = useState(true);
-const [allProducts, setAllProducts] = useState([]);
-const [types, setTypes] = useState([]);
-const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(true);
+    const [allProducts, setAllProducts] = useState([]);
+    const [types, setTypes] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
 
-```
-const [selectedCategories, setSelectedCategories] = useState([]);
-const [selectedKinds, setSelectedKinds] = useState([]);
-const [selectedColors, setSelectedColors] = useState([]);
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [selectedKinds, setSelectedKinds] = useState([]);
+    const [selectedColors, setSelectedColors] = useState([]);
 
-const [showMobileFilters, setShowMobileFilters] = useState(false);
+    const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-const activeFiltersCount =
-    selectedCategories.length +
-    selectedKinds.length +
-    selectedColors.length;
+    const activeFiltersCount =
+        selectedCategories.length +
+        selectedKinds.length +
+        selectedColors.length;
 
-const limit = 12;
+    const limit = 12;
 
-useEffect(() => {
-    const loadHomeData = async () => {
-        try {
-            setLoading(true);
+    useEffect(() => {
+        const loadHomeData = async () => {
+            try {
+                setLoading(true);
 
-            const [productsData, typesData] = await Promise.all([
-                fetchProducts(null, 1, 500),
-                fetchTypes()
-            ]);
+                const [productsData, typesData] = await Promise.all([
+                    fetchProducts(null, 1, 500),
+                    fetchTypes()
+                ]);
 
-            setAllProducts(
-                Array.isArray(productsData?.rows)
-                    ? productsData.rows
-                    : []
-            );
+                setAllProducts(
+                    Array.isArray(productsData?.rows)
+                        ? productsData.rows
+                        : []
+                );
 
-            setTypes(
-                Array.isArray(typesData)
-                    ? typesData
-                    : []
-            );
-        } catch (e) {
-            console.error(
-                'Помилка при завантаженні товарів або категорій:',
-                e
-            );
+                setTypes(
+                    Array.isArray(typesData)
+                        ? typesData
+                        : []
+                );
+            } catch (e) {
+                console.error(
+                    'Помилка при завантаженні товарів або категорій:',
+                    e
+                );
 
-            setAllProducts([]);
-            setTypes([]);
-        } finally {
-            setLoading(false);
-        }
+                setAllProducts([]);
+                setTypes([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadHomeData();
+    }, []);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [
+        selectedCategories,
+        selectedKinds,
+        selectedColors
+    ]);
+
+    const filteredProducts = allProducts.filter(product => {
+        const productTypeId = String(product?.typeId || '');
+
+        const matchesCategory =
+            selectedCategories.length === 0 ||
+            selectedCategories.includes(productTypeId);
+
+        const matchesKind =
+            selectedKinds.length === 0 ||
+            selectedKinds.includes(product?.kind);
+
+        const matchesColor =
+            selectedColors.length === 0 ||
+            selectedColors.includes(product?.color);
+
+        return (
+            matchesCategory &&
+            matchesKind &&
+            matchesColor
+        );
+    });
+
+    const totalCount = filteredProducts.length;
+    const startIdx = (currentPage - 1) * limit;
+
+    const pageProducts = filteredProducts.slice(
+        startIdx,
+        startIdx + limit
+    );
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        });
     };
 
-    loadHomeData();
-}, []);
-
-useEffect(() => {
-    setCurrentPage(1);
-}, [
-    selectedCategories,
-    selectedKinds,
-    selectedColors
-]);
-
-const filteredProducts = allProducts.filter(product => {
-    const productTypeId = String(product?.typeId || '');
-
-    const matchesCategory =
-        selectedCategories.length === 0 ||
-        selectedCategories.includes(productTypeId);
-
-    const matchesKind =
-        selectedKinds.length === 0 ||
-        selectedKinds.includes(product?.kind);
-
-    const matchesColor =
-        selectedColors.length === 0 ||
-        selectedColors.includes(product?.color);
-
     return (
-        matchesCategory &&
-        matchesKind &&
-        matchesColor
-    );
-});
+        <>
+            <Helmet>
+                <title>
+                    Кошики, корзини та вироби зі шнура на замовлення – Charivna Craft
+                </title>
 
-const totalCount = filteredProducts.length;
-const startIdx = (currentPage - 1) * limit;
+                <meta
+                    name="description"
+                    content="Charivna Craft — український бренд кошиків, корзин, органайзерів, плейсматів, костерів, наборів і кашпо зі шнура ручної роботи. Шиємо за вашими розмірами, працюємо в роздріб і гурт, доставляємо по Україні."
+                />
 
-const pageProducts = filteredProducts.slice(
-    startIdx,
-    startIdx + limit
-);
+                <link
+                    rel="canonical"
+                    href="https://charivna-craft.com.ua/"
+                />
+            </Helmet>
 
-const handlePageChange = (page) => {
-    setCurrentPage(page);
+            <div className="component__container">
+                <Row>
+                    <Col md={3} lg={2}>
+                        <SideBar>
+                            <ProductFilter
+                                products={allProducts}
+                                types={types}
+                                selectedCategories={selectedCategories}
+                                setSelectedCategories={setSelectedCategories}
+                                selectedKinds={selectedKinds}
+                                setSelectedKinds={setSelectedKinds}
+                                selectedColors={selectedColors}
+                                setSelectedColors={setSelectedColors}
+                            />
+                        </SideBar>
+                    </Col>
 
-    window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth'
-    });
-};
+                    <Col md={9} lg={10}>
+                        <h1 className="mb-4">
+                            Кошики, корзини та вироби зі шнура ручної роботи – Charivna Craft
+                        </h1>
 
-return (
-    <>
-        <Helmet>
-            <title>
-                Кошики, корзини та вироби зі шнура на замовлення – Charivna Craft
-            </title>
-
-            <meta
-                name="description"
-                content="Charivna Craft — український бренд кошиків, корзин, органайзерів, плейсматів, костерів, наборів і кашпо зі шнура ручної роботи. Шиємо за вашими розмірами, працюємо в роздріб і гурт, доставляємо по Україні."
-            />
-
-            <link
-                rel="canonical"
-                href="https://charivna-craft.com.ua/"
-            />
-        </Helmet>
-
-        <div className="component__container">
-            <Row>
-                <Col md={3} lg={2}>
-                    <SideBar>
-                        <ProductFilter
-                            products={allProducts}
-                            types={types}
-                            selectedCategories={selectedCategories}
-                            setSelectedCategories={setSelectedCategories}
-                            selectedKinds={selectedKinds}
-                            setSelectedKinds={setSelectedKinds}
-                            selectedColors={selectedColors}
-                            setSelectedColors={setSelectedColors}
-                        />
-                    </SideBar>
-                </Col>
-
-                <Col md={9} lg={10}>
-                    <h1 className="mb-4">
-                        Кошики, корзини та вироби зі шнура ручної роботи – Charivna Craft
-                    </h1>
-
-                    {loading ? (
-                        <div className="d-flex justify-content-center py-5">
-                            <Spinner animation="border"/>
-                        </div>
-                    ) : (
-                        <>
-                            <div className="mobile-filter-bar d-md-none">
-                                <button
-                                    type="button"
-                                    className="mobile-filter-bar__button"
-                                    onClick={() =>
-                                        setShowMobileFilters(true)
-                                    }
-                                >
-                                    Фільтри
-
-                                    {activeFiltersCount > 0 && (
-                                        <span className="mobile-filter-bar__count">
-                                            {activeFiltersCount}
-                                        </span>
-                                    )}
-                                </button>
+                        {loading ? (
+                            <div className="d-flex justify-content-center py-5">
+                                <Spinner animation="border"/>
                             </div>
+                        ) : (
+                            <>
+                                <div className="mobile-filter-bar d-md-none">
+                                    <button
+                                        type="button"
+                                        className="mobile-filter-bar__button"
+                                        onClick={() => setShowMobileFilters(true)}
+                                    >
+                                        Фільтри
 
-                            {pageProducts.length > 0 ? (
-                                <>
-                                    <ProductList
-                                        products={pageProducts}
-                                    />
+                                        {activeFiltersCount > 0 && (
+                                            <span className="mobile-filter-bar__count">
+                                                {activeFiltersCount}
+                                            </span>
+                                        )}
+                                    </button>
+                                </div>
 
-                                    <PaginationLocal
-                                        totalCount={totalCount}
-                                        limit={limit}
-                                        currentPage={currentPage}
-                                        onPageChange={handlePageChange}
-                                    />
-                                </>
-                            ) : (
-                                <p>
-                                    За обраними фільтрами товари не знайдено.
-                                </p>
-                            )}
-                        </>
-                    )}
-                </Col>
-            </Row>
-        </div>
+                                {pageProducts.length > 0 ? (
+                                    <>
+                                        <ProductList products={pageProducts}/>
 
-        <MobileFilterModal
-            show={showMobileFilters}
-            onHide={() => setShowMobileFilters(false)}
-            products={allProducts}
-            types={types}
-            selectedCategories={selectedCategories}
-            setSelectedCategories={setSelectedCategories}
-            selectedKinds={selectedKinds}
-            setSelectedKinds={setSelectedKinds}
-            selectedColors={selectedColors}
-            setSelectedColors={setSelectedColors}
-        />
-    </>
-);
-```
+                                        <PaginationLocal
+                                            totalCount={totalCount}
+                                            limit={limit}
+                                            currentPage={currentPage}
+                                            onPageChange={handlePageChange}
+                                        />
+                                    </>
+                                ) : (
+                                    <p>
+                                        За обраними фільтрами товари не знайдено.
+                                    </p>
+                                )}
+                            </>
+                        )}
+                    </Col>
+                </Row>
+            </div>
 
+            <MobileFilterModal
+                show={showMobileFilters}
+                onHide={() => setShowMobileFilters(false)}
+                products={allProducts}
+                types={types}
+                selectedCategories={selectedCategories}
+                setSelectedCategories={setSelectedCategories}
+                selectedKinds={selectedKinds}
+                setSelectedKinds={setSelectedKinds}
+                selectedColors={selectedColors}
+                setSelectedColors={setSelectedColors}
+            />
+        </>
+    );
 };
 
 export default HomePage;

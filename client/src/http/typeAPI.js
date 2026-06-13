@@ -1,10 +1,14 @@
-import {$authHost} from "./index.js";
+import {$host, $authHost} from './index.js';
 
 export const createCategory = async (formData) => {
     const {data} = await $authHost.post(
         '/type',
         formData,
-        {headers: {'Content-Type': 'multipart/form-data'}}
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
     );
     return data;
 };
@@ -20,19 +24,26 @@ export const updateType = async (id, body) => {
 };
 
 export const updateTypeImage = async (id, formData) => {
-    const {data} = await $authHost.put(`/type/${id}/image`, formData, {
-        headers: {'Content-Type': 'multipart/form-data'}
-    });
+    const {data} = await $authHost.put(
+        `/type/${id}/image`,
+        formData,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
+    );
+
     return data;
 };
 
 export const createType = async (type) => {
-    const {data} = await $authHost.post("/type", type);
+    const {data} = await $authHost.post('/type', type);
     return data;
 };
 
 export const fetchTypes = async () => {
-    const {data} = await $authHost.get("/type");
+    const {data} = await $host.get('/type');
     return data;
 };
 

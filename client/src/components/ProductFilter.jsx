@@ -9,15 +9,15 @@ const VISIBLE_CATEGORY_NAMES = [
 ];
 
 const ProductFilter = ({
-    products,
-    types,
-    selectedCategories,
-    setSelectedCategories,
-    selectedKinds,
-    setSelectedKinds,
-    selectedColors,
-    setSelectedColors
-    }) => {
+    products = [],
+    types = [],
+    selectedCategories = [],
+    setSelectedCategories = () => {},
+    selectedKinds = [],
+    setSelectedKinds = () => {},
+    selectedColors = [],
+    setSelectedColors = () => {}
+}) => {
     const safeProducts = Array.isArray(products) ? products : [];
     const safeTypes = Array.isArray(types) ? types : [];
 
