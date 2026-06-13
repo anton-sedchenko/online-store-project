@@ -316,7 +316,7 @@ const ProductPage = () => {
                         <div className="product-not-found__visual">
                             <img
                                 className="product-not-found__image"
-                                src="/images/cat-tangled-cord.png"
+                                src="cat-tangled-cord.png"
                                 alt="Котик заплутався в бавовняному шнурі"
                             />
                         </div>
