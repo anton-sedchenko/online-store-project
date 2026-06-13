@@ -272,6 +272,40 @@ const ProductPage = () => {
                                 price: product.price,
                                 availability: schemaAvailability,
                                 itemCondition: "https://schema.org/NewCondition",
+                                shippingDetails: {
+                                    "@type": "OfferShippingDetails",
+                                    shippingDestination: {
+                                        "@type": "DefinedRegion",
+                                        addressCountry: "UA",
+                                    },
+                                    deliveryTime: {
+                                        "@type": "ShippingDeliveryTime",
+                                        handlingTime: {
+                                            "@type": "QuantitativeValue",
+                                            minValue: 0,
+                                            maxValue: product.availability === "PRE_ORDER" ? 3 : 1,
+                                            unitCode: "DAY",
+                                        },
+                                        transitTime: {
+                                            "@type": "QuantitativeValue",
+                                            minValue: 1,
+                                            maxValue: 3,
+                                            unitCode: "DAY",
+                                        },
+                                    },
+                                },
+                                hasMerchantReturnPolicy: {
+                                    "@type": "MerchantReturnPolicy",
+                                    applicableCountry: "UA",
+                                    returnPolicyCategory:
+                                        "https://schema.org/MerchantReturnFiniteReturnWindow",
+                                    merchantReturnDays: 14,
+                                    returnMethod: "https://schema.org/ReturnByMail",
+                                    returnFees:
+                                        "https://schema.org/ReturnFeesCustomerResponsibility",
+                                    merchantReturnLink:
+                                        "https://charivna-craft.com.ua/return-policy",
+                                },
                             },
                             aggregateRating:
                                 ratingCount > 0
