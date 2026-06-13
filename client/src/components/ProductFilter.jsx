@@ -5,36 +5,35 @@ const VISIBLE_CATEGORY_NAMES = [
 'Для дітей',
 'Багатоцільові органайзери',
 'Кошики для ванної',
-'Кошики для кухні',
+'Кошики для кухні'
 ];
-
-const getProductCategory = (product) => {
-return (
-product?.type?.name ||
-product?.Type?.name ||
-product?.typeName ||
-''
-);
-};
 
 const ProductFilter = ({
 products,
+types,
 selectedCategories,
 setSelectedCategories,
 selectedKinds,
 setSelectedKinds,
 selectedColors,
-setSelectedColors,
+setSelectedColors
 }) => {
 const safeProducts = Array.isArray(products) ? products : [];
+const safeTypes = Array.isArray(types) ? types : [];
 
-const categories = [
-    ...new Set(
-        safeProducts
-            .map(getProductCategory)
-            .filter(name => VISIBLE_CATEGORY_NAMES.includes(name))
-    )
-];
+```
+const productTypeIds = new Set(
+    safeProducts
+        .map(product => String(product?.typeId || ''))
+        .filter(Boolean)
+);
+
+const categories = safeTypes.filter(type => {
+    return (
+        VISIBLE_CATEGORY_NAMES.includes(type?.name) &&
+        productTypeIds.has(String(type?.id))
+    );
+});
 
 const kinds = [
     ...new Set(
@@ -52,15 +51,19 @@ const colors = [
     )
 ];
 
-const toggleCategory = (category) => {
-    if (selectedCategories.includes(category)) {
+const toggleCategory = (typeId) => {
+    const normalizedTypeId = String(typeId);
+
+    if (selectedCategories.includes(normalizedTypeId)) {
         setSelectedCategories(
-            selectedCategories.filter(item => item !== category)
+            selectedCategories.filter(
+                item => item !== normalizedTypeId
+            )
         );
     } else {
         setSelectedCategories([
             ...selectedCategories,
-            category
+            normalizedTypeId
         ]);
     }
 };
@@ -113,23 +116,23 @@ return (
 
                 <div className="sidebar__filter__option__container">
                     {categories.map(category => {
+                        const categoryId = String(category.id);
+
                         const inputId =
-                            `category-${category
-                                .replace(/\s+/g, '-')
-                                .toLowerCase()}`;
+                            `category-${categoryId}`;
 
                         return (
                             <Form.Check
-                                key={category}
+                                key={categoryId}
                                 id={inputId}
                                 type="checkbox"
-                                label={category}
+                                label={category.name}
                                 className="sidebar__filter__check"
                                 checked={selectedCategories.includes(
-                                    category
+                                    categoryId
                                 )}
                                 onChange={() =>
-                                    toggleCategory(category)
+                                    toggleCategory(categoryId)
                                 }
                             />
                         );
@@ -197,6 +200,7 @@ return (
         )}
     </div>
 );
+```
 
 };
 
