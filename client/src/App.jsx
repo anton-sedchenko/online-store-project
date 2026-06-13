@@ -8,6 +8,7 @@ import {observer} from "mobx-react-lite";
 import {Context} from "./main.jsx";
 import {Spinner} from "react-bootstrap";
 import {fetchAuthUser} from "./http/userAPI.js";
+import OrganizationSchema from "./components/seo/OrganizationSchema.jsx";
 
 const App = observer(() => {
     const {userStore, cartStore} = useContext(Context);
@@ -39,6 +40,8 @@ const App = observer(() => {
 
     return (
         <BrowserRouter>
+            <OrganizationSchema />
+            
             <Wrapper>
                 <AppRouter />
             </Wrapper>
