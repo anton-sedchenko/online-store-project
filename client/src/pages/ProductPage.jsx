@@ -312,18 +312,44 @@ const ProductPage = () => {
                 </Helmet>
 
                 <div className="component__container">
-                    <div className="product__content__card">
-                        <h1>Товар не знайдено</h1>
-                        <p>Цей товар більше недоступний або сторінку було переміщено.</p>
+                    <section className="product-not-found">
+                        <div className="product-not-found__visual">
+                            <div className="product-not-found__basket">
+                                <div className="product-not-found__basket-lid" />
+                                <div className="product-not-found__basket-body">
+                                    <span>404</span>
+                                </div>
+                            </div>
 
-                        <button
-                            type="button"
-                            className="product__back-button"
-                            onClick={() => navigate("/")}
-                        >
-                            Перейти на головну
-                        </button>
-                    </div>
+                            <div className="product-not-found__cord">
+                                <span />
+                            </div>
+                        </div>
+
+                        <div className="product-not-found__content">
+                            <p className="product-not-found__eyebrow">
+                                Сторінку не знайдено
+                            </p>
+
+                            <h1>Ой, цей товар розплівся</h1>
+
+                            <p>
+                                Схоже, сторінка більше не існує або товар уже прибрали
+                                з каталогу. Але в нашій майстерні ще багато красивих
+                                речей для дому.
+                            </p>
+
+                            <div className="product-not-found__actions">
+                                <button
+                                    type="button"
+                                    className="product-not-found__secondary"
+                                    onClick={() => navigate("/")}
+                                >
+                                    На головну
+                                </button>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </>
         );
