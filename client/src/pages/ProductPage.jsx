@@ -230,6 +230,29 @@ const ProductPage = () => {
         return 'https://schema.org/PreOrder';
     }, [product.availability]);
 
+    const breadcrumbSchema = useMemo(() => {
+        if (!product?.slug || !product?.name) return null;
+
+        return {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+                {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Головна",
+                    item: "https://charivna-craft.com.ua/",
+                },
+                {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: product.name,
+                    item: `https://charivna-craft.com.ua/product/${product.slug}`,
+                },
+            ],
+        };
+    }, [product.slug, product.name]);
+
     return (
         <div className="component__container">
             {product?.id && (
@@ -317,6 +340,12 @@ const ProductPage = () => {
                                     : undefined,
                         })}
                     </script>
+
+                    {breadcrumbSchema && (
+                        <script type="application/ld+json">
+                            {JSON.stringify(breadcrumbSchema)}
+                        </script>
+                    )}
                 </Helmet>
             )}
 
