@@ -21,20 +21,56 @@ const ProductPage = () => {
     const [showCallback, setShowCallback] = useState(false);
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
-
     const [ratingAvg, setRatingAvg] = useState(0);
     const [ratingCount, setRatingCount] = useState(0);
+    const [productLoading, setProductLoading] = useState(true);
+    const [productNotFound, setProductNotFound] = useState(false);
     const {slug} = useParams();
 
     useEffect(() => {
-        (async () => {
-            const data = await fetchProductBySlug(slug);
-            setProduct({
-                ...data,
-                images: Array.isArray(data?.images) ? data.images : []
-            });
-            setCurrentImageIndex(0);
-        })();
+        let isMounted = true;
+
+        const loadProduct = async () => {
+            setProductLoading(true);
+            setProductNotFound(false);
+
+            try {
+                const data = await fetchProductBySlug(slug);
+
+                if (!isMounted) return;
+
+                setProduct({
+                    ...data,
+                    images: Array.isArray(data?.images) ? data.images : [],
+                });
+
+                setCurrentImageIndex(0);
+            } catch (error) {
+                if (!isMounted) return;
+
+                if (error?.response?.status === 404) {
+                    setProductNotFound(true);
+                    setProduct({images: []});
+                } else {
+                    console.error(
+                        "Не вдалося завантажити товар:",
+                        error?.response?.data?.message || error.message
+                    );
+                    setProductNotFound(true);
+                    setProduct({images: []});
+                }
+            } finally {
+                if (isMounted) {
+                    setProductLoading(false);
+                }
+            }
+        };
+
+        loadProduct();
+
+        return () => {
+            isMounted = false;
+        };
     }, [slug]);
 
     useEffect(() => {
@@ -252,6 +288,46 @@ const ProductPage = () => {
             ],
         };
     }, [product.slug, product.name]);
+
+    if (productLoading) {
+        return (
+            <div className="component__container">
+                <div className="product__content__card">
+                    <p>Завантаження товару...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (productNotFound) {
+        return (
+            <>
+                <Helmet>
+                    <title>Товар не знайдено — Charivna Craft</title>
+                    <meta name="robots" content="noindex, nofollow" />
+                    <meta
+                        name="description"
+                        content="Цей товар більше недоступний або сторінку було переміщено."
+                    />
+                </Helmet>
+
+                <div className="component__container">
+                    <div className="product__content__card">
+                        <h1>Товар не знайдено</h1>
+                        <p>Цей товар більше недоступний або сторінку було переміщено.</p>
+
+                        <button
+                            type="button"
+                            className="product__back-button"
+                            onClick={() => navigate("/")}
+                        >
+                            Перейти на головну
+                        </button>
+                    </div>
+                </div>
+            </>
+        );
+    }
 
     return (
         <div className="component__container">
