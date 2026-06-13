@@ -28,7 +28,10 @@ const Contacts = () => {
                                     </p>
                                     <div>
                                         <a href="tel:+380680361597">+38 (068) 036 15 97</a>
-                                        <p>Менеджер Viber/Telegram</p>
+                                    </div>
+                                    <p>Viber/Telegram:</p>
+                                    <div>
+                                        <a href="tel:+380967846399">+38 (096) 784 63 99</a>
                                     </div>
                                 </Col>
                                 <Col md={6}>
