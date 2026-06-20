@@ -119,7 +119,7 @@ const HomePage = () => {
         <>
             <Helmet>
                 <title>
-                    Кошики, корзини та вироби зі шнура на замовлення – Charivna Craft
+                    Кошики та корзини зі шнура ручної роботи | Charivna Craft
                 </title>
 
                 <meta

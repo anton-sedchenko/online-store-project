@@ -5,7 +5,7 @@ import {
     DELIVERY_PAYMENT_ROUTE,
     OFERTA_ROUTE,
     RETURN_POLICY_ROUTE,
-    HOME_ROUTE, PRIVACY_ROUTE, BLOG_ROUTE
+    HOME_ROUTE, PRIVACY_ROUTE, BLOG_ROUTE, STORAGE_BASKETS_ROUTE
 } from "../utils/consts.js";
 
 const Footer = () => {
@@ -19,6 +19,9 @@ const Footer = () => {
                         </Link>
                         <Link to={HOME_ROUTE}>
                             Каталог
+                        </Link>
+                        <Link to={STORAGE_BASKETS_ROUTE}>
+                            Кошики для зберігання
                         </Link>
                         <Link to={CONTACTS_ROUTE}>
                             Контакти
