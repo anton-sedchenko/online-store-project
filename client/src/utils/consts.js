@@ -16,3 +16,4 @@ export const DELIVERY_PAYMENT_ROUTE = "/delivery-payment";
 export const PRIVACY_ROUTE = "/privacy";
 export const BLOG_ROUTE = "/blog";
 export const ARTICLE_ROUTE = "/blog/:slug";
+export const STORAGE_BASKETS_ROUTE = "/koshyky-dlia-zberihannia";
