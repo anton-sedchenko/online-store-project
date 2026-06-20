@@ -94,6 +94,7 @@ app.get('/sitemap.xml', async (req, res) => {
         const staticUrls = [
             {loc: `${baseUrl}/`, changefreq: 'weekly', priority: 1.0},
             {loc: `${baseUrl}/blog`, changefreq: 'weekly', priority: 0.7},
+            {loc: `${baseUrl}/koshyky-dlia-zberihannia`, changefreq: 'weekly', priority: 0.7},
             {loc: `${baseUrl}/cart`, changefreq: 'weekly', priority: 0.3},
             {loc: `${baseUrl}/contacts`, changefreq: 'yearly', priority: 0.3},
             {loc: `${baseUrl}/order`, changefreq: 'weekly', priority: 0.3},
