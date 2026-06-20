@@ -11,6 +11,7 @@ const VISIBLE_CATEGORY_NAMES = [
 const ProductFilter = ({
     products = [],
     types = [],
+    showKinds = true,
     selectedCategories = [],
     setSelectedCategories = () => {},
     selectedKinds = [],
@@ -95,7 +96,7 @@ const ProductFilter = ({
 
     if (
         !categories.length &&
-        !kinds.length &&
+        (!showKinds || !kinds.length) &&
         !colors.length
     ) {
         return null;
@@ -139,7 +140,7 @@ const ProductFilter = ({
                 </div>
             )}
 
-            {kinds.length > 0 && (
+            {showKinds && kinds.length > 0 && (
                 <div className="sidebar__filter__group">
                     <div className="sidebar__filter__group__title">
                         Тип виробу

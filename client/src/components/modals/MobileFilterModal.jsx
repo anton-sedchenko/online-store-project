@@ -12,7 +12,8 @@ const MobileFilterModal = ({
     selectedKinds,
     setSelectedKinds,
     selectedColors,
-    setSelectedColors
+    setSelectedColors,
+    showKinds = true
 }) => {
     const safeSelectedCategories = Array.isArray(selectedCategories)
         ? selectedCategories
@@ -28,7 +29,7 @@ const MobileFilterModal = ({
 
     const hasActiveFilters =
         safeSelectedCategories.length > 0 ||
-        safeSelectedKinds.length > 0 ||
+        (showKinds && safeSelectedKinds.length > 0) ||
         safeSelectedColors.length > 0;
 
     const handleResetFilters = () => {
@@ -52,6 +53,7 @@ const MobileFilterModal = ({
                 <ProductFilter
                     products={products}
                     types={types}
+                    showKinds={showKinds}
                     selectedCategories={safeSelectedCategories}
                     setSelectedCategories={setSelectedCategories}
                     selectedKinds={safeSelectedKinds}
