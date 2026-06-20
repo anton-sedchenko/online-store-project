@@ -9,6 +9,10 @@
       "destination": "https://online-store-project-production.up.railway.app/gmc.xml"
     },
     {
+      "source": "/sitemap.xml",
+      "destination": "https://online-store-project-production.up.railway.app/sitemap.xml"
+    },
+    {
       "source": "/reset-password/:token",
       "destination": "/index.html"
     },
