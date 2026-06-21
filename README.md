@@ -58,7 +58,7 @@ Project context, roadmaps, decisions, and workflow are maintained in [`docs/`](.
 
 1. **Clone the repository**  
    git clone https://github.com/anton-sedchenko/online-store-project.git
-   cd online-store
+   cd online-store-project
 
 2. **Back-end**
 
