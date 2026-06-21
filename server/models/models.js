@@ -50,7 +50,7 @@ const Product = sequelize.define('product', {
     availability: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'MADE_TO_ORDER',
+        defaultValue: 'IN_STOCK',
         validate: {
             isIn: [['IN_STOCK', 'MADE_TO_ORDER', 'OUT_OF_STOCK']]
         }
