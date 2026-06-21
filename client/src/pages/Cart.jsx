@@ -17,6 +17,7 @@ const Cart = () => {
         <div className="component__container cart__page">
             <Helmet>
                 <title>Мій кошик – Charivna Craft</title>
+                <meta name="robots" content="noindex, nofollow" />
                 <meta
                     name="description"
                     content="Перевірте товари у своєму кошику перед оформленням замовлення."
