@@ -227,6 +227,7 @@ const Order = () => {
         <>
             <Helmet>
                 <title>Оформлення замовлення – Charivna Craft</title>
+                <meta name="robots" content="noindex, nofollow" />
                 <meta
                     name="description"
                     content="Вкажіть дані для доставки й завершення замовлення виробів ручної роботи."
