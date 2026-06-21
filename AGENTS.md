@@ -12,6 +12,17 @@ Main stack:
 * Backend and database hosting: Railway
 * Production domain: https://charivna-craft.com.ua
 
+
+## Project documentation and source of truth
+
+Before starting work, read `docs/README.md` to understand the current documentation structure. Always consider `docs/MASTER_PLAN.md` and `docs/DECISIONS.md`, and read the roadmap relevant to the task area:
+
+* `docs/TECHNICAL_ROADMAP.md` for technical implementation and architecture work.
+* `docs/SEO_BLOG_ROADMAP.md` for SEO, blog, content planning, and internal linking work.
+* `docs/DESIGN_CONTENT_ROADMAP.md` for design, visual content, article layout, and image work.
+
+Do not change approved priorities without user approval. Do not mark a task as completed until it has been merged and verified in production. If a PR changes the approved plan, the documentation update must be explicitly mentioned in the PR. Roadmap files are not permission to implement the entire backlog in one PR; one PR should solve one approved task.
+
 The repository contains:
 
 * `client/` — frontend
