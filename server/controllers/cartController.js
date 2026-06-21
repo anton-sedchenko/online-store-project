@@ -1,6 +1,29 @@
 const {Cart, CartProduct, Product} = require('../models/models');
 const ApiError = require('../error/ApiError');
 
+const PURCHASABLE_AVAILABILITIES = new Set(['IN_STOCK', 'MADE_TO_ORDER']);
+
+function isPositiveQuantity(quantity) {
+    return Number.isFinite(Number(quantity)) && Number(quantity) > 0;
+}
+
+async function validateProductForCart(productId, quantity) {
+    if (!isPositiveQuantity(quantity)) {
+        throw ApiError.badRequest('Кількість товару має бути додатним числом');
+    }
+
+    const product = await Product.findByPk(productId);
+    if (!product) {
+        throw ApiError.badRequest('Товар не знайдено');
+    }
+
+    if (!PURCHASABLE_AVAILABILITIES.has(product.availability)) {
+        throw ApiError.badRequest('Товар недоступний для додавання в кошик');
+    }
+
+    return product;
+}
+
 async function getCartIdForUser(userId) {
     const cart = await Cart.findOne({where: {userId}});
     if (!cart) throw ApiError.internal('Кошик користувача не знайдено');
@@ -13,22 +36,25 @@ class CartController {
         try {
             const userId = req.user.id;
             const {productId, quantity = 1} = req.body;
+            const quantityNum = Number(quantity);
+
+            await validateProductForCart(productId, quantityNum);
 
             // Перевіряємо чи вже є така позиція в кошику
             const cartId = await getCartIdForUser(userId);
             const existing = await CartProduct.findOne({where: {cartId, productId}});
             if (existing) {
-                existing.quantity += quantity;
+                existing.quantity += quantityNum;
                 await existing.save();
                 return res.json(existing);
             }
 
             // Інакше створюємо новий запис
-            const cartItem = await CartProduct.create({cartId, productId, quantity});
+            const cartItem = await CartProduct.create({cartId, productId, quantity: quantityNum});
 
             return res.status(201).json(cartItem);
         } catch (e) {
-            next(ApiError.internal(e.message));
+            next(e.status ? e : ApiError.internal(e.message));
         }
     }
 
@@ -103,6 +129,10 @@ class CartController {
     async addToCartGuest(req, res, next) {
         try {
             const {cartId, productId, quantity = 1} = req.body;
+            const quantityNum = Number(quantity);
+
+            await validateProductForCart(productId, quantityNum);
+
             // перевіряємо чи валідний cartId
             const cart = await Cart.findByPk(cartId);
             if (!cart) return next(ApiError.badRequest('Невірний Id кошика'));
@@ -110,15 +140,15 @@ class CartController {
             // Перевіряємо чи є вже така позиція в кошику
             const existing = await CartProduct.findOne({where: {cartId, productId}});
             if (existing) {
-                existing.quantity += quantity;
+                existing.quantity += quantityNum;
                 await existing.save();
                 return res.json(existing);
             }
 
-            const cartItem = await CartProduct.create({cartId, productId, quantity});
+            const cartItem = await CartProduct.create({cartId, productId, quantity: quantityNum});
             return res.status(201).json(cartItem);
         } catch (e) {
-            next(ApiError.internal(e.message));
+            next(e.status ? e : ApiError.internal(e.message));
         }
     }
 

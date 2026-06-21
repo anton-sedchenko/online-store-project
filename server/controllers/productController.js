@@ -4,6 +4,19 @@ const {cloudinary, extractPublicId} = require('../utils/cloudinary');
 const slugify = require('slugify');
 const {invalidateFeedCache} = require('../routes/feed');
 
+const ALLOWED_AVAILABILITIES = new Set(['IN_STOCK', 'MADE_TO_ORDER', 'OUT_OF_STOCK']);
+
+function normalizeAvailability(value, defaultValue) {
+    if (value === undefined) return defaultValue;
+    const normalized = value === 'PRE_ORDER' ? 'MADE_TO_ORDER' : value;
+
+    if (!ALLOWED_AVAILABILITIES.has(normalized)) {
+        throw ApiError.badRequest('Некоректний статус наявності товару');
+    }
+
+    return normalized;
+}
+
 const PRODUCT_INCLUDES = [
     {association: 'images'},
     {association: 'marketplaceParams'},
@@ -102,7 +115,7 @@ class ProductController {
                 marketplaceParams,
             } = req.body;
 
-            const availabilityNorm = availability === 'PRE_ORDER' ? 'MADE_TO_ORDER' : availability;
+            const availabilityNorm = normalizeAvailability(availability, 'IN_STOCK');
             const defaultTypeId = Number(process.env.DEFAULT_TYPE_ID);
 
             const typeIdNum =
@@ -177,7 +190,7 @@ class ProductController {
             return res.json(newProduct);
         } catch (e) {
             console.error('PRODUCT CREATE ERROR:', e);
-            next(ApiError.internal('Помилка при створенні товару'));
+            next(e.status ? e : ApiError.internal('Помилка при створенні товару'));
         }
     }
 
@@ -207,7 +220,7 @@ class ProductController {
             } = req.body;
 
             const {availability, rozetkaCategoryId, rating} = req.body;
-            const availabilityNorm = availability === 'PRE_ORDER' ? 'MADE_TO_ORDER' : availability;
+            const availabilityNorm = normalizeAvailability(availability, undefined);
 
             let rzIdNum = null;
             if (rozetkaCategoryId !== undefined) {
@@ -333,7 +346,7 @@ class ProductController {
             invalidateFeedCache();
             return res.json(product);
         } catch (e) {
-            next(ApiError.internal(e.message));
+            next(e.status ? e : ApiError.internal(e.message));
         }
     }
 
