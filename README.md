@@ -1,6 +1,6 @@
 # Charivna Craft
 
-An online store of handmade goods “Charivna Craft”
+A Ukrainian e-commerce store for handmade cord products by Charivna Craft.
 https://charivna-craft.com.ua/
 
 
@@ -39,13 +39,26 @@ A small shop of custom goods with features for:
 - **Authentication**: JWT  
 - **Image Storage**: Cloudinary 
 - **Notifications**: Telegram Bot API  
-- **Hosting**: Railway
+- **Frontend hosting**: Vercel
+- **Backend and database hosting**: Railway
+
+## Project documentation
+
+Project context, roadmaps, decisions, and workflow are maintained in [`docs/`](./docs/):
+
+- [`docs/README.md`](./docs/README.md)
+- [`docs/MASTER_PLAN.md`](./docs/MASTER_PLAN.md)
+- [`docs/TECHNICAL_ROADMAP.md`](./docs/TECHNICAL_ROADMAP.md)
+- [`docs/SEO_BLOG_ROADMAP.md`](./docs/SEO_BLOG_ROADMAP.md)
+- [`docs/DESIGN_CONTENT_ROADMAP.md`](./docs/DESIGN_CONTENT_ROADMAP.md)
+- [`docs/DECISIONS.md`](./docs/DECISIONS.md)
+- [`docs/WORKFLOW.md`](./docs/WORKFLOW.md)
 
 ## Setup & Run
 
 1. **Clone the repository**  
-   git clone https://github.com/your-username/online-store.git
-   cd online-store
+   git clone https://github.com/anton-sedchenko/online-store-project.git
+   cd online-store-project
 
 2. **Back-end**
 
