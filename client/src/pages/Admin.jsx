@@ -163,7 +163,6 @@ const Admin = observer(() => {
                         </tr>
                     </thead>
 
-                ```
                 <tbody>
                     {types.length > 0 ? (
                         types.map(type => (
@@ -197,7 +196,6 @@ const Admin = observer(() => {
                         </tr>
                     )}
                 </tbody>
-                ```
 
                 </Table>
 

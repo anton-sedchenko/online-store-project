@@ -1,5 +1,6 @@
 import {makeAutoObservable, runInAction} from "mobx";
 import {addToCartAPI, clearCartAPI, fetchCart, removeCartItemAPI, updateCartItemAPI} from "../http/cartAPI.js";
+import {isPurchasableAvailability} from "../utils/availability.js";
 
 const GUEST_CART_KEY = "guestCart";
 const CART_TTL_MS = 24 * 60 * 60 * 1000; // 24 години - строк життя гостьового кошика
@@ -83,6 +84,8 @@ export default class CartStore {
     // Уніфіковані методи
 
     async addItem(product, qty = 1) {
+        if (!isPurchasableAvailability(product?.availability)) return;
+
         if (this._isGuest) {
             // Гість
             const exist = this._items.find(i => i.id === product.id);

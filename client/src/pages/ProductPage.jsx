@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {Col, Image, Row} from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import {useNavigate, useParams} from "react-router-dom";
-import {deleteProduct, fetchProductBySlug} from "../http/productAPI.js";
+import {fetchProductBySlug} from "../http/productAPI.js";
 import {Context} from "../main.jsx";
 import {CART_ROUTE} from "../utils/consts.js";
 import {Helmet} from 'react-helmet-async';
@@ -10,6 +10,7 @@ import CallbackModal from "../components/modals/CallbackModal.jsx";
 import StarRating from "../components/StarRating.jsx";
 import Reviews from "../components/Reviews.jsx";
 import {getReviews} from '../http/reviewAPI.js';
+import {getAvailabilityClass, getAvailabilityLabel, isPurchasableAvailability} from '../utils/availability.js';
 
 const ProductPage = () => {
     const navigate = useNavigate();
@@ -86,10 +87,10 @@ const ProductPage = () => {
         })();
     }, [product?.id]);
 
-    const isOutOfStock = product.availability === 'OUT_OF_STOCK';
+    const isPurchasable = isPurchasableAvailability(product.availability);
 
     const handleAddToCart = () => {
-        if (isOutOfStock) return;
+        if (!isPurchasable) return;
 
         cartStore.addItem(
             {
@@ -97,19 +98,12 @@ const ProductPage = () => {
                 name: product.name,
                 price: product.price,
                 img: product.img,
-                slug: product.slug
+                slug: product.slug,
+                availability: product.availability
             },
             qty
         );
         navigate(CART_ROUTE);
-    };
-
-    const handleDelete = async () => {
-        try {
-            await deleteProduct(product.id);
-        } catch (e) {
-            alert(e.response?.data?.message || 'Помилка при видаленні');
-        }
     };
 
     const handlePrev = () => {
@@ -159,17 +153,9 @@ const ProductPage = () => {
     const sum = Number(product.price || 0) * qty;
     const activeImage = product.images?.[currentImageIndex]?.url || product.img;
 
-    const availabilityLabel = useMemo(() => {
-        if (product.availability === 'IN_STOCK') return 'В наявності';
-        if (product.availability === 'OUT_OF_STOCK') return 'Немає в наявності';
-        return 'Під замовлення (2–3 дні)';
-    }, [product.availability]);
+    const availabilityLabel = useMemo(() => getAvailabilityLabel(product.availability), [product.availability]);
 
-    const availabilityClass = useMemo(() => {
-        if (product.availability === 'IN_STOCK') return 'availability-value in-stock';
-        if (product.availability === 'OUT_OF_STOCK') return 'availability-value out-of-stock';
-        return 'availability-value pre-order';
-    }, [product.availability]);
+    const availabilityClass = useMemo(() => getAvailabilityClass(product.availability), [product.availability]);
 
     const dimensionsText = useMemo(() => {
         const parts = [];
@@ -523,9 +509,9 @@ const ProductPage = () => {
                             <button
                                 className="product__page__btn"
                                 onClick={handleAddToCart}
-                                disabled={isOutOfStock}
+                                disabled={!isPurchasable}
                             >
-                                {isOutOfStock ? 'Товар тимчасово недоступний' : 'Додати в кошик'}
+                                {!isPurchasable ? 'Товар тимчасово недоступний' : 'Додати в кошик'}
                             </button>
                         </div>
                     </div>

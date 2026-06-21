@@ -19,6 +19,7 @@ import {
     PRIVACY_ROUTE,
     BLOG_ROUTE,
     ARTICLE_ROUTE,
+    STORAGE_BASKETS_ROUTE,
 } from "./utils/consts.js";
 import Auth from "./pages/Auth.jsx";
 import ProductPage from "./pages/ProductPage.jsx";
@@ -34,6 +35,7 @@ import HomePage from "./pages/HomePage.jsx";
 import Privacy from "./pages/Privacy.jsx";
 import ArticlePage from "./pages/ArticlePage.jsx";
 import BlogList from "./pages/BlogList.jsx";
+import StorageBasketsPage from "./pages/StorageBasketsPage.jsx";
 
 export const authRoutes = [
     {
@@ -102,6 +104,10 @@ export const publicRoutes = [
     {
         path: BLOG_ROUTE,
         Component: BlogList
+    },
+    {
+        path: STORAGE_BASKETS_ROUTE,
+        Component: StorageBasketsPage
     },
     {
         path: ARTICLE_ROUTE,

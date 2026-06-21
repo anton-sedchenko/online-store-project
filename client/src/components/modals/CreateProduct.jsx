@@ -10,6 +10,7 @@ import {
     mergeRozetkaParamsWithTemplate,
     prepareMarketplaceParamsForSubmit,
 } from "../../utils/rozetkaParams.js";
+import {AVAILABILITY_STATUSES, availabilityOptions} from "../../utils/availability.js";
 
 const KIND_OPTIONS = ['Кошик', 'Плейсмат', 'Костер', 'Кашпо', 'Набір'];
 const MATERIAL_OPTIONS = ['Бавовна'];
@@ -29,7 +30,7 @@ const CreateProduct = observer(({show, onHide}) => {
     const [features, setFeatures] = useState([]);
     const [file, setFile] = useState(null);
     const [code, setCode] = useState('');
-    const [availability, setAvailability] = useState('IN_STOCK');
+    const [availability, setAvailability] = useState(AVAILABILITY_STATUSES.IN_STOCK);
     const [rozetkaCategoryId, setRozetkaCategoryId] = useState('');
     const [rating, setRating] = useState(1);
     const [width, setWidth] = useState('');
@@ -87,7 +88,7 @@ const CreateProduct = observer(({show, onHide}) => {
         setFeatures([]);
         setFile(null);
         setCode('');
-        setAvailability('IN_STOCK');
+        setAvailability(AVAILABILITY_STATUSES.IN_STOCK);
         setRozetkaCategoryId('');
         setRating(1);
         setWidth('');
@@ -142,6 +143,11 @@ const CreateProduct = observer(({show, onHide}) => {
 
         if (!typeId) {
             alert("Оберіть категорію товару");
+            return;
+        }
+
+        if (!availabilityOptions.some(option => option.value === availability)) {
+            alert("Оберіть коректний статус наявності");
             return;
         }
 
@@ -273,9 +279,9 @@ const CreateProduct = observer(({show, onHide}) => {
                     <Form.Group className="mb-2">
                         <Form.Label>Наявність</Form.Label>
                         <Form.Select value={availability} onChange={e => setAvailability(e.target.value)}>
-                            <option value="IN_STOCK">В наявності</option>
-                            <option value="MADE_TO_ORDER">Під замовлення (2–3 дні)</option>
-                            <option value="OUT_OF_STOCK">Немає в наявності</option>
+                            {availabilityOptions.map(option => (
+                                <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
                         </Form.Select>
                     </Form.Group>
 

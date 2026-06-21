@@ -11,12 +11,7 @@ router.post(
     typeController.create
 );
 
-router.get(
-    '/',
-    authMiddleware,
-    checkRole('ADMIN'),
-    typeController.getAll
-);
+router.get('/', typeController.getAll);
 
 router.get(
     '/:id',

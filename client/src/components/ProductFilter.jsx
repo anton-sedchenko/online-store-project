@@ -1,58 +1,167 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
+import {Form} from 'react-bootstrap';
+
+const VISIBLE_CATEGORY_NAMES = [
+    'Для дітей',
+    'Багатоцільові органайзери',
+    'Кошики для ванної',
+    'Кошики для кухні'
+];
 
 const ProductFilter = ({
-    products,
-    selectedKinds,
-    setSelectedKinds,
-    selectedColors,
-    setSelectedColors,
+    products = [],
+    types = [],
+    showKinds = true,
+    selectedCategories = [],
+    setSelectedCategories = () => {},
+    selectedKinds = [],
+    setSelectedKinds = () => {},
+    selectedColors = [],
+    setSelectedColors = () => {}
 }) => {
     const safeProducts = Array.isArray(products) ? products : [];
+    const safeTypes = Array.isArray(types) ? types : [];
 
-    const kinds = [...new Set(safeProducts.map(p => p?.kind).filter(Boolean))];
-    const colors = [...new Set(safeProducts.map(p => p?.color).filter(Boolean))];
+    const productTypeIds = new Set(
+        safeProducts
+            .map(product => String(product?.typeId || ''))
+            .filter(Boolean)
+    );
 
-    const toggleKind = (k) => {
-        if (selectedKinds.includes(k)) {
-            setSelectedKinds(selectedKinds.filter(x => x !== k));
+    const categories = safeTypes.filter(type => {
+        return (
+            VISIBLE_CATEGORY_NAMES.includes(type?.name) &&
+            productTypeIds.has(String(type?.id))
+        );
+    });
+
+    const kinds = [
+        ...new Set(
+            safeProducts
+                .map(product => product?.kind)
+                .filter(Boolean)
+        )
+    ];
+
+    const colors = [
+        ...new Set(
+            safeProducts
+                .map(product => product?.color)
+                .filter(Boolean)
+        )
+    ];
+
+    const toggleCategory = (typeId) => {
+        const normalizedTypeId = String(typeId);
+
+        if (selectedCategories.includes(normalizedTypeId)) {
+            setSelectedCategories(
+                selectedCategories.filter(
+                    item => item !== normalizedTypeId
+                )
+            );
         } else {
-            setSelectedKinds([...selectedKinds, k]);
+            setSelectedCategories([
+                ...selectedCategories,
+                normalizedTypeId
+            ]);
         }
     };
 
-    const toggleColor = (c) => {
-        if (selectedColors.includes(c)) {
-            setSelectedColors(selectedColors.filter(x => x !== c));
+    const toggleKind = (kind) => {
+        if (selectedKinds.includes(kind)) {
+            setSelectedKinds(
+                selectedKinds.filter(item => item !== kind)
+            );
         } else {
-            setSelectedColors([...selectedColors, c]);
+            setSelectedKinds([
+                ...selectedKinds,
+                kind
+            ]);
         }
     };
 
-    if (!kinds.length && !colors.length) {
+    const toggleColor = (color) => {
+        if (selectedColors.includes(color)) {
+            setSelectedColors(
+                selectedColors.filter(item => item !== color)
+            );
+        } else {
+            setSelectedColors([
+                ...selectedColors,
+                color
+            ]);
+        }
+    };
+
+    if (
+        !categories.length &&
+        (!showKinds || !kinds.length) &&
+        !colors.length
+    ) {
         return null;
     }
 
     return (
         <div className="sidebar__filters">
-            <h5 className="sidebar__section__title">Фільтри</h5>
+            <h5 className="sidebar__section__title">
+                Фільтри
+            </h5>
 
-            {kinds.length > 0 && (
+            {categories.length > 0 && (
                 <div className="sidebar__filter__group">
-                    <div className="sidebar__filter__group__title">Тип виробу</div>
+                    <div className="sidebar__filter__group__title">
+                        Категорія
+                    </div>
+
                     <div className="sidebar__filter__option__container">
-                        {kinds.map((k) => {
-                            const inputId = `kind-${k.replace(/\s+/g, '-').toLowerCase()}`;
+                        {categories.map(category => {
+                            const categoryId = String(category.id);
+
+                            const inputId = `category-${categoryId}`;
 
                             return (
                                 <Form.Check
-                                    key={k}
+                                    key={categoryId}
                                     id={inputId}
                                     type="checkbox"
-                                    label={k}
+                                    label={category.name}
                                     className="sidebar__filter__check"
-                                    checked={selectedKinds.includes(k)}
-                                    onChange={() => toggleKind(k)}
+                                    checked={selectedCategories.includes(
+                                        categoryId
+                                    )}
+                                    onChange={() =>
+                                        toggleCategory(categoryId)
+                                    }
+                                />
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
+
+            {showKinds && kinds.length > 0 && (
+                <div className="sidebar__filter__group">
+                    <div className="sidebar__filter__group__title">
+                        Тип виробу
+                    </div>
+
+                    <div className="sidebar__filter__option__container">
+                        {kinds.map(kind => {
+                            const inputId =
+                                `kind-${kind
+                                    .replace(/\s+/g, '-')
+                                    .toLowerCase()}`;
+
+                            return (
+                                <Form.Check
+                                    key={kind}
+                                    id={inputId}
+                                    type="checkbox"
+                                    label={kind}
+                                    className="sidebar__filter__check"
+                                    checked={selectedKinds.includes(kind)}
+                                    onChange={() => toggleKind(kind)}
                                 />
                             );
                         })}
@@ -62,20 +171,26 @@ const ProductFilter = ({
 
             {colors.length > 0 && (
                 <div className="sidebar__filter__group">
-                    <div className="sidebar__filter__group__title">Колір</div>
+                    <div className="sidebar__filter__group__title">
+                        Колір
+                    </div>
+
                     <div className="sidebar__filter__option__container">
-                        {colors.map((c) => {
-                            const inputId = `color-${c.replace(/\s+/g, '-').toLowerCase()}`;
+                        {colors.map(color => {
+                            const inputId =
+                                `color-${color
+                                    .replace(/\s+/g, '-')
+                                    .toLowerCase()}`;
 
                             return (
                                 <Form.Check
-                                    key={c}
+                                    key={color}
                                     id={inputId}
                                     type="checkbox"
-                                    label={c}
+                                    label={color}
                                     className="sidebar__filter__check"
-                                    checked={selectedColors.includes(c)}
-                                    onChange={() => toggleColor(c)}
+                                    checked={selectedColors.includes(color)}
+                                    onChange={() => toggleColor(color)}
                                 />
                             );
                         })}

@@ -1,78 +1,136 @@
-import React, { useEffect, useState } from 'react';
-import { Row, Col, Spinner } from 'react-bootstrap';
-import { Helmet } from 'react-helmet-async';
+import React, {useEffect, useState} from 'react';
+import {Row, Col, Spinner} from 'react-bootstrap';
+import {Helmet} from 'react-helmet-async';
 
 import SideBar from '../components/SideBar.jsx';
 import ProductList from '../components/ProductList.jsx';
 import PaginationLocal from '../components/PaginationLocal.jsx';
 import ProductFilter from '../components/ProductFilter.jsx';
-import { fetchProducts } from '../http/productAPI.js';
-import MobileFilterModal from '../components/modals/MobileFilterModal';
+import MobileFilterModal from '../components/modals/MobileFilterModal.jsx';
+
+import {fetchProducts} from '../http/productAPI.js';
+import {fetchTypes} from '../http/typeAPI.js';
 
 const HomePage = () => {
     const [loading, setLoading] = useState(true);
     const [allProducts, setAllProducts] = useState([]);
+    const [types, setTypes] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [selectedCategories, setSelectedCategories] = useState([]);
     const [selectedKinds, setSelectedKinds] = useState([]);
     const [selectedColors, setSelectedColors] = useState([]);
 
     const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-    const activeFiltersCount = selectedKinds.length + selectedColors.length;
+    const activeFiltersCount =
+        selectedCategories.length +
+        selectedKinds.length +
+        selectedColors.length;
+
     const limit = 12;
 
     useEffect(() => {
-        const loadHomeProducts = async () => {
+        const loadHomeData = async () => {
             try {
                 setLoading(true);
-                const data = await fetchProducts(null, 1, 500);
-                setAllProducts(data.rows || []);
+
+                const [productsData, typesData] = await Promise.all([
+                    fetchProducts(null, 1, 500),
+                    fetchTypes()
+                ]);
+
+                setAllProducts(
+                    Array.isArray(productsData?.rows)
+                        ? productsData.rows
+                        : []
+                );
+
+                setTypes(
+                    Array.isArray(typesData)
+                        ? typesData
+                        : []
+                );
             } catch (e) {
-                console.error('Помилка при завантаженні товарів:', e);
+                console.error(
+                    'Помилка при завантаженні товарів або категорій:',
+                    e
+                );
+
                 setAllProducts([]);
+                setTypes([]);
             } finally {
                 setLoading(false);
             }
         };
 
-        loadHomeProducts();
+        loadHomeData();
     }, []);
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [selectedKinds, selectedColors]);
+    }, [
+        selectedCategories,
+        selectedKinds,
+        selectedColors
+    ]);
 
     const filteredProducts = allProducts.filter(product => {
-        if (selectedKinds.length && !selectedKinds.includes(product?.kind)) {
-            return false;
-        }
+        const productTypeId = String(product?.typeId || '');
 
-        if (selectedColors.length && !selectedColors.includes(product?.color)) {
-            return false;
-        }
+        const matchesCategory =
+            selectedCategories.length === 0 ||
+            selectedCategories.includes(productTypeId);
 
-        return true;
+        const matchesKind =
+            selectedKinds.length === 0 ||
+            selectedKinds.includes(product?.kind);
+
+        const matchesColor =
+            selectedColors.length === 0 ||
+            selectedColors.includes(product?.color);
+
+        return (
+            matchesCategory &&
+            matchesKind &&
+            matchesColor
+        );
     });
 
     const totalCount = filteredProducts.length;
     const startIdx = (currentPage - 1) * limit;
-    const pageProducts = filteredProducts.slice(startIdx, startIdx + limit);
+
+    const pageProducts = filteredProducts.slice(
+        startIdx,
+        startIdx + limit
+    );
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
-        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        });
     };
 
     return (
         <>
             <Helmet>
-                <title>Кошики, корзини та вироби зі шнура на замовлення – Charivna Craft</title>
+                <title>
+                    Кошики, корзини та вироби зі шнура на замовлення – Charivna Craft
+                </title>
+
                 <meta
                     name="description"
                     content="Charivna Craft — український бренд кошиків, корзин, органайзерів, плейсматів, костерів, наборів і кашпо зі шнура ручної роботи. Шиємо за вашими розмірами, працюємо в роздріб і гурт, доставляємо по Україні."
                 />
-                <link rel="canonical" href="https://charivna-craft.com.ua/" />
+
+                <link
+                    rel="canonical"
+                    href="https://charivna-craft.com.ua/"
+                />
             </Helmet>
 
             <div className="component__container">
@@ -81,6 +139,9 @@ const HomePage = () => {
                         <SideBar>
                             <ProductFilter
                                 products={allProducts}
+                                types={types}
+                                selectedCategories={selectedCategories}
+                                setSelectedCategories={setSelectedCategories}
                                 selectedKinds={selectedKinds}
                                 setSelectedKinds={setSelectedKinds}
                                 selectedColors={selectedColors}
@@ -96,7 +157,7 @@ const HomePage = () => {
 
                         {loading ? (
                             <div className="d-flex justify-content-center py-5">
-                                <Spinner animation="border" />
+                                <Spinner animation="border"/>
                             </div>
                         ) : (
                             <>
@@ -107,6 +168,7 @@ const HomePage = () => {
                                         onClick={() => setShowMobileFilters(true)}
                                     >
                                         Фільтри
+
                                         {activeFiltersCount > 0 && (
                                             <span className="mobile-filter-bar__count">
                                                 {activeFiltersCount}
@@ -117,7 +179,7 @@ const HomePage = () => {
 
                                 {pageProducts.length > 0 ? (
                                     <>
-                                        <ProductList products={pageProducts} />
+                                        <ProductList products={pageProducts}/>
 
                                         <PaginationLocal
                                             totalCount={totalCount}
@@ -127,7 +189,9 @@ const HomePage = () => {
                                         />
                                     </>
                                 ) : (
-                                    <p>За обраними фільтрами товари не знайдено.</p>
+                                    <p>
+                                        За обраними фільтрами товари не знайдено.
+                                    </p>
                                 )}
                             </>
                         )}
@@ -139,6 +203,9 @@ const HomePage = () => {
                 show={showMobileFilters}
                 onHide={() => setShowMobileFilters(false)}
                 products={allProducts}
+                types={types}
+                selectedCategories={selectedCategories}
+                setSelectedCategories={setSelectedCategories}
                 selectedKinds={selectedKinds}
                 setSelectedKinds={setSelectedKinds}
                 selectedColors={selectedColors}

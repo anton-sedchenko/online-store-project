@@ -5,16 +5,20 @@ import {PRODUCT_ROUTE} from "../utils/consts.js";
 import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
 import AddedToCartModal from "./modals/AddedToCartModal.jsx";
+import {getAvailabilityClass, getAvailabilityLabel, isPurchasableAvailability} from "../utils/availability.js";
 
 const ProductItem = observer(({product}) => {
     const {cartStore} = useContext(Context);
     const [showModal, setShowModal] = useState(false);
 
     const productLink = `${PRODUCT_ROUTE}/${product.slug}`;
+    const isPurchasable = isPurchasableAvailability(product.availability);
 
     const handleAddToCart = async (e) => {
         e.preventDefault();
         e.stopPropagation();
+
+        if (!isPurchasable) return;
 
         await cartStore.addItem(product);
         setShowModal(true);
@@ -45,15 +49,8 @@ const ProductItem = observer(({product}) => {
 
                             <p className="product__availability">
                                 <span className="availability-label">Наявність:</span>{' '}
-                                <span className={
-                                    product.availability === 'IN_STOCK'
-                                        ? 'availability-value in-stock'
-                                        : 'availability-value pre-order'
-                                }>
-                                    {product.availability === 'IN_STOCK'
-                                        ? 'В наявності'
-                                        : 'Під замовлення (2–3 дні)'
-                                    }
+                                <span className={getAvailabilityClass(product.availability)}>
+                                    {getAvailabilityLabel(product.availability)}
                                 </span>
                             </p>
 
@@ -75,6 +72,7 @@ const ProductItem = observer(({product}) => {
                         type="button"
                         className="gallery__card__btn"
                         onClick={handleAddToCart}
+                        disabled={!isPurchasable}
                     >
                         До кошика
                     </button>

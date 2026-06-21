@@ -1,19 +1,39 @@
 import React from 'react';
-import { Modal, Button } from 'react-bootstrap';
-import ProductFilter from '../ProductFilter';
+import {Modal, Button} from 'react-bootstrap';
+import ProductFilter from '../ProductFilter.jsx';
 
 const MobileFilterModal = ({
     show,
     onHide,
     products,
+    types,
+    selectedCategories,
+    setSelectedCategories,
     selectedKinds,
     setSelectedKinds,
     selectedColors,
     setSelectedColors,
+    showKinds = true
 }) => {
-    const hasActiveFilters = selectedKinds.length > 0 || selectedColors.length > 0;
+    const safeSelectedCategories = Array.isArray(selectedCategories)
+        ? selectedCategories
+        : [];
+
+    const safeSelectedKinds = Array.isArray(selectedKinds)
+        ? selectedKinds
+        : [];
+
+    const safeSelectedColors = Array.isArray(selectedColors)
+        ? selectedColors
+        : [];
+
+    const hasActiveFilters =
+        safeSelectedCategories.length > 0 ||
+        (showKinds && safeSelectedKinds.length > 0) ||
+        safeSelectedColors.length > 0;
 
     const handleResetFilters = () => {
+        setSelectedCategories([]);
         setSelectedKinds([]);
         setSelectedColors([]);
     };
@@ -32,9 +52,13 @@ const MobileFilterModal = ({
             <Modal.Body>
                 <ProductFilter
                     products={products}
-                    selectedKinds={selectedKinds}
+                    types={types}
+                    showKinds={showKinds}
+                    selectedCategories={safeSelectedCategories}
+                    setSelectedCategories={setSelectedCategories}
+                    selectedKinds={safeSelectedKinds}
                     setSelectedKinds={setSelectedKinds}
-                    selectedColors={selectedColors}
+                    selectedColors={safeSelectedColors}
                     setSelectedColors={setSelectedColors}
                 />
             </Modal.Body>
