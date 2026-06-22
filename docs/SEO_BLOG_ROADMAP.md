@@ -1,7 +1,7 @@
 # Charivna Craft — SEO і блог Roadmap
 
 * **ChatGPT-проєкт:** Charivna SEO і Блог
-* **Останнє оновлення:** 2026-06-21
+* **Останнє оновлення:** 2026-06-22
 * **Пов’язані документи:** [`MASTER_PLAN.md`](./MASTER_PLAN.md), [`DECISIONS.md`](./DECISIONS.md), [`WORKFLOW.md`](./WORKFLOW.md)
 
 ## Мета блогу
@@ -43,6 +43,28 @@ https://charivna-craft.com.ua/blog/
   * інші близькі handmade-теми.
 
 Не створювати випадкові матеріали лише заради трафіку.
+
+## Технічні SEO-вимоги до пагінації
+
+Пагінація списків товарів і статей має бути доступною для пошукових роботів і користувачів через URL та звичайні посилання.
+
+Вимоги:
+
+* застосувати до головного каталогу, `/koshyky-dlia-zberihannia` і `/blog`;
+* кожна сторінка має мати URL у форматі `?page=n`;
+* перша сторінка має залишатися на чистому URL без `?page=1`;
+* сторінки пагінації повинні бути з’єднані звичайними `<a href>`;
+* кожна сторінка пагінації має мати self-referencing canonical;
+* не canonicalize всі сторінки на першу;
+* не використовувати `#page=2`;
+* `rel="next"` і `rel="prev"` не є вимогою Google;
+* filter/sort URL не повинні масово потрапляти в індекс без окремого intent і затвердженої стратегії;
+* sitemap допомагає знайти товари й статті, але не замінює crawlable internal links;
+* до реалізації перевірити ризик дублювання URL, canonical, robots і канібалізації.
+
+Реалізація ведеться в [`TECHNICAL_ROADMAP.md`](./TECHNICAL_ROADMAP.md) як близький технічний SEO-пріоритет.
+
+Офіційна рекомендація: [Google Search Central — pagination and incremental page loading](https://developers.google.com/search/docs/specialty/ecommerce/pagination-and-incremental-page-loading).
 
 ## Next actions
 
