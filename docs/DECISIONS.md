@@ -1,6 +1,6 @@
 # Charivna Craft — Decision Log
 
-* **Останнє оновлення:** 2026-06-21
+* **Останнє оновлення:** 2026-06-22
 * **Пов’язані документи:** [`MASTER_PLAN.md`](./MASTER_PLAN.md), [`WORKFLOW.md`](./WORKFLOW.md)
 
 Нові важливі рішення дописуються в кінець таблиці. Старі рішення не переписуються без пояснення; якщо рішення змінюється, потрібно додати новий запис із причиною зміни.
@@ -27,3 +27,4 @@
 | 2026-06-21 | Чекбокс «Не телефонувати» відкладено. | Задача не входить у найближчі кроспроєктні пріоритети. | Checkout, UX | Deferred |
 | 2026-06-21 | Ahrefs використовується для SEO, keyword research і конкурентного аналізу. | Потрібен єдиний інструмент для пошуку тем, кластерів і gaps. | SEO, blog | Active |
 | 2026-06-21 | FAQ schema використовувати лише за наявності видимого FAQ. | Structured data має відповідати видимому контенту сторінки. | SEO, structured data | Active |
+| 2026-06-22 | SEO-friendly URL pagination підвищено до близького технічного пріоритету. Phase 1 — crawlable `?page=n`, `<a href>` і self-canonical; Phase 2 — backend pagination та контроль filter/sort URL. | Поточна state-only пагінація не створює окремих crawlable URL і посилань для наступних сторінок каталогу та блогу. | Frontend, backend, technical SEO, catalog, blog | Active |
