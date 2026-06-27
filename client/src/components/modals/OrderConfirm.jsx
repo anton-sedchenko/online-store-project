@@ -1,7 +1,7 @@
 import React from 'react';
 import {Modal} from "react-bootstrap";
 
-const OrderConfirm = ({show, onHide}) => {
+const OrderConfirm = ({show, onHide, skipConfirmationContact = false}) => {
     return (
         <Modal
             centered
@@ -12,7 +12,9 @@ const OrderConfirm = ({show, onHide}) => {
                 <Modal.Title>Замовлення оформлене!</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                Дякуємо за покупку! Наш менеджер зв'яжеться з вами найближчим часом.
+                {skipConfirmationContact
+                    ? "Дякуємо за покупку! Замовлення передано в роботу без додаткового підтвердження. Зв’яжемося лише за потреби уточнити дані."
+                    : "Дякуємо за покупку! Наш менеджер зв'яжеться з вами найближчим часом."}
             </Modal.Body>
         </Modal>
     );

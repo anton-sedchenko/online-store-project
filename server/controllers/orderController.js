@@ -27,7 +27,8 @@ function renderOrderEmail({
                               email,
                               total,
                               shippingHtml,
-                              items
+                              items,
+                              shouldSkipConfirmationContact = false
                           }) {
     const LOGO_URL = process.env.EMAIL_LOGO_URL || 'https://charivna-craft.com.ua/logo-email.png';
 
@@ -96,7 +97,9 @@ function renderOrderEmail({
                                         Номер вашого замовлення: №${orderId}.
                                     </p>
                                     <p style="margin:0 0 12px;font-size:13px;color:#777;">
-                                        Ми зв’яжемося з вами найближчим часом для підтвердження деталей та відправлення посилки.
+                                        ${shouldSkipConfirmationContact
+                                            ? 'Замовлення передано в роботу без додаткового підтвердження. Ми зв’яжемося лише за потреби уточнити дані.'
+                                            : 'Ми зв’яжемося з вами найближчим часом для підтвердження деталей та відправлення посилки.'}
                                     </p>
                                 </td>
                             </tr>
@@ -111,7 +114,7 @@ function renderOrderEmail({
                                                 <p style="margin:0;font-size:13px;color:#555;line-height:1.5;">
                                                     <strong>Імʼя:</strong> ${fullName}<br/>
                                                     <strong>Телефон:</strong> ${tel}<br/>
-                                                    <strong>Email:</strong> ${email}
+                                                    <strong>Email:</strong> ${email}${shouldSkipConfirmationContact ? '<br/><strong>Підтвердження:</strong> без додаткового зв’язку' : ''}
                                                 </p>
                                             </td>
                                         </tr>
@@ -211,8 +214,23 @@ class OrderController {
                 email,
                 comments,
                 order,       /* масив позицій (id, quantity...) */
-                shipping = null
+                shipping = null,
+                skipConfirmationContact
             } = req.body;
+
+            const shouldSkipConfirmationContact = skipConfirmationContact === true;
+            const shippingForOrder = shipping
+                ? {
+                    ...shipping,
+                    orderPreferences: {
+                        skipConfirmationContact: shouldSkipConfirmationContact
+                    }
+                }
+                : {
+                    orderPreferences: {
+                        skipConfirmationContact: shouldSkipConfirmationContact
+                    }
+                };
 
             if (!order?.length) {
                 return next(ApiError.badRequest('Немає товарів для оформлення замовлення'));
@@ -225,7 +243,7 @@ class OrderController {
                 tel,
                 email,
                 comments,
-                shipping
+                shipping: shippingForOrder
             });
 
             // Додаємо позиції
@@ -273,8 +291,12 @@ class OrderController {
             text += `👤 Імʼя: ${fullName}\n`;
             text += `📞 Телефон: ${tel}\n`;
             text += `✉️ Email: ${email}\n`;
-            text += `🚚 ${shippingText(shipping)}\n`;
+            text += `🚚 ${shippingText(shippingForOrder)}\n`;
             if (comments) text += `💬 Коментар: ${comments}\n`;
+            if (shouldSkipConfirmationContact) {
+                text += `\n🚫 *НЕ ЗВ’ЯЗУВАТИСЯ ДЛЯ ПІДТВЕРДЖЕННЯ*\n`;
+                text += `➡️ Одразу передати замовлення в роботу. Зв’язатися лише за потреби уточнити дані.\n`;
+            }
             text += `\n🛒 *Товари:*\n`;
             orderItems.forEach((oi, idx) => {
                 const name  = oi.product.name;
@@ -285,22 +307,22 @@ class OrderController {
             });
 
             const shippingHtml = (() => {
-                if (!shipping) return '<p><strong>Спосіб доставки:</strong> не вказано</p>';
+                if (!shippingForOrder) return '<p><strong>Спосіб доставки:</strong> не вказано</p>';
                 const parts = [];
-                parts.push(`<p><strong>Спосіб доставки:</strong> ${shipping.method || '—'}</p>`);
-                if (shipping.service) parts.push(`<p><strong>Служба:</strong> ${shipping.service}</p>`);
+                parts.push(`<p><strong>Спосіб доставки:</strong> ${shippingForOrder.method || '—'}</p>`);
+                if (shippingForOrder.service) parts.push(`<p><strong>Служба:</strong> ${shippingForOrder.service}</p>`);
 
-                if (shipping.method === 'Нова Пошта') {
-                    if (shipping.city) parts.push(`<p><strong>Місто:</strong> ${shipping.city.name}</p>`);
-                    if (shipping.branch) parts.push(
-                        `<p><strong>Відділення:</strong> №${shipping.branch.number} — ${shipping.branch.description}</p>`
+                if (shippingForOrder.method === 'Нова Пошта') {
+                    if (shippingForOrder.city) parts.push(`<p><strong>Місто:</strong> ${shippingForOrder.city.name}</p>`);
+                    if (shippingForOrder.branch) parts.push(
+                        `<p><strong>Відділення:</strong> №${shippingForOrder.branch.number} — ${shippingForOrder.branch.description}</p>`
                     );
-                    if (shipping.postomat) parts.push(
-                        `<p><strong>Поштомат:</strong> №${shipping.postomat.number} — ${shipping.postomat.description}</p>`
+                    if (shippingForOrder.postomat) parts.push(
+                        `<p><strong>Поштомат:</strong> №${shippingForOrder.postomat.number} — ${shippingForOrder.postomat.description}</p>`
                     );
-                    if (shipping.address) parts.push(`<p><strong>Адреса:</strong> ${shipping.address}</p>`);
-                    if (shipping.map?.address) parts.push(`<p><strong>Адреса на мапі:</strong> ${shipping.map.address}</p>`);
-                    if (shipping.map?.url) parts.push(`<p><a href="${shipping.map.url}">Посилання на мапу</a></p>`);
+                    if (shippingForOrder.address) parts.push(`<p><strong>Адреса:</strong> ${shippingForOrder.address}</p>`);
+                    if (shippingForOrder.map?.address) parts.push(`<p><strong>Адреса на мапі:</strong> ${shippingForOrder.map.address}</p>`);
+                    if (shippingForOrder.map?.url) parts.push(`<p><a href="${shippingForOrder.map.url}">Посилання на мапу</a></p>`);
                 }
 
                 return parts.join('');
@@ -332,7 +354,8 @@ class OrderController {
                 email,
                 total,
                 shippingHtml,
-                items: orderItems
+                items: orderItems,
+                shouldSkipConfirmationContact
             });
 
             sendMail({
