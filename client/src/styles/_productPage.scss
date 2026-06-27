@@ -269,6 +269,13 @@
   color: #4f453b;
   font-weight: 700;
   text-align: center;
+  appearance: textfield;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    margin: 0;
+    appearance: none;
+  }
 
   &:focus-visible {
     position: relative;

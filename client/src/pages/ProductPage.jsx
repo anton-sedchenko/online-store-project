@@ -12,6 +12,16 @@ import Reviews from "../components/Reviews.jsx";
 import {getReviews} from '../http/reviewAPI.js';
 import {getAvailabilityClass, getAvailabilityLabel, isPurchasableAvailability} from '../utils/availability.js';
 
+const normalizeQuantity = (value) => {
+    const numericValue = Number(value);
+
+    if (!Number.isFinite(numericValue) || numericValue < 1) {
+        return 1;
+    }
+
+    return Math.floor(numericValue);
+};
+
 const ProductPage = () => {
     const navigate = useNavigate();
     const [product, setProduct] = useState({images: []});
@@ -150,7 +160,7 @@ const ProductPage = () => {
         return () => window.removeEventListener('keydown', onKey);
     }, [lightboxOpen, product.images?.length]);
 
-    const normalizedQty = Math.max(1, Number(qty) || 1);
+    const normalizedQty = normalizeQuantity(qty);
     const unitPrice = Number(product.price || 0);
     const sum = unitPrice * normalizedQty;
     const activeImage = product.images?.[currentImageIndex]?.url || product.img;
@@ -483,7 +493,7 @@ const ProductPage = () => {
                             <div className="product__rating__top">
                                 <StarRating value={ratingAvg} size={18} />
                                 <span className="muted product__rating__count">
-                                    {ratingCount > 0 ? `${ratingCount} оцінок` : "оцінок ще немає"}
+                                    {ratingCount > 0 ? `Оцінок: ${ratingCount}` : "Оцінок ще немає"}
                                 </span>
                             </div>
 
@@ -525,7 +535,7 @@ const ProductPage = () => {
                                     type="button"
                                     className="product__quantity__button"
                                     aria-label="Зменшити кількість"
-                                    onClick={() => setQty(Math.max(1, normalizedQty - 1))}
+                                    onClick={() => setQty(normalizeQuantity(normalizedQty - 1))}
                                     disabled={normalizedQty <= 1}
                                 >
                                     −
@@ -535,6 +545,7 @@ const ProductPage = () => {
                                     className="product__count__input"
                                     type="number"
                                     min={1}
+                                    step={1}
                                     inputMode="numeric"
                                     value={qty}
                                     onChange={(e) => {
@@ -544,16 +555,16 @@ const ProductPage = () => {
                                             return;
                                         }
 
-                                        const parsedValue = Number(value);
-                                        setQty(Number.isNaN(parsedValue) || parsedValue < 1 ? 1 : parsedValue);
+                                        setQty(normalizeQuantity(value));
                                     }}
                                     onBlur={() => setQty(normalizedQty)}
+                                    onWheel={(e) => e.currentTarget.blur()}
                                 />
                                 <button
                                     type="button"
                                     className="product__quantity__button"
                                     aria-label="Збільшити кількість"
-                                    onClick={() => setQty(normalizedQty + 1)}
+                                    onClick={() => setQty(normalizeQuantity(normalizedQty + 1))}
                                 >
                                     +
                                 </button>
