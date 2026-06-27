@@ -191,6 +191,7 @@
 
 .product__img__container {
   display: flex;
+  align-items: flex-start;
   justify-content: center;
 
   img {
@@ -298,8 +299,8 @@
 }
 
 .product__page__btn__container {
-  margin-top: auto;
-  padding: 10px 0 0;
+  margin-top: 14px;
+  padding: 0;
 }
 
 .product__page__btn {
