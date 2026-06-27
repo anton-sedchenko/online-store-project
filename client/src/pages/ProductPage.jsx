@@ -1,10 +1,10 @@
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {Col, Image, Row} from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {fetchProductBySlug} from "../http/productAPI.js";
 import {Context} from "../main.jsx";
-import {CART_ROUTE} from "../utils/consts.js";
+import {CART_ROUTE, DELIVERY_PAYMENT_ROUTE, RETURN_POLICY_ROUTE} from "../utils/consts.js";
 import {Helmet} from 'react-helmet-async';
 import CallbackModal from "../components/modals/CallbackModal.jsx";
 import StarRating from "../components/StarRating.jsx";
@@ -101,7 +101,7 @@ const ProductPage = () => {
                 slug: product.slug,
                 availability: product.availability
             },
-            qty
+            normalizedQty
         );
         navigate(CART_ROUTE);
     };
@@ -150,7 +150,9 @@ const ProductPage = () => {
         return () => window.removeEventListener('keydown', onKey);
     }, [lightboxOpen, product.images?.length]);
 
-    const sum = Number(product.price || 0) * qty;
+    const normalizedQty = Math.max(1, Number(qty) || 1);
+    const unitPrice = Number(product.price || 0);
+    const sum = unitPrice * normalizedQty;
     const activeImage = product.images?.[currentImageIndex]?.url || product.img;
 
     const availabilityLabel = useMemo(() => getAvailabilityLabel(product.availability), [product.availability]);
@@ -177,6 +179,17 @@ const ProductPage = () => {
     const productColor = product.color?.trim();
     const productMaterial = product.material?.trim();
     const productKind = product.kind?.trim();
+
+    const compactCharacteristics = useMemo(() => {
+        const rows = [];
+
+        if (productKind) rows.push({label: 'Тип виробу', value: productKind});
+        if (dimensionsText) rows.push({label: 'Розмір', value: dimensionsText});
+        if (productMaterial) rows.push({label: 'Матеріал', value: productMaterial});
+        if (productColor) rows.push({label: 'Колір', value: productColor});
+
+        return rows.filter((item) => item.value).slice(0, 4);
+    }, [productKind, dimensionsText, productMaterial, productColor]);
 
     const seoTitle = useMemo(() => {
         const parts = [product.name];
@@ -464,89 +477,153 @@ const ProductPage = () => {
 
                 <Col xs={12} md={5}>
                     <div className="product__info__container">
-                        <div className="product__rating__top">
-                            <StarRating value={ratingAvg} size={22} />
-                            <span className="muted product__rating__count">
-                                {ratingCount > 0 ? `(${ratingCount})` : "(оцінок ще немає)"}
-                            </span>
+                        <h1 className="product__title">{product.name}</h1>
+
+                        <div className="product__meta__row" aria-label="Інформація про рейтинг і код товару">
+                            <div className="product__rating__top">
+                                <StarRating value={ratingAvg} size={18} />
+                                <span className="muted product__rating__count">
+                                    {ratingCount > 0 ? `${ratingCount} оцінок` : "оцінок ще немає"}
+                                </span>
+                            </div>
+
+                            <span className="product__code">Код: {product.code || '---'}</span>
                         </div>
 
-                        <p className="product__code">Код: {product.code || '---'}</p>
-
                         <p className="product__availability">
-                            <span className="availability-label">Наявність:</span>{' '}
+                            <span className="availability-label">Статус:</span>{' '}
                             <span className={availabilityClass}>
                                 {availabilityLabel}
                             </span>
                         </p>
 
-                        <h1 className="product__title">{product.name}</h1>
+                        {product.availability === 'MADE_TO_ORDER' && (
+                            <p className="product__made-to-order-note">
+                                Виготовлення: 1–3 робочі дні. За великої черги замовлень, вимкнень електроенергії або для гуртового замовлення строк може бути довшим — ми погодимо його під час підтвердження замовлення.
+                            </p>
+                        )}
 
-                        <div className="product__purchase__note">
-                            <span>Пошито зі шнура</span>
-                            <span>Відправка по Україні</span>
-                        </div>
+                        <p className="product__unit__price">
+                            <strong>{unitPrice}</strong> грн
+                        </p>
+
+                        {compactCharacteristics.length > 0 && (
+                            <div className="product__quick__characteristics" aria-label="Ключові характеристики">
+                                {compactCharacteristics.map((item) => (
+                                    <div key={item.label} className="product__quick__characteristic">
+                                        <span>{item.label}</span>
+                                        <strong>{item.value}</strong>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
                         <div className="product__count__container">
-                            <p className="product__count">Кількість:</p>
-                            <input
-                                className="product__count__input"
-                                type="number"
-                                min={1}
-                                value={qty}
-                                onChange={(e) => {
-                                    const value = Number(e.target.value);
-                                    setQty(Number.isNaN(value) || value < 1 ? 1 : value);
-                                }}
-                            />
+                            <label className="product__count" htmlFor="product-quantity">Кількість</label>
+                            <div className="product__quantity__stepper">
+                                <button
+                                    type="button"
+                                    className="product__quantity__button"
+                                    aria-label="Зменшити кількість"
+                                    onClick={() => setQty(Math.max(1, normalizedQty - 1))}
+                                    disabled={normalizedQty <= 1}
+                                >
+                                    −
+                                </button>
+                                <input
+                                    id="product-quantity"
+                                    className="product__count__input"
+                                    type="number"
+                                    min={1}
+                                    inputMode="numeric"
+                                    value={qty}
+                                    onChange={(e) => {
+                                        const {value} = e.target;
+                                        if (value === '') {
+                                            setQty('');
+                                            return;
+                                        }
+
+                                        const parsedValue = Number(value);
+                                        setQty(Number.isNaN(parsedValue) || parsedValue < 1 ? 1 : parsedValue);
+                                    }}
+                                    onBlur={() => setQty(normalizedQty)}
+                                />
+                                <button
+                                    type="button"
+                                    className="product__quantity__button"
+                                    aria-label="Збільшити кількість"
+                                    onClick={() => setQty(normalizedQty + 1)}
+                                >
+                                    +
+                                </button>
+                            </div>
                         </div>
 
-                        <p className="product__page__total__sum">
-                            <strong>{sum}</strong> грн.
-                        </p>
+                        {normalizedQty > 1 && (
+                            <p className="product__page__total__sum">
+                                Разом за {normalizedQty} шт.: <strong>{sum}</strong> грн
+                            </p>
+                        )}
 
                         <div className="product__page__btn__container">
                             <button
+                                type="button"
                                 className="product__page__btn"
                                 onClick={handleAddToCart}
                                 disabled={!isPurchasable}
                             >
                                 {!isPurchasable ? 'Товар тимчасово недоступний' : 'Додати в кошик'}
                             </button>
+                            <p className="product__page__btn__hint">
+                                Після оформлення ми опрацюємо ваше замовлення і підтвердимо його за допомогою дзвінка або повідомлення.
+                            </p>
                         </div>
                     </div>
                 </Col>
 
                 <Col xs={12} md={3}>
                     <div className="purchase__conditions__card">
+                        <p className="purchase__conditions__badge">Безкоштовна доставка від 1500 грн</p>
+
                         <div className="purchase__conditions__section">
                             <h6>Доставка</h6>
-                            <ul>
-                                <li>Нова пошта: відділення, поштомат або курʼєр</li>
-                                <li>Безкоштовна доставка від 1500 грн</li>
-                            </ul>
+                            <p className="purchase__conditions__text">
+                                Нова пошта: відділення, поштомат або кур’єр.
+                            </p>
+                            <Link className="purchase__conditions__link" to={DELIVERY_PAYMENT_ROUTE}>
+                                Детальніше про доставку й оплату
+                            </Link>
                         </div>
 
                         <div className="purchase__conditions__section">
                             <h6>Оплата</h6>
-                            <ul>
-                                <li>Післяплата при отриманні</li>
-                                <li>Безготівковий переказ</li>
-                                <li>Оплата на картку після підтвердження</li>
-                            </ul>
+                            <p className="purchase__conditions__text">
+                                Передоплата після підтвердження замовлення або післяплата Новою поштою.
+                            </p>
                         </div>
 
                         <div className="purchase__conditions__section">
-                            <h6>Потрібна консультація?</h6>
+                            <h6>Повернення</h6>
                             <p className="purchase__conditions__text">
-                                Допоможемо з вибором розміру, кольору або оформленням замовлення.
+                                Повернення протягом 14 днів.
+                            </p>
+                            <Link className="purchase__conditions__link" to={RETURN_POLICY_ROUTE}>
+                                Умови повернення
+                            </Link>
+                        </div>
+
+                        <div className="purchase__conditions__section">
+                            <h6>Консультація</h6>
+                            <p className="purchase__conditions__text">
+                                Допоможемо погодити розмір і колір, якщо це технічно можливо.
                             </p>
                             <button
                                 type="button"
                                 className="purchase__conditions__callback__link"
                                 onClick={() => setShowCallback(true)}
                             >
-                                Замовити дзвінок
+                                Отримати консультацію
                             </button>
                         </div>
                     </div>
