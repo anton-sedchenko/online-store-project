@@ -51,9 +51,6 @@ const Order = () => {
 
     const [crAddress, setCrAddress] = useState("");
 
-    const [ukrCity, setUkrCity] = useState("");
-    const [ukrOffice, setUkrOffice] = useState("");
-
     const cityRef = selectedCity ? (selectedCity.DeliveryCity || selectedCity.Ref) : null;
     const cityLabel = selectedCity ? (selectedCity.Present || selectedCity.Description) : cityQuery;
 
@@ -145,10 +142,6 @@ const Order = () => {
             return alert("Для курʼєрської доставки вкажіть місто і повну адресу: вулиця, будинок, квартира.");
         }
 
-        if (deliveryMethod === "UKR_BRANCH" && (!ukrCity.trim() || !ukrOffice.trim())) {
-            return alert("Вкажіть місто та відділення Укрпошти");
-        }
-
         let shipping = null;
 
         if (deliveryMethod.startsWith("NP_")) {
@@ -186,13 +179,6 @@ const Order = () => {
                     map,
                 };
             }
-        } else if (deliveryMethod === "UKR_BRANCH") {
-            shipping = {
-                method: "Укрпошта",
-                service: "Укрпошта",
-                city: {name: ukrCity.trim()},
-                address: ukrOffice.trim(),
-            };
         }
 
         try {
@@ -391,18 +377,6 @@ const Order = () => {
                                         <small>Доставка за адресою</small>
                                     </span>
                                 </label>
-
-                                <label className={`radio shipping__method ${deliveryMethod === "UKR_BRANCH" ? "active" : ""}`}>
-                                    <input
-                                        type="radio"
-                                        checked={deliveryMethod === "UKR_BRANCH"}
-                                        onChange={() => setDeliveryMethod("UKR_BRANCH")}
-                                    />
-                                    <span>
-                                        <strong>Укрпошта — відділення</strong>
-                                        <small>Самовивіз з відділення Укрпошти</small>
-                                    </span>
-                                </label>
                             </div>
 
                             {deliveryMethod.startsWith("NP_") && (
@@ -539,32 +513,6 @@ const Order = () => {
                                             </div>
                                         </div>
                                     )}
-                                </>
-                            )}
-
-                            {deliveryMethod === "UKR_BRANCH" && (
-                                <>
-                                    <label className="order__field__label order__field__label--spaced">
-                                        Місто<span className="input__label__required__marker">*</span>
-                                    </label>
-
-                                    <input
-                                        className="buyer__contacts__form-input order__delivery__input"
-                                        value={ukrCity}
-                                        onChange={e => setUkrCity(e.target.value)}
-                                        placeholder="Вкажіть місто доставки"
-                                    />
-
-                                    <label className="order__field__label order__field__label--spaced">
-                                        Відділення Укрпошти<span className="input__label__required__marker">*</span>
-                                    </label>
-
-                                    <input
-                                        className="buyer__contacts__form-input order__delivery__input"
-                                        value={ukrOffice}
-                                        onChange={e => setUkrOffice(e.target.value)}
-                                        placeholder="Вкажіть номер або адресу відділення"
-                                    />
                                 </>
                             )}
                         </div>
