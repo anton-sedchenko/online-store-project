@@ -1,6 +1,6 @@
 # Charivna Craft — Decision Log
 
-* **Останнє оновлення:** 2026-06-22
+* **Останнє оновлення:** 2026-06-27
 * **Пов’язані документи:** [`MASTER_PLAN.md`](./MASTER_PLAN.md), [`WORKFLOW.md`](./WORKFLOW.md)
 
 Нові важливі рішення дописуються в кінець таблиці. Старі рішення не переписуються без пояснення; якщо рішення змінюється, потрібно додати новий запис із причиною зміни.
@@ -28,3 +28,6 @@
 | 2026-06-21 | Ahrefs використовується для SEO, keyword research і конкурентного аналізу. | Потрібен єдиний інструмент для пошуку тем, кластерів і gaps. | SEO, blog | Active |
 | 2026-06-21 | FAQ schema використовувати лише за наявності видимого FAQ. | Structured data має відповідати видимому контенту сторінки. | SEO, structured data | Active |
 | 2026-06-22 | SEO-friendly URL pagination підвищено до близького технічного пріоритету. Phase 1 — crawlable `?page=n`, `<a href>` і self-canonical; Phase 2 — backend pagination та контроль filter/sort URL. | Поточна state-only пагінація не створює окремих crawlable URL і посилань для наступних сторінок каталогу та блогу. | Frontend, backend, technical SEO, catalog, blog | Active |
+| 2026-06-27 | Перед активним нарощуванням SEO-трафіку пріоритетом є базове покращення довіри й конверсії магазину. | Залучати більше користувачів до нечіткого purchase-сценарію менш ефективно, ніж спочатку прибрати основні UX/CRO-бар’єри. | UX, CRO, design, product, SEO, commercial | Active |
+| 2026-06-27 | UX/CRO-зміни впроваджуються по одному невеликому блоку: пропозиція → уточнення фактів → погодження → Codex → review → manual testing → наступний блок. | Потрібен контрольований scope, простіший review і менший ризик unrelated змін. | Workflow, design, frontend, QA | Active |
+| 2026-06-27 | Першим UX/CRO-блоком є `Product purchase clarity`. | Найбільша невизначеність виникає біля статусу `MADE_TO_ORDER`, ціни, CTA та умов покупки; зміни можна зробити без backend- і checkout-refactor. | Product page, UX, CRO, frontend | Active |
