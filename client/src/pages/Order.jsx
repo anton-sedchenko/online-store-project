@@ -18,6 +18,8 @@ const Order = () => {
     const navigate = useNavigate();
     const {userStore, cartStore} = useContext(Context);
     const [showThankYou, setShowThankYou] = useState(false);
+    const [skipConfirmationContact, setSkipConfirmationContact] = useState(false);
+    const [submittedSkipConfirmationContact, setSubmittedSkipConfirmationContact] = useState(false);
 
     const cartItems = Array.isArray(cartStore.items) ? cartStore.items : [];
 
@@ -195,7 +197,10 @@ const Order = () => {
                 comments: form.comments.value,
                 order: cartStore.items,
                 shipping,
+                skipConfirmationContact,
             }, userStore.isAuth);
+
+            setSubmittedSkipConfirmationContact(skipConfirmationContact);
         } catch {
             return alert("Не вдалося оформити замовлення");
         }
@@ -530,9 +535,29 @@ const Order = () => {
                             />
                         </div>
 
+                        <div className="order__confirmation__preference">
+                            <div className="order__confirmation__preference__control">
+                                <input
+                                    id="skip-confirmation-contact"
+                                    type="checkbox"
+                                    checked={skipConfirmationContact}
+                                    onChange={(e) => setSkipConfirmationContact(e.target.checked)}
+                                />
+                                <label htmlFor="skip-confirmation-contact">
+                                    Не зв’язуватися для підтвердження замовлення
+                                </label>
+                            </div>
+
+                            <p className="order__confirmation__preference__helper">
+                                Одразу передамо замовлення в роботу. Зв’яжемося лише за потреби уточнити дані.
+                            </p>
+                        </div>
+
                         <div className="order__next__steps">
                             <p>
-                                Після оформлення замовлення ми звʼяжемося з вами для підтвердження.
+                                {skipConfirmationContact
+                                    ? "Замовлення буде передано в роботу без додаткового підтвердження. Зв’яжемося лише за потреби уточнити дані."
+                                    : "Після оформлення замовлення ми звʼяжемося з вами для підтвердження."}
                             </p>
                         </div>
 
@@ -561,7 +586,11 @@ const Order = () => {
                 onSelect={w => setWarehouseRef(w.Ref)}
             />
 
-            <OrderConfirm show={showThankYou} onHide={() => setShowThankYou(false)} />
+            <OrderConfirm
+                show={showThankYou}
+                onHide={() => setShowThankYou(false)}
+                skipConfirmationContact={submittedSkipConfirmationContact}
+            />
         </>
     );
 };

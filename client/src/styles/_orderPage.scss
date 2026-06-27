@@ -387,6 +387,51 @@
   font-size: .9em;
 }
 
+.order__confirmation__preference {
+  width: 100%;
+  margin-bottom: 22px;
+  padding: 16px 18px;
+  border: 1px solid #e7ddd1;
+  border-radius: 16px;
+  background: #fffdf9;
+  box-shadow: 0 3px 10px rgba(84, 59, 35, 0.05);
+}
+
+.order__confirmation__preference__control {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 44px;
+
+  input {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    accent-color: #7a4f2b;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 3px solid rgba(122, 79, 43, 0.35);
+      outline-offset: 3px;
+    }
+  }
+
+  label {
+    color: #4f453b;
+    font-weight: 600;
+    line-height: 1.4;
+    cursor: pointer;
+  }
+}
+
+.order__confirmation__preference__helper {
+  margin: 2px 0 0 30px;
+  color: #7b7268;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
 .order__next__steps {
   strong {
     display: block;
@@ -411,10 +456,42 @@
 .order__form__confirm__btn {
   @include btn-style;
   min-width: 230px;
-  min-height: 48px;
+  min-height: 52px;
   margin-bottom: 16px;
-  font-weight: 600;
-  box-shadow: 0 8px 18px rgba(84, 59, 35, 0.12);
+  padding: 12px 28px;
+  border-color: #7a4f2b;
+  background: #7a4f2b;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 10px 22px rgba(84, 59, 35, 0.24);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover:not(:disabled) {
+    border-color: #643f22;
+    background: #643f22;
+    color: #fff;
+    box-shadow: 0 14px 28px rgba(84, 59, 35, 0.3);
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    box-shadow: 0 7px 16px rgba(84, 59, 35, 0.22);
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 3px solid #f2d3ad;
+    outline-offset: 3px;
+  }
+
+  &:disabled {
+    border-color: #b8a391;
+    background: #b8a391;
+    color: #fffaf3;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+  }
 }
 
 .order__form__return__btn {
@@ -428,6 +505,7 @@
 
   .order__summary__card,
   .order__section__card,
+  .order__confirmation__preference,
   .order__next__steps {
     padding: 16px;
     border-radius: 16px;
@@ -449,6 +527,10 @@
 
   .order__map__btn {
     width: 100%;
+  }
+
+  .order__confirmation__preference__helper {
+    margin-left: 0;
   }
 
   .order__form__confirm__btn,
