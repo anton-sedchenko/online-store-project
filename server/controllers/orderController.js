@@ -266,12 +266,6 @@ class OrderController {
                     if (s.map?.address) lines.push(`Адреса на мапі: ${s.map.address}`);
                 }
 
-                // Укрпошта
-                if (s.method === 'Укрпошта') {
-                    if (s.city)    lines.push(`Місто: ${s.city.name}`);
-                    if (s.address) lines.push(`Відділення/Адреса: ${s.address}`);
-                }
-
                 return lines.join('\n');
             }
 
@@ -307,11 +301,6 @@ class OrderController {
                     if (shipping.address) parts.push(`<p><strong>Адреса:</strong> ${shipping.address}</p>`);
                     if (shipping.map?.address) parts.push(`<p><strong>Адреса на мапі:</strong> ${shipping.map.address}</p>`);
                     if (shipping.map?.url) parts.push(`<p><a href="${shipping.map.url}">Посилання на мапу</a></p>`);
-                }
-
-                if (shipping.method === 'Укрпошта') {
-                    if (shipping.city) parts.push(`<p><strong>Місто:</strong> ${shipping.city.name}</p>`);
-                    if (shipping.address) parts.push(`<p><strong>Відділення/Адреса:</strong> ${shipping.address}</p>`);
                 }
 
                 return parts.join('');

@@ -14,7 +14,7 @@ const OrganizationSchema = () => {
             url: "https://charivna-craft.com.ua/logo.png",
         },
         image: "https://charivna-craft.com.ua/logo.png",
-        email: "mailto:charivna-craft@gmail.com",
+        email: "mailto:charivna.craft@gmail.com",
         telephone: "+380680361597",
         address: {
             "@type": "PostalAddress",
