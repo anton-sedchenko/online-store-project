@@ -6,34 +6,18 @@
 
 ## Вступ
 
-Основний стек:
+Стек: React, Vite, React Router, MobX, React-Bootstrap, SCSS, Node.js, Express, Sequelize, PostgreSQL, Vercel, Railway, Cloudinary.
 
-* React;
-* Vite;
-* React Router;
-* MobX;
-* React-Bootstrap;
-* SCSS;
-* Node.js;
-* Express;
-* Sequelize;
-* PostgreSQL;
-* Vercel;
-* Railway;
-* Cloudinary.
+Правила:
 
-Архітектурна схема:
-
-* `client/` — frontend;
-* `server/` — backend;
-* `main` — production source;
-* `staging` — staging source;
-* кожна зміна через feature branch і PR;
+* `client/` — frontend, `server/` — backend;
+* `main` — production source, `staging` — staging source;
+* одна погоджена задача — одна feature branch і один PR;
 * merge і deployment лише після ручного підтвердження.
 
 ## Поточний пріоритет
 
-Технічна реалізація погодженого UX/CRO-плану має виконуватися маленькими незалежними PR. Перший PR — `Product purchase clarity`; checkout, order notifications і фінальний success screen не змішувати з ним.
+Реалізувати UX/CRO-план маленькими незалежними PR. Не змішувати сторінку товару, checkout, notifications і success screen в одну задачу.
 
 ## Next actions
 
@@ -45,75 +29,65 @@ Frontend-only зміни сторінки товару:
 * пояснення `MADE_TO_ORDER` зі строком 1–3 робочі дні;
 * ключові характеристики до CTA;
 * компактніший quantity control;
-* trust-рядки для доставки, оплати, повернення й консультації;
+* trust-рядки доставки, оплати, повернення й консультації;
 * плашка «Безкоштовна доставка від 1500 грн»;
 * focus states і mobile layout;
 * без змін backend, cart, checkout, email і Telegram.
 
 ### 2. ⏭ Checkout delivery cleanup
 
-Поточний checkout має повну гілку `UKR_BRANCH`, яку потрібно прибрати окремим PR.
+* Видалити `UKR_BRANCH` зі способів доставки.
+* Видалити `ukrCity`, `ukrOffice` і пов’язані validation/render branches.
+* Не формувати shipping payload для Укрпошти.
+* Залишити Нову пошту: відділення, поштомат і кур’єр.
+* Показувати умову безкоштовної доставки від 1500 грн.
+* Явно показувати, коли поточне замовлення отримує безкоштовну доставку.
+* Не ламати Nova Poshta API, map modal і warehouse selection.
+* Перевірити guest та auth order flow.
+* Не додавати автоматичне правило передоплати залежно від кількості товарів.
+
+### 3. ⏭ Order notifications
+
+Backend самостійно визначає умови за товарами з БД і фактичною сумою.
 
 Scope:
 
-* видалити Укрпошту зі списку способів доставки;
-* видалити `ukrCity`, `ukrOffice` та пов’язану validation/render logic;
-* не формувати shipping payload для Укрпошти;
-* залишити Нову пошту: відділення, поштомат і кур’єр;
-* оновити checkout hint відповідно до безкоштовної доставки від 1500 грн;
-* явно показувати, коли поточне замовлення отримує безкоштовну доставку;
-* не ламати Nova Poshta API, map modal і warehouse selection;
-* перевірити guest/auth order flow.
-
-### 3. ⏭ Order processing rules and notifications
-
-Backend має самостійно обчислювати умови за фактичними товарами з БД та кількістю.
-
-Scope:
-
-* визначати `isFreeShipping` при сумі замовлення ≥1500 грн;
-* додавати в Telegram великий помітний рядок `БЕЗКОШТОВНА ДОСТАВКА`;
-* додавати помітне нагадування в email магазину;
-* перед реалізацією визначити, чи бачить таке саме повідомлення покупець;
-* після остаточного уточнення правила 5 одиниць обчислювати `requiresFullPrepayment`;
-* додавати в Telegram/email нагадування `ПОТРІБНА ПОВНА ПЕРЕДОПЛАТА`;
-* не довіряти frontend total/flags;
+* обчислювати `isFreeShipping` при сумі товарів від 1500 грн;
+* у Telegram для магазину додавати окремий помітний рядок `БЕЗКОШТОВНА ДОСТАВКА`;
+* у спільному email покупцю й магазину показувати безкоштовну доставку як звичайний параметр;
+* не додавати `requiresFullPrepayment` або автоматичні нагадування про передоплату;
+* не довіряти frontend total або flags;
 * не робити Telegram/email критичними для створення замовлення;
-* зберегти logging помилок сповіщень;
-* за потреби розділити customer email і admin email, оскільки зараз використовується один HTML для обох адрес.
+* зберегти logging помилок сповіщень.
 
 ### 4. ⏭ Order success screen
 
-Поточний `OrderConfirm` — коротка modal, яка автоматично закривається; checkout через 4,5 секунди очищає кошик і переходить на головну. Це потрібно замінити окремим success state або route.
+Поточний `OrderConfirm` автоматично закривається, а checkout через 4,5 секунди очищає кошик і переходить на головну. Замінити це окремим success state або route.
 
 Scope:
 
 * після успішного API response показувати повноцінний success screen;
-* не закривати його автоматично;
-* не виконувати автоматичний redirect через таймер;
-* показувати номер замовлення з API response;
-* текст: замовлення опрацьовується й буде підтверджене дзвінком або повідомленням;
+* не закривати його й не redirect-ити автоматично;
+* показувати номер замовлення;
+* пояснити підтвердження дзвінком або повідомленням;
 * додати кнопку повернення до каталогу;
-* за потреби додати посилання на замовлення для авторизованого користувача;
-* очистити кошик один раз після успішного створення замовлення, не втративши потрібні success data;
-* блокувати повторний submit під час запиту й після успіху;
-* захистити від дублювання замовлення через double click;
-* обробити refresh/back без повторного POST;
-* залишити checkout/success flow `noindex, nofollow`;
+* за потреби — посилання на замовлення для авторизованого користувача;
+* очистити кошик один раз, не втративши success data;
+* блокувати повторний submit і double click;
+* refresh/back не повинні повторювати POST;
+* зберегти `noindex, nofollow`;
 * перевірити desktop/mobile, focus management, screen reader announcement і reduced motion;
-* не копіювати Pethouse assets або branding, використовувати лише загальну інформаційну структуру як орієнтир.
+* не копіювати Pethouse assets або branding.
 
 ### 5. ⏭ Актуалізація order-related content
 
-Окремий невеликий PR або погоджена частина checkout cleanup:
-
-* прибрати Укрпошту зі сторінки доставки, оферти й інших актуальних текстів;
-* прибрати згадки гіпсових фігурок та інших старих напрямів;
-* уніфікувати email на `charivna.craft@gmail.com`;
-* синхронізувати формулювання підтвердження замовлення;
-* синхронізувати поріг безкоштовної доставки 1500 грн;
-* повернення комунікувати як 14 днів відповідно до затвердженої політики;
-* юридичні твердження не переписувати без окремої перевірки змісту.
+* Прибрати Укрпошту зі сторінки доставки, оферти й інших актуальних текстів.
+* Прибрати згадки гіпсових фігурок та інших старих напрямів.
+* Уніфікувати email на `charivna.craft@gmail.com`.
+* Синхронізувати формулювання підтвердження замовлення.
+* Синхронізувати безкоштовну доставку від 1500 грн.
+* Повернення комунікувати як 14 днів відповідно до погодженої політики.
+* Юридичні твердження не переписувати без окремої перевірки.
 
 ### 6. ⏭ Product gallery
 
@@ -122,17 +96,16 @@ Scope:
 * Active thumbnail і лічильник.
 * Mobile swipe.
 * Semantic buttons замість клікабельних `img`.
-* Keyboard navigation та `Escape`.
+* Keyboard navigation, `Escape` і focus return.
 * Стани з одним, двома й багатьма фото.
-* Коректний focus return після lightbox.
 
 ### 7. ⏭ Product cards and mobile grid
 
 * Нова інформаційна ієрархія.
 * Status badge.
 * Прибрати артикул із картки.
-* Спростити відображення ціни.
-* Резерв висоти назв.
+* Спростити ціну.
+* Стабільна висота назв.
 * `focus-visible`.
 * Перевірка `object-fit`.
 * Окреме рішення щодо direct add-to-cart.
@@ -143,160 +116,91 @@ Scope:
 * Компактний header.
 * Змістовний hero.
 * CTA до каталогу.
-* Trust strip.
-* Плашка безкоштовної доставки.
+* Trust strip і плашка безкоштовної доставки.
 * Візуальні категорії.
 * Desktop/mobile navigation.
 
-### 9. ⏭ SEO-friendly пагінація каталогу й блогу
+### 9. ⏭ SEO-friendly pagination
 
-Поточна пагінація працює через локальний React state і кнопки без окремих URL. Це потрібно виправити для:
+Для `/`, `/koshyky-dlia-zberihannia` і `/blog`:
 
-* головного каталогу `/`;
-* landing page `/koshyky-dlia-zberihannia`;
-* списку статей `/blog`.
+#### Phase 1
 
-#### Phase 1 — crawlable URL pagination
+* `?page=n`, чистий URL для першої сторінки;
+* crawlable `<a href>` для номерів, «Далі» й «Назад»;
+* refresh, direct navigation і back/forward;
+* self-canonical для кожної сторінки;
+* без URL fragments;
+* передбачувана обробка некоректних значень;
+* desktop/mobile і crawler accessibility testing.
 
-* Кожна сторінка має отримати окремий URL у форматі `?page=n`.
-* Перша сторінка має використовувати чистий URL без `?page=1`.
-* Номери сторінок, «Далі» та «Назад» мають бути звичайними crawlable посиланнями `<a href>`.
-* Поточна сторінка має відновлюватися після refresh, direct navigation та browser back/forward.
-* Кожна сторінка пагінації має мати self-referencing canonical, а не canonical на першу сторінку.
-* Не використовувати URL fragments на кшталт `#page=2`.
-* Не покладатися на `rel="next"` і `rel="prev"` як на вимогу Google.
-* Некоректні та завеликі значення `page` обробляти передбачувано без порожніх indexable сторінок.
-* Перевірити desktop/mobile UI, direct navigation, refresh і доступність посилань для crawler.
-* Зберегти всі product/article URLs у sitemap; sitemap не замінює внутрішні crawlable links.
+#### Phase 2
 
-Офіційна рекомендація: [Google Search Central — pagination and incremental page loading](https://developers.google.com/search/docs/specialty/ecommerce/pagination-and-incremental-page-loading).
+* backend pagination;
+* filter/sort state у URL;
+* окрема SEO-стратегія для combinations;
+* без неконтрольованих indexable URL;
+* не змішувати з Phase 1 без погодження.
 
-#### Phase 2 — масштабована backend/URL логіка
+### 10. ⏭ Technical blog template
 
-* Перенести пагінацію великих списків на backend замість завантаження сотень товарів і frontend `slice`.
-* Зберігати filter/sort state у URL.
-* Дозволити пряме відкриття погоджених відфільтрованих сторінок.
-* Для filter/sort combinations визначити окрему SEO-стратегію: indexable landing, `noindex` або canonical — залежно від intent.
-* Уникати неконтрольованого створення індексованих URL-комбінацій.
-* Не поєднувати повний backend refactor із Phase 1 в одному PR без окремого погодження.
-
-### 10. ⏭ Технічний шаблон блогу
-
-* SEO metadata для `/blog`.
-* SEO metadata для `/blog/:slug`.
-* Canonical.
-* Open Graph.
-* Twitter Cards.
-* `BlogPosting`.
-* `BreadcrumbList`.
+* Metadata, canonical, Open Graph і Twitter Cards.
+* `BlogPosting` і `BreadcrumbList`.
 * Коректний description без HTML.
-* Тематичне зображення та alt.
-* Дата публікації й оновлення.
-* Reusable author block.
-* Reusable related-articles block.
-* Можливий зміст статті.
-* Шаблон, де для публікації достатньо додати текст і кілька зображень.
+* Image, alt, dates, author block, related articles і TOC.
+* Reusable template для публікації без ручного дизайну кожної статті.
 
-### 11. ⏭ Обробка 404
+### 11. ⏭ 404 handling
 
-* Неіснуюча стаття.
-* Unmatched frontend route.
+* Неіснуюча стаття й unmatched frontend route.
+* Видимий Not Found state.
 * `noindex, nofollow`.
-* Коректний видимий Not Found стан.
-* Не маскувати 404 редиректом на головну без пояснення.
+* Без маскування 404 редиректом на головну.
 
-### 12. ⏭ SEO metadata інших сторінок
+### 12. ⏭ Metadata інших сторінок
 
-Перевірити й доповнити:
-
-* contacts;
-* delivery-payment;
-* return-policy;
-* oferta;
-* privacy;
-* login;
-* registration;
-* profile;
-* admin;
-* password reset.
+Contacts, delivery-payment, return-policy, oferta, privacy, login, registration, profile, admin, password reset.
 
 ### 13. ⏭ Structured data audit
 
-Перевірити:
-
-* Organization;
-* Product;
-* Offer;
-* BreadcrumbList;
-* CollectionPage;
-* ItemList;
-* BlogPosting;
-* FAQPage лише за наявності видимого FAQ;
-* відсутність fake review/aggregateRating data.
+Organization, Product, Offer, BreadcrumbList, CollectionPage, ItemList, BlogPosting, FAQPage лише за видимого FAQ, без fake review data.
 
 ### 14. 🔍 Feeds та Merchant Center
 
-* Перевірка `/gmc.xml`.
-* Перевірка `/rozetka.xml`.
-* Актуальні статуси availability.
-* Коректні product URLs.
-* Актуальні категорії.
-* Виключення старих товарних напрямів.
-* Merchant Center setup і validation.
+`/gmc.xml`, `/rozetka.xml`, availability, product URLs, категорії, виключення старих напрямів, setup і validation.
 
 ### 15. 🔍 Performance і технічний борг
 
-* Bundle/chunk size.
-* Lazy loading.
-* Image optimization.
-* Sass `@import` deprecation.
-* Старі ESLint warnings.
-* Core Web Vitals.
-* API error handling.
-* Loading/error states.
-* Dependency audit.
+Bundle size, lazy loading, images, Sass deprecation, ESLint warnings, Core Web Vitals, API errors, loading/error states, dependency audit.
 
-### 16. 🧊 Тести й CI
+### 16. 🧊 Tests and CI
 
-* Базові frontend tests.
-* Backend endpoint tests.
-* Smoke tests для sitemap/feed/cart/order.
-* CI перед merge.
-* Перевірка staging.
+Frontend tests, backend endpoint tests, smoke tests для sitemap/feed/cart/order, CI та staging verification.
 
 ## Completed
 
-* ✅ Проведено read-only UX/UI та CRO-аудит.
-* ✅ Зафіксовано технічний поділ CRO-реалізації на окремі PR.
-* ✅ Filters: category/kind/color.
-* ✅ Mobile filters.
-* ✅ `typeRouter` public GET.
-* ✅ Landing route.
-* ✅ Dynamic sitemap.
-* ✅ GMC/Rozetka routes.
-* ✅ Product not-found handling.
-* ✅ Availability helper.
-* ✅ Cart availability guards.
-* ✅ Product structured data.
-* ✅ Breadcrumb structured data.
-* ✅ Global metadata cleanup.
-* ✅ Noindex для cart/order.
-* ✅ Staging Railway/Vercel workflow.
+* ✅ Проведено UX/UI та CRO-аудит.
+* ✅ Зафіксовано поділ CRO-реалізації на окремі PR.
+* ✅ Уточнено: автоматичного правила передоплати за кількістю товарів не буде.
+* ✅ Уточнено формат free-shipping notification для email і Telegram.
+* ✅ Filters, mobile filters і public type GET.
+* ✅ Landing route, dynamic sitemap і feeds.
+* ✅ Product not-found і availability/cart guards.
+* ✅ Product/Breadcrumb structured data.
+* ✅ Global metadata cleanup і noindex для cart/order.
+* ✅ Staging workflow.
 
 ## Deferred
 
 * 🧊 Чекбокс «Не телефонувати».
-* 🧊 Великі зміни checkout поза погодженими маленькими PR.
+* 🧊 Великі checkout-зміни поза погодженими PR.
 * 🧊 Database migrations без rollback plan.
 * 🧊 Повний архітектурний refactor.
 
 ## Definition of Done
 
-Для технічної задачі:
-
 * маленький scope;
-* feature branch;
-* PR;
+* feature branch і PR;
 * build/lint;
 * staging test;
 * diff review;
