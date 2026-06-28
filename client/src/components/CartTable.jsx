@@ -1,14 +1,26 @@
-import React, {useContext, useEffect, useMemo, useState} from 'react';
-import Form from 'react-bootstrap/Form';
+import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {observer} from "mobx-react-lite";
 import {Context} from "../main.jsx";
 import {HOME_ROUTE, PRODUCT_ROUTE, ORDER_ROUTE} from "../utils/consts.js";
 import {Button, Image, Modal} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
 
+const normalizeQuantity = (value) => {
+    const numericValue = Number(value);
+
+    if (!Number.isFinite(numericValue) || numericValue < 1) {
+        return 1;
+    }
+
+    return Math.floor(numericValue);
+};
+
 const CartTable = observer(() => {
     const {cartStore} = useContext(Context);
     const [draftQty, setDraftQty] = useState({});
+    const [updatingItemIds, setUpdatingItemIds] = useState(() => new Set());
+    const updatingItemIdsRef = useRef(new Set());
+    const [quantityError, setQuantityError] = useState('');
     const [showMinModal, setShowMinModal] = useState(false);
     const navigate = useNavigate();
 
@@ -30,7 +42,7 @@ const CartTable = observer(() => {
             return 1;
         }
 
-        return numberValue;
+        return Math.floor(numberValue);
     };
 
     const total = useMemo(() => {
@@ -47,20 +59,53 @@ const CartTable = observer(() => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cartStore.items, draftQty]);
 
-    const handleQuantityBlur = (item) => {
-        const value = Number(draftQty[item.id]);
-        const safe = Number.isFinite(value) && value > 0 ? value : 1;
-        const prev = item.quantity;
+    const commitQuantity = async (item, value) => {
+        const safe = normalizeQuantity(value);
+        const currentQuantity = normalizeQuantity(item.quantity);
+        const itemKey = item.id;
+
+        if (!cartStore._isGuest && updatingItemIdsRef.current.has(itemKey)) return;
 
         setDraftQty(prevState => ({
             ...prevState,
-            [item.id]: safe
+            [itemKey]: safe
         }));
 
-        if (safe === prev) return;
+        if (safe === currentQuantity) return;
 
         const id = cartStore._isGuest ? item.id : item.cartProductId;
-        cartStore.setQuantity(id, safe);
+
+        setQuantityError('');
+        updatingItemIdsRef.current.add(itemKey);
+        setUpdatingItemIds(prevState => new Set(prevState).add(itemKey));
+
+        try {
+            await cartStore.setQuantity(id, safe);
+        } catch (error) {
+            console.error('Не вдалося змінити кількість товару', error);
+            setDraftQty(prevState => ({
+                ...prevState,
+                [itemKey]: currentQuantity
+            }));
+            setQuantityError('Не вдалося змінити кількість товару');
+        } finally {
+            updatingItemIdsRef.current.delete(itemKey);
+            setUpdatingItemIds(prevState => {
+                const nextState = new Set(prevState);
+                nextState.delete(itemKey);
+                return nextState;
+            });
+        }
+    };
+
+    const handleQuantityBlur = (item) => {
+        commitQuantity(item, draftQty[item.id]);
+    };
+
+    const handleQuantityKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            event.currentTarget.blur();
+        }
     };
 
     const handleRemove = (item) => {
@@ -107,11 +152,18 @@ const CartTable = observer(() => {
                 </div>
             </div>
 
+            {quantityError && (
+                <div className="cart__quantity__error" role="alert">
+                    {quantityError}
+                </div>
+            )}
+
             <div className="cart__content">
                 <div className="cart__items">
                     {cartStore.items.map((item) => {
                         const qty = getItemQty(item);
                         const itemTotal = Number(item.price || 0) * qty;
+                        const isUpdating = updatingItemIds.has(item.id);
 
                         return (
                             <div className="cart__item" key={item.id}>
@@ -145,19 +197,46 @@ const CartTable = observer(() => {
 
                                 <div className="cart__item__quantity">
                                     <label htmlFor={`cart-qty-${item.id}`}>Кількість</label>
-                                    <Form.Control
-                                        id={`cart-qty-${item.id}`}
-                                        type="number"
-                                        min={1}
-                                        value={draftQty[item.id] ?? item.quantity}
-                                        onChange={e => {
-                                            setDraftQty(prev => ({
-                                                ...prev,
-                                                [item.id]: e.target.value
-                                            }));
-                                        }}
-                                        onBlur={() => handleQuantityBlur(item)}
-                                    />
+                                    <div className="cart__quantity__stepper">
+                                        <button
+                                            type="button"
+                                            className="cart__quantity__button"
+                                            aria-label={`Зменшити кількість товару ${item.name}`}
+                                            onClick={() => commitQuantity(item, qty - 1)}
+                                            disabled={qty <= 1 || isUpdating}
+                                        >
+                                            −
+                                        </button>
+                                        <input
+                                            id={`cart-qty-${item.id}`}
+                                            className="cart__quantity__input"
+                                            type="number"
+                                            min={1}
+                                            step={1}
+                                            inputMode="numeric"
+                                            value={draftQty[item.id] ?? item.quantity}
+                                            aria-label={`Кількість товару ${item.name}`}
+                                            disabled={isUpdating}
+                                            onChange={e => {
+                                                setDraftQty(prev => ({
+                                                    ...prev,
+                                                    [item.id]: e.target.value
+                                                }));
+                                            }}
+                                            onBlur={() => handleQuantityBlur(item)}
+                                            onKeyDown={handleQuantityKeyDown}
+                                            onWheel={(e) => e.currentTarget.blur()}
+                                        />
+                                        <button
+                                            type="button"
+                                            className="cart__quantity__button"
+                                            aria-label={`Збільшити кількість товару ${item.name}`}
+                                            onClick={() => commitQuantity(item, qty + 1)}
+                                            disabled={isUpdating}
+                                        >
+                                            +
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div className="cart__item__sum">
@@ -198,6 +277,7 @@ const CartTable = observer(() => {
                     </div>
 
                     <button
+                        type="button"
                         className="cart__table__confirm__btn"
                         onClick={handleOrder}
                     >
