@@ -128,7 +128,7 @@
 
 .cart__item {
   display: grid;
-  grid-template-columns: 82px minmax(220px, 1fr) 96px 112px 36px;
+  grid-template-columns: 82px minmax(0, 1fr) 140px 112px 36px;
   gap: 14px;
   align-items: center;
   padding: 16px;
@@ -192,9 +192,95 @@
     font-size: 13px;
   }
 
-  input {
-    max-width: 86px;
+  min-width: 0;
+}
+
+.cart__quantity__stepper {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid #d9cabb;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.cart__quantity__button {
+  width: 42px;
+  min-width: 40px;
+  min-height: 42px;
+  border: none;
+  background: transparent;
+  color: #5f554a;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.12s ease;
+
+  &:hover:not(:disabled) {
+    background: #f4ede5;
+    color: #4f453b;
   }
+
+  &:active:not(:disabled) {
+    background: #eadfd2;
+    transform: scale(0.96);
+  }
+
+  &:disabled {
+    color: #c7bbae;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: 3px solid rgba(121, 83, 62, 0.34);
+    outline-offset: -3px;
+  }
+}
+
+.cart__quantity__input {
+  width: 48px;
+  min-height: 42px;
+  padding: 0 4px;
+  border: none;
+  border-right: 1px solid #eadfd2;
+  border-left: 1px solid #eadfd2;
+  background: #fff;
+  color: #4f453b;
+  font-weight: 700;
+  text-align: center;
+  appearance: textfield;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    margin: 0;
+    appearance: none;
+  }
+
+  &:disabled {
+    color: #9c9186;
+    background: #f8f2ea;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: 3px solid rgba(121, 83, 62, 0.34);
+    outline-offset: -3px;
+  }
+}
+
+.cart__quantity__error {
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border: 1px solid #e2b8a8;
+  border-radius: 12px;
+  background: #fff3ee;
+  color: #8a3f2b;
+  font-weight: 600;
 }
 
 .cart__item__sum {
@@ -215,6 +301,7 @@
 }
 
 .cart__item__remove {
+  justify-self: end;
   width: 34px;
   height: 34px;
   padding: 0;
@@ -347,7 +434,7 @@
 
 @media (max-width: 992px) {
   .cart__item {
-    grid-template-columns: 82px minmax(0, 1fr) 96px 112px 36px;
+    grid-template-columns: 82px minmax(0, 1fr) 140px 112px 36px;
   }
 }
 
