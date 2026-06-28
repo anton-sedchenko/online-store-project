@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Button, Form, Modal} from "react-bootstrap";
 import {createProduct} from "../../http/productAPI.js";
 import {fetchTypes} from "../../http/typeAPI.js";
@@ -28,7 +28,10 @@ const CreateProduct = observer(({show, onHide}) => {
     const [shape, setShape] = useState('');
     const [purpose, setPurpose] = useState('');
     const [features, setFeatures] = useState([]);
-    const [file, setFile] = useState(null);
+    const [mainImageFile, setMainImageFile] = useState(null);
+    const [mainImagePreviewUrl, setMainImagePreviewUrl] = useState('');
+    const [additionalImageFiles, setAdditionalImageFiles] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [code, setCode] = useState('');
     const [availability, setAvailability] = useState(AVAILABILITY_STATUSES.IN_STOCK);
     const [rozetkaCategoryId, setRozetkaCategoryId] = useState('');
@@ -43,6 +46,32 @@ const CreateProduct = observer(({show, onHide}) => {
     const [types, setTypes] = useState([]);
     const [typeId, setTypeId] = useState('');
     const [marketplaceParams, setMarketplaceParams] = useState([]);
+    const previewUrlsRef = useRef(new Set());
+    const mainImageInputRef = useRef(null);
+    const additionalImagesInputRef = useRef(null);
+
+    const getFileSignature = (imageFile) => (
+        imageFile ? `${imageFile.name}:${imageFile.size}:${imageFile.lastModified}` : ''
+    );
+
+    const createPreviewUrl = (imageFile) => {
+        const previewUrl = URL.createObjectURL(imageFile);
+        previewUrlsRef.current.add(previewUrl);
+        return previewUrl;
+    };
+
+    const revokePreviewUrl = (previewUrl) => {
+        if (!previewUrl) return;
+        URL.revokeObjectURL(previewUrl);
+        previewUrlsRef.current.delete(previewUrl);
+    };
+
+    const revokeAllPreviewUrls = () => {
+        previewUrlsRef.current.forEach((previewUrl) => {
+            URL.revokeObjectURL(previewUrl);
+        });
+        previewUrlsRef.current.clear();
+    };
 
     useEffect(() => {
         if (show) {
@@ -77,7 +106,12 @@ const CreateProduct = observer(({show, onHide}) => {
 
     const hasRozetkaTemplate = rozetkaCategoryId && rozetkaFields.length > 0;
 
+    useEffect(() => () => {
+        revokeAllPreviewUrls();
+    }, []);
+
     const resetForm = () => {
+        revokeAllPreviewUrls();
         setName('');
         setPrice(0);
         setDescr('');
@@ -86,7 +120,12 @@ const CreateProduct = observer(({show, onHide}) => {
         setShape('');
         setPurpose('');
         setFeatures([]);
-        setFile(null);
+        setMainImageFile(null);
+        setMainImagePreviewUrl('');
+        setAdditionalImageFiles([]);
+        setIsSubmitting(false);
+        if (mainImageInputRef.current) mainImageInputRef.current.value = '';
+        if (additionalImagesInputRef.current) additionalImagesInputRef.current.value = '';
         setCode('');
         setAvailability(AVAILABILITY_STATUSES.IN_STOCK);
         setRozetkaCategoryId('');
@@ -102,8 +141,62 @@ const CreateProduct = observer(({show, onHide}) => {
         setMarketplaceParams([]);
     };
 
-    const selectFile = (e) => {
-        setFile(e.target.files[0]);
+    const selectMainImage = (e) => {
+        const selectedFile = e.target.files?.[0] || null;
+
+        revokePreviewUrl(mainImagePreviewUrl);
+
+        if (!selectedFile) {
+            setMainImageFile(null);
+            setMainImagePreviewUrl('');
+            return;
+        }
+
+        const mainSignature = getFileSignature(selectedFile);
+        setMainImageFile(selectedFile);
+        setMainImagePreviewUrl(createPreviewUrl(selectedFile));
+        setAdditionalImageFiles(prev => prev.filter((item) => {
+            const shouldKeep = item.signature !== mainSignature;
+            if (!shouldKeep) revokePreviewUrl(item.previewUrl);
+            return shouldKeep;
+        }));
+    };
+
+    const selectAdditionalImages = (e) => {
+        const selectedFiles = Array.from(e.target.files || []);
+        const mainSignature = getFileSignature(mainImageFile);
+
+        setAdditionalImageFiles(prev => {
+            const knownSignatures = new Set(prev.map(item => item.signature));
+            const nextFiles = [...prev];
+
+            selectedFiles.forEach((selectedFile) => {
+                const signature = getFileSignature(selectedFile);
+
+                if (!signature || signature === mainSignature || knownSignatures.has(signature)) {
+                    return;
+                }
+
+                knownSignatures.add(signature);
+                nextFiles.push({
+                    file: selectedFile,
+                    previewUrl: createPreviewUrl(selectedFile),
+                    signature,
+                });
+            });
+
+            return nextFiles;
+        });
+
+        e.target.value = '';
+    };
+
+    const removeAdditionalImage = (signature) => {
+        setAdditionalImageFiles(prev => prev.filter((item) => {
+            const shouldKeep = item.signature !== signature;
+            if (!shouldKeep) revokePreviewUrl(item.previewUrl);
+            return shouldKeep;
+        }));
     };
 
     const handleFeaturesChange = (e) => {
@@ -136,7 +229,11 @@ const CreateProduct = observer(({show, onHide}) => {
     };
 
     const addProduct = async () => {
-        if (!file) {
+        if (isSubmitting) {
+            return;
+        }
+
+        if (!mainImageFile) {
             alert("Додайте зображення товару");
             return;
         }
@@ -157,7 +254,7 @@ const CreateProduct = observer(({show, onHide}) => {
             formData.append("price", `${price}`);
             formData.append("typeId", typeId);
             formData.append("description", descr || "");
-            formData.append("img", file);
+            formData.append("img", mainImageFile);
             formData.append("code", code);
             formData.append("availability", availability);
             formData.append("color", (color ?? '').trim());
@@ -175,12 +272,18 @@ const CreateProduct = observer(({show, onHide}) => {
             formData.append("country", (country ?? 'Україна').trim());
             formData.append("material", (material ?? '').trim());
             formData.append("marketplaceParams", JSON.stringify(prepareMarketplaceParamsForSubmit(marketplaceParams)));
+            additionalImageFiles.forEach(({file: additionalFile}) => {
+                formData.append("images", additionalFile);
+            });
 
+            setIsSubmitting(true);
             await createProduct(formData);
             resetForm();
             onHide();
         } catch (e) {
             alert(e.response?.data?.message || e.message);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -472,19 +575,80 @@ const CreateProduct = observer(({show, onHide}) => {
                         onChange={e => setDescr(e.target.value)}
                     />
 
-                    <Form.Control
-                        type="file"
-                        className="modal__input"
-                        onChange={selectFile}
-                    />
+                    <div className="border rounded p-3 mb-3 bg-light">
+                        <Form.Group className="mb-3" controlId="create-product-main-image">
+                            <Form.Label>Головне зображення</Form.Label>
+                            <Form.Text muted className="d-block mb-2">
+                                Це фото буде основним у каталозі та першим у галереї товару.
+                            </Form.Text>
+                            <Form.Control
+                                ref={mainImageInputRef}
+                                type="file"
+                                accept="image/*"
+                                required
+                                className="modal__input"
+                                onChange={selectMainImage}
+                            />
+                            {mainImagePreviewUrl && (
+                                <div className="mt-3 d-inline-block">
+                                    <img
+                                        src={mainImagePreviewUrl}
+                                        alt="Попередній перегляд головного фото"
+                                        style={{width: '140px', maxWidth: '100%', height: '140px', objectFit: 'cover'}}
+                                        className="rounded border"
+                                    />
+                                </div>
+                            )}
+                        </Form.Group>
+
+                        <Form.Group controlId="create-product-additional-images">
+                            <Form.Label>Додаткові зображення</Form.Label>
+                            <Form.Text muted className="d-block mb-2">
+                                Можна вибрати кілька фото. Головне фото автоматично буде першим у галереї — не додавайте його повторно.
+                            </Form.Text>
+                            <Form.Control
+                                ref={additionalImagesInputRef}
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                className="modal__input"
+                                onChange={selectAdditionalImages}
+                            />
+                            {additionalImageFiles.length > 0 && (
+                                <div className="d-flex flex-wrap gap-2 mt-3">
+                                    {additionalImageFiles.map((item, index) => (
+                                        <div key={item.signature} className="position-relative">
+                                            <img
+                                                src={item.previewUrl}
+                                                alt={`Попередній перегляд додаткового фото ${index + 1}`}
+                                                style={{width: '96px', height: '96px', objectFit: 'cover'}}
+                                                className="rounded border"
+                                            />
+                                            <Button
+                                                type="button"
+                                                variant="danger"
+                                                size="sm"
+                                                className="position-absolute top-0 end-0 translate-middle rounded-circle p-0"
+                                                style={{width: '28px', height: '28px', lineHeight: 1}}
+                                                aria-label={`Видалити додаткове фото ${index + 1}`}
+                                                onClick={() => removeAdditionalImage(item.signature)}
+                                            >
+                                                ×
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </Form.Group>
+                    </div>
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="outline-danger" onClick={onHide}>
+                <Button variant="outline-danger" type="button" onClick={onHide} disabled={isSubmitting}>
                     Закрити
                 </Button>
-                <Button variant="outline-success" onClick={addProduct}>
-                    Додати
+                <Button variant="outline-success" type="button" onClick={addProduct} disabled={isSubmitting}>
+                    {isSubmitting ? 'Додаємо…' : 'Додати'}
                 </Button>
             </Modal.Footer>
         </Modal>

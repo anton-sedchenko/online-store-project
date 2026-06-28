@@ -1,3 +1,4 @@
+const sequelize = require('../db');
 const {Product, ProductImage, ProductMarketplaceParam} = require('../models/models');
 const ApiError = require('../error/ApiError');
 const {cloudinary, extractPublicId} = require('../utils/cloudinary');
@@ -46,7 +47,7 @@ function parseMarketplaceParams(raw) {
         .filter((item) => item.name && item.value);
 }
 
-async function syncMarketplaceParams(productId, rawParams) {
+async function syncMarketplaceParams(productId, rawParams, transaction) {
     if (rawParams === undefined) return;
 
     const params = parseMarketplaceParams(rawParams);
@@ -56,6 +57,7 @@ async function syncMarketplaceParams(productId, rawParams) {
             productId,
             marketplace: 'rozetka',
         },
+        transaction,
     });
 
     if (!params.length) return;
@@ -66,7 +68,8 @@ async function syncMarketplaceParams(productId, rawParams) {
             marketplace: item.marketplace,
             name: item.name,
             value: item.value,
-        }))
+        })),
+        {transaction}
     );
 }
 
@@ -86,6 +89,26 @@ class ProductController {
     }
 
     async create(req, res, next) {
+        const uploadedAssets = [];
+        let transactionCommitted = false;
+
+        const cleanupUploadedAssets = async () => {
+            if (!uploadedAssets.length) return;
+
+            const cleanupResults = await Promise.allSettled(
+                uploadedAssets.map(asset => cloudinary.uploader.destroy(asset.public_id))
+            );
+
+            cleanupResults.forEach((result, index) => {
+                if (result.status === 'rejected') {
+                    console.error('PRODUCT CREATE CLOUDINARY CLEANUP ERROR:', {
+                        publicId: uploadedAssets[index]?.public_id,
+                        error: result.reason,
+                    });
+                }
+            });
+        };
+
         try {
             if (!req.files || !req.files.img) {
                 return res.status(400).json({message: 'Файл не завантажений'});
@@ -151,45 +174,86 @@ class ProductController {
                 return next(ApiError.badRequest('Заповніть назву, артикул і коректну ціну'));
             }
 
-            const {img} = req.files;
-            const result = await cloudinary.uploader.upload(img.tempFilePath || img.path, {
+            const {img, images} = req.files;
+            const additionalFiles = !images
+                ? []
+                : Array.isArray(images)
+                    ? images
+                    : [images];
+
+            const mainImageResult = await cloudinary.uploader.upload(img.tempFilePath || img.path, {
                 folder: 'products',
             });
+            uploadedAssets.push({
+                secure_url: mainImageResult.secure_url,
+                public_id: mainImageResult.public_id,
+            });
+
+            const additionalImageResults = [];
+            for (const file of additionalFiles) {
+                const result = await cloudinary.uploader.upload(file.tempFilePath || file.path, {
+                    folder: 'products',
+                });
+                const uploadedAsset = {
+                    secure_url: result.secure_url,
+                    public_id: result.public_id,
+                };
+                uploadedAssets.push(uploadedAsset);
+                additionalImageResults.push(uploadedAsset);
+            }
 
             const slug = slugify(name, {lower: true, strict: true}) + '-' + code;
 
-            const newProduct = await Product.create({
-                name,
-                slug,
-                price: priceNum,
-                typeId: typeIdNum,
-                description,
-                code,
-                availability: availabilityNorm,
-                rozetkaCategoryId: rzIdNum,
-                img: result.secure_url,
-                color: colorVal,
-                kind: kindVal,
-                shape: shapeVal,
-                purpose: purposeVal,
-                features: featuresVal,
-                rating: Number.isNaN(ratingNum) ? 1 : ratingNum,
-                width: widthVal,
-                length: lengthVal,
-                height: heightVal,
-                diameter: diameterVal,
-                weightKg: weightVal,
-                country: countryVal,
-                material: materialVal,
-            });
+            const createdProductId = await sequelize.transaction(async (transaction) => {
+                const newProduct = await Product.create({
+                    name,
+                    slug,
+                    price: priceNum,
+                    typeId: typeIdNum,
+                    description,
+                    code,
+                    availability: availabilityNorm,
+                    rozetkaCategoryId: rzIdNum,
+                    img: mainImageResult.secure_url,
+                    color: colorVal,
+                    kind: kindVal,
+                    shape: shapeVal,
+                    purpose: purposeVal,
+                    features: featuresVal,
+                    rating: Number.isNaN(ratingNum) ? 1 : ratingNum,
+                    width: widthVal,
+                    length: lengthVal,
+                    height: heightVal,
+                    diameter: diameterVal,
+                    weightKg: weightVal,
+                    country: countryVal,
+                    material: materialVal,
+                }, {transaction});
 
-            await syncMarketplaceParams(newProduct.id, marketplaceParams);
-            await newProduct.reload({include: PRODUCT_INCLUDES});
+                await syncMarketplaceParams(newProduct.id, marketplaceParams, transaction);
+
+                for (const imageResult of additionalImageResults) {
+                    await ProductImage.create({
+                        url: imageResult.secure_url,
+                        productId: newProduct.id,
+                    }, {transaction});
+                }
+
+                return newProduct.id;
+            });
+            transactionCommitted = true;
+
+            const newProduct = await Product.findByPk(createdProductId, {include: PRODUCT_INCLUDES});
 
             invalidateFeedCache();
             return res.json(newProduct);
         } catch (e) {
             console.error('PRODUCT CREATE ERROR:', e);
+
+            if (!transactionCommitted) {
+                await cleanupUploadedAssets();
+            }
+
             next(e.status ? e : ApiError.internal('Помилка при створенні товару'));
         }
     }
