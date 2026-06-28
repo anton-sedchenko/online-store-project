@@ -73,8 +73,8 @@ const Contacts = () => {
                                 </p>
                                 <p>
                                     <i className="fa fa-phone contacts__icon" aria-hidden="true"></i>
-                                    <a href="tel:+380680361597">+38 (068) 036 15 97</a>
-                                    <p>Менеджер Viber/Telegram</p>
+                                    <span>Viber/Telegram: </span>
+                                    <a href="tel:+380967846399">+38 (096) 784 63 99</a>
                                 </p>
                                 <p>
                                     <i className="fa fa-envelope-o contacts__icon" aria-hidden="true"></i>
