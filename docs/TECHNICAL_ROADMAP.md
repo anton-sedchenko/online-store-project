@@ -1,7 +1,7 @@
 # Charivna Craft — Technical Roadmap
 
 * **ChatGPT-проєкт:** Charivna Технічка
-* **Останнє оновлення:** 2026-06-27
+* **Останнє оновлення:** 2026-06-28
 * **Пов’язані документи:** [`MASTER_PLAN.md`](./MASTER_PLAN.md), [`DECISIONS.md`](./DECISIONS.md), [`WORKFLOW.md`](./WORKFLOW.md), [`AGENTS.md`](../AGENTS.md)
 
 ## Вступ
@@ -17,7 +17,7 @@
 
 ## Поточний пріоритет
 
-Продовжувати UX/CRO-план маленькими незалежними PR. Purchase-блок, Nova Poshta-only checkout і confirmation preference завершені. Наступний дизайн-технічний блок — product gallery; окремо залишаються order notifications і повноцінний success screen.
+Продовжувати UX/CRO-план маленькими незалежними PR. Purchase-блок, Nova Poshta-only checkout, confirmation preference і product gallery завершені. Наступний пов’язаний блок — order notifications, після нього повноцінний success screen.
 
 ## Next actions
 
@@ -57,17 +57,25 @@ PR #17:
 * primary CTA «Підтвердити замовлення» зроблена візуально помітною;
 * телефон і email залишилися required.
 
-### 4. ⏭ Product gallery
+### 4. ✅ Product gallery — завершено
 
-* Більше основне фото.
-* Thumbnails у звичайному layout.
-* Active thumbnail і лічильник.
-* Mobile swipe.
-* Semantic buttons замість клікабельних `img`.
-* Keyboard navigation, `Escape` і focus return.
-* Стани з одним, двома й багатьма фото.
-* Перевірка квадратних, вертикальних і горизонтальних фото.
-* Без обрізання критичної форми товару.
+PR #18 і PR #19:
+
+* create-modal приймає окреме головне й кілька додаткових фото;
+* головне фото зберігається лише в `Product.img`, додаткові — у `ProductImage`;
+* previews, локальне видалення й захист від повторного вибору того самого файла;
+* Cloudinary upload із cleanup через `public_id` при помилці;
+* Product, marketplace params і ProductImage створюються в одній Sequelize transaction;
+* storefront формує нормалізований список `product.img` + `product.images`;
+* порожні й точні URL-дублікати прибираються, main image завжди перше;
+* responsive main image з `object-fit: contain`;
+* horizontal thumbnails, active state, counter і циклічні arrows;
+* mobile swipe з `touch-action: pan-y`;
+* semantic controls і `focus-visible`;
+* React-Bootstrap lightbox із close button, arrows, thumbnails і keyboard navigation;
+* focus переходить у modal при відкритті та повертається на main image trigger через `onExited`;
+* Product schema використовує нормалізований gallery list;
+* backend, schema й dependencies для storefront PR не змінювалися.
 
 ### 5. ⏭ Order notifications
 
@@ -199,6 +207,8 @@ Frontend tests, backend endpoint tests, smoke tests для sitemap/feed/cart/ord
 * ✅ Product purchase clarity — PR #16.
 * ✅ Nova Poshta-only checkout cleanup — PR #15.
 * ✅ Confirmation preference і primary checkout CTA — PR #17.
+* ✅ Головне й додаткові фото під час створення товару — PR #18.
+* ✅ Storefront product gallery — PR #19.
 * ✅ Уточнено: автоматичного правила передоплати за кількістю товарів не буде.
 * ✅ Уточнено формат free-shipping notification для email і Telegram.
 * ✅ Filters, mobile filters і public type GET.
