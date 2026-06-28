@@ -1,5 +1,5 @@
-import React, {useContext, useEffect, useMemo, useState} from 'react';
-import {Col, Image, Row} from "react-bootstrap";
+import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
+import {Col, Row} from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {fetchProductBySlug} from "../http/productAPI.js";
@@ -97,7 +97,170 @@ const ProductPage = () => {
         })();
     }, [product?.id]);
 
+    const galleryImages = useMemo(() => {
+        const urls = [
+            product.img,
+            ...(Array.isArray(product.images)
+                ? product.images.map((image) => image?.url)
+                : []),
+        ].filter(Boolean);
+
+        return [...new Set(urls)];
+    }, [product.img, product.images]);
+
+    const galleryImagesCount = galleryImages.length;
+    const hasMultipleImages = galleryImagesCount > 1;
+    const activeImage = galleryImages[currentImageIndex] || product.img;
+    const lightboxImage = galleryImages[lightboxIndex] || activeImage;
+    const mainImageTriggerRef = useRef(null);
+    const lightboxCloseButtonRef = useRef(null);
+    const thumbnailRefs = useRef([]);
+    const lightboxThumbnailRefs = useRef([]);
+    const touchStartRef = useRef({x: 0, y: 0});
+    const didSwipeRef = useRef(false);
+
+    const getScrollBehavior = useCallback(() => {
+        if (typeof window === 'undefined') return 'smooth';
+        return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+    }, []);
+
+    const goToPreviousImage = useCallback((setter = setCurrentImageIndex) => {
+        if (galleryImagesCount <= 1) return;
+        setter((prev) => (prev <= 0 ? galleryImagesCount - 1 : prev - 1));
+    }, [galleryImagesCount]);
+
+    const goToNextImage = useCallback((setter = setCurrentImageIndex) => {
+        if (galleryImagesCount <= 1) return;
+        setter((prev) => (prev >= galleryImagesCount - 1 ? 0 : prev + 1));
+    }, [galleryImagesCount]);
+
+    const handlePrev = useCallback(() => {
+        goToPreviousImage(setCurrentImageIndex);
+    }, [goToPreviousImage]);
+
+    const handleNext = useCallback(() => {
+        goToNextImage(setCurrentImageIndex);
+    }, [goToNextImage]);
+
+    const openLightbox = useCallback((index) => {
+        const safeIndex = Math.min(Math.max(index, 0), Math.max(galleryImagesCount - 1, 0));
+        setLightboxIndex(safeIndex);
+        setLightboxOpen(true);
+    }, [galleryImagesCount]);
+
+    const closeLightbox = useCallback(() => {
+        setCurrentImageIndex((prev) => (
+            galleryImagesCount > 0
+                ? Math.min(lightboxIndex, galleryImagesCount - 1)
+                : prev
+        ));
+        setLightboxOpen(false);
+    }, [galleryImagesCount, lightboxIndex]);
+
+    const handleLightboxExited = useCallback(() => {
+        mainImageTriggerRef.current?.focus();
+    }, []);
+
+    const lbPrev = useCallback(() => {
+        goToPreviousImage(setLightboxIndex);
+    }, [goToPreviousImage]);
+
+    const lbNext = useCallback(() => {
+        goToNextImage(setLightboxIndex);
+    }, [goToNextImage]);
+
+    useEffect(() => {
+        setCurrentImageIndex(0);
+        setLightboxIndex(0);
+    }, [product.id]);
+
+    useEffect(() => {
+        if (galleryImagesCount === 0) return;
+        setCurrentImageIndex((index) => Math.min(index, galleryImagesCount - 1));
+        setLightboxIndex((index) => Math.min(index, galleryImagesCount - 1));
+    }, [galleryImagesCount]);
+
+    useEffect(() => {
+        const element = thumbnailRefs.current[currentImageIndex];
+        element?.scrollIntoView({
+            behavior: getScrollBehavior(),
+            block: 'nearest',
+            inline: 'nearest',
+        });
+    }, [currentImageIndex, getScrollBehavior]);
+
+    useEffect(() => {
+        if (!lightboxOpen) return;
+
+        lightboxCloseButtonRef.current?.focus();
+    }, [lightboxOpen]);
+
+    useEffect(() => {
+        if (!lightboxOpen) return;
+
+        const element = lightboxThumbnailRefs.current[lightboxIndex];
+        element?.scrollIntoView({
+            behavior: getScrollBehavior(),
+            block: 'nearest',
+            inline: 'nearest',
+        });
+    }, [getScrollBehavior, lightboxIndex, lightboxOpen]);
+
+    useEffect(() => {
+        if (!lightboxOpen) return;
+
+        const onKey = (e) => {
+            if (e.key === 'ArrowLeft' && hasMultipleImages) {
+                e.preventDefault();
+                lbPrev();
+            }
+
+            if (e.key === 'ArrowRight' && hasMultipleImages) {
+                e.preventDefault();
+                lbNext();
+            }
+        };
+
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, [hasMultipleImages, lbNext, lbPrev, lightboxOpen]);
+
+    const handleTouchStart = (event) => {
+        if (!hasMultipleImages) return;
+        const touch = event.touches[0];
+        touchStartRef.current = {x: touch.clientX, y: touch.clientY};
+        didSwipeRef.current = false;
+    };
+
+    const handleTouchEnd = (event) => {
+        if (!hasMultipleImages) return;
+        const touch = event.changedTouches[0];
+        const deltaX = touch.clientX - touchStartRef.current.x;
+        const deltaY = touch.clientY - touchStartRef.current.y;
+        const isHorizontalSwipe = Math.abs(deltaX) >= 50 && Math.abs(deltaX) > Math.abs(deltaY);
+
+        if (!isHorizontalSwipe) return;
+
+        didSwipeRef.current = true;
+        if (deltaX < 0) {
+            handleNext();
+        } else {
+            handlePrev();
+        }
+    };
+
+    const handleMainImageClick = () => {
+        if (didSwipeRef.current) {
+            didSwipeRef.current = false;
+            return;
+        }
+
+        openLightbox(currentImageIndex);
+    };
+
     const isPurchasable = isPurchasableAvailability(product.availability);
+
+    const normalizedQty = normalizeQuantity(qty);
 
     const handleAddToCart = () => {
         if (!isPurchasable) return;
@@ -116,55 +279,8 @@ const ProductPage = () => {
         navigate(CART_ROUTE);
     };
 
-    const handlePrev = () => {
-        const imagesCount = product.images?.length || 0;
-        if (imagesCount <= 1) return;
-        setCurrentImageIndex((prev) => (prev === 0 ? imagesCount - 1 : prev - 1));
-    };
-
-    const handleNext = () => {
-        const imagesCount = product.images?.length || 0;
-        if (imagesCount <= 1) return;
-        setCurrentImageIndex((prev) => (prev === imagesCount - 1 ? 0 : prev + 1));
-    };
-
-    const openLightbox = (i) => {
-        setLightboxIndex(i);
-        setLightboxOpen(true);
-    };
-
-    const closeLightbox = () => setLightboxOpen(false);
-
-    const lbPrev = () => {
-        const imagesCount = product.images?.length || 0;
-        if (imagesCount <= 1) return;
-        setLightboxIndex(i => (i === 0 ? imagesCount - 1 : i - 1));
-    };
-
-    const lbNext = () => {
-        const imagesCount = product.images?.length || 0;
-        if (imagesCount <= 1) return;
-        setLightboxIndex(i => (i === imagesCount - 1 ? 0 : i + 1));
-    };
-
-    useEffect(() => {
-        if (!lightboxOpen) return;
-
-        const onKey = (e) => {
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowLeft') lbPrev();
-            if (e.key === 'ArrowRight') lbNext();
-        };
-
-        window.addEventListener('keydown', onKey);
-        return () => window.removeEventListener('keydown', onKey);
-    }, [lightboxOpen, product.images?.length]);
-
-    const normalizedQty = normalizeQuantity(qty);
     const unitPrice = Number(product.price || 0);
     const sum = unitPrice * normalizedQty;
-    const activeImage = product.images?.[currentImageIndex]?.url || product.img;
-
     const availabilityLabel = useMemo(() => getAvailabilityLabel(product.availability), [product.availability]);
 
     const availabilityClass = useMemo(() => getAvailabilityClass(product.availability), [product.availability]);
@@ -260,14 +376,7 @@ const ProductPage = () => {
         product.weightKg
     ]);
 
-    const schemaImages = useMemo(() => {
-        const imgs = [
-            product.img,
-            ...(Array.isArray(product.images) ? product.images.map(i => i?.url) : [])
-        ].filter(Boolean);
-
-        return [...new Set(imgs)];
-    }, [product.img, product.images]);
+    const schemaImages = galleryImages;
 
     const schemaAvailability = useMemo(() => {
         if (product.availability === 'IN_STOCK') return 'https://schema.org/InStock';
@@ -468,19 +577,76 @@ const ProductPage = () => {
 
                 <Col xs={12} md={4} className="product__img__container text-center">
                     <div className="product__gallery">
-                        <Image
-                            width={300}
-                            height={300}
-                            src={activeImage}
-                            alt={imageAlt}
-                            onClick={() => openLightbox(currentImageIndex)}
-                            style={{cursor: 'zoom-in'}}
-                        />
-                        {product.images?.length > 1 && (
-                            <>
-                                <button onClick={handlePrev} className="slider-btn prev" aria-label="Попереднє фото">‹</button>
-                                <button onClick={handleNext} className="slider-btn next" aria-label="Наступне фото">›</button>
-                            </>
+                        <div
+                            className="product__gallery__stage"
+                            onTouchStart={handleTouchStart}
+                            onTouchEnd={handleTouchEnd}
+                        >
+                            {activeImage && (
+                                <button
+                                    ref={mainImageTriggerRef}
+                                    type="button"
+                                    className="product__gallery__trigger"
+                                    aria-label={`Відкрити збільшене фото ${currentImageIndex + 1} з ${galleryImagesCount}`}
+                                    onClick={handleMainImageClick}
+                                >
+                                    <img
+                                        className="product__gallery__image"
+                                        src={activeImage}
+                                        alt={imageAlt}
+                                    />
+                                </button>
+                            )}
+
+                            {hasMultipleImages && (
+                                <>
+                                    <button
+                                        type="button"
+                                        onClick={handlePrev}
+                                        className="product__gallery__arrow product__gallery__arrow--prev"
+                                        aria-label="Попереднє фото"
+                                    >
+                                        ‹
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleNext}
+                                        className="product__gallery__arrow product__gallery__arrow--next"
+                                        aria-label="Наступне фото"
+                                    >
+                                        ›
+                                    </button>
+                                </>
+                            )}
+
+                            {galleryImagesCount > 0 && (
+                                <span className="product__gallery__counter" aria-live="polite">
+                                    {currentImageIndex + 1} / {galleryImagesCount}
+                                </span>
+                            )}
+                        </div>
+
+                        {hasMultipleImages && (
+                            <div className="product__gallery__thumbnails" aria-label="Мініатюри фото товару">
+                                {galleryImages.map((imageUrl, index) => (
+                                    <button
+                                        key={imageUrl}
+                                        ref={(element) => {
+                                            thumbnailRefs.current[index] = element;
+                                        }}
+                                        type="button"
+                                        className="product__gallery__thumbnail"
+                                        aria-label={`Показати фото ${index + 1} з ${galleryImagesCount}`}
+                                        aria-pressed={index === currentImageIndex}
+                                        onClick={() => setCurrentImageIndex(index)}
+                                    >
+                                        <img
+                                            src={imageUrl}
+                                            alt={`${product.name || 'Товар'}, фото ${index + 1}`}
+                                        />
+                                    </button>
+                                ))}
+                            </div>
                         )}
                     </div>
                 </Col>
@@ -694,66 +860,88 @@ const ProductPage = () => {
             <Modal
                 show={lightboxOpen}
                 onHide={closeLightbox}
+                onExited={handleLightboxExited}
                 centered
                 size="lg"
-                contentClassName="bg-transparent border-0"
+                contentClassName="product-gallery-lightbox"
+                aria-labelledby="product-gallery-lightbox-title"
             >
-                <div
-                    style={{
-                        position: 'relative',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        background: 'rgba(0,0,0,0.8)',
-                        borderRadius: 8,
-                        padding: 8
-                    }}
-                >
-                    <button
-                        onClick={lbPrev}
-                        aria-label="Попереднє"
-                        className="btn btn-light"
-                        style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }}
-                    >
-                        ‹
-                    </button>
-
-                    <img
-                        src={(product.images?.[lightboxIndex]?.url) || product.img}
-                        alt={imageAlt}
-                        style={{ maxWidth: '90vw', maxHeight: '80vh', objectFit: 'contain' }}
-                    />
+                <div className="product-gallery-lightbox__content">
+                    <h2 id="product-gallery-lightbox-title" className="visually-hidden">
+                        Галерея товару: {product.name}
+                    </h2>
 
                     <button
-                        onClick={lbNext}
-                        aria-label="Наступне"
-                        className="btn btn-light"
-                        style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }}
+                        ref={lightboxCloseButtonRef}
+                        type="button"
+                        className="product-gallery-lightbox__close"
+                        aria-label="Закрити галерею"
+                        onClick={closeLightbox}
                     >
-                        ›
+                        ×
                     </button>
-                </div>
 
-                {product.images?.length > 1 && (
-                    <div className="mt-2 d-flex flex-wrap justify-content-center gap-2">
-                        {product.images.map((im, i) => (
+                    <div className="product-gallery-lightbox__stage">
+                        {hasMultipleImages && (
+                            <button
+                                type="button"
+                                className="product-gallery-lightbox__arrow product-gallery-lightbox__arrow--prev"
+                                aria-label="Попереднє фото"
+                                onClick={lbPrev}
+                            >
+                                ‹
+                            </button>
+                        )}
+
+                        {lightboxImage && (
                             <img
-                                key={i}
-                                src={im.url}
-                                alt=""
-                                onClick={() => setLightboxIndex(i)}
-                                style={{
-                                    width: 64,
-                                    height: 64,
-                                    objectFit: 'cover',
-                                    cursor: 'pointer',
-                                    border: i === lightboxIndex ? '2px solid #fff' : '2px solid transparent',
-                                    borderRadius: 6
-                                }}
+                                className="product-gallery-lightbox__image"
+                                src={lightboxImage}
+                                alt={`${imageAlt}, фото ${lightboxIndex + 1}`}
                             />
-                        ))}
+                        )}
+
+                        {hasMultipleImages && (
+                            <button
+                                type="button"
+                                className="product-gallery-lightbox__arrow product-gallery-lightbox__arrow--next"
+                                aria-label="Наступне фото"
+                                onClick={lbNext}
+                            >
+                                ›
+                            </button>
+                        )}
+
+                        {galleryImagesCount > 0 && (
+                            <span className="product-gallery-lightbox__counter" aria-live="polite">
+                                {lightboxIndex + 1} / {galleryImagesCount}
+                            </span>
+                        )}
                     </div>
-                )}
+
+                    {hasMultipleImages && (
+                        <div className="product-gallery-lightbox__thumbnails" aria-label="Мініатюри фото в галереї">
+                            {galleryImages.map((imageUrl, index) => (
+                                <button
+                                    key={imageUrl}
+                                    ref={(element) => {
+                                        lightboxThumbnailRefs.current[index] = element;
+                                    }}
+                                    type="button"
+                                    className="product-gallery-lightbox__thumbnail"
+                                    aria-label={`Показати фото ${index + 1} з ${galleryImagesCount}`}
+                                    aria-pressed={index === lightboxIndex}
+                                    onClick={() => setLightboxIndex(index)}
+                                >
+                                    <img
+                                        src={imageUrl}
+                                        alt={`${product.name || 'Товар'}, фото ${index + 1}`}
+                                    />
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </Modal>
         </div>
     );
