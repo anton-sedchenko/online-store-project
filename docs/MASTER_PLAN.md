@@ -22,7 +22,7 @@
 
 ### Технічна розробка
 
-⏭ Основний контекст: [`TECHNICAL_ROADMAP.md`](./TECHNICAL_ROADMAP.md). Найближчі технічні зміни мають підтримати погоджений UX/CRO-план: ясність покупки на сторінці товару, доступна галерея, картки товарів і головна сторінка. Технічні SEO-задачі, performance, feeds і тести залишаються в roadmap та виконуються окремими погодженими PR.
+⏭ Основний контекст: [`TECHNICAL_ROADMAP.md`](./TECHNICAL_ROADMAP.md). Purchase-блок і базовий checkout cleanup завершені. Найближчі технічні зміни: галерея товару, order notifications, повноцінний success screen, картки товарів і головна сторінка. Технічні SEO-задачі, performance, feeds і тести залишаються в roadmap та виконуються окремими погодженими PR.
 
 ### SEO і блог
 
@@ -30,7 +30,7 @@
 
 ### Дизайн і контент
 
-⏭ Основний контекст: [`DESIGN_CONTENT_ROADMAP.md`](./DESIGN_CONTENT_ROADMAP.md). Поточний пріоритет — поетапне впровадження результатів UX/UI та CRO-аудиту головної сторінки, сторінки товару, карток товарів і мобільної версії. Перший блок — `Product purchase clarity`.
+⏭ Основний контекст: [`DESIGN_CONTENT_ROADMAP.md`](./DESIGN_CONTENT_ROADMAP.md). Product purchase clarity, Nova Poshta-only checkout і confirmation preference завершені. Наступний дизайн-блок — `Product gallery`.
 
 ### Комерційний розвиток
 
@@ -38,15 +38,19 @@
 
 ## Next actions
 
-1. ⏭ Погодити бізнес-факти та реалізувати перший UX/CRO-блок `Product purchase clarity` окремим PR.
-2. ⏭ Покращити галерею товару, thumbnails, mobile swipe і keyboard accessibility.
-3. ⏭ Переробити ієрархію карток товарів і перевірити mobile grid.
-4. ⏭ Оновити перший екран головної: компактний header, hero, CTA, trust strip і категорії.
-5. 🟡 Після базового CRO-етапу повернутися до активного розвитку блогу, keyword research і масштабування SEO-трафіку.
+1. ⏭ Покращити галерею товару: більше фото, thumbnails, mobile swipe і keyboard accessibility.
+2. ⏭ Додати коректне відображення безкоштовної доставки в Telegram та email на основі фактичної суми замовлення.
+3. ⏭ Замінити коротку автозакривну модалку повноцінним order success screen.
+4. ⏭ Переробити ієрархію карток товарів і перевірити mobile grid.
+5. ⏭ Оновити перший екран головної: компактний header, hero, CTA, trust strip і категорії.
 
 ## Completed
 
 * ✅ Проведено read-only UX/UI та CRO-аудит головної сторінки, шаблону товару, карток товарів і desktop/mobile-станів.
+* ✅ Product purchase clarity і trust-card сторінки товару.
+* ✅ Nova Poshta-only checkout і видалення Укрпошти з актуальних текстів.
+* ✅ Confirmation preference «Не зв’язуватися для підтвердження замовлення».
+* ✅ Помітна primary CTA «Підтвердити замовлення».
 * ✅ Налаштування Google Search Console.
 * ✅ Актуалізація контактів.
 * ✅ Видалення старого Merchant Center контенту про неактуальні товари.
@@ -72,10 +76,12 @@
 * PR #7 — логіка статусів наявності.
 * PR #9 — глобальні SEO metadata та noindex.
 * PR #10 — синхронізація main → staging.
+* PR #15 — Nova Poshta-only delivery cleanup.
+* PR #16 — Product purchase clarity.
+* PR #17 — confirmation preference і primary checkout CTA.
 
 ## Deferred
 
-* 🧊 Чекбокс «Не телефонувати для підтвердження замовлення».
 * 🧊 Масштабний перехід фільтрації та пагінації на backend.
 * 🧊 Повноцінна автоматизація тестів.
 * 🧊 Окреме DIY-медіа або піддомен.
