@@ -17,7 +17,7 @@
 
 ## Поточний пріоритет
 
-Продовжувати UX/CRO-план маленькими незалежними PR. Purchase-блок, Nova Poshta-only checkout, confirmation preference і product gallery завершені. Наступний пов’язаний блок — order notifications, після нього повноцінний success screen.
+Продовжувати UX/CRO-план маленькими незалежними PR. Purchase-блок, Nova Poshta-only checkout, confirmation preference, product gallery, order notifications і purchase controls завершені. Наступний окремий блок — повноцінний order success screen.
 
 ## Next actions
 
@@ -77,22 +77,24 @@ PR #18 і PR #19:
 * Product schema використовує нормалізований gallery list;
 * backend, schema й dependencies для storefront PR не змінювалися.
 
-### 5. ⏭ Order notifications
+### 5. ✅ Order notifications and purchase controls — завершено
 
-Backend самостійно визначає умови за товарами з БД і фактичною сумою.
+PR #20, PR #21 і PR #22:
 
-Scope:
+* backend обчислює суму замовлення з `OrderProduct.quantity` і `Product.price` із БД;
+* `isFreeShipping` визначається від 1500 грн включно без довіри до frontend flags;
+* у Telegram для магазину додається окремий рядок `БЕЗКОШТОВНА ДОСТАВКА`;
+* у спільному email покупцю й магазину безкоштовна доставка показується як звичайний параметр;
+* Telegram/email errors не блокують створення замовлення;
+* confirmation preference з PR #17 збережена;
+* order email використовує актуальний Viber/Telegram номер `+38 (096) 784 63 99`;
+* primary CTA у кошику, на товарі та checkout візуально уніфіковані;
+* у кошику додано integer-safe quantity stepper із `−`, `+`, ручним input і мінімумом 1;
+* auth cart має per-item pending guard і rollback при помилці;
+* desktop-grid кошика адаптований, щоб степер, сума й remove button не виходили за картку;
+* guest cart, auth cart API, checkout payload і backend cart architecture не змінювалися.
 
-* обчислювати `isFreeShipping` при сумі товарів від 1500 грн;
-* у Telegram для магазину додавати окремий помітний рядок `БЕЗКОШТОВНА ДОСТАВКА`;
-* у спільному email покупцю й магазину показувати безкоштовну доставку як звичайний параметр;
-* не додавати `requiresFullPrepayment` або автоматичні нагадування про передоплату;
-* не довіряти frontend total або flags;
-* не робити Telegram/email критичними для створення замовлення;
-* зберегти logging помилок сповіщень;
-* не ламати confirmation preference з PR #17.
-
-### 6. ⏭ Order success screen
+### 6. ⏭ Order success screen — наступний блок
 
 Поточний `OrderConfirm` автоматично закривається, а checkout через 4,5 секунди очищає кошик і переходить на головну. Замінити це окремим success state або route.
 
@@ -113,13 +115,14 @@ Scope:
 
 ### 7. ✅ Актуалізація order-related content — базовий cleanup завершено
 
-PR #15 і PR #16:
+PR #15, PR #16 і PR #21:
 
 * прибрано Укрпошту зі сторінки доставки, оферти й актуальних текстів;
 * прибрано згадки гіпсових фігурок у зміненому order-related scope;
 * уніфіковано email на `charivna.craft@gmail.com`;
 * синхронізовано формулювання підтвердження, оплати й `MADE_TO_ORDER`;
 * повернення комунікується як 14 днів;
+* актуалізовано Viber/Telegram contact у листі й support-блоці;
 * юридичні твердження не переписувалися поза погодженим scope.
 
 ### 8. ⏭ Product cards and mobile grid
@@ -209,6 +212,9 @@ Frontend tests, backend endpoint tests, smoke tests для sitemap/feed/cart/ord
 * ✅ Confirmation preference і primary checkout CTA — PR #17.
 * ✅ Головне й додаткові фото під час створення товару — PR #18.
 * ✅ Storefront product gallery — PR #19.
+* ✅ Free-shipping order notifications — PR #20.
+* ✅ Cart CTA і актуальні contact details — PR #21.
+* ✅ Cart quantity stepper і primary product CTA — PR #22.
 * ✅ Уточнено: автоматичного правила передоплати за кількістю товарів не буде.
 * ✅ Уточнено формат free-shipping notification для email і Telegram.
 * ✅ Filters, mobile filters і public type GET.
