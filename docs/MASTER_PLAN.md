@@ -5,7 +5,7 @@
 * **GitHub repository:** `anton-sedchenko/online-store-project`
 * **Frontend hosting:** Vercel
 * **Backend/database hosting:** Railway
-* **Останнє оновлення:** 2026-06-27
+* **Останнє оновлення:** 2026-06-28
 
 Цей файл є головним документом для проєкту `Charivna Головний`. Він містить лише загальні пріоритети, статуси й залежності між напрямами. Технічні, SEO та дизайн-деталі ведуться у відповідних roadmap-файлах.
 
@@ -22,7 +22,7 @@
 
 ### Технічна розробка
 
-⏭ Основний контекст: [`TECHNICAL_ROADMAP.md`](./TECHNICAL_ROADMAP.md). Purchase-блок і базовий checkout cleanup завершені. Найближчі технічні зміни: галерея товару, order notifications, повноцінний success screen, картки товарів і головна сторінка. Технічні SEO-задачі, performance, feeds і тести залишаються в roadmap та виконуються окремими погодженими PR.
+⏭ Основний контекст: [`TECHNICAL_ROADMAP.md`](./TECHNICAL_ROADMAP.md). Purchase-блок, базовий checkout cleanup і product gallery завершені. Найближчі технічні зміни: order notifications, повноцінний success screen, картки товарів і головна сторінка. Технічні SEO-задачі, performance, feeds і тести залишаються в roadmap та виконуються окремими погодженими PR.
 
 ### SEO і блог
 
@@ -30,7 +30,7 @@
 
 ### Дизайн і контент
 
-⏭ Основний контекст: [`DESIGN_CONTENT_ROADMAP.md`](./DESIGN_CONTENT_ROADMAP.md). Product purchase clarity, Nova Poshta-only checkout і confirmation preference завершені. Наступний дизайн-блок — `Product gallery`.
+⏭ Основний контекст: [`DESIGN_CONTENT_ROADMAP.md`](./DESIGN_CONTENT_ROADMAP.md). Product purchase clarity, Nova Poshta-only checkout, confirmation preference і product gallery завершені. Наступний пов’язаний блок — `Order notifications`.
 
 ### Комерційний розвиток
 
@@ -38,11 +38,11 @@
 
 ## Next actions
 
-1. ⏭ Покращити галерею товару: більше фото, thumbnails, mobile swipe і keyboard accessibility.
-2. ⏭ Додати коректне відображення безкоштовної доставки в Telegram та email на основі фактичної суми замовлення.
-3. ⏭ Замінити коротку автозакривну модалку повноцінним order success screen.
-4. ⏭ Переробити ієрархію карток товарів і перевірити mobile grid.
-5. ⏭ Оновити перший екран головної: компактний header, hero, CTA, trust strip і категорії.
+1. ⏭ Додати коректне відображення безкоштовної доставки в Telegram та email на основі фактичної суми замовлення.
+2. ⏭ Замінити коротку автозакривну модалку повноцінним order success screen.
+3. ⏭ Переробити ієрархію карток товарів і перевірити mobile grid.
+4. ⏭ Оновити перший екран головної: компактний header, hero, CTA, trust strip і категорії.
+5. ⏭ Покращити category discovery: візуальні категорії, active filters і mobile result action.
 
 ## Completed
 
@@ -51,6 +51,8 @@
 * ✅ Nova Poshta-only checkout і видалення Укрпошти з актуальних текстів.
 * ✅ Confirmation preference «Не зв’язуватися для підтвердження замовлення».
 * ✅ Помітна primary CTA «Підтвердити замовлення».
+* ✅ Створення товару з окремим головним і кількома додатковими фото.
+* ✅ Storefront product gallery: main image first, thumbnails, arrows, counter, mobile swipe і accessible lightbox.
 * ✅ Налаштування Google Search Console.
 * ✅ Актуалізація контактів.
 * ✅ Видалення старого Merchant Center контенту про неактуальні товари.
@@ -79,6 +81,8 @@
 * PR #15 — Nova Poshta-only delivery cleanup.
 * PR #16 — Product purchase clarity.
 * PR #17 — confirmation preference і primary checkout CTA.
+* PR #18 — головне й додаткові фото під час створення товару.
+* PR #19 — повноцінна product gallery.
 
 ## Deferred
 
