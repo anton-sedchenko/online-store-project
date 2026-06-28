@@ -128,7 +128,7 @@
 
 .cart__item {
   display: grid;
-  grid-template-columns: 82px minmax(220px, 1fr) 140px 112px 36px;
+  grid-template-columns: 82px minmax(0, 1fr) 140px 112px 36px;
   gap: 14px;
   align-items: center;
   padding: 16px;
@@ -301,6 +301,7 @@
 }
 
 .cart__item__remove {
+  justify-self: end;
   width: 34px;
   height: 34px;
   padding: 0;
