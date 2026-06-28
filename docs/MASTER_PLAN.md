@@ -22,7 +22,7 @@
 
 ### Технічна розробка
 
-⏭ Основний контекст: [`TECHNICAL_ROADMAP.md`](./TECHNICAL_ROADMAP.md). Purchase-блок, базовий checkout cleanup і product gallery завершені. Найближчі технічні зміни: order notifications, повноцінний success screen, картки товарів і головна сторінка. Технічні SEO-задачі, performance, feeds і тести залишаються в roadmap та виконуються окремими погодженими PR.
+⏭ Основний контекст: [`TECHNICAL_ROADMAP.md`](./TECHNICAL_ROADMAP.md). Purchase-блок, базовий checkout cleanup, product gallery, order notifications і purchase controls завершені. Найближчі технічні зміни: повноцінний order success screen, картки товарів і головна сторінка. Технічні SEO-задачі, performance, feeds і тести залишаються в roadmap та виконуються окремими погодженими PR.
 
 ### SEO і блог
 
@@ -30,7 +30,7 @@
 
 ### Дизайн і контент
 
-⏭ Основний контекст: [`DESIGN_CONTENT_ROADMAP.md`](./DESIGN_CONTENT_ROADMAP.md). Product purchase clarity, Nova Poshta-only checkout, confirmation preference і product gallery завершені. Наступний пов’язаний блок — `Order notifications`.
+⏭ Основний контекст: [`DESIGN_CONTENT_ROADMAP.md`](./DESIGN_CONTENT_ROADMAP.md). Product purchase clarity, Nova Poshta-only checkout, confirmation preference, product gallery, order notifications і purchase controls завершені. Наступний окремий блок — `Order success screen`.
 
 ### Комерційний розвиток
 
@@ -38,11 +38,11 @@
 
 ## Next actions
 
-1. ⏭ Додати коректне відображення безкоштовної доставки в Telegram та email на основі фактичної суми замовлення.
-2. ⏭ Замінити коротку автозакривну модалку повноцінним order success screen.
-3. ⏭ Переробити ієрархію карток товарів і перевірити mobile grid.
-4. ⏭ Оновити перший екран головної: компактний header, hero, CTA, trust strip і категорії.
-5. ⏭ Покращити category discovery: візуальні категорії, active filters і mobile result action.
+1. ⏭ Замінити коротку автозакривну модалку повноцінним order success screen.
+2. ⏭ Переробити ієрархію карток товарів і перевірити mobile grid.
+3. ⏭ Оновити перший екран головної: компактний header, hero, CTA, trust strip і категорії.
+4. ⏭ Покращити category discovery: візуальні категорії, active filters і mobile result action.
+5. ⏭ Уніфікувати delivery/payment/trust content на головній, товарі та у footer.
 
 ## Completed
 
@@ -53,6 +53,10 @@
 * ✅ Помітна primary CTA «Підтвердити замовлення».
 * ✅ Створення товару з окремим головним і кількома додатковими фото.
 * ✅ Storefront product gallery: main image first, thumbnails, arrows, counter, mobile swipe і accessible lightbox.
+* ✅ Free-shipping notification у Telegram та email на основі backend-суми.
+* ✅ Актуальний Viber/Telegram номер у листі й на сторінці контактів.
+* ✅ Помітні primary CTA на товарі, в кошику та checkout.
+* ✅ Cart quantity stepper із нормалізацією, pending/error handling і responsive desktop/mobile layout.
 * ✅ Налаштування Google Search Console.
 * ✅ Актуалізація контактів.
 * ✅ Видалення старого Merchant Center контенту про неактуальні товари.
@@ -83,6 +87,9 @@
 * PR #17 — confirmation preference і primary checkout CTA.
 * PR #18 — головне й додаткові фото під час створення товару.
 * PR #19 — повноцінна product gallery.
+* PR #20 — free-shipping notifications у Telegram та email.
+* PR #21 — cart checkout CTA та актуальні contact details.
+* PR #22 — cart quantity stepper і primary product CTA.
 
 ## Deferred
 
