@@ -155,8 +155,11 @@ const ProductPage = () => {
                 : prev
         ));
         setLightboxOpen(false);
-        window.setTimeout(() => mainImageTriggerRef.current?.focus(), 0);
     }, [galleryImagesCount, lightboxIndex]);
+
+    const handleLightboxExited = useCallback(() => {
+        mainImageTriggerRef.current?.focus();
+    }, []);
 
     const lbPrev = useCallback(() => {
         goToPreviousImage(setLightboxIndex);
@@ -190,13 +193,18 @@ const ProductPage = () => {
         if (!lightboxOpen) return;
 
         lightboxCloseButtonRef.current?.focus();
+    }, [lightboxOpen]);
+
+    useEffect(() => {
+        if (!lightboxOpen) return;
+
         const element = lightboxThumbnailRefs.current[lightboxIndex];
         element?.scrollIntoView({
             behavior: getScrollBehavior(),
             block: 'nearest',
             inline: 'nearest',
         });
-    }, [lightboxOpen, lightboxIndex, getScrollBehavior]);
+    }, [getScrollBehavior, lightboxIndex, lightboxOpen]);
 
     useEffect(() => {
         if (!lightboxOpen) return;
@@ -852,6 +860,7 @@ const ProductPage = () => {
             <Modal
                 show={lightboxOpen}
                 onHide={closeLightbox}
+                onExited={handleLightboxExited}
                 centered
                 size="lg"
                 contentClassName="product-gallery-lightbox"
