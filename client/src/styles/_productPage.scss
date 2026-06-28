@@ -254,9 +254,9 @@
   overflow-wrap: anywhere;
   margin-bottom: 12px;
   color: #4f453b;
-  font-size: clamp(26px, 3vw, 34px);
+  font-size: clamp(28px, 2vw, 32px);
   font-weight: 700;
-  line-height: 1.18;
+  line-height: 1.12;
 }
 
 .product__made-to-order-note {
@@ -913,7 +913,7 @@
   }
 
   .product__title {
-    font-size: 24px;
+    font-size: 26px;
   }
 
   .product__quick__characteristics {
