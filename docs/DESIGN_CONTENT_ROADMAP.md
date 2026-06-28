@@ -1,7 +1,7 @@
 # Charivna Craft — Design & Content Roadmap
 
 * **ChatGPT-проєкт:** Charivna Design & Контент
-* **Останнє оновлення:** 2026-06-27
+* **Останнє оновлення:** 2026-06-28
 * **Пов’язані документи:** [`MASTER_PLAN.md`](./MASTER_PLAN.md), [`DECISIONS.md`](./DECISIONS.md), [`WORKFLOW.md`](./WORKFLOW.md)
 
 ## Основні цілі
@@ -113,19 +113,25 @@ Helper text:
 * помітна primary CTA «Підтвердити замовлення»;
 * другорядна кнопка «Повернутись до каталогу» лишається візуально слабшою.
 
-### 4. ⏭ Product gallery — наступний дизайн-блок
+### 4. ✅ Product gallery — завершено
 
-* Більше основне фото без обрізання товару.
-* Thumbnails у звичайному layout.
-* Active thumbnail і лічильник.
-* Mobile swipe.
-* Semantic buttons замість клікабельних `img`.
-* Keyboard navigation, `Escape` і focus return.
-* Стани з одним, двома й багатьма фото.
-* Перевірка квадратних, горизонтальних і вертикальних зображень.
-* Без зміни товарних даних і без оманливого crop.
+Реалізовано у PR #18 та PR #19:
 
-### 5. ⏭ Order notifications
+* під час створення товару можна одразу вибрати окреме головне й кілька додаткових фото;
+* головне фото зберігається в `Product.img`, додаткові — у `ProductImage`, без автоматичного дублювання;
+* previews і захист від повторного вибору того самого локального файла в адмінці;
+* атомарне створення товару, marketplace params і додаткових фото з Cloudinary cleanup при помилці;
+* `product.img` завжди перше у storefront-галереї, далі йдуть додаткові фото;
+* точні URL-дублікати й порожні значення прибираються;
+* більше основне фото без обрізання товару;
+* горизонтальні thumbnails, active state і лічильник;
+* циклічні стрілки та mobile swipe без блокування вертикального scroll;
+* semantic buttons замість клікабельних `img`;
+* доступний lightbox із `Escape`, `ArrowLeft`, `ArrowRight`, focus-on-open і focus return;
+* підтримка одного, двох і багатьох фото, квадратних, горизонтальних і вертикальних зображень;
+* Product schema використовує той самий нормалізований список фото.
+
+### 5. ⏭ Order notifications — наступний пов’язаний блок
 
 * Backend визначає право на безкоштовну доставку за фактичною сумою товарів.
 * У Telegram для магазину: окремий помітний рядок `БЕЗКОШТОВНА ДОСТАВКА`.
@@ -269,7 +275,6 @@ Helper text:
 
 ### Must have — залишилося
 
-* Product gallery.
 * Безкоштовна доставка в customer і internal processing UX.
 * Повноцінний success screen.
 * Product cards і mobile grid.
@@ -283,6 +288,8 @@ Helper text:
 * ✅ Видалення Укрпошти.
 * ✅ Checkout confirmation preference.
 * ✅ Помітна primary CTA checkout.
+* ✅ Створення товару з головним і додатковими фото.
+* ✅ Product gallery, lightbox, mobile swipe і keyboard accessibility.
 
 ### Should have
 
@@ -310,6 +317,8 @@ Helper text:
 * ✅ Checkout delivery cleanup — PR #15.
 * ✅ Product purchase clarity і trust-card — PR #16.
 * ✅ Confirmation preference, notification copy і primary checkout CTA — PR #17.
+* ✅ Створення товару з головним і додатковими фото — PR #18.
+* ✅ Повноцінна storefront-галерея товару — PR #19.
 * ✅ Уточнено строки, оплату, підтвердження замовлення, доставку й email.
 * ✅ Відмовлено від автоматичного правила передоплати за кількістю товарів.
 * ✅ Зафіксовано правила правдивих фото й майбутнього article template.
