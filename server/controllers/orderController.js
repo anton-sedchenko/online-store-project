@@ -182,7 +182,7 @@ function renderOrderEmail({
                                     </p>
                                     <p style="margin:0;font-size:13px;color:#555;">
                                         Контакти:<br/>
-                                        <strong>Телефон:</strong> +38 (068) 036 15 97<br/>
+                                        <strong>Viber/Telegram:</strong> <a href="tel:+380967846399" style="color:#6a1b9a;text-decoration:none;">+38 (096) 784 63 99</a><br/>
                                         <strong>Email:</strong> charivna.craft@gmail.com
                                     </p>
                                 </td>
