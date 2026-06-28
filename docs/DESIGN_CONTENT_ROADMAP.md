@@ -131,15 +131,22 @@ Helper text:
 * підтримка одного, двох і багатьох фото, квадратних, горизонтальних і вертикальних зображень;
 * Product schema використовує той самий нормалізований список фото.
 
-### 5. ⏭ Order notifications — наступний пов’язаний блок
+### 5. ✅ Order notifications and purchase controls — завершено
 
-* Backend визначає право на безкоштовну доставку за фактичною сумою товарів.
-* У Telegram для магазину: окремий помітний рядок `БЕЗКОШТОВНА ДОСТАВКА`.
-* У спільному email покупцю й магазину: звичайний параметр замовлення без великого попередження.
-* Не додавати автоматичні повідомлення про повну передоплату.
-* Помилка Telegram або email не повинна блокувати створення замовлення.
+Реалізовано у PR #20, PR #21 і PR #22:
 
-### 6. ⏭ Order success screen
+* backend визначає право на безкоштовну доставку за фактичною сумою товарів із БД;
+* у Telegram для магазину додається окремий помітний рядок `БЕЗКОШТОВНА ДОСТАВКА`;
+* у спільному email покупцю й магазину безкоштовна доставка показується як звичайний параметр;
+* помилка Telegram або email не блокує створення замовлення;
+* автоматичні повідомлення про повну передоплату не додавалися;
+* актуальний Viber/Telegram номер показується в order email і support-блоці контактів;
+* primary CTA в кошику, на товарі та checkout уніфіковані;
+* у кошику додано степер `− / кількість / +` із мінімумом 1, нормалізацією та доступними controls;
+* guest/auth cart behavior, pending state, rollback і responsive layout перевірені;
+* desktop-картка товару не виштовхує кнопку видалення за межі контейнера.
+
+### 6. ⏭ Order success screen — наступний окремий блок
 
 Замінити коротку автозакривну модалку повноцінним фінальним станом. Орієнтир — інформаційна структура прикладу Pethouse без копіювання дизайну чи assets.
 
@@ -275,7 +282,6 @@ Helper text:
 
 ### Must have — залишилося
 
-* Безкоштовна доставка в customer і internal processing UX.
 * Повноцінний success screen.
 * Product cards і mobile grid.
 * Homepage hero, trust strip і категорії.
@@ -290,6 +296,8 @@ Helper text:
 * ✅ Помітна primary CTA checkout.
 * ✅ Створення товару з головним і додатковими фото.
 * ✅ Product gallery, lightbox, mobile swipe і keyboard accessibility.
+* ✅ Безкоштовна доставка в customer і internal processing UX.
+* ✅ Уніфіковані primary CTA та quantity controls у purchase flow.
 
 ### Should have
 
@@ -319,6 +327,9 @@ Helper text:
 * ✅ Confirmation preference, notification copy і primary checkout CTA — PR #17.
 * ✅ Створення товару з головним і додатковими фото — PR #18.
 * ✅ Повноцінна storefront-галерея товару — PR #19.
+* ✅ Free-shipping notifications у Telegram та email — PR #20.
+* ✅ Cart CTA й актуальні contact details — PR #21.
+* ✅ Cart quantity stepper і primary product CTA — PR #22.
 * ✅ Уточнено строки, оплату, підтвердження замовлення, доставку й email.
 * ✅ Відмовлено від автоматичного правила передоплати за кількістю товарів.
 * ✅ Зафіксовано правила правдивих фото й майбутнього article template.
