@@ -12,6 +12,7 @@ const ApiError = require('../error/ApiError');
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const FREE_SHIPPING_THRESHOLD = 1500;
 
 const {Cart} = require('../models/models');
 async function getCartIdForUser(userId) {
@@ -28,7 +29,8 @@ function renderOrderEmail({
                               total,
                               shippingHtml,
                               items,
-                              shouldSkipConfirmationContact = false
+                              shouldSkipConfirmationContact = false,
+                              isFreeShipping = false
                           }) {
     const LOGO_URL = process.env.EMAIL_LOGO_URL || 'https://charivna-craft.com.ua/logo-email.png';
 
@@ -129,6 +131,11 @@ function renderOrderEmail({
                                     <div style="font-size:13px;color:#555;line-height:1.5;">
                                         ${shippingHtml}
                                     </div>
+                                    ${isFreeShipping ? `
+                                        <p style="margin:0;font-size:13px;color:#555;line-height:1.5;">
+                                            <strong>Вартість доставки:</strong> Безкоштовно
+                                        </p>
+                                    ` : ''}
                                 </td>
                             </tr>
 
@@ -268,6 +275,12 @@ class OrderController {
                 include: [{model: Product, attributes: ["name", "price", "code"]}]
             });
 
+            const total = orderItems.reduce(
+                (sum, oi) => sum + Number(oi.quantity) * Number(oi.product.price),
+                0
+            );
+            const isFreeShipping = total >= FREE_SHIPPING_THRESHOLD;
+
             function shippingText(s) {
                 if (!s) return 'Спосіб доставки: не вказано';
 
@@ -292,6 +305,9 @@ class OrderController {
             text += `📞 Телефон: ${tel}\n`;
             text += `✉️ Email: ${email}\n`;
             text += `🚚 ${shippingText(shippingForOrder)}\n`;
+            if (isFreeShipping) {
+                text += `\n🎁 *БЕЗКОШТОВНА ДОСТАВКА*\n`;
+            }
             if (comments) text += `💬 Коментар: ${comments}\n`;
             if (shouldSkipConfirmationContact) {
                 text += `\n🚫 *НЕ ЗВ’ЯЗУВАТИСЯ ДЛЯ ПІДТВЕРДЖЕННЯ*\n`;
@@ -341,11 +357,6 @@ class OrderController {
                 console.error('Telegram send error:', tgErr?.response?.data || tgErr?.message || tgErr);
             }
 
-            const total = orderItems.reduce(
-                (sum, oi) => sum + oi.quantity * oi.product.price,
-                0
-            );
-
             // ВАЖЛИВО: shippingHtml ми вже побудували вище
             const mailHtml = renderOrderEmail({
                 orderId: newOrder.id,
@@ -355,7 +366,8 @@ class OrderController {
                 total,
                 shippingHtml,
                 items: orderItems,
-                shouldSkipConfirmationContact
+                shouldSkipConfirmationContact,
+                isFreeShipping
             });
 
             sendMail({
