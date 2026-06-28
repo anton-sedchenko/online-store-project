@@ -17,36 +17,59 @@
 
 ## Поточний пріоритет
 
-Реалізувати UX/CRO-план маленькими незалежними PR. Не змішувати сторінку товару, checkout, notifications і success screen в одну задачу.
+Продовжувати UX/CRO-план маленькими незалежними PR. Purchase-блок, Nova Poshta-only checkout і confirmation preference завершені. Наступний дизайн-технічний блок — product gallery; окремо залишаються order notifications і повноцінний success screen.
 
 ## Next actions
 
-### 1. ⏭ Product purchase clarity
+### 1. ✅ Product purchase clarity — завершено
 
-Frontend-only зміни сторінки товару:
+PR #16:
 
 * нова purchase-ієрархія;
 * пояснення `MADE_TO_ORDER` зі строком 1–3 робочі дні;
 * ключові характеристики до CTA;
-* компактніший quantity control;
+* integer-safe quantity stepper;
+* unit price і total для кількості понад 1;
 * trust-рядки доставки, оплати, повернення й консультації;
 * плашка «Безкоштовна доставка від 1500 грн»;
 * focus states і mobile layout;
-* без змін backend, cart, checkout, email і Telegram.
+* фотоблок без зайвого вертикального розтягування.
 
-### 2. ⏭ Checkout delivery cleanup
+### 2. ✅ Checkout delivery cleanup — завершено
 
-* Видалити `UKR_BRANCH` зі способів доставки.
-* Видалити `ukrCity`, `ukrOffice` і пов’язані validation/render branches.
-* Не формувати shipping payload для Укрпошти.
-* Залишити Нову пошту: відділення, поштомат і кур’єр.
-* Показувати умову безкоштовної доставки від 1500 грн.
-* Явно показувати, коли поточне замовлення отримує безкоштовну доставку.
-* Не ламати Nova Poshta API, map modal і warehouse selection.
-* Перевірити guest та auth order flow.
-* Не додавати автоматичне правило передоплати залежно від кількості товарів.
+PR #15:
 
-### 3. ⏭ Order notifications
+* видалено `UKR_BRANCH` зі способів доставки;
+* видалено `ukrCity`, `ukrOffice` і пов’язані validation/render branches;
+* shipping payload більше не формується для Укрпошти;
+* залишено Нову пошту: відділення, поштомат і кур’єр;
+* Nova Poshta API, map modal і warehouse selection збережено;
+* актуалізовано delivery/legal content і контактний email.
+
+### 3. ✅ Checkout confirmation preference — завершено
+
+PR #17:
+
+* checkbox «Не зв’язуватися для підтвердження замовлення»;
+* strict boolean normalization на backend;
+* збереження preference у `shipping.orderPreferences` без migration;
+* умовний Telegram/email/success-modal copy;
+* primary CTA «Підтвердити замовлення» зроблена візуально помітною;
+* телефон і email залишилися required.
+
+### 4. ⏭ Product gallery
+
+* Більше основне фото.
+* Thumbnails у звичайному layout.
+* Active thumbnail і лічильник.
+* Mobile swipe.
+* Semantic buttons замість клікабельних `img`.
+* Keyboard navigation, `Escape` і focus return.
+* Стани з одним, двома й багатьма фото.
+* Перевірка квадратних, вертикальних і горизонтальних фото.
+* Без обрізання критичної форми товару.
+
+### 5. ⏭ Order notifications
 
 Backend самостійно визначає умови за товарами з БД і фактичною сумою.
 
@@ -58,9 +81,10 @@ Scope:
 * не додавати `requiresFullPrepayment` або автоматичні нагадування про передоплату;
 * не довіряти frontend total або flags;
 * не робити Telegram/email критичними для створення замовлення;
-* зберегти logging помилок сповіщень.
+* зберегти logging помилок сповіщень;
+* не ламати confirmation preference з PR #17.
 
-### 4. ⏭ Order success screen
+### 6. ⏭ Order success screen
 
 Поточний `OrderConfirm` автоматично закривається, а checkout через 4,5 секунди очищає кошик і переходить на головну. Замінити це окремим success state або route.
 
@@ -69,7 +93,7 @@ Scope:
 * після успішного API response показувати повноцінний success screen;
 * не закривати його й не redirect-ити автоматично;
 * показувати номер замовлення;
-* пояснити підтвердження дзвінком або повідомленням;
+* пояснювати наступний крок з урахуванням `skipConfirmationContact`;
 * додати кнопку повернення до каталогу;
 * за потреби — посилання на замовлення для авторизованого користувача;
 * очистити кошик один раз, не втративши success data;
@@ -79,27 +103,18 @@ Scope:
 * перевірити desktop/mobile, focus management, screen reader announcement і reduced motion;
 * не копіювати Pethouse assets або branding.
 
-### 5. ⏭ Актуалізація order-related content
+### 7. ✅ Актуалізація order-related content — базовий cleanup завершено
 
-* Прибрати Укрпошту зі сторінки доставки, оферти й інших актуальних текстів.
-* Прибрати згадки гіпсових фігурок та інших старих напрямів.
-* Уніфікувати email на `charivna.craft@gmail.com`.
-* Синхронізувати формулювання підтвердження замовлення.
-* Синхронізувати безкоштовну доставку від 1500 грн.
-* Повернення комунікувати як 14 днів відповідно до погодженої політики.
-* Юридичні твердження не переписувати без окремої перевірки.
+PR #15 і PR #16:
 
-### 6. ⏭ Product gallery
+* прибрано Укрпошту зі сторінки доставки, оферти й актуальних текстів;
+* прибрано згадки гіпсових фігурок у зміненому order-related scope;
+* уніфіковано email на `charivna.craft@gmail.com`;
+* синхронізовано формулювання підтвердження, оплати й `MADE_TO_ORDER`;
+* повернення комунікується як 14 днів;
+* юридичні твердження не переписувалися поза погодженим scope.
 
-* Більше основне фото.
-* Thumbnails у звичайному layout.
-* Active thumbnail і лічильник.
-* Mobile swipe.
-* Semantic buttons замість клікабельних `img`.
-* Keyboard navigation, `Escape` і focus return.
-* Стани з одним, двома й багатьма фото.
-
-### 7. ⏭ Product cards and mobile grid
+### 8. ⏭ Product cards and mobile grid
 
 * Нова інформаційна ієрархія.
 * Status badge.
@@ -111,7 +126,7 @@ Scope:
 * Окреме рішення щодо direct add-to-cart.
 * Дві колонки на погоджених mobile widths.
 
-### 8. ⏭ Homepage header, hero and categories
+### 9. ⏭ Homepage header, hero and categories
 
 * Компактний header.
 * Змістовний hero.
@@ -120,7 +135,7 @@ Scope:
 * Візуальні категорії.
 * Desktop/mobile navigation.
 
-### 9. ⏭ SEO-friendly pagination
+### 10. ⏭ SEO-friendly pagination
 
 Для `/`, `/koshyky-dlia-zberihannia` і `/blog`:
 
@@ -142,7 +157,7 @@ Scope:
 * без неконтрольованих indexable URL;
 * не змішувати з Phase 1 без погодження.
 
-### 10. ⏭ Technical blog template
+### 11. ⏭ Technical blog template
 
 * Metadata, canonical, Open Graph і Twitter Cards.
 * `BlogPosting` і `BreadcrumbList`.
@@ -150,30 +165,30 @@ Scope:
 * Image, alt, dates, author block, related articles і TOC.
 * Reusable template для публікації без ручного дизайну кожної статті.
 
-### 11. ⏭ 404 handling
+### 12. ⏭ 404 handling
 
 * Неіснуюча стаття й unmatched frontend route.
 * Видимий Not Found state.
 * `noindex, nofollow`.
 * Без маскування 404 редиректом на головну.
 
-### 12. ⏭ Metadata інших сторінок
+### 13. ⏭ Metadata інших сторінок
 
 Contacts, delivery-payment, return-policy, oferta, privacy, login, registration, profile, admin, password reset.
 
-### 13. ⏭ Structured data audit
+### 14. ⏭ Structured data audit
 
 Organization, Product, Offer, BreadcrumbList, CollectionPage, ItemList, BlogPosting, FAQPage лише за видимого FAQ, без fake review data.
 
-### 14. 🔍 Feeds та Merchant Center
+### 15. 🔍 Feeds та Merchant Center
 
 `/gmc.xml`, `/rozetka.xml`, availability, product URLs, категорії, виключення старих напрямів, setup і validation.
 
-### 15. 🔍 Performance і технічний борг
+### 16. 🔍 Performance і технічний борг
 
 Bundle size, lazy loading, images, Sass deprecation, ESLint warnings, Core Web Vitals, API errors, loading/error states, dependency audit.
 
-### 16. 🧊 Tests and CI
+### 17. 🧊 Tests and CI
 
 Frontend tests, backend endpoint tests, smoke tests для sitemap/feed/cart/order, CI та staging verification.
 
@@ -181,6 +196,9 @@ Frontend tests, backend endpoint tests, smoke tests для sitemap/feed/cart/ord
 
 * ✅ Проведено UX/UI та CRO-аудит.
 * ✅ Зафіксовано поділ CRO-реалізації на окремі PR.
+* ✅ Product purchase clarity — PR #16.
+* ✅ Nova Poshta-only checkout cleanup — PR #15.
+* ✅ Confirmation preference і primary checkout CTA — PR #17.
 * ✅ Уточнено: автоматичного правила передоплати за кількістю товарів не буде.
 * ✅ Уточнено формат free-shipping notification для email і Telegram.
 * ✅ Filters, mobile filters і public type GET.
@@ -192,7 +210,6 @@ Frontend tests, backend endpoint tests, smoke tests для sitemap/feed/cart/ord
 
 ## Deferred
 
-* 🧊 Чекбокс «Не телефонувати».
 * 🧊 Великі checkout-зміни поза погодженими PR.
 * 🧊 Database migrations без rollback plan.
 * 🧊 Повний архітектурний refactor.
